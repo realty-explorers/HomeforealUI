@@ -263,7 +263,7 @@ export default class ZillowScraper {
         await this.saveData(ids, 'soldResults');
         ids = Object.keys(forSaleResults);
         await this.saveData(ids, 'forSaleResults');
-        const deals = await this.findDeals(soldResults, forSaleResults, referenceLatitude, referenceLongitude, 1000, -100);
+        const deals = await this.findDeals(soldResults, forSaleResults, 1000, -100);
         console.log('finished, deals: \n');
         console.log(deals)
 
