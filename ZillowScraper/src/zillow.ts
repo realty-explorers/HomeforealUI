@@ -217,11 +217,11 @@ export default class ZillowScraper {
                 }
             }
             const soldHousesAveragePrice = soldHousesPriceSum / soldHousesCount;
-            const profit = 100 * (average - housePrice) / average;
+            const profit = 100 * (soldHousesAveragePrice - housePrice) / soldHousesAveragePrice;
             if (profit >= minProfit) {
                 deals.push({
                     profit,
-                    house: forSaleHouseList[houseId];
+                    house: forSaleHouseList[houseId]
                 })
             }
         }
