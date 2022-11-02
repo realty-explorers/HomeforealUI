@@ -8,7 +8,7 @@ interface House {
     "statusType": string;
     "statusText": string;
     "countryCurrency": string;
-    "price": string;
+    "price": number;
     "unformattedPrice": number;
     "address": string;
     "addressStreet": string;
@@ -20,6 +20,8 @@ interface House {
     "beds": any;
     "baths": any;
     "area": any;
+    "latitude": number;
+    "longitude": number;
     "latLong": {
         "latitude": number;
         "longitude": number;
@@ -58,6 +60,7 @@ interface House {
             "unit": string;
             "lotAreaValue": number;
             "lotAreaUnit": string;
+            "livingArea": number;
         }
     };
     "isSaved": boolean;
