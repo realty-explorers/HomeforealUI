@@ -40,13 +40,13 @@ export default class ZillowScraper {
     public tryFetch = async (url: string, extractData: (data: any) => any, maxTries?: number) => {
         let data: any = null;
         let finishedFetching = false;
-        let tries = maxTries;
+        let tries = 0;
         while (!finishedFetching) {
-            if (tries) tries--;
-            console.log('Trying to fetch data...');
+            tries++;
+            console.log(`Trying to fetch data, attempt ${tries}`);
             const response = await this.makeRequest(url);
             data = extractData(response.data);
-            if (data || tries === 0) finishedFetching = true;
+            if (data || tries === maxTries) finishedFetching = true;
             else this.alterRequest();
         }
         return data;

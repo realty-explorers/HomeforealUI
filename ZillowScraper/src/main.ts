@@ -1,7 +1,6 @@
 import * as dotenv from "dotenv";
-import ZillowScraper from "./zillow";
+import ZillowScraper from "./Zillow";
 
 dotenv.config();
-const scraper = new ZillowScraper();
-// scraper.scrape()
-scraper.getData();
+const zillowEngine = new ZillowScraper();
+zillowEngine.getDeals();

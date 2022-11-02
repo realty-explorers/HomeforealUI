@@ -9,7 +9,6 @@ interface House {
     "statusText": string;
     "countryCurrency": string;
     "price": number;
-    "unformattedPrice": number;
     "address": string;
     "addressStreet": string;
     "addressCity": string;
@@ -22,10 +21,6 @@ interface House {
     "area": any;
     "latitude": number;
     "longitude": number;
-    "latLong": {
-        "latitude": number;
-        "longitude": number;
-    };
     "isZillowOwned": boolean;
     "variableData": any;
     "badgeInfo": any;

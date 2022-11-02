@@ -31,10 +31,6 @@ export default class DealsFinder {
             const relevantSoldHouses = [];
             for (const soldHouse of soldHouses) {
                 const distance = this.getDistance(forSaleHouse.latitude, soldHouse.latitude, forSaleHouse.longitude, soldHouse.longitude);
-                if (isNaN(distance)) {
-                    console.log("no distance");
-                }
-                console.log('distance: ' + distance);
                 if (distance <= maxDistance) {
                     relevantSoldHouses.push(soldHouse);
                     // soldHousesPriceSum += soldHouseList[soldHouseId].hdpData.homeInfo.price;
@@ -55,20 +51,20 @@ export default class DealsFinder {
         return deals;
     }
 
-    // private findDeals = async (soldHouseList: { [id: string]: House }, forSaleHouseList: { [id: string]: House }, maxDistance: number, minProfit: number) => {
+    // public findDeals = async (soldHouseList: { [id: string]: House }, forSaleHouseList: { [id: string]: House }, maxDistance: number, minProfit: number) => {
     //     const deals: { profit: Number, house: House, relevantSoldHouses: House[] }[] = [];
     //     for (const houseId in forSaleHouseList) {
     //         const housePrice = forSaleHouseList[houseId].hdpData.homeInfo.price;
     //         const houseArea = forSaleHouseList[houseId].area;
     //         const houseAreaPrice = housePrice / houseArea;
-    //         const latitude = forSaleHouseList[houseId].latLong.latitude;
-    //         const longitude = forSaleHouseList[houseId].latLong.longitude;
+    //         const latitude = forSaleHouseList[houseId].latitude;
+    //         const longitude = forSaleHouseList[houseId].longitude;
     //         let soldHousesPriceSum = 0
     //         let soldHousesCount = 0
     //         const relevantSoldHouses = [];
     //         for (const soldHouseId in soldHouseList) {
-    //             const soldHouseLatitude = soldHouseList[soldHouseId].latLong.latitude;
-    //             const soldHouseLongitude = soldHouseList[soldHouseId].latLong.longitude;
+    //             const soldHouseLatitude = soldHouseList[soldHouseId].latitude;
+    //             const soldHouseLongitude = soldHouseList[soldHouseId].longitude;
     //             const distance = this.getDistance(latitude, soldHouseLatitude, longitude, soldHouseLongitude);
     //             if (isNaN(distance)) {
 
