@@ -75,7 +75,8 @@ interface House {
     "isFeaturedListing": boolean;
     "availabilityDate": any;
     "list": boolean;
-    "relaxed": boolean
+    "relaxed": boolean;
+    "maxPagination": number;
 
 }
 export default House

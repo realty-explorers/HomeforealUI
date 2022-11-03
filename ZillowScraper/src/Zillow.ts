@@ -5,6 +5,7 @@ import Utils from "./utils";
 
 export default class ZillowEngine {
 
+    private readonly DEAFULT_MAX_PAGES = 5;
     private dataFetcher: DataFetcher;
     private dealsFinder: DealsFinder;
 
@@ -16,13 +17,16 @@ export default class ZillowEngine {
     private extractData = (data: any) => {
         try {
             const parsedData: any = data['cat1']['searchResults']['listResults'];
+            const parsedMetaData: any = data['cat1']['searchResults']['searchList'];
             const houses: House[] = [];
             for (const parsedHouse of parsedData) {
                 const house = parsedHouse as House;
                 house.latitude = parsedHouse['latLong']['latitude'];
                 house.longitude = parsedHouse['latLong']['longitude'];
                 house.price = parsedHouse['unformattedPrice'];
+                house.maxPagination = parsedMetaData['totalPages'];
                 houses.push(house);
+                console.log(house.maxPagination);
             }
             return houses;
         } catch (error) {
@@ -47,10 +51,12 @@ export default class ZillowEngine {
     private getForSaleHousesData = async () => {
         let page = 1;
         let forSaleResults: { [id: string]: House } = {};
-        while (page < 4) {
+        let maxPages = this.DEAFULT_MAX_PAGES;
+        while (page <= maxPages) {
             console.log(page);
             const url = this.constructForSaleUrl(page);
             const listResults = await this.dataFetcher.tryFetch(url, this.extractData);
+            if (listResults) maxPages = (listResults as House).maxPagination;
             for (const result of listResults) {
                 forSaleResults[result.zpid] = result
             }
@@ -62,10 +68,12 @@ export default class ZillowEngine {
     private getSoldHousesData = async () => {
         let page = 1;
         let soldHouseResults: { [id: string]: House } = {};
-        while (page < 4) {
+        let maxPages = this.DEAFULT_MAX_PAGES;
+        while (page <= maxPages) {
             console.log(page);
             const url = this.constructSoldUrl(page);
             const listResults = await this.dataFetcher.tryFetch(url, this.extractData);
+            if (listResults) maxPages = (listResults as House).maxPagination;
             for (const result of listResults) {
                 soldHouseResults[result.zpid] = result
             }
@@ -81,10 +89,7 @@ export default class ZillowEngine {
         Utils.saveData(deals, 'deals');
         console.log('finished, deals: \n');
         console.log(deals.map(deal => {
-            return {
-                profit: deal.profit,
-                url: deal.house.detailUrl
-            }
+            return deal.house.detailUrl
         }));
     }
 
