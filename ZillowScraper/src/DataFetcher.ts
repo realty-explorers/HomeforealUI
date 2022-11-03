@@ -1,7 +1,7 @@
 import axios from 'axios'
 import * as randomUserAgent from 'random-useragent'
 
-export default class ZillowScraper {
+export default class DataFetcher {
 
     private readonly ROOT_URL = 'https://www.zillow.com/search/';
     private userAgent;
@@ -43,7 +43,7 @@ export default class ZillowScraper {
         let tries = 0;
         while (!finishedFetching) {
             tries++;
-            console.log(`Trying to fetch data, attempt ${tries}`);
+            console.log(`Trying to fetch data, attempt ${tries}, agent: ${this.userAgent}`);
             const response = await this.makeRequest(url);
             data = extractData(response.data);
             if (data || tries === maxTries) finishedFetching = true;

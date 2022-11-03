@@ -9,7 +9,7 @@ export default class Utils {
     };
 
     public static saveData = (allItems: any, fileName: string) => {
-        fs.writeFile(`${fileName}.json`, JSON.stringify(allItems) + "\n\n", function (err) {
+        fs.writeFile(`raw_data/${fileName}.json`, JSON.stringify(allItems) + "\n\n", function (err) {
             if (err) return console.log(err);
         });
         // allItems.forEach(async ad => {

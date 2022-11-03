@@ -2,22 +2,29 @@ import House from "./models/house";
 import DataFetcher from "./DataFetcher";
 import DealsFinder from "./DealsFinder";
 import Utils from "./utils";
+import LocationHelper from "./LocationHelper";
+import ZillowScraper from "./ZillowScraper";
 
-export default class ZillowEngine {
+export default class Engine {
 
     private readonly DEAFULT_MAX_PAGES = 5;
     private dataFetcher: DataFetcher;
     private dealsFinder: DealsFinder;
+    private locationHelper: LocationHelper;
+    private zillowScraper: ZillowScraper;
+
 
     constructor() {
         this.dataFetcher = new DataFetcher();
         this.dealsFinder = new DealsFinder();
+        this.locationHelper = new LocationHelper();
+        this.zillowScraper = new ZillowScraper();
     }
 
     private extractData = (data: any) => {
         try {
             const parsedData: any = data['cat1']['searchResults']['listResults'];
-            const parsedMetaData: any = data['cat1']['searchResults']['searchList'];
+            const parsedMetaData: any = data['cat1']['searchList'];
             const houses: House[] = [];
             for (const parsedHouse of parsedData) {
                 const house = parsedHouse as House;
@@ -26,7 +33,6 @@ export default class ZillowEngine {
                 house.price = parsedHouse['unformattedPrice'];
                 house.maxPagination = parsedMetaData['totalPages'];
                 houses.push(house);
-                console.log(house.maxPagination);
             }
             return houses;
         } catch (error) {
@@ -48,6 +54,23 @@ export default class ZillowEngine {
         return url;
     }
 
+    private fillHousesData = async (housesResults: any) => {
+        const houses: House[] = []
+        for (const house of housesResults) {
+            try {
+                if (!house.longitude || !house.latitude) {
+                    const apiCoordinates = await this.locationHelper.addressToGeolocation(house.address);
+                    house.latitude = apiCoordinates.latitude;
+                    house.longitude = apiCoordinates.longitude;
+                }
+                houses.push(house);
+            } catch (error) {
+
+            }
+        }
+        return houses;
+    }
+
     private getForSaleHousesData = async () => {
         let page = 1;
         let forSaleResults: { [id: string]: House } = {};
@@ -56,9 +79,10 @@ export default class ZillowEngine {
             console.log(page);
             const url = this.constructForSaleUrl(page);
             const listResults = await this.dataFetcher.tryFetch(url, this.extractData);
-            if (listResults) maxPages = (listResults as House).maxPagination;
-            for (const result of listResults) {
-                forSaleResults[result.zpid] = result
+            const housesData = await this.fillHousesData(listResults);
+            if (housesData) maxPages = housesData[0].maxPagination;
+            for (const house of housesData) {
+                forSaleResults[house.zpid] = house;
             }
             page++;
         }
@@ -73,9 +97,10 @@ export default class ZillowEngine {
             console.log(page);
             const url = this.constructSoldUrl(page);
             const listResults = await this.dataFetcher.tryFetch(url, this.extractData);
-            if (listResults) maxPages = (listResults as House).maxPagination;
-            for (const result of listResults) {
-                soldHouseResults[result.zpid] = result
+            const housesData = await this.fillHousesData(listResults);
+            if (housesData) maxPages = housesData[0].maxPagination;
+            for (const house of housesData) {
+                soldHouseResults[house.zpid] = house
             }
             page++;
         }
@@ -91,6 +116,18 @@ export default class ZillowEngine {
         console.log(deals.map(deal => {
             return deal.house.detailUrl
         }));
+    }
+
+    public getLocatoin = async () => {
+        const response = await this.locationHelper.addressToGeolocation('613 Forest Dr, Homewood, AL 35209');
+        console.log(response);
+    }
+
+    public scrape = async () => {
+        // await this.zillowScraper.getZillowApi();
+        const url = `https://www.zillow.com/search/GetSearchPageState.htm?searchQueryState={"pagination":{"currentPage":1},"usersSearchTerm":"Homewood, AL","mapBounds":{"west":-87.04522820019533,"east":-86.5714427998047,"south":33.378340728271134,"north":33.53645153996474},"regionSelection":[{"regionId":45794,"regionType":6}],"isMapVisible":true,"filterState":{"doz":{"value":"6m"},"sortSelection":{"value":"globalrelevanceex"},"isAllHomes":{"value":true},"isCondo":{"value":false},"isMultiFamily":{"value":false},"isManufactured":{"value":false},"isLotLand":{"value":false},"isTownhouse":{"value":false},"isApartment":{"value":false},"isApartmentOrCondo":{"value":false},"isRecentlySold":{"value":true},"isForSaleByAgent":{"value":false},"isForSaleByOwner":{"value":false},"isNewConstruction":{"value":false},"isComingSoon":{"value":false},"isAuction":{"value":false},"isForSaleForeclosure":{"value":false},"price":{"min":500000},"monthlyPayment":{"min":2619,"max":3143}},"isListVisible":true,"mapZoom":11}&wants={"cat1":["listResults","mapResults"]}&requestId=6`;
+        const query = url.substring(url.indexOf('?') + 1);
+        console.log(query);
     }
 
 }
