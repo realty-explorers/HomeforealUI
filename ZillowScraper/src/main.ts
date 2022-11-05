@@ -3,5 +3,5 @@ import Engine from "./Engine";
 
 dotenv.config();
 const engine = new Engine();
-// engine.getDeals();
-engine.scrape();
+engine.getDeals();
+// engine.scrape();
