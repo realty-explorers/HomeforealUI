@@ -14,11 +14,6 @@ export default class ZillowHandler {
 
     }
 
-    private mewo = () => {
-
-    }
-
-
     public constructZillowUrlQuery = (zillowSearchUrl: string, zillowFilter: ZillowFilter, forSale: boolean) => {
         const parsedQuery = queryParser.parseUrl(zillowSearchUrl).query;
         const emptyQuery = {} as ZillowQuery;
@@ -51,6 +46,19 @@ export default class ZillowHandler {
         const endPaginationIndex = zillowUrl.indexOf(bracketHex, paginationIndex);
         const url = `${zillowUrl.substring(0, paginationIndex)}${colonHex}${page}${zillowUrl.substring(endPaginationIndex)}`;
         return url;
+    }
+
+    public constructZillowFilter = (minPrice?: number, maxPrice?: number, daysOnZillow?: string) => {
+        const zillowFilter = {
+            doz: {
+                value: daysOnZillow
+            },
+            price: {
+                min: minPrice,
+                max: maxPrice
+            },
+        } as ZillowFilter;
+        return zillowFilter;
     }
 
     public getZillowApi = async () => {
