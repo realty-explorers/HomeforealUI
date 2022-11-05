@@ -33,8 +33,9 @@ export default class DataFetcher {
         return response;
     }
 
-    private alterRequest = () => {
+    private alterRequest = (tries: number) => {
         this.userAgent = randomUserAgent.getRandom();
+        console.log(`Trying to fetch data, attempt ${tries}, agent: ${this.userAgent}`);
     }
 
     public tryFetch = async (url: string, extractData: (data: any) => any, maxTries?: number) => {
@@ -43,11 +44,10 @@ export default class DataFetcher {
         let tries = 0;
         while (!finishedFetching) {
             tries++;
-            console.log(`Trying to fetch data, attempt ${tries}, agent: ${this.userAgent}`);
             const response = await this.makeRequest(url);
             data = extractData(response.data);
             if (data || tries === maxTries) finishedFetching = true;
-            else this.alterRequest();
+            else this.alterRequest(tries);
         }
         return data;
     }

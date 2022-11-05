@@ -22,12 +22,13 @@ export default class Engine {
         this.zillowHandler = new zillowHandler();
     }
 
-    public getDeals = async (distance: number, profit: number, zillowSearchUrl: string, minPrice?: number, maxPrice?: number, daysOnZillow?: string) => {
-        const zillowFilter = this.zillowHandler.constructZillowFilter(minPrice, maxPrice, daysOnZillow);
-        const forSaleZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(zillowSearchUrl, zillowFilter, true);
-        const soldZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(zillowSearchUrl, zillowFilter, false);
-        const forSaleHouseResults = await this.getHousesData(forSaleZillowSearchUrl, zillowFilter);
-        const soldHouseResults = await this.getHousesData(soldZillowSearchUrl, zillowFilter);
+    public getDeals = async (distance: number, profit: number, zillowSearchUrl: string, soldMinPrice?: number, soldMaxPrice?: number, daysOnZillow?: string) => {
+        const soldZillowFilter = this.zillowHandler.constructZillowFilter(soldMinPrice, soldMaxPrice, daysOnZillow);
+        const forSaleZillowFilter = this.zillowHandler.constructZillowFilter(undefined, undefined, daysOnZillow);
+        const forSaleZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(zillowSearchUrl, forSaleZillowFilter, true);
+        const soldZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(zillowSearchUrl, soldZillowFilter, false);
+        const forSaleHouseResults = await this.getHousesData(forSaleZillowSearchUrl);
+        const soldHouseResults = await this.getHousesData(soldZillowSearchUrl);
         const deals = await this.dealsFinder.findDeals(soldHouseResults, forSaleHouseResults, distance, profit);
         Utils.saveData(deals, 'deals');
         console.log('finished, deals: \n');
@@ -39,11 +40,12 @@ export default class Engine {
         }));
     }
 
-    private getHousesData = async (zillowSearchUrl: string, zillowFilter: ZillowFilter) => {
+    private getHousesData = async (zillowSearchUrl: string) => {
         let page = 1;
         let housesResults: { [id: string]: House } = {};
         let maxPages = this.DEFAULT_MAX_PAGES;
         while (page <= maxPages) {
+            console.log(`Page: ${page}`);
             const url = this.zillowHandler.paginateZillowUrl(zillowSearchUrl, page);
             const listResults = await this.dataFetcher.tryFetch(url, this.extractData);
             const housesData = await this.fillHousesData(listResults);
