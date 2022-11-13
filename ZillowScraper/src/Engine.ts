@@ -1,11 +1,9 @@
 import House from "./models/house";
-import { ZillowFilter, ZillowQuery, MapBounds } from './models/zillow';
 import DataFetcher from "./DataFetcher";
 import DealsFinder from "./DealsFinder";
 import Utils from "./utils";
 import LocationHelper from "./LocationHelper";
 import zillowHandler from "./ZillowHandler";
-import * as queryParser from "query-string"
 
 export default class Engine {
 
