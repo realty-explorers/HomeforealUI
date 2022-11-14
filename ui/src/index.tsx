@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
 import 'antd/dist/antd.css';
-import './index.css';
+import './index.scss';
 import App from './App';
 import Navigation from './components/pages/Navigation';
 import ErrorPage from './components/pages/ErrorPage';

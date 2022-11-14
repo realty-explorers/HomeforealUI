@@ -7,8 +7,8 @@ import {
 } from '@react-google-maps/api';
 
 const containerStyle = {
-	width: '400px',
-	height: '400px',
+	width: '100%',
+	height: '25em',
 };
 
 const center = {
@@ -25,6 +25,9 @@ const houseLocations = [
 		lat: 33.429565,
 		lng: -86.84263,
 	},
+];
+
+const soldHouseLocations = [
 	{
 		lat: 33.43208,
 		lng: -86.84005,
@@ -82,6 +85,15 @@ const Maps: React.FC = (props: any) => {
 			/>
 			{houseLocations.map((houseLocation: any) => (
 				<Marker position={houseLocation} />
+			))}
+
+			{soldHouseLocations.map((houseLocation: any) => (
+				<Marker
+					position={houseLocation}
+					icon={
+						'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png'
+					}
+				/>
 			))}
 			{/* <Marker
 				// icon={{

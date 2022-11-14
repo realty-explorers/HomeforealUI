@@ -2,6 +2,7 @@ import {
 	DesktopOutlined,
 	FileOutlined,
 	PieChartOutlined,
+	HomeOutlined,
 	TeamOutlined,
 	UserOutlined,
 } from '@ant-design/icons';
@@ -9,6 +10,7 @@ import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
+import './Navigation.scss';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -29,8 +31,8 @@ function getItem(
 }
 
 const items: MenuItem[] = [
-	getItem('Option 1', 'home', <PieChartOutlined />),
-	getItem('Option 2', 'test', <DesktopOutlined />),
+	getItem('Home', 'home', <HomeOutlined />),
+	getItem('Statistics', 'test', <PieChartOutlined />),
 	getItem('User', 'sub1', <UserOutlined />, [
 		getItem('Tom', '3'),
 		getItem('Bill', '4'),
@@ -79,7 +81,7 @@ const Navigation: React.FC = (props: any) => {
 					<Outlet />
 				</Content>
 				<Footer style={{ textAlign: 'center' }}>
-					Ant Design ©2018 Created by Ant UED
+					Fabin Inc ©2022 Created by Sharon Fabin
 				</Footer>
 			</Layout>
 		</Layout>
