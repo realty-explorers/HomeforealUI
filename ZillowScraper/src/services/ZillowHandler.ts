@@ -1,7 +1,7 @@
 import * as puppeteer from "puppeteer";
-import Utils from "./utils";
-import { ZillowFilter, ZillowQuery, MapBounds } from "./models/zillow";
+import { ZillowFilter, ZillowQuery, MapBounds } from "../models/zillow";
 import queryParser from 'query-string';
+import { sleep } from "../utils/utils";
 
 
 export default class ZillowHandler {
@@ -89,6 +89,6 @@ export default class ZillowHandler {
         await page.waitForSelector(inputSelector);
         await page.type(inputSelector, address);
         await page.keyboard.press('Enter');
-        await Utils.sleep(10000);
+        await sleep(10000);
     }
 }
