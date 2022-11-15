@@ -3,6 +3,6 @@ import dealsRouter from './routes/dealsRouter';
 
 export default () => {
 	const app = express.Router();
-	app.use('/testPlan', dealsRouter);
+	app.use('/deals', dealsRouter);
 	return app;
 };
