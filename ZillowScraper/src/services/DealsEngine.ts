@@ -1,6 +1,6 @@
-import House from "./models/house";
+import House from "../models/house";
 
-export default class DealsFinder {
+export default class DealsEngine {
 
     constructor() {
 

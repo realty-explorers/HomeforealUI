@@ -1,9 +1,15 @@
-import * as dotenv from "dotenv";
-import Engine from "./Engine";
+import express from 'express';
+import App from './app';
+import RabbitmqConnection from './connections/amqp/rabbitmq_connection';
 
-dotenv.config();
-const engine = new Engine();
-// const zillowSearchUrl = 'https://www.zillow.com/search/GetSearchPageState.htm?searchQueryState={"pagination":{"currentPage":1},"usersSearchTerm":"Homewood, AL","mapBounds":{"west":-87.04522820019533,"east":-86.5714427998047,"south":33.378340728271134,"north":33.53645153996474},"regionSelection":[{"regionId":45794,"regionType":6}],"isMapVisible":true,"filterState":{"doz":{"value":"6m"},"sortSelection":{"value":"globalrelevanceex"},"isAllHomes":{"value":true},"isCondo":{"value":false},"isMultiFamily":{"value":false},"isManufactured":{"value":false},"isLotLand":{"value":false},"isTownhouse":{"value":false},"isApartment":{"value":false},"isApartmentOrCondo":{"value":false}},"isListVisible":true,"mapZoom":11}&wants={"cat1":["listResults","mapResults"],"cat2":["total"]}&requestId=3';
-const zillowSearchUrl = 'https://www.zillow.com/search/GetSearchPageState.htm?searchQueryState=%7B%22mapBounds%22%3A%7B%22north%22%3A33.52050420220952%2C%22east%22%3A-86.63945459448242%2C%22south%22%3A33.4429026929069%2C%22west%22%3A-86.84029840551757%7D%2C%22isMapVisible%22%3Atrue%2C%22filterState%22%3A%7B%22monthlyPayment%22%3A%7B%22min%22%3A0%2C%22max%22%3A3143%7D%2C%22doz%22%3A%7B%22value%22%3A%226m%22%7D%2C%22sortSelection%22%3A%7B%22value%22%3A%22globalrelevanceex%22%7D%2C%22isAllHomes%22%3A%7B%22value%22%3Atrue%7D%2C%22isCondo%22%3A%7B%22value%22%3Afalse%7D%2C%22isMultiFamily%22%3A%7B%22value%22%3Afalse%7D%2C%22isManufactured%22%3A%7B%22value%22%3Afalse%7D%2C%22isLotLand%22%3A%7B%22value%22%3Afalse%7D%2C%22isTownhouse%22%3A%7B%22value%22%3Afalse%7D%2C%22isApartment%22%3A%7B%22value%22%3Afalse%7D%2C%22isApartmentOrCondo%22%3A%7B%22value%22%3Afalse%7D%7D%2C%22isListVisible%22%3Atrue%2C%22mapZoom%22%3A13%2C%22regionSelection%22%3A%5B%7B%22regionId%22%3A26027%2C%22regionType%22%3A6%7D%5D%2C%22pagination%22%3A%7B%7D%7D&wants={%22cat1%22:[%22listResults%22,%22mapResults%22],%22cat2%22:[%22total%22]}&requestId=6';
-engine.getDeals(2, 40, zillowSearchUrl, 800000, undefined, '6m');
-// engine.scrape();
+const startApp = async () => {
+	const expressApp = express();
+	const rabbitmq_connection = new RabbitmqConnection();
+	const app = new App(
+		expressApp,
+		rabbitmq_connection
+	);
+	await app.start();
+};
+
+startApp();

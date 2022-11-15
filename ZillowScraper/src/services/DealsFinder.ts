@@ -1,21 +1,21 @@
-import House from "./models/house";
+import House from "../models/house";
 import DataFetcher from "./DataFetcher";
-import DealsFinder from "./DealsFinder";
-import Utils from "./utils";
+import DealsEngine from "./DealsEngine";
 import LocationHelper from "./LocationHelper";
 import zillowHandler from "./ZillowHandler";
+import { sleep, saveData } from '../utils/utils';
 
-export default class Engine {
+export default class DealsFinder {
 
     private readonly DEFAULT_MAX_PAGES = 5;
     private dataFetcher: DataFetcher;
-    private dealsFinder: DealsFinder;
+    private dealsFinder: DealsEngine;
     private locationHelper: LocationHelper;
     private zillowHandler: zillowHandler;
 
     constructor() {
         this.dataFetcher = new DataFetcher();
-        this.dealsFinder = new DealsFinder();
+        this.dealsFinder = new DealsEngine();
         this.locationHelper = new LocationHelper();
         this.zillowHandler = new zillowHandler();
     }
@@ -28,7 +28,7 @@ export default class Engine {
         const forSaleHouseResults = await this.getHousesData(forSaleZillowSearchUrl);
         const soldHouseResults = await this.getHousesData(soldZillowSearchUrl);
         const deals = await this.dealsFinder.findDeals(soldHouseResults, forSaleHouseResults, distance, profit);
-        Utils.saveData(deals, 'deals');
+        saveData(deals, 'deals');
         console.log('finished, deals: \n');
         console.log(deals.map(deal => {
             return {
@@ -36,6 +36,7 @@ export default class Engine {
                 profit: deal.profit
             }
         }));
+        return deals;
     }
 
     private getHousesData = async (zillowSearchUrl: string) => {
