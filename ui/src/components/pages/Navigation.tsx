@@ -3,8 +3,8 @@ import {
 	FileOutlined,
 	PieChartOutlined,
 	HomeOutlined,
-	TeamOutlined,
 	UserOutlined,
+	BookOutlined,
 } from '@ant-design/icons';
 import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu } from 'antd';
@@ -32,17 +32,9 @@ function getItem(
 
 const items: MenuItem[] = [
 	getItem('Home', 'home', <HomeOutlined />),
-	getItem('Statistics', 'test', <PieChartOutlined />),
-	getItem('User', 'sub1', <UserOutlined />, [
-		getItem('Tom', '3'),
-		getItem('Bill', '4'),
-		getItem('Alex', '5'),
-	]),
-	getItem('Team', 'sub2', <TeamOutlined />, [
-		getItem('Team 1', '6'),
-		getItem('Team 2', '8'),
-	]),
-	getItem('Files', '9', <FileOutlined />),
+	getItem('Results', 'results', <PieChartOutlined />),
+	getItem('Profile', 'profile', <UserOutlined />),
+	getItem('About', 'about', <BookOutlined />),
 ];
 
 const Navigation: React.FC = (props: any) => {

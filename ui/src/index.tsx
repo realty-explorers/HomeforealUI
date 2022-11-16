@@ -7,8 +7,11 @@ import App from './App';
 import Navigation from './components/pages/Navigation';
 import ErrorPage from './components/pages/ErrorPage';
 import reportWebVitals from './reportWebVitals';
-import Home from './components/pages/Home';
+import Results from './components/pages/Results';
 import Test from './components/pages/Test';
+import Home from './components/pages/Home';
+import Profile from './components/pages/Profile';
+import About from './components/pages/About';
 
 const root = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
@@ -25,8 +28,16 @@ const router = createBrowserRouter([
 				element: <Home />,
 			},
 			{
-				path: 'test/',
-				element: <Test />,
+				path: 'results/',
+				element: <Results />,
+			},
+			{
+				path: 'profile/',
+				element: <Profile />,
+			},
+			{
+				path: 'about/',
+				element: <About />,
 			},
 		],
 	},

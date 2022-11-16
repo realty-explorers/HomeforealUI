@@ -1,6 +1,6 @@
 interface MapMarker {
-    lat: number,
-    lng: number
+    latitude: number,
+    longitude: number
 }
 
 export default MapMarker;

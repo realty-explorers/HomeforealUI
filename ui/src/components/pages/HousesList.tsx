@@ -8,10 +8,13 @@ import {
 } from '@ant-design/icons';
 import { Avatar, List, Space, Image, Statistic, Card } from 'antd';
 import { Row, Col } from 'react-bootstrap';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { exportMap } from '../../utils/MapUtils';
 import zillowIcon from '../../resources/zillow-icon.svg';
 import './HousesList.scss';
+import { findDeals } from '../../api/deals_api';
+import { setDefaultResultOrder } from 'dns/promises';
+import Deal from '../../models/deal';
 
 const { Meta } = Card;
 
@@ -19,8 +22,10 @@ const data = Array.from({ length: 23 }).map((_, i) => ({
 	href: 'https://ant.design',
 	title: `412 Berry Ave, Homewood, AL 35209`,
 	avatar: zillowIcon,
-	content:
-		'We supply a series of design principles, practical patterns and high quality design resources (Sketch and Axure), to help people create their product prototypes beautifully and efficiently.',
+	profit: 0,
+	avr: 800000,
+	price: 1200000,
+	image: 'https://s',
 }));
 
 const IconText = ({ icon, text }: { icon: React.FC; text: string }) => (
@@ -41,7 +46,15 @@ const houseLocations = [
 	},
 ];
 
-const HousesList: React.FC = (props: any) => {
+type HouseListProps = {
+	deals: Deal[];
+	setSelectedDeal: (deal: Deal) => void;
+};
+
+const HousesList: React.FC<HouseListProps> = (props: HouseListProps) => {
+	const [loading, setLoading] = useState(false);
+	const [soldMinPrice, setSoldMinPrice] = useState<number>(800000);
+
 	const mapOptions = {
 		center: {
 			lat: 33.480927,
@@ -49,6 +62,16 @@ const HousesList: React.FC = (props: any) => {
 		},
 		zoom: 10,
 		mapTypeId: 'roadmap',
+	};
+
+	const handleOnsave = (deal: Deal) => {
+		alert(deal);
+	};
+	const handleShowOnMap = (deal: Deal) => {
+		props.setSelectedDeal(deal);
+	};
+	const handleLinkClicked = (link: string) => {
+		alert(link);
 	};
 
 	return (
@@ -62,7 +85,7 @@ const HousesList: React.FC = (props: any) => {
 				},
 				pageSize: 3,
 			}}
-			dataSource={data}
+			dataSource={props.deals}
 			grid={{
 				gutter: 16,
 				xs: 1,
@@ -72,58 +95,65 @@ const HousesList: React.FC = (props: any) => {
 				xl: 2,
 				xxl: 3,
 			}}
-			renderItem={(item) => (
-				<List.Item key={item.title}>
+			renderItem={(deal: Deal) => (
+				<List.Item key={deal.house.id}>
 					<Card
 						// onMouseOver={() => alert('hi')}
 						actions={[
-							<IconText
-								icon={StarOutlined}
-								text="Save"
-								key="list-vertical-star-o"
+							<StarOutlined
+								title="Save"
+								onClick={() => handleOnsave(deal)}
 							/>,
-							<IconText
-								icon={EnvironmentOutlined}
-								text="Show on map"
-								key="list-vertical-like-o"
+							<EnvironmentOutlined
+								title="Show On Map"
+								onClick={() => handleShowOnMap(deal)}
 							/>,
-							<IconText
-								icon={LinkOutlined}
-								text="Go to link"
-								key="list-vertical-message"
+							<LinkOutlined
+								title="Go to link"
+								onClick={() =>
+									handleLinkClicked(deal.house.detailUrl)
+								}
 							/>,
 						]}>
 						<Meta
-							avatar={<Avatar src={item.avatar} />}
-							title={<a href={item.href}>{item.title}</a>}
+							avatar={<Avatar src={zillowIcon} />}
+							title={
+								<a href={deal.house.detailUrl}>
+									{deal.house.address}
+								</a>
+							}
 						/>
 						<Row className="center-row house-row">
 							<Col className="center-col">
 								<Statistic
 									title="Price"
-									value={1200000}
+									value={deal.house.price}
 									suffix="$"
 								/>
 								<Statistic
-									title="AVR"
-									value={800000}
+									title="ARV"
+									value={soldMinPrice}
 									suffix="$"
 								/>
 							</Col>
 							<Col className="center-col">
 								<Statistic
-									title="Under Comps"
-									value={30}
+									title="Under Comps %"
+									value={deal.profit}
+									precision={0}
 									suffix="%"
 								/>
-								<Statistic title="Sqft" value={200} />
+								<Statistic
+									title="Sqft"
+									value={deal.house.area}
+								/>
 							</Col>
 							<Col>
 								<Image
 									width={200}
 									height="100%"
 									alt={'logo'}
-									src="https://photos.zillowstatic.com/fp/be2b09bc41f17fc99efc3cd559c2a8d0-p_e.jpg"
+									src={deal.house.imgSrc}
 								/>
 							</Col>
 						</Row>

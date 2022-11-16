@@ -8,7 +8,7 @@ const exportMap = (mapOptions: any, markers: MapMarker[]) => {
     staticMapUrl += "&zoom=" + mapOptions.zoom;
     staticMapUrl += "&maptype=" + mapOptions.mapTypeId;
     for (const marker of markers) {
-        staticMapUrl += `&markers=color:red|${marker.lat},${marker.lng}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
+        staticMapUrl += `&markers=color:red|${marker.latitude},${marker.longitude}&key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}`;
     }
     return staticMapUrl;
 }
