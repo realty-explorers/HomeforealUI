@@ -4,14 +4,16 @@ import { createBrowserRouter, RouterProvider, Route } from 'react-router-dom';
 import 'antd/dist/antd.css';
 import './index.scss';
 import App from './App';
-import Navigation from './components/pages/Navigation';
+import Navigation from './components/navigation/Navigation';
 import ErrorPage from './components/pages/ErrorPage';
 import reportWebVitals from './reportWebVitals';
-import Results from './components/pages/Results';
 import Test from './components/pages/Test';
+import Login from './components/pages/Login';
 import Home from './components/pages/Home';
 import Profile from './components/pages/Profile';
 import About from './components/pages/About';
+import Dashboard from './components/pages/dashboard/Dashboard';
+import SignUp from './components/pages/SignUp';
 
 const root = ReactDOM.createRoot(
 	document.getElementById('root') as HTMLElement
@@ -28,8 +30,8 @@ const router = createBrowserRouter([
 				element: <Home />,
 			},
 			{
-				path: 'results/',
-				element: <Results />,
+				path: 'dashboard/',
+				element: <Dashboard />,
 			},
 			{
 				path: 'profile/',
@@ -40,6 +42,17 @@ const router = createBrowserRouter([
 				element: <About />,
 			},
 		],
+	},
+	{
+		path: 'login/',
+		element: <Login />,
+		errorElement: <ErrorPage />,
+	},
+
+	{
+		path: 'signup/',
+		element: <SignUp />,
+		errorElement: <ErrorPage />,
 	},
 ]);
 

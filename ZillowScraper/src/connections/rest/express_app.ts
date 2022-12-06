@@ -40,15 +40,13 @@ class App {
 		this.app.use(express.json({ limit: '500mb' }));
 		this.app.use(
 			cors({
-				origin: '*',
-				// origin: [
-				// 	'http://18.222.221.89',
-				// 	`${process.env.FRONT_URL}`,
-				// 	'http://localhost:3000',
-				// 	'https://localhost:5001',
-				// 	'https://master.d3rxvhp6gvauoo.amplifyapp.com/',
-				// ],
-				credentials: true,
+				// origin: '*',
+				origin: [
+					'http://18.222.221.89',
+					'http://localhost:3000',
+					'https://localhost:5001',
+				],
+				// credentials: true,
 			})
 		);
 	}

@@ -71,7 +71,7 @@ const HousesList: React.FC<HouseListProps> = (props: HouseListProps) => {
 		props.setSelectedDeal(deal);
 	};
 	const handleLinkClicked = (link: string) => {
-		alert(link);
+		window.open(link, '_blank', 'noopener,noreferrer');
 	};
 
 	return (
@@ -123,7 +123,7 @@ const HousesList: React.FC<HouseListProps> = (props: HouseListProps) => {
 								</a>
 							}
 						/>
-						<Row className="center-row house-row">
+						<Row className="space-row house-row">
 							<Col className="center-col">
 								<Statistic
 									title="Price"

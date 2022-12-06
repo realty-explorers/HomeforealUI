@@ -10,7 +10,7 @@ import type { MenuProps } from 'antd';
 import { Breadcrumb, Layout, Menu } from 'antd';
 import { Outlet, useNavigate } from 'react-router-dom';
 import React, { useState } from 'react';
-import './Navigation.scss';
+import './AntNavigation.scss';
 
 const { Header, Content, Footer, Sider } = Layout;
 
@@ -37,7 +37,7 @@ const items: MenuItem[] = [
 	getItem('About', 'about', <BookOutlined />),
 ];
 
-const Navigation: React.FC = (props: any) => {
+const AntNavigation: React.FC = (props: any) => {
 	const navigate = useNavigate();
 	const [collapsed, setCollapsed] = useState(false);
 
@@ -80,4 +80,4 @@ const Navigation: React.FC = (props: any) => {
 	);
 };
 
-export default Navigation;
+export default AntNavigation;

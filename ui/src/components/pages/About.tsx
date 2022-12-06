@@ -1,4 +1,6 @@
-const About: React.FC = (props: any) => {
+import React, { useState } from 'react';
+type AboutProps = {};
+const About: React.FC<AboutProps> = (props: AboutProps) => {
 	return <p>Test</p>;
 };
 

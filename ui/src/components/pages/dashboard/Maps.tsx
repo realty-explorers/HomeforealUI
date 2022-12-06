@@ -10,8 +10,8 @@ import {
 
 import { EnvironmentOutlined, CodepenCircleOutlined } from '@ant-design/icons';
 import { Skeleton } from 'antd';
-import Deal from '../../models/deal';
-import House from '../../models/house';
+import Deal from '../../../models/deal';
+import House from '../../../models/house';
 
 const containerStyle = {
 	width: '100%',
@@ -236,13 +236,7 @@ const Maps: React.FC<MapsProps> = (props: MapsProps) => {
 			)}
 		</GoogleMap>
 	) : (
-		<>
-			<Skeleton.Node active={true}>
-				<CodepenCircleOutlined
-					style={{ fontSize: 40, color: '#bfbfbf' }}
-				/>
-			</Skeleton.Node>
-		</>
+		<></>
 	);
 };
 

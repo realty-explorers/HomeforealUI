@@ -23,7 +23,7 @@ export default class DealsEngine {
     };
 
     public findDeals = async (soldHouses: House[], forSaleHouses: House[], maxDistance: number, minProfit: number) => {
-        const deals: { profit: Number, house: House, relevantSoldHouses: House[] }[] = [];
+        const deals: { profit: number, distance: number, house: House, relevantSoldHouses: House[] }[] = [];
         for (const forSaleHouse of forSaleHouses) {
             const houseAreaPrice = forSaleHouse.price / forSaleHouse.area;
             let soldHousesPriceSum = 0
@@ -43,6 +43,7 @@ export default class DealsEngine {
             if (profit >= minProfit) {
                 deals.push({
                     profit,
+                    distance: maxDistance,
                     house: forSaleHouse,
                     relevantSoldHouses
                 })
