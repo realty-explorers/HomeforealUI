@@ -42,8 +42,9 @@ class App {
 			cors({
 				// origin: '*',
 				origin: [
-					'http://18.222.221.89',
+					'http://146.190.12.154',
 					'http://localhost:3000',
+					'http://localhost',
 					'https://localhost:5001',
 				],
 				// credentials: true,

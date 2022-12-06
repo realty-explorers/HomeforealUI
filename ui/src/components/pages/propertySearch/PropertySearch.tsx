@@ -32,8 +32,8 @@ type PropertySearchProps = {
 const PropertySearch: React.FC<PropertySearchProps> = (
 	props: PropertySearchProps
 ) => {
-	const { handleSubmit, reset, control } = useForm();
 	const [loading, setLoading] = useState(false);
+	const [formData, setFormData] = useState({});
 
 	const handleSubmitButton = async (
 		event: React.FormEvent<HTMLFormElement>

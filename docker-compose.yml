@@ -13,3 +13,11 @@ services:
       - deals.env
     depends_on:
       - "rabbit"
+  ui:
+    image: "ghcr.io/sharonfabin/ui-service"
+    ports:
+      - "80:80"
+    env_file:
+      - ui.env
+    depends_on:
+      - "deals"
