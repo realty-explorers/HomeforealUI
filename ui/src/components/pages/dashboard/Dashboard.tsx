@@ -1,3 +1,4 @@
+import { useForm, SubmitHandler } from 'react-hook-form';
 import {
 	Box,
 	Modal,
@@ -31,7 +32,20 @@ const style = {
 	p: 4,
 };
 
+type Inputs = {
+	zillowUrl: string;
+	location: string;
+	arv: number;
+	underComps: number;
+	radius: number;
+	age: string;
+	price: number[];
+};
+
 const Dashboard: React.FC = (props: any) => {
+	const { register, handleSubmit, watch, control, formState } =
+		useForm<Inputs>();
+
 	const [loading, setLoading] = useState(false);
 	const [open, setOpen] = useState(true);
 	const [deals, setDeals] = useState<Deal[]>([]);
@@ -66,6 +80,28 @@ const Dashboard: React.FC = (props: any) => {
 		};
 		getData();
 	}, []);
+
+	const onSubmit: SubmitHandler<Inputs> = async (data) => {
+		try {
+			setLoading(true);
+			const response = await findDeals(
+				data.zillowUrl,
+				data.radius,
+				data.underComps,
+				data.price[0],
+				data.price[1],
+				'6m'
+			);
+			if (response.status === 200) {
+				setDeals(response.data);
+				alert('done');
+			} else throw Error(response.data);
+		} catch (error) {
+			alert(error);
+		} finally {
+			setLoading(false);
+		}
+	};
 
 	const fetchHouses = async () => {
 		try {
@@ -125,7 +161,14 @@ const Dashboard: React.FC = (props: any) => {
 				aria-labelledby="modal-modal-title"
 				aria-describedby="modal-modal-description">
 				<Box className="search-modal-container">
-					<PropertySearch setProperties={handleSearchProperties} />
+					<PropertySearch
+						control={control}
+						setProperties={handleSearchProperties}
+						handleSubmit={handleSubmit(onSubmit)}
+						loading={loading}
+						setLoading={setLoading}
+						// formState={formState}
+					/>
 				</Box>
 			</Modal>
 		</Container>

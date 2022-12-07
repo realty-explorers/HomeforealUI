@@ -14,59 +14,61 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useNavigate } from 'react-router-dom';
 import { Input, Slider } from '@mui/material';
-import NumericInputs, { NumericInputProps } from './NumericInput';
 import { SearchOutlined } from '@mui/icons-material';
 import './PropertySearch.scss';
 import NumericFields from './NumericFields';
 import { findDeals } from '../../../api/deals_api';
 import Deal from '../../../models/deal';
-import FormInputText from '../../formComponents/FormInputText';
-import { useForm } from 'react-hook-form';
+import { Control, Controller, useForm, UseFormRegister } from 'react-hook-form';
+import TextInput from '../../form/TextInput';
 
 const theme = createTheme();
 
 type PropertySearchProps = {
 	setProperties: (properties: Deal[]) => Promise<void>;
+	handleSubmit: any;
+	control: Control<any, any>;
+	loading: boolean;
+	setLoading: (loading: boolean) => void;
 };
 
 const PropertySearch: React.FC<PropertySearchProps> = (
 	props: PropertySearchProps
 ) => {
-	const [loading, setLoading] = useState(false);
-	const [formData, setFormData] = useState({});
-
 	const handleSubmitButton = async (
 		event: React.FormEvent<HTMLFormElement>
 	) => {
 		try {
 			event.preventDefault();
-			setLoading(true);
-			const data = new FormData(event.currentTarget);
-			const searchData = {
-				arv: data.get('arv') as string,
-				zillowUrl: data.get('zillowUrl') as string,
-				radius: +(data.get('radius') as string),
-				underComps: +(data.get('underComps') as string),
-				minPrice: +(data.get('minPrice') as string),
-				age: data.get('age') as string,
-			};
+			props.handleSubmit();
+			// setLoading(true);
+			// const data = new FormData(event.currentTarget);
+			// const searchData = {
+			// 	arv: data.get('arv') as string,
+			// 	zillowUrl: data.get('zillowUrl') as string,
+			// 	radius: +(data.get('radius') as string),
+			// 	underComps: +(data.get('underComps') as string),
+			// 	price: data.get('price'),
+			// 	age: data.get('age') as string,
+			// };
+			// alert(searchData.price);
 
-			const response = await findDeals(
-				searchData.zillowUrl,
-				searchData.radius,
-				searchData.underComps,
-				searchData.minPrice,
-				undefined,
-				'6m'
-			);
-			if (response.status === 200) {
-				props.setProperties(response.data);
-				alert('done');
-			} else throw Error(response.data);
+			// const response = await findDeals(
+			// 	searchData.zillowUrl,
+			// 	searchData.radius,
+			// 	searchData.underComps,
+			// 	searchData.minPrice,
+			// 	undefined,
+			// 	'6m'
+			// );
+			// if (response.status === 200) {
+			// 	props.setProperties(response.data);
+			// 	alert('done');
+			// } else throw Error(response.data);
 		} catch (error) {
 			alert(error);
 		} finally {
-			setLoading(false);
+			props.setLoading(false);
 		}
 	};
 
@@ -76,7 +78,7 @@ const PropertySearch: React.FC<PropertySearchProps> = (
 				<CssBaseline />
 				<Box
 					sx={{
-						marginTop: 8,
+						marginTop: 6,
 						display: 'flex',
 						flexDirection: 'column',
 						alignItems: 'center',
@@ -88,6 +90,7 @@ const PropertySearch: React.FC<PropertySearchProps> = (
 						Search Property
 					</Typography>
 					<Box
+						className="search-form"
 						component="form"
 						noValidate
 						onSubmit={handleSubmitButton}
@@ -97,31 +100,27 @@ const PropertySearch: React.FC<PropertySearchProps> = (
 							spacing={2}
 							className="search-text-fields">
 							<Grid item xs={12}>
-								<TextField
-									required
-									fullWidth
-									id="email"
-									label="Zillow URL"
-									name="zillowUrl"
-									type="url"
-									autoComplete="https://"
+								<TextInput
+									control={props.control}
+									inputProps={{
+										title: 'Zillow URL',
+										name: 'zillowUrl',
+									}}
 								/>
 							</Grid>
 							<Grid item xs={12}>
-								<TextField
-									required
-									fullWidth
-									name="address"
-									label="Address"
-									type="text"
-									id="password"
-									autoComplete="new-password"
+								<TextInput
+									control={props.control}
+									inputProps={{
+										title: 'Location (state, city, neighborhood, zip)',
+										name: 'location',
+									}}
 								/>
 							</Grid>
 						</Grid>
-						<NumericFields />
+						<NumericFields control={props.control} />
 						<LoadingButton
-							loading={loading}
+							loading={props.loading}
 							loadingPosition="end"
 							className="search-button"
 							type="submit"

@@ -40,13 +40,13 @@ class App {
 		this.app.use(express.json({ limit: '500mb' }));
 		this.app.use(
 			cors({
-				// origin: '*',
-				origin: [
-					'http://146.190.12.154',
-					'http://localhost:3000',
-					'http://localhost',
-					'https://localhost:5001',
-				],
+				origin: '*',
+				// origin: [
+				// 	'http://146.190.12.154:80',
+				// 	'http://localhost:3000',
+				// 	'http://localhost:80',
+				// 	'https://localhost:5001',
+				// ],
 				// credentials: true,
 			})
 		);

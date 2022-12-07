@@ -1,6 +1,9 @@
 import { Grid, Input, Slider, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import NumericInput, { NumericInputProps } from './NumericInput';
+import { Control, UseFormRegister } from 'react-hook-form';
+import { InputProps } from '../../form/formTypes';
+import NumericInput from '../../form/NumericInput';
+import RangeInput from '../../form/RangeInput';
 
 const priceFormatter = (value: number) =>
 	`$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -8,16 +11,17 @@ const percentFormatter = (value: number) => `%${value}`;
 const distanceFormatter = (value: number) => `${value} Miles`;
 const ageFormatter = (value: number) => `${value} days`;
 
-const searchRangeNumericValues = {
-	price: {
+const searchRangeNumericValues = [
+	{
 		title: 'Price',
+		name: 'price',
 		min: 0,
 		max: 10000000,
-		step: 1000,
-		formatter: priceFormatter,
+		step: 100000,
+		format: priceFormatter,
 	},
-};
-const searchNumericValues: NumericInputProps[] = [
+];
+const searchNumericValues: InputProps[] = [
 	{
 		title: 'Arv',
 		name: 'arv',
@@ -25,6 +29,10 @@ const searchNumericValues: NumericInputProps[] = [
 		max: 10000000,
 		step: 100000,
 		format: priceFormatter,
+		abbreviation: {
+			text: '$',
+			position: 'start',
+		},
 	},
 	{
 		title: 'UnderComps',
@@ -33,6 +41,10 @@ const searchNumericValues: NumericInputProps[] = [
 		max: 200,
 		step: 1,
 		format: percentFormatter,
+		abbreviation: {
+			text: '%',
+			position: 'start',
+		},
 	},
 	{
 		title: 'Radius',
@@ -41,6 +53,10 @@ const searchNumericValues: NumericInputProps[] = [
 		max: 100,
 		step: 0.5,
 		format: distanceFormatter,
+		abbreviation: {
+			text: 'Miles',
+			position: 'end',
+		},
 	},
 	{
 		title: 'Age',
@@ -50,27 +66,11 @@ const searchNumericValues: NumericInputProps[] = [
 		step: 1,
 		format: ageFormatter,
 	},
-
-	{
-		title: 'Min Price',
-		name: 'minPrice',
-		min: 0,
-		max: 10000000,
-		step: 100000,
-		format: priceFormatter,
-	},
-
-	{
-		title: 'Max Price',
-		name: 'maxPrice',
-		min: 0,
-		max: 10000000,
-		step: 100000,
-		format: priceFormatter,
-	},
 ];
 
-export type NumericFieldsProps = {};
+export type NumericFieldsProps = {
+	control: Control<any, any>;
+};
 
 const NumericFields: React.FC<NumericFieldsProps> = (
 	props: NumericFieldsProps
@@ -78,8 +78,20 @@ const NumericFields: React.FC<NumericFieldsProps> = (
 	return (
 		<React.Fragment>
 			{searchNumericValues.map(
-				(props: NumericInputProps, index: number) => (
-					<NumericInput {...props} />
+				(valueProps: InputProps, index: number) => (
+					<NumericInput
+						inputProps={valueProps}
+						control={props.control}
+					/>
+				)
+			)}
+
+			{searchRangeNumericValues.map(
+				(valueProps: InputProps, index: number) => (
+					<RangeInput
+						inputProps={valueProps}
+						control={props.control}
+					/>
 				)
 			)}
 		</React.Fragment>
