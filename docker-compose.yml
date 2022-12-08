@@ -22,7 +22,7 @@ services:
     depends_on:
       - "deals"
   nginx:
-    image: "nginx"
+    image: "ghcr.io/sharonfabin/nginx"
     ports:
       - "80:80"
     depends_on:
