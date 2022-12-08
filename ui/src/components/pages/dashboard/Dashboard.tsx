@@ -167,7 +167,6 @@ const Dashboard: React.FC = (props: any) => {
 						handleSubmit={handleSubmit(onSubmit)}
 						loading={loading}
 						setLoading={setLoading}
-						// formState={formState}
 					/>
 				</Box>
 			</Modal>

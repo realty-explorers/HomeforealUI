@@ -33,23 +33,24 @@ class App {
 	}
 
 	private initializeMiddlewares() {
+		this.app.use(
+			cors(
+				{
+					// origin: '*',
+					origin: [
+						'http://146.190.12.154',
+						'http://localhost',
+						'http://localhost:3000',
+					],
+					credentials: true,
+				}
+			)
+		);
 		this.app.get('/', (req, res) => {
 			res.send('ok');
 		});
 		this.app.use(express.urlencoded({ extended: false }));
 		this.app.use(express.json({ limit: '500mb' }));
-		this.app.use(
-			cors({
-				origin: '*',
-				// origin: [
-				// 	'http://146.190.12.154:80',
-				// 	'http://localhost:3000',
-				// 	'http://localhost:80',
-				// 	'https://localhost:5001',
-				// ],
-				// credentials: true,
-			})
-		);
 	}
 }
 export default App;

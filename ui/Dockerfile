@@ -26,6 +26,5 @@ COPY --from=0 /usr/src/app/build ./build
 
 EXPOSE 80
 ENV PORT=80
-ENV REACT_APP_API_GATEWAY_HOST=18.118.50.216
 RUN npm install -g serve
 CMD [ "serve", "-s", "./build"]

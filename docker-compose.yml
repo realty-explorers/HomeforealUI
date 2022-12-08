@@ -16,8 +16,14 @@ services:
   ui:
     image: "ghcr.io/sharonfabin/ui-service"
     ports:
-      - "80:80"
+      - "81:80"
     env_file:
       - ui.env
     depends_on:
       - "deals"
+  nginx:
+    image: "nginx"
+    ports:
+      - "80:80"
+    depends_on:
+      - "ui"

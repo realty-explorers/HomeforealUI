@@ -8,7 +8,7 @@ const findDeals = async (zillowSearchUrl: string, distance: number, profit: numb
 	}, {
 		headers: {
 			'Access-Control-Allow-Origin': '*'
-		}
+		},
 	});
 };
 

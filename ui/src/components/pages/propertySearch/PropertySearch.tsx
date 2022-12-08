@@ -38,38 +38,8 @@ const PropertySearch: React.FC<PropertySearchProps> = (
 	const handleSubmitButton = async (
 		event: React.FormEvent<HTMLFormElement>
 	) => {
-		try {
-			event.preventDefault();
-			props.handleSubmit();
-			// setLoading(true);
-			// const data = new FormData(event.currentTarget);
-			// const searchData = {
-			// 	arv: data.get('arv') as string,
-			// 	zillowUrl: data.get('zillowUrl') as string,
-			// 	radius: +(data.get('radius') as string),
-			// 	underComps: +(data.get('underComps') as string),
-			// 	price: data.get('price'),
-			// 	age: data.get('age') as string,
-			// };
-			// alert(searchData.price);
-
-			// const response = await findDeals(
-			// 	searchData.zillowUrl,
-			// 	searchData.radius,
-			// 	searchData.underComps,
-			// 	searchData.minPrice,
-			// 	undefined,
-			// 	'6m'
-			// );
-			// if (response.status === 200) {
-			// 	props.setProperties(response.data);
-			// 	alert('done');
-			// } else throw Error(response.data);
-		} catch (error) {
-			alert(error);
-		} finally {
-			props.setLoading(false);
-		}
+		event.preventDefault();
+		props.handleSubmit();
 	};
 
 	return (
