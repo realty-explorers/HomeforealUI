@@ -27,8 +27,10 @@ export default class DealsController {
 			// const daysOnZillow = req.query['daysOnZillow'] as string;
 			const response = await this.dealsService.getDeals(zillowSearchUrl, distance, profit, soldMinPrice, soldMaxPrice, daysOnZillow);
 			res.json(response);
-		} catch (error) {
-			res.status(500).send({ error });
+		} catch (error: any) {
+			console.log(error);
+			res.status(500).send({ error: error.message });
+			// res.send();
 		}
 	};
 

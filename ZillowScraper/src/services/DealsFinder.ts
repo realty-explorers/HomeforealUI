@@ -46,7 +46,8 @@ export default class DealsFinder {
         while (page <= maxPages) {
             console.log(`Page: ${page}`);
             const url = this.zillowHandler.paginateZillowUrl(zillowSearchUrl, page);
-            const listResults = await this.dataFetcher.tryFetch(url, this.extractData);
+            const listResults = await this.dataFetcher.tryFetch(url, this.extractData, 25);
+            if (listResults == null) throw Error('No data found');
             const housesData = await this.fillHousesData(listResults);
             if (housesData.length > 0) maxPages = housesData[0].maxPagination;
             for (const house of housesData) {
