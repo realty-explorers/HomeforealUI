@@ -50,7 +50,6 @@ const Dashboard: React.FC = (props: any) => {
 	const [open, setOpen] = useState(true);
 	const [deals, setDeals] = useState<Deal[]>([]);
 	const [selectedDeal, setSelectedDeal] = useState<Deal>();
-	const [soldMinPrice, setSoldMinPrice] = useState<number>(800000);
 	const [searchParameters, setSearchParameters] = useState<any>({
 		minAge: '6m',
 		minProfit: 40,
@@ -84,6 +83,12 @@ const Dashboard: React.FC = (props: any) => {
 	const onSubmit: SubmitHandler<Inputs> = async (data) => {
 		try {
 			setLoading(true);
+			setSearchParameters({
+				minAge: data.age,
+				minProfit: data.underComps,
+				minARV: data.price[0],
+				radius: data.radius,
+			});
 			const response = await findDeals(
 				data.zillowUrl,
 				data.radius,

@@ -38,7 +38,7 @@ const searchNumericValues: InputProps[] = [
 		title: 'UnderComps',
 		name: 'underComps',
 		min: 0,
-		max: 200,
+		max: 100,
 		step: 1,
 		format: percentFormatter,
 		abbreviation: {
@@ -50,7 +50,7 @@ const searchNumericValues: InputProps[] = [
 		title: 'Radius',
 		name: 'radius',
 		min: 0,
-		max: 100,
+		max: 10,
 		step: 0.5,
 		format: distanceFormatter,
 		abbreviation: {

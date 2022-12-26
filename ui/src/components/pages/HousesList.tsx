@@ -130,11 +130,11 @@ const HousesList: React.FC<HouseListProps> = (props: HouseListProps) => {
 									value={deal.house.price}
 									suffix="$"
 								/>
-								<Statistic
+								{/* <Statistic
 									title="ARV"
 									value={soldMinPrice}
 									suffix="$"
-								/>
+								/> */}
 							</Col>
 							<Col className="center-col">
 								<Statistic
