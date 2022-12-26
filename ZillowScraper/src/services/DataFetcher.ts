@@ -41,7 +41,7 @@ export default class DataFetcher {
                 headers: {
                     'User-Agent': this.userAgent
                 },
-                proxy: this.proxy
+                // proxy: this.proxy
             })
             return response;
         } catch (error) {
