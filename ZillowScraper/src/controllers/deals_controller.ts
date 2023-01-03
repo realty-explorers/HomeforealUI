@@ -17,7 +17,7 @@ export default class DealsController {
 		next: NextFunction
 	) => {
 		try {
-			const { zillowSearchUrl, distance, profit, soldMinPrice, soldMaxPrice, daysOnZillow } = req.body;
+			const { regionSelection, distance, profit, soldMinPrice, soldMaxPrice, daysOnZillow } = req.body;
 			console.log(req.body);
 			// const zillowSearchUrl = req.query['zillowSearchUrl'] as string;
 			// const distance = parseInt(req.query['distance'] as string);
@@ -25,7 +25,7 @@ export default class DealsController {
 			// const soldMinPrice = parseInt(req.query['soldMinPrice'] as string);
 			// const soldMaxPrice = parseInt(req.query['soldMaxPrice'] as string);
 			// const daysOnZillow = req.query['daysOnZillow'] as string;
-			const response = await this.dealsService.getDeals(zillowSearchUrl, distance, profit, soldMinPrice, soldMaxPrice, daysOnZillow);
+			const response = await this.dealsService.getDeals(regionSelection, distance, profit, soldMinPrice, soldMaxPrice, daysOnZillow);
 			res.json(response);
 		} catch (error: any) {
 			console.log(error);

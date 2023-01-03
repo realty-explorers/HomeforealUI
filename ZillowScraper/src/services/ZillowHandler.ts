@@ -2,6 +2,7 @@ import * as puppeteer from "puppeteer";
 import { ZillowFilter, ZillowQuery, MapBounds } from "../models/zillow";
 import queryParser from 'query-string';
 import { sleep } from "../utils/utils";
+import { RegionInfo, RegionSelection } from "../models/region_info";
 
 
 export default class ZillowHandler {
@@ -14,29 +15,50 @@ export default class ZillowHandler {
 
     }
 
-    public constructZillowUrlQuery = (zillowSearchUrl: string, zillowFilter: ZillowFilter, forSale: boolean) => {
-        const parsedQuery = queryParser.parseUrl(zillowSearchUrl).query;
+    public constructZillowUrlQuery = (regionInfo: RegionInfo, zillowFilter: ZillowFilter, forSale: boolean) => {
+        const parsedQuery = queryParser.parseUrl(this.rootUrl).query;
         const emptyQuery = {} as ZillowQuery;
-        const zillowQuery = this.generateZillowQuery(zillowSearchUrl, emptyQuery, forSale);
+        const zillowQuery = this.generateZillowQuery(regionInfo, emptyQuery, forSale);
         zillowQuery.filterState = { ...zillowQuery.filterState, ...zillowFilter };
         parsedQuery['searchQueryState'] = JSON.stringify(zillowQuery);
+        parsedQuery['wants'] = JSON.stringify(this.constructZillowRequestQueryParameters());
         const modifiedUrl = queryParser.stringifyUrl({ url: this.rootUrl, query: parsedQuery });
         return modifiedUrl;
     }
 
-    private generateZillowQuery = (zillowSearchUrl: string, zillowQuery: ZillowQuery, forSale: boolean) => {
-        const parsedQuery = queryParser.parseUrl(zillowSearchUrl).query;
-        const searchQueryString = parsedQuery['searchQueryState'] as string
-        const searchQuery = JSON.parse(searchQueryString) as ZillowQuery;
+    private constructZillowRequestQueryParameters = () => {
+        const requestQuery = { "cat1": ["listResults", "mapResults"] };
+        return requestQuery;
+    }
+
+    public constructZillowRegionUrlQuery = (regionSelection: RegionSelection[]) => {
+        let query: any = {};
+        const zillowRegionQuery = this.generateZillowRegionQuery(regionSelection);
+        query['searchQueryState'] = JSON.stringify(zillowRegionQuery);
+        query['wants'] = JSON.stringify(this.constructZillowRequestQueryParameters());
+        const modifiedUrl = queryParser.stringifyUrl({ url: this.rootUrl, query });
+        return modifiedUrl;
+    }
+
+    private generateZillowQuery = (regionInfo: RegionInfo, zillowQuery: ZillowQuery, forSale: boolean) => {
+        const searchQuery = {} as ZillowQuery;
         const defaultPagination = { currentPage: 1 };
         let defaultFilterParameters = this.defaultFilterValues;
         if (!forSale) defaultFilterParameters = { ...defaultFilterParameters, ...this.soldFilterParameters };
-        zillowQuery.mapBounds = searchQuery.mapBounds;
-        zillowQuery.regionSelection = searchQuery.regionSelection;
+        // zillowQuery.mapBounds = searchQuery.mapBounds;
+        // zillowQuery.regionSelection = searchQuery.regionSelection;
+        zillowQuery.mapBounds = regionInfo.regionState.regionBounds;
+        zillowQuery.regionSelection = regionInfo.regionState.regionInfo;
         zillowQuery.usersSearchTerm = searchQuery.usersSearchTerm;
         zillowQuery.pagination = defaultPagination;
         zillowQuery.filterState = defaultFilterParameters as ZillowFilter;
         return zillowQuery;
+    }
+
+    private generateZillowRegionQuery = (regionSelection: RegionSelection[]) => {
+        const query = {} as ZillowQuery;
+        query.regionSelection = regionSelection;
+        return query;
     }
 
     public paginateZillowUrl = (zillowUrl: string, page: number) => {
@@ -62,7 +84,7 @@ export default class ZillowHandler {
     }
 
     public getZillowApi = async () => {
-        const url = 'https://www.zillow.com/';
+        const url = 'https://www.zillow.com/woodstock-al/sold/?searchQueryState={"pagination":{},"usersSearchTerm":"Woodstock, AL"}';
         const browser = await this.launchBrowser();
         try {
             const page = await browser.newPage();
@@ -84,11 +106,13 @@ export default class ZillowHandler {
     }
 
     private searchZillowAddress = async (url: string, address: string, page: puppeteer.Page, pageOptions?: (puppeteer.WaitForOptions & { referer?: string | undefined; }) | undefined) => {
+        console.log('started search');
         await page.goto(url, pageOptions);
+        await sleep(10000);
+        console.log('end');
         const inputSelector = 'input[id=search-box-input]';
         await page.waitForSelector(inputSelector);
         await page.type(inputSelector, address);
         await page.keyboard.press('Enter');
-        await sleep(10000);
     }
 }

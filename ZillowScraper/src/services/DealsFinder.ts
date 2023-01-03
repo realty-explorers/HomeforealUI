@@ -4,6 +4,7 @@ import DealsEngine from "./DealsEngine";
 import LocationHelper from "./LocationHelper";
 import zillowHandler from "./ZillowHandler";
 import { sleep, saveData } from '../utils/utils';
+import { RegionInfo, RegionSelection } from "../models/region_info";
 
 export default class DealsFinder {
 
@@ -20,11 +21,12 @@ export default class DealsFinder {
         this.zillowHandler = new zillowHandler();
     }
 
-    public getDeals = async (distance: number, profit: number, zillowSearchUrl: string, soldMinPrice?: number, soldMaxPrice?: number, daysOnZillow?: string) => {
+    public getDeals = async (regionSelection: RegionSelection[], distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, daysOnZillow?: string) => {
+        const regionInfo: RegionInfo = await this.getRegionData(regionSelection);
         const soldZillowFilter = this.zillowHandler.constructZillowFilter(soldMinPrice, soldMaxPrice, daysOnZillow);
         const forSaleZillowFilter = this.zillowHandler.constructZillowFilter(undefined, undefined, daysOnZillow);
-        const forSaleZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(zillowSearchUrl, forSaleZillowFilter, true);
-        const soldZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(zillowSearchUrl, soldZillowFilter, false);
+        const forSaleZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(regionInfo, forSaleZillowFilter, true);
+        const soldZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(regionInfo, soldZillowFilter, false);
         const forSaleHouseResults = await this.getHousesData(forSaleZillowSearchUrl);
         const soldHouseResults = await this.getHousesData(soldZillowSearchUrl);
         const deals = await this.dealsFinder.findDeals(soldHouseResults, forSaleHouseResults, distance, profit);
@@ -37,6 +39,12 @@ export default class DealsFinder {
             }
         }));
         return deals;
+    }
+
+    private getRegionData = async (regionSelection: RegionSelection[]) => {
+        const regionZillowSearchUrl = this.zillowHandler.constructZillowRegionUrlQuery(regionSelection);
+        const results = await this.dataFetcher.tryFetch(regionZillowSearchUrl, this.extractRegionData, 25);
+        return results;
     }
 
     private getHousesData = async (zillowSearchUrl: string) => {
@@ -89,6 +97,15 @@ export default class DealsFinder {
                 houses.push(house);
             }
             return houses;
+        } catch (error) {
+            return null;
+        }
+    }
+
+    private extractRegionData = (data: any) => {
+        try {
+            const parsedData: any = data;
+            return data;
         } catch (error) {
             return null;
         }
