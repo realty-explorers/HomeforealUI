@@ -21,8 +21,8 @@ export default class DealsFinder {
         this.zillowHandler = new zillowHandler();
     }
 
-    public getDeals = async (regionSelection: RegionSelection[], distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, daysOnZillow?: string) => {
-        const regionInfo: RegionInfo = await this.getRegionData(regionSelection);
+    public getDeals = async (regionId: number, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, daysOnZillow?: string) => {
+        const regionInfo: RegionInfo = await this.getRegionData(regionId);
         const soldZillowFilter = this.zillowHandler.constructZillowFilter(soldMinPrice, soldMaxPrice, daysOnZillow);
         const forSaleZillowFilter = this.zillowHandler.constructZillowFilter(undefined, undefined, daysOnZillow);
         const forSaleZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(regionInfo, forSaleZillowFilter, true);
@@ -41,8 +41,8 @@ export default class DealsFinder {
         return deals;
     }
 
-    private getRegionData = async (regionSelection: RegionSelection[]) => {
-        const regionZillowSearchUrl = this.zillowHandler.constructZillowRegionUrlQuery(regionSelection);
+    private getRegionData = async (regionId: number) => {
+        const regionZillowSearchUrl = this.zillowHandler.constructZillowRegionUrlQuery(regionId);
         const results = await this.dataFetcher.tryFetch(regionZillowSearchUrl, this.extractRegionData, 25);
         return results;
     }

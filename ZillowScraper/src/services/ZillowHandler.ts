@@ -31,9 +31,10 @@ export default class ZillowHandler {
         return requestQuery;
     }
 
-    public constructZillowRegionUrlQuery = (regionSelection: RegionSelection[]) => {
+    public constructZillowRegionUrlQuery = (regionId: number) => {
         let query: any = {};
-        const zillowRegionQuery = this.generateZillowRegionQuery(regionSelection);
+        const regionSelection = { regionId } as RegionSelection;
+        const zillowRegionQuery = this.generateZillowRegionQuery([regionSelection]);
         query['searchQueryState'] = JSON.stringify(zillowRegionQuery);
         query['wants'] = JSON.stringify(this.constructZillowRequestQueryParameters());
         const modifiedUrl = queryParser.stringifyUrl({ url: this.rootUrl, query });

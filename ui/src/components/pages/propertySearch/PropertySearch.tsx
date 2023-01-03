@@ -19,8 +19,15 @@ import './PropertySearch.scss';
 import NumericFields from './NumericFields';
 import { findDeals } from '../../../api/deals_api';
 import Deal from '../../../models/deal';
-import { Control, Controller, useForm, UseFormRegister } from 'react-hook-form';
+import {
+	Control,
+	Controller,
+	useForm,
+	UseFormRegister,
+	UseFormSetValue,
+} from 'react-hook-form';
 import TextInput from '../../form/TextInput';
+import AutocompleteInput from '../../form/AutocompleteInput';
 
 const theme = createTheme();
 
@@ -28,6 +35,7 @@ type PropertySearchProps = {
 	setProperties: (properties: Deal[]) => Promise<void>;
 	handleSubmit: any;
 	control: Control<any, any>;
+	setValue: UseFormSetValue<any>;
 	loading: boolean;
 	setLoading: (loading: boolean) => void;
 };
@@ -70,17 +78,9 @@ const PropertySearch: React.FC<PropertySearchProps> = (
 							spacing={2}
 							className="search-text-fields">
 							<Grid item xs={12}>
-								<TextInput
+								<AutocompleteInput
 									control={props.control}
-									inputProps={{
-										title: 'Zillow URL',
-										name: 'zillowUrl',
-									}}
-								/>
-							</Grid>
-							<Grid item xs={12}>
-								<TextInput
-									control={props.control}
+									setValue={props.setValue}
 									inputProps={{
 										title: 'Location (state, city, neighborhood, zip)',
 										name: 'location',
@@ -88,7 +88,10 @@ const PropertySearch: React.FC<PropertySearchProps> = (
 								/>
 							</Grid>
 						</Grid>
-						<NumericFields control={props.control} />
+						<NumericFields
+							control={props.control}
+							setValue={props.setValue}
+						/>
 						<LoadingButton
 							loading={props.loading}
 							loadingPosition="end"

@@ -1,6 +1,7 @@
 import { Grid, Input, Slider, Typography } from '@mui/material';
 import React, { useState } from 'react';
-import { Control, UseFormRegister } from 'react-hook-form';
+import { Control, UseFormRegister, UseFormSetValue } from 'react-hook-form';
+import DynamicNumericInput from '../../form/DynamicNumericInput';
 import { InputProps } from '../../form/formTypes';
 import NumericInput from '../../form/NumericInput';
 import RangeInput from '../../form/RangeInput';
@@ -58,18 +59,28 @@ const searchNumericValues: InputProps[] = [
 			position: 'end',
 		},
 	},
-	{
-		title: 'Age',
-		name: 'age',
-		min: 0,
-		max: 120,
-		step: 1,
-		format: ageFormatter,
-	},
+	// {
+	// 	title: 'Age',
+	// 	name: 'age',
+	// 	min: 0,
+	// 	max: 120,
+	// 	step: 1,
+	// 	format: ageFormatter,
+	// },
 ];
+
+const ageInputProps = {
+	title: 'Sold in last',
+	name: 'age',
+	min: 0,
+	max: 8,
+	step: 1,
+	format: ageFormatter,
+};
 
 export type NumericFieldsProps = {
 	control: Control<any, any>;
+	setValue: UseFormSetValue<any>;
 };
 
 const NumericFields: React.FC<NumericFieldsProps> = (
@@ -94,6 +105,11 @@ const NumericFields: React.FC<NumericFieldsProps> = (
 					/>
 				)
 			)}
+			<DynamicNumericInput
+				inputProps={ageInputProps}
+				control={props.control}
+				setValue={props.setValue}
+			/>
 		</React.Fragment>
 	);
 };
