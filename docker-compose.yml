@@ -14,7 +14,7 @@ services:
     depends_on:
       - "rabbit"
   ui:
-    image: "ghcr.io/sharonfabin/ui-service"
+    image: "ghcr.io/sharonfabin/ui"
     ports:
       - "81:80"
     env_file:

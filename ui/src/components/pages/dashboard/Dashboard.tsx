@@ -38,7 +38,7 @@ type Inputs = {
 	arv: number;
 	underComps: number;
 	radius: number;
-	age: string;
+	age: number;
 	price: number[];
 };
 
@@ -90,13 +90,24 @@ const Dashboard: React.FC = (props: any) => {
 				minARV: data.price[0],
 				radius: data.radius,
 			});
+			const ageIndex: { [index: number]: string } = {
+				0: '1d',
+				1: '7d',
+				2: '14d',
+				3: '30d',
+				4: '90d',
+				5: '6m',
+				6: '12m',
+				7: '24m',
+				8: '36m',
+			};
 			const response = await findDeals(
 				data.location.metaData.regionId,
 				data.radius,
 				data.underComps,
 				data.price[0],
 				data.price[1],
-				'6m'
+				ageIndex[data.age]
 			);
 			if (response.status === 200) {
 				setDeals(response.data);
