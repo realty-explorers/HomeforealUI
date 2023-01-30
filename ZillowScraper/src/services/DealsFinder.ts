@@ -43,6 +43,7 @@ export default class DealsFinder {
 
     private getRegionData = async (regionId: number) => {
         const regionZillowSearchUrl = this.zillowHandler.constructZillowRegionUrlQuery(regionId);
+        console.log(regionZillowSearchUrl);
         const results = await this.dataFetcher.tryFetch(regionZillowSearchUrl, this.extractRegionData, 25);
         return results;
     }

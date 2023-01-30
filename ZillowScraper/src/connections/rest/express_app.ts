@@ -38,7 +38,8 @@ class App {
 				{
 					// origin: '*',
 					origin: [
-						'http://146.190.12.154',
+						'http://139.59.204.186',
+						'http://homeforeal.com',
 						'http://localhost',
 						'http://localhost:3000',
 					],
