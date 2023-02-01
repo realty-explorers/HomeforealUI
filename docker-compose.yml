@@ -14,7 +14,7 @@ services:
     depends_on:
       - "rabbit"
     volumes:
-      - ./certbot/conf/:/etc/nginx/ssl/:ro
+      - ./security/certbot/conf/:/etc/nginx/ssl/:ro
   ui:
     image: "ghcr.io/sharonfabin/ui"
     ports:
@@ -31,10 +31,10 @@ services:
     restart: always
     volumes:
       - ./nginx/conf/:/etc/nginx/conf.d:ro
-      - ./certbot/www:/var/www/certbot/:ro
-      - ./certbot/conf/:/etc/nginx/ssl/:ro
+      - ./security/certbot/www:/var/www/certbot/:ro
+      - ./security/certbot/conf/:/etc/nginx/ssl/:ro
   certbot:
     image: certbot/certbot:latest
     volumes:
-      - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
+      - ./security/certbot/www/:/var/www/certbot/:rw
+      - ./security/certbot/conf/:/etc/letsencrypt/:rw
