@@ -24,7 +24,7 @@ services:
     depends_on:
       - "deals"
   nginx:
-    image: "ghcr.io/sharonfabin/nginx"
+    image: "nginx:latest"
     ports:
       - "80:80"
       - "443:443"
