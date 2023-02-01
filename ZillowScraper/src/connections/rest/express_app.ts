@@ -1,7 +1,8 @@
 import express from 'express';
 import cors from 'cors';
-import { Server } from 'http';
+import { Server, createServer } from 'https';
 import router from '../../api';
+import * as fs from 'fs';
 
 class App {
 	public app: express.Application;
@@ -19,9 +20,16 @@ class App {
 	}
 
 	public startServer(port: string) {
-		this.server = this.app.listen(port, () => {
+		const privateKey = fs.readFileSync(process.env.CERTIFICATE_KEY_PATH!, 'utf8');
+		const certificate = fs.readFileSync(process.env.CERTIFICATE_CERT_PATH!, 'utf8');
+		const credentials = { key: privateKey, cert: certificate, port };
+		this.server = createServer(credentials, this.app);
+		this.server.listen(port, () => {
 			console.log(`App listening on the port ${port}`);
 		});
+		// this.server = createServer(this.app.listen(port, () => {
+		// 	console.log(`App listening on the port ${port}`);
+		// });
 	}
 
 	public stopServer() {
@@ -38,10 +46,9 @@ class App {
 				{
 					// origin: '*',
 					origin: [
-						'http://139.59.204.186',
-						'http://homeforeal.com',
-						'http://localhost',
-						'http://localhost:3000',
+						`https://${process.env.HOST}`,
+						'https://localhost',
+						'https://localhost:3000',
 					],
 					credentials: true,
 				}

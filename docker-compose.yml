@@ -13,6 +13,8 @@ services:
       - deals.env
     depends_on:
       - "rabbit"
+    volumes:
+      - ./certbot/conf/:/etc/nginx/ssl/:ro
   ui:
     image: "ghcr.io/sharonfabin/ui"
     ports:
