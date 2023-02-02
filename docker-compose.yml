@@ -13,6 +13,8 @@ services:
       - deals.env
     depends_on:
       - "rabbit"
+    volumes:
+      - ./security/certbot/conf/:/etc/nginx/ssl/:ro
   ui:
     image: "ghcr.io/sharonfabin/ui"
     ports:
@@ -22,19 +24,17 @@ services:
     depends_on:
       - "deals"
   nginx:
-    image: "ghcr.io/sharonfabin/nginx"
+    image: "nginx:latest"
     ports:
       - "80:80"
       - "443:443"
     restart: always
     volumes:
       - ./nginx/conf/:/etc/nginx/conf.d:ro
-      - ./certbot/www:/var/www/certbot/:ro
-      - ./certbot/conf/:/etc/nginx/ssl/:ro
-    depends_on:
-      - "ui"
+      - ./security/certbot/www:/var/www/certbot/:ro
+      - ./security/certbot/conf/:/etc/nginx/ssl/:ro
   certbot:
     image: certbot/certbot:latest
     volumes:
-      - ./certbot/www/:/var/www/certbot/:rw
-      - ./certbot/conf/:/etc/letsencrypt/:rw
+      - ./security/certbot/www/:/var/www/certbot/:rw
+      - ./security/certbot/conf/:/etc/letsencrypt/:rw
