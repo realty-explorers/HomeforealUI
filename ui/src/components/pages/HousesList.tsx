@@ -70,8 +70,14 @@ const HousesList: React.FC<HouseListProps> = (props: HouseListProps) => {
 	const handleShowOnMap = (deal: Deal) => {
 		props.setSelectedDeal(deal);
 	};
-	const handleLinkClicked = (link: string) => {
-		window.open(link, '_blank', 'noopener,noreferrer');
+
+	const constructGoogleSearchUrl = (address: string) => {
+		const url = `https://www.google.com/search?q=${address}`;
+		return url;
+	};
+	const handleLinkClicked = (address: string) => {
+		const url = constructGoogleSearchUrl(address);
+		window.open(url, '_blank', 'noopener,noreferrer');
 	};
 
 	return (
@@ -111,14 +117,17 @@ const HousesList: React.FC<HouseListProps> = (props: HouseListProps) => {
 							<LinkOutlined
 								title="Go to link"
 								onClick={() =>
-									handleLinkClicked(deal.house.detailUrl)
+									handleLinkClicked(deal.house.address)
 								}
 							/>,
 						]}>
 						<Meta
 							avatar={<Avatar src={zillowIcon} />}
 							title={
-								<a href={deal.house.detailUrl}>
+								<a
+									href={constructGoogleSearchUrl(
+										deal.house.address
+									)}>
 									{deal.house.address}
 								</a>
 							}
