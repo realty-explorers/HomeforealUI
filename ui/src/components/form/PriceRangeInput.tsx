@@ -30,7 +30,7 @@ export type DynamicRangeInputProps = {
 const DynamicRangeInput: React.FC<DynamicRangeInputProps> = (
 	props: DynamicRangeInputProps
 ) => {
-	const [value, setValue] = React.useState<[number, number]>([1, 1000]);
+	const [value, setValue] = React.useState<[number, number]>([0, 19]);
 
 	const handleChange = (event: Event, newValue: number | number[]) => {
 		const valueRange = newValue as [number, number];
