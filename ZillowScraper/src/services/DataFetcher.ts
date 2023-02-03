@@ -1,4 +1,5 @@
 import axios, { AxiosProxyConfig } from 'axios'
+import { response } from 'express';
 import * as randomUserAgent from 'random-useragent'
 import httpProxyList from '../http_proxies.json';
 
@@ -43,17 +44,18 @@ export default class DataFetcher {
                 },
                 // proxy: this.proxy
             })
+            console.log('finished fetching');
             return response;
         } catch (error) {
-
+            console.log(error);
         }
         return null;
     }
 
-    private alterRequest = (tries: number) => {
+    private alterRequest = () => {
         this.userAgent = randomUserAgent.getRandom();
         this.proxy = this.randomizeProxy();
-        console.log(`Trying to fetch data, attempt ${tries}, agent: ${this.userAgent}`);
+        console.log(`Using agent: ${this.userAgent}`);
     }
 
     private randomizeProxy = () => {
@@ -66,21 +68,20 @@ export default class DataFetcher {
         }
     }
 
-    public tryFetch = async (url: string, extractData: (data: any) => any, maxTries?: number) => {
-        let data: any = null;
-        let finishedFetching = false;
+    public tryFetch = async (url: string, validateData: (data: any) => boolean, maxTries?: number) => {
         let tries = 0;
-        while (!finishedFetching) {
-            console.log(`fetch ${tries}`);
+        maxTries = maxTries ? maxTries : 100;
+        while (tries < maxTries) {
+            console.log(`fetching #${tries}`);
             tries++;
             const response = await this.makeRequest(url);
             if (response) {
-                data = extractData(response.data);
-                if (data || tries === maxTries) break;
+                const validData = validateData(response.data);
+                if (validData) return response.data;
             }
-            this.alterRequest(tries);
+            this.alterRequest();
         }
-        return data;
+        return null;
     }
 
 }

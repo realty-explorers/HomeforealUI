@@ -27,7 +27,7 @@ export default class ZillowHandler {
     }
 
     private constructZillowRequestQueryParameters = () => {
-        const requestQuery = { "cat1": ["listResults", "mapResults"] };
+        const requestQuery = { "cat1": ["listResults"] };
         return requestQuery;
     }
 
@@ -46,9 +46,7 @@ export default class ZillowHandler {
         const defaultPagination = { currentPage: 1 };
         let defaultFilterParameters = this.defaultFilterValues;
         if (!forSale) defaultFilterParameters = { ...defaultFilterParameters, ...this.soldFilterParameters };
-        // zillowQuery.mapBounds = searchQuery.mapBounds;
-        // zillowQuery.regionSelection = searchQuery.regionSelection;
-        console.log(regionInfo);
+        // console.log(regionInfo);
         zillowQuery.mapBounds = regionInfo.regionState.regionBounds;
         zillowQuery.regionSelection = regionInfo.regionState.regionInfo;
         zillowQuery.usersSearchTerm = searchQuery.usersSearchTerm;

@@ -27,8 +27,7 @@ export default class DealsFinder {
         const forSaleZillowFilter = this.zillowHandler.constructZillowFilter(undefined, undefined, daysOnZillow);
         const forSaleZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(regionInfo, forSaleZillowFilter, true);
         const soldZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(regionInfo, soldZillowFilter, false);
-        const forSaleHouseResults = await this.getHousesData(forSaleZillowSearchUrl);
-        const soldHouseResults = await this.getHousesData(soldZillowSearchUrl);
+        const [forSaleHouseResults, soldHouseResults] = await Promise.all([this.getHousesData(forSaleZillowSearchUrl), this.getHousesData(soldZillowSearchUrl)]);
         const deals = await this.dealsFinder.findDeals(soldHouseResults, forSaleHouseResults, distance, profit, propertyMinPrice, propertyMaxPrice);
         saveData(deals, 'deals');
         console.log('finished, deals: \n');
@@ -49,22 +48,33 @@ export default class DealsFinder {
     }
 
     private getHousesData = async (zillowSearchUrl: string) => {
-        console.log(`*** The Zillow Url: ${zillowSearchUrl}`);
-        let page = 1;
         let housesResults: { [id: string]: House } = {};
         let maxPages = this.DEFAULT_MAX_PAGES;
-        while (page <= maxPages) {
-            console.log(`Page: ${page}`);
+        const fetches: Promise<any>[] = [];
+        const urlData = await this.dataFetcher.tryFetch(zillowSearchUrl, this.validateData, 25);
+        if (urlData == null) throw Error('No data found');
+        const listResults = await this.extractData(urlData);
+        const housesData = await this.fillHousesData(listResults);
+        if (housesData.length > 0) maxPages = housesData[0].maxPagination;
+        for (const house of housesData) {
+            housesResults[house.zpid] = house;
+        }
+        console.log(`max page: ${maxPages}`);
+        for (let page = 2; page <= maxPages; page++) {
             const url = this.zillowHandler.paginateZillowUrl(zillowSearchUrl, page);
-            const listResults = await this.dataFetcher.tryFetch(url, this.extractData, 25);
-            if (listResults == null) throw Error('No data found');
-            const housesData = await this.fillHousesData(listResults);
-            if (housesData.length > 0) maxPages = housesData[0].maxPagination;
+            const fetchProcess = this.dataFetcher.tryFetch(url, this.validateData, 25);
+            fetches.push(fetchProcess);
+        }
+        const results = await Promise.all(fetches);
+        for (const result of results) {
+            console.log("meow results");
+            const listResults = await this.extractData(result);
             for (const house of housesData) {
                 housesResults[house.zpid] = house;
             }
-            page++;
+            console.log(listResults?.length);
         }
+
         return Object.values(housesResults);
     }
 
@@ -83,6 +93,15 @@ export default class DealsFinder {
             }
         }
         return houses;
+    }
+
+    private validateData = (data: any) => {
+        try {
+            const parsedData: any = data['cat1']['searchResults']['listResults'];
+            const parsedMetaData: any = data['cat1']['searchList'];
+            return parsedData && parsedMetaData;
+        } catch (error) { }
+        return false;
     }
 
     private extractData = (data: any) => {
