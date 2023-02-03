@@ -49,6 +49,7 @@ export default class DealsFinder {
     }
 
     private getHousesData = async (zillowSearchUrl: string) => {
+        console.log(`*** The Zillow Url: ${zillowSearchUrl}`);
         let page = 1;
         let housesResults: { [id: string]: House } = {};
         let maxPages = this.DEFAULT_MAX_PAGES;
