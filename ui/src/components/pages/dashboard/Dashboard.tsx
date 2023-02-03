@@ -35,11 +35,11 @@ const style = {
 
 type Inputs = {
 	location: LocationSuggestion;
-	arv: number;
+	arv: number[];
+	price: number[];
 	underComps: number;
 	radius: number;
 	age: number;
-	price: number[];
 };
 
 const Dashboard: React.FC = (props: any) => {
@@ -105,6 +105,8 @@ const Dashboard: React.FC = (props: any) => {
 				data.location.metaData.regionId,
 				data.radius,
 				data.underComps,
+				data.arv[0],
+				data.arv[1],
 				data.price[0],
 				data.price[1],
 				ageIndex[data.age]

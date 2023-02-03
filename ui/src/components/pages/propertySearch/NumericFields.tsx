@@ -2,10 +2,11 @@ import { Grid, Input, Slider, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { Control, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import DynamicNumericInput from '../../form/DynamicNumericInput';
-import DynamicRangeInput from '../../form/DynamicRangeInput';
+import DynamicRangeInput from '../../form/PriceRangeInput';
 import { InputProps } from '../../form/formTypes';
 import NumericInput from '../../form/NumericInput';
 import RangeInput from '../../form/RangeInput';
+import ArvInput from '../../form/ArvInput';
 
 const priceFormatter = (value: number) =>
 	`$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
@@ -14,18 +15,6 @@ const distanceFormatter = (value: number) => `${value} Miles`;
 const ageFormatter = (value: number) => `${value} days`;
 
 const searchNumericValues: InputProps[] = [
-	{
-		title: 'Arv',
-		name: 'arv',
-		min: 0,
-		max: 10000000,
-		step: 100000,
-		format: priceFormatter,
-		abbreviation: {
-			text: '$',
-			position: 'start',
-		},
-	},
 	{
 		title: 'UnderComps',
 		name: 'underComps',
@@ -60,6 +49,12 @@ const searchNumericValues: InputProps[] = [
 	// },
 ];
 
+const arvInputProps = {
+	title: 'Arv',
+	name: 'arv',
+	format: priceFormatter,
+};
+
 const priceInputProps = {
 	title: 'Price',
 	name: 'price',
@@ -85,6 +80,13 @@ const NumericFields: React.FC<NumericFieldsProps> = (
 ) => {
 	return (
 		<React.Fragment>
+			<ArvInput inputProps={arvInputProps} setValue={props.setValue} />
+
+			<DynamicRangeInput
+				inputProps={priceInputProps}
+				setValue={props.setValue}
+			/>
+
 			{searchNumericValues.map(
 				(valueProps: InputProps, index: number) => (
 					<NumericInput
@@ -93,11 +95,6 @@ const NumericFields: React.FC<NumericFieldsProps> = (
 					/>
 				)
 			)}
-
-			<DynamicRangeInput
-				inputProps={priceInputProps}
-				setValue={props.setValue}
-			/>
 
 			<DynamicNumericInput
 				inputProps={ageInputProps}
