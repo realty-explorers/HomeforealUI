@@ -14,8 +14,17 @@ export default class LocationService {
 
     public getLocationSuggestions = async (searchTerm: string) => {
         const url = `${this.SUGGESTION_SERVICE_URL}${searchTerm}`;
-        const suggestions = await this.dataFetcher.tryFetch(url, this.extractData);
+        const urlData = await this.dataFetcher.tryFetch(url, this.validateData);
+        const suggestions = await this.extractData(urlData);
         return suggestions;
+    }
+
+    private validateData = (data: any) => {
+        try {
+            const locationSuggestions: any = data['results'];
+            return locationSuggestions !== undefined;
+        } catch (error) { }
+        return false;
     }
 
     private extractData = (data: any) => {
