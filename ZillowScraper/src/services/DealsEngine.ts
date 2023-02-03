@@ -27,7 +27,6 @@ export default class DealsEngine {
         for (const forSaleHouse of forSaleHouses) {
             const validMinPrice = propertyMinPrice && forSaleHouse.price >= propertyMinPrice;
             const validMaxPrice = propertyMaxPrice && propertyMaxPrice !== 0 && forSaleHouse.price <= propertyMaxPrice;
-            console.log(propertyMinPrice);
             if (propertyMinPrice && !validMinPrice || propertyMaxPrice && !validMaxPrice) continue;
 
             const houseAreaPrice = forSaleHouse.price / forSaleHouse.area;

@@ -19,12 +19,6 @@ export default class DealsController {
 		try {
 			const { regionId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, daysOnZillow } = req.body;
 			console.log(req.body);
-			// const zillowSearchUrl = req.query['zillowSearchUrl'] as string;
-			// const distance = parseInt(req.query['distance'] as string);
-			// const profit = parseInt(req.query['profit'] as string);
-			// const soldMinPrice = parseInt(req.query['soldMinPrice'] as string);
-			// const soldMaxPrice = parseInt(req.query['soldMaxPrice'] as string);
-			// const daysOnZillow = req.query['daysOnZillow'] as string;
 			const response = await this.dealsService.getDeals(regionId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, daysOnZillow);
 			res.json(response);
 		} catch (error: any) {

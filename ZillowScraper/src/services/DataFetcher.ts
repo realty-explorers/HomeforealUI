@@ -71,6 +71,7 @@ export default class DataFetcher {
         let finishedFetching = false;
         let tries = 0;
         while (!finishedFetching) {
+            console.log(`fetch ${tries}`);
             tries++;
             const response = await this.makeRequest(url);
             if (response) {
