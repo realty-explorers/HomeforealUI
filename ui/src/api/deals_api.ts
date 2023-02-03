@@ -9,6 +9,7 @@ const findDeals = async (regionId: number, distance: number, profit: number, sol
 		headers: {
 			'Access-Control-Allow-Origin': '*'
 		},
+		timeout: 120000
 	});
 };
 

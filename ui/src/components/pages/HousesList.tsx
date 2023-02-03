@@ -10,7 +10,7 @@ import { Avatar, List, Space, Image, Statistic, Card } from 'antd';
 import { Row, Col } from 'react-bootstrap';
 import React, { useState, useEffect } from 'react';
 import { exportMap } from '../../utils/MapUtils';
-import zillowIcon from '../../resources/zillow-icon.svg';
+import houseIcon from '../../resources/house.png';
 import './HousesList.scss';
 import { findDeals } from '../../api/deals_api';
 import { setDefaultResultOrder } from 'dns/promises';
@@ -21,7 +21,7 @@ const { Meta } = Card;
 const data = Array.from({ length: 23 }).map((_, i) => ({
 	href: 'https://ant.design',
 	title: `412 Berry Ave, Homewood, AL 35209`,
-	avatar: zillowIcon,
+	avatar: houseIcon,
 	profit: 0,
 	avr: 800000,
 	price: 1200000,
@@ -122,7 +122,7 @@ const HousesList: React.FC<HouseListProps> = (props: HouseListProps) => {
 							/>,
 						]}>
 						<Meta
-							avatar={<Avatar src={zillowIcon} />}
+							avatar={<Avatar src={houseIcon} />}
 							title={
 								<a
 									href={constructGoogleSearchUrl(
