@@ -1,12 +1,13 @@
 import express from 'express';
 import cors from 'cors';
-import { Server, createServer } from 'https';
+import * as https from 'https';
+import * as http from 'http';
 import router from '../../api';
 import * as fs from 'fs';
 
 class App {
 	public app: express.Application;
-	private server: Server | undefined;
+	private server: https.Server | http.Server | undefined;
 
 	constructor(
 		app: express.Application,
@@ -20,16 +21,14 @@ class App {
 	}
 
 	public startServer(port: string) {
-		const privateKey = fs.readFileSync(process.env.CERTIFICATE_KEY_PATH!, 'utf8');
-		const certificate = fs.readFileSync(process.env.CERTIFICATE_CERT_PATH!, 'utf8');
-		const credentials = { key: privateKey, cert: certificate, port };
-		this.server = createServer(credentials, this.app);
+		// const privateKey = fs.readFileSync(process.env.CERTIFICATE_KEY_PATH!, 'utf8');
+		// const certificate = fs.readFileSync(process.env.CERTIFICATE_CERT_PATH!, 'utf8');
+		// const credentials = { key: privateKey, cert: certificate, port };
+		// this.server = https.createServer(credentials, this.app);
+		this.server = http.createServer(this.app);
 		this.server.listen(port, () => {
 			console.log(`App listening on the port ${port}`);
 		});
-		// this.server = createServer(this.app.listen(port, () => {
-		// 	console.log(`App listening on the port ${port}`);
-		// });
 	}
 
 	public stopServer() {
@@ -49,6 +48,8 @@ class App {
 						`https://${process.env.HOST}`,
 						'https://localhost',
 						'https://localhost:3000',
+						'http://localhost:3000',
+						'http://localhost:'
 					],
 					credentials: true,
 				}
