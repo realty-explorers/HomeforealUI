@@ -23,14 +23,12 @@ const calculateValue = (value: number) => {
 	return price;
 };
 
-export type DynamicRangeInputProps = {
+export type ArvInputProps = {
 	inputProps: InputProps;
 	setValue: UseFormSetValue<any>;
 };
-const DynamicRangeInput: React.FC<DynamicRangeInputProps> = (
-	props: DynamicRangeInputProps
-) => {
-	const [value, setValue] = React.useState<[number, number]>([1, 1000]);
+const ArvInput: React.FC<ArvInputProps> = (props: ArvInputProps) => {
+	const [value, setValue] = React.useState<[number, number]>([0, 19]);
 
 	const handleChange = (event: Event, newValue: number | number[]) => {
 		const valueRange = newValue as [number, number];
@@ -67,4 +65,4 @@ const DynamicRangeInput: React.FC<DynamicRangeInputProps> = (
 	);
 };
 
-export default DynamicRangeInput;
+export default ArvInput;

@@ -22,9 +22,14 @@ export default class DealsEngine {
         return d; // returns the distance in meter
     };
 
-    public findDeals = async (soldHouses: House[], forSaleHouses: House[], maxDistance: number, minProfit: number) => {
+    public findDeals = async (soldHouses: House[], forSaleHouses: House[], maxDistance: number, minProfit: number, propertyMinPrice?: number, propertyMaxPrice?: number) => {
         const deals: { profit: number, distance: number, house: House, relevantSoldHouses: House[] }[] = [];
         for (const forSaleHouse of forSaleHouses) {
+            const validMinPrice = propertyMinPrice && forSaleHouse.price >= propertyMinPrice;
+            const validMaxPrice = propertyMaxPrice && propertyMaxPrice !== 0 && forSaleHouse.price <= propertyMaxPrice;
+            console.log(propertyMinPrice);
+            if (propertyMinPrice && !validMinPrice || propertyMaxPrice && !validMaxPrice) continue;
+
             const houseAreaPrice = forSaleHouse.price / forSaleHouse.area;
             let soldHousesPriceSum = 0
             let soldHousesCount = 0

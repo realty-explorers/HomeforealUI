@@ -21,7 +21,7 @@ export default class DealsFinder {
         this.zillowHandler = new zillowHandler();
     }
 
-    public getDeals = async (regionId: number, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, daysOnZillow?: string) => {
+    public getDeals = async (regionId: number, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, daysOnZillow?: string) => {
         const regionInfo: RegionInfo = await this.getRegionData(regionId);
         const soldZillowFilter = this.zillowHandler.constructZillowFilter(soldMinPrice, soldMaxPrice, daysOnZillow);
         const forSaleZillowFilter = this.zillowHandler.constructZillowFilter(undefined, undefined, daysOnZillow);
@@ -29,7 +29,7 @@ export default class DealsFinder {
         const soldZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(regionInfo, soldZillowFilter, false);
         const forSaleHouseResults = await this.getHousesData(forSaleZillowSearchUrl);
         const soldHouseResults = await this.getHousesData(soldZillowSearchUrl);
-        const deals = await this.dealsFinder.findDeals(soldHouseResults, forSaleHouseResults, distance, profit);
+        const deals = await this.dealsFinder.findDeals(soldHouseResults, forSaleHouseResults, distance, profit, propertyMinPrice, propertyMaxPrice);
         saveData(deals, 'deals');
         console.log('finished, deals: \n');
         console.log(deals.map(deal => {

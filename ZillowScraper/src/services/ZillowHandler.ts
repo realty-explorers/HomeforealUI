@@ -48,6 +48,7 @@ export default class ZillowHandler {
         if (!forSale) defaultFilterParameters = { ...defaultFilterParameters, ...this.soldFilterParameters };
         // zillowQuery.mapBounds = searchQuery.mapBounds;
         // zillowQuery.regionSelection = searchQuery.regionSelection;
+        console.log(regionInfo);
         zillowQuery.mapBounds = regionInfo.regionState.regionBounds;
         zillowQuery.regionSelection = regionInfo.regionState.regionInfo;
         zillowQuery.usersSearchTerm = searchQuery.usersSearchTerm;
