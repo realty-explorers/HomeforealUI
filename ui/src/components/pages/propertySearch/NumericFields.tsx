@@ -2,6 +2,7 @@ import { Grid, Input, Slider, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { Control, UseFormRegister, UseFormSetValue } from 'react-hook-form';
 import DynamicNumericInput from '../../form/DynamicNumericInput';
+import DynamicRangeInput from '../../form/DynamicRangeInput';
 import { InputProps } from '../../form/formTypes';
 import NumericInput from '../../form/NumericInput';
 import RangeInput from '../../form/RangeInput';
@@ -12,16 +13,6 @@ const percentFormatter = (value: number) => `%${value}`;
 const distanceFormatter = (value: number) => `${value} Miles`;
 const ageFormatter = (value: number) => `${value} days`;
 
-const searchRangeNumericValues = [
-	{
-		title: 'Price',
-		name: 'price',
-		min: 0,
-		max: 10000000,
-		step: 100000,
-		format: priceFormatter,
-	},
-];
 const searchNumericValues: InputProps[] = [
 	{
 		title: 'Arv',
@@ -69,6 +60,12 @@ const searchNumericValues: InputProps[] = [
 	// },
 ];
 
+const priceInputProps = {
+	title: 'Price',
+	name: 'price',
+	format: priceFormatter,
+};
+
 const ageInputProps = {
 	title: 'Sold in last',
 	name: 'age',
@@ -97,14 +94,11 @@ const NumericFields: React.FC<NumericFieldsProps> = (
 				)
 			)}
 
-			{searchRangeNumericValues.map(
-				(valueProps: InputProps, index: number) => (
-					<RangeInput
-						inputProps={valueProps}
-						control={props.control}
-					/>
-				)
-			)}
+			<DynamicRangeInput
+				inputProps={priceInputProps}
+				setValue={props.setValue}
+			/>
+
 			<DynamicNumericInput
 				inputProps={ageInputProps}
 				control={props.control}

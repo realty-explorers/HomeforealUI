@@ -78,9 +78,9 @@ export default class ZillowHandler {
             },
             price: {
                 min: minPrice,
-                max: maxPrice
             },
         } as ZillowFilter;
+        if (maxPrice && maxPrice !== 0) zillowFilter.price.max = maxPrice;
         return zillowFilter;
     }
 
