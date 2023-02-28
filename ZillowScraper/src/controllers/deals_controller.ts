@@ -11,7 +11,7 @@ export default class DealsController {
 		this.dealsService = new DealsService();
 	}
 
-	public findDeals = async (
+	public findNewDeals = async (
 		req: Request,
 		res: Response,
 		next: NextFunction
@@ -19,7 +19,7 @@ export default class DealsController {
 		try {
 			const { regionId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, daysOnZillow } = req.body;
 			console.log(req.body);
-			const response = await this.dealsService.getDeals(regionId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, daysOnZillow);
+			const response = await this.dealsService.findNewDeals(regionId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, daysOnZillow);
 			res.json(response);
 		} catch (error: any) {
 			console.log(error);
@@ -27,5 +27,40 @@ export default class DealsController {
 			// res.send();
 		}
 	};
+
+	public findAllProperties = async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
+		try {
+			const { regionId } = req.body;
+			console.log(req.body);
+			const response = await this.dealsService.findProperties(regionId);
+			res.json(response);
+		} catch (error: any) {
+			console.log(error);
+			res.status(500).send({ error: error.message });
+			// res.send();
+		}
+	};
+
+	public findDeals = async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
+		try {
+			const { distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, forSaleAge, soldAge } = req.body;
+			console.log(req.body);
+			const response = await this.dealsService.findDeals(distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, forSaleAge, soldAge);
+			res.json(response);
+		} catch (error: any) {
+			console.log(error);
+			res.status(500).send({ error: error.message });
+			// res.send();
+		}
+	};
+
 
 }

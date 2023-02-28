@@ -27,14 +27,16 @@ const SearchInputWrapper = styled(TextField)(
 
 type AutocompleteInputProps = {
   // setValue: UseFormSetValue<any>;
+  setLocation: (location: LocationSuggestion) => void;
+  location: LocationSuggestion;
 };
 const AutocompleteInput: React.FC<AutocompleteInputProps> = (
   props: AutocompleteInputProps
 ) => {
-  const [suggestionValue, setSuggestionValue] =
-    React.useState<LocationSuggestion | null>(null);
+  // const [suggestionValue, setSuggestionValue] =
+  React.useState<LocationSuggestion | null>(null);
   const [options, setOptions] = React.useState<LocationSuggestion[]>([]);
-  const { searchData, setSearchData } = useContext(SearchContext);
+  // const { searchData, setSearchData } = useContext(SearchContext);
 
   const fetch = useMemo(
     () =>
@@ -48,20 +50,19 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
   return (
     <Autocomplete
       freeSolo
-      value={suggestionValue}
+      value={props.location}
       filterOptions={(x) => x}
       onChange={(event: any, newValue: LocationSuggestion | null) => {
         setOptions(newValue ? [newValue, ...options] : options);
-        setSuggestionValue(newValue);
-        const newData = { ...searchData };
-        newData['location'] = newValue;
-        setSearchData(newData);
+        // setSuggestionValue(newValue);
+        // const newData = { ...searchData };
+        // newData['location'] = newValue;
+        // setSearchData(newData);
+        props.setLocation(newValue);
         // props.setValue('location', newValue);
       }}
       options={options}
-      getOptionLabel={(option) =>
-        typeof option === 'string' ? option : option.display
-      }
+      getOptionLabel={(option?: LocationSuggestion) => option.display ?? ''}
       onInputChange={(event, newInputValue) => {
         fetch(newInputValue);
       }}
@@ -79,7 +80,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
           label="Location"
           autoFocus
           fullWidth
-          value={suggestionValue?.display}
+          value={props.location?.display}
         />
       )}
       renderOption={(props, option) => {
@@ -94,7 +95,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
                 sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}
               >
                 <Typography variant="body2" color="text.secondary">
-                  {option.display}
+                  {option?.display}
                 </Typography>
               </Grid>
             </Grid>

@@ -1,6 +1,6 @@
 import Deal from '@/models/deal';
 import { Grid, styled, Pagination, Grow } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import PropertyCard from './PropertyCard';
 
@@ -13,31 +13,51 @@ const CardsPagination = styled(Pagination)(
 `
 );
 
+const PropertyGrid = styled(Grid)(
+  ({ theme }) => `
+  .selected-card: {
+    background-color: black
+  }
+`
+);
+
 const transitionDuration = 300;
 
 type PropertiesProps = {
   deals: Deal[];
+  selectedDeal: Deal;
   setSelectedDeal: (deal: Deal) => void;
 };
 const Properties: React.FC<PropertiesProps> = (props: PropertiesProps) => {
-  //0 1 2 3 4 5
-  //0 1 1 1 1 2
-  //0 0 0 0 1 1
   const [perPage, setPerPage] = useState<number>(4);
   const [page, setPage] = useState<number>(1);
-  const [transitionDone, setTransitionDone] = useState<boolean>(true);
+  const [transitionDone, setTransitionDone] = useState<boolean>(false);
+
+  useEffect(() => {
+    triggerAnimation(1);
+    setPage(1);
+  }, [props.deals]);
 
   const pagesCount = () => {
     if (props.deals.length <= 1) return props.deals.length;
     return Math.floor((props.deals.length - 1) / perPage + 1);
   };
 
-  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+  const triggerAnimation = (newPage: number) => {
     setTransitionDone(false);
     setTimeout(() => {
       setTransitionDone(true);
-      setPage(value);
+      setPage(newPage);
     }, transitionDuration);
+  };
+
+  const handleChange = (event: React.ChangeEvent<unknown>, value: number) => {
+    triggerAnimation(value);
+    // setTransitionDone(false);
+    // setTimeout(() => {
+    //   setTransitionDone(true);
+    //   setPage(value);
+    // }, transitionDuration);
   };
 
   return (
@@ -45,7 +65,7 @@ const Properties: React.FC<PropertiesProps> = (props: PropertiesProps) => {
       <Grid container>
         <Grow
           in={transitionDone}
-          style={{ transformOrigin: '0 0 0' }}
+          // style={{ transformOrigin: '0 0 0' }}
           timeout={transitionDuration}
         >
           <Grid container spacing={3}>
@@ -53,18 +73,23 @@ const Properties: React.FC<PropertiesProps> = (props: PropertiesProps) => {
               .slice((page - 1) * perPage, page * perPage)
               .map((deal: Deal, index: number) => {
                 return (
-                  <Grid xs={12} sm={6} md={3} item key={index}>
+                  <PropertyGrid xs={12} sm={6} md={3} item key={index}>
                     <PropertyCard
                       deal={deal}
+                      selectedDeal={props.selectedDeal}
                       setSelectedDeal={props.setSelectedDeal}
+                      // selected={
+                      //   props.selectedDeal &&
+                      //   props.selectedDeal.house.id === deal.house.id
+                      // }
                     />
-                  </Grid>
+                  </PropertyGrid>
                 );
               })}
           </Grid>
         </Grow>
 
-        <Grid xs={12} justifyItems="center" alignContent="center">
+        <Grid item xs={12} justifyItems="center" alignContent="center">
           <CardsPagination
             count={pagesCount()}
             page={page}

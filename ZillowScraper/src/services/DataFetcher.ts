@@ -55,7 +55,7 @@ export default class DataFetcher {
     private alterRequest = () => {
         this.userAgent = randomUserAgent.getRandom();
         this.proxy = this.randomizeProxy();
-        console.log(`Using agent: ${this.userAgent}`);
+        console.log(`Using agent: ${this.userAgent}, proxy: ${this.proxy.host}`);
     }
 
     private randomizeProxy = () => {

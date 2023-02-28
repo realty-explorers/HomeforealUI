@@ -83,6 +83,16 @@ export default class ZillowHandler {
         return zillowFilter;
     }
 
+    public constructCompleteZillowFilter = () => {
+        const maxDaysOnZillow = '24m';
+        const zillowFilter = {
+            doz: {
+                value: maxDaysOnZillow
+            },
+        } as ZillowFilter;
+        return zillowFilter;
+    }
+
     public getZillowApi = async () => {
         const url = 'https://www.zillow.com/woodstock-al/sold/?searchQueryState={"pagination":{},"usersSearchTerm":"Woodstock, AL"}';
         const browser = await this.launchBrowser();

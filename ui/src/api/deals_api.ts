@@ -3,8 +3,8 @@ import axios from 'axios';
 // const gateway_url = `${process.env.REACT_APP_DEALS_SERVICE_HOST}:9001`;
 const gateway_url = `http://localhost:9001`;
 
-const findDeals = async (regionId: number, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, daysOnZillow?: string) => {
-	return axios.post(`${gateway_url}/api/v1/deals/findDeals`, {
+const findNewDeals = async (regionId: number, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, daysOnZillow?: string) => {
+	return axios.post(`${gateway_url}/api/v1/deals/findNewDeals`, {
 		regionId, profit, distance, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, daysOnZillow
 	}, {
 		headers: {
@@ -14,6 +14,28 @@ const findDeals = async (regionId: number, distance: number, profit: number, sol
 	});
 };
 
+const findProperties = async (regionId: number) => {
+	return axios.post(`${gateway_url}/api/v1/deals/findProperties`, {
+		regionId
+	}, {
+		headers: {
+			'Access-Control-Allow-Origin': '*'
+		},
+		timeout: 120000
+	});
+};
+
+const findDeals = async (distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, forSaleAge?: string, soldAge?: string) => {
+	return axios.post(`${gateway_url}/api/v1/deals/findDeals`, {
+		profit, distance, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, forSaleAge, soldAge
+	}, {
+		headers: {
+			'Access-Control-Allow-Origin': '*'
+		},
+		timeout: 120000
+	});
+};
+
 export {
-	findDeals,
+	findNewDeals, findDeals, findProperties
 };

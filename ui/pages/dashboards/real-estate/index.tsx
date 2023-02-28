@@ -16,10 +16,13 @@ import Properties from '@/content/Dashboards/RealEstate/Properties';
 import { useContext, useState } from 'react';
 import { SearchContext } from '@/contexts/SearchContext';
 import Deal from '@/models/deal';
+import { useSelector } from 'react-redux';
+import { selectSearchResults } from '@/store/searchSlice';
 
 function DashboardRealEstate() {
-  const { searchResults } = useContext(SearchContext);
   const [selectedDeal, setSelectedDeal] = useState<Deal>();
+
+  const searchResults = useSelector(selectSearchResults);
 
   return (
     <>
@@ -27,7 +30,7 @@ function DashboardRealEstate() {
         <title>Real Estate Dashboard</title>
       </Head>
       <Box sx={{ marginBottom: 5 }}>
-        <Map selectedDeal={selectedDeal} />
+        <Map selectedDeal={selectedDeal} setSelectedDeal={setSelectedDeal} />
       </Box>
       <Container maxWidth="lg">
         <Grid
@@ -41,6 +44,7 @@ function DashboardRealEstate() {
             <Properties
               deals={searchResults}
               setSelectedDeal={setSelectedDeal}
+              selectedDeal={selectedDeal}
             />
           </Grid>
           <Grid item xs={12}>

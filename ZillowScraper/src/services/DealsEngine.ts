@@ -22,11 +22,12 @@ export default class DealsEngine {
         return d; // returns the distance in meter
     };
 
-    public findDeals = async (soldHouses: House[], forSaleHouses: House[], maxDistance: number, minProfit: number, propertyMinPrice?: number, propertyMaxPrice?: number) => {
+    public findDeals = async (soldHouses: House[], forSaleHouses: House[], maxDistance: number, minProfit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, forSaleAge?: string, soldAge?: string) => {
         const deals: { profit: number, distance: number, house: House, relevantSoldHouses: House[] }[] = [];
         for (const forSaleHouse of forSaleHouses) {
             const validMinPrice = propertyMinPrice && forSaleHouse.price >= propertyMinPrice;
             const validMaxPrice = propertyMaxPrice && propertyMaxPrice !== 0 && forSaleHouse.price <= propertyMaxPrice;
+            // const validAge = forSaleHouse.availabilityDate
             if (propertyMinPrice && !validMinPrice || propertyMaxPrice && !validMaxPrice) continue;
 
             const houseAreaPrice = forSaleHouse.price / forSaleHouse.area;
@@ -54,6 +55,58 @@ export default class DealsEngine {
             }
         }
         return deals;
+    }
+
+
+    public findDealsV2 = async (soldHouses: House[], forSaleHouses: House[], maxDistance: number, minProfit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, forSaleAge?: string, soldAge?: string) => {
+        const deals: { profit: number, distance: number, house: House, relevantSoldHouses: House[] }[] = [];
+        for (const forSaleHouse of forSaleHouses) {
+            const validMinPrice = propertyMinPrice == undefined ? true : forSaleHouse.price >= propertyMinPrice;
+            const validMaxPrice = propertyMaxPrice == undefined ? true : forSaleHouse.price <= propertyMaxPrice;
+            if (!validMinPrice || !validMaxPrice) continue;
+            const houseAreaPrice = forSaleHouse.price / forSaleHouse.area;
+            let soldHousesPriceSum = 0
+            let soldHousesCount = 0
+            const relevantSoldHouses = [];
+            for (const soldHouse of soldHouses) {
+                const validMinSoldPrice = soldMinPrice == undefined ? true : soldHouse.price >= soldMinPrice;
+                const validMaxSoldPrice = soldMaxPrice == undefined ? true : soldHouse.price <= soldMaxPrice;
+                if (!validMinSoldPrice || !validMaxSoldPrice) continue;
+                const distance = this.getDistance(forSaleHouse.latitude, soldHouse.latitude, forSaleHouse.longitude, soldHouse.longitude);
+                if (distance <= maxDistance) {
+                    relevantSoldHouses.push(soldHouse);
+                    // soldHousesPriceSum += soldHouseList[soldHouseId].hdpData.homeInfo.price;
+                    soldHousesPriceSum += soldHouse.price / soldHouse.area;
+                    soldHousesCount++;
+                }
+            }
+            const soldHousesAveragePrice = soldHousesPriceSum / soldHousesCount;
+            const profit = 100 * (soldHousesAveragePrice - houseAreaPrice) / soldHousesAveragePrice;
+            if (profit >= minProfit) {
+                console.log(forSaleHouse.price)
+                deals.push({
+                    profit,
+                    distance: maxDistance,
+                    house: forSaleHouse,
+                    relevantSoldHouses
+                })
+            }
+        }
+        return deals;
+    }
+
+    private validateAge = (variableData: { type: string, text: string }) => {
+        let houseAge = null;
+        const tmp = "Sold 12/30/2022";
+        if (variableData.type === "RECENTLY_SOLD") {
+            const dateText = variableData.text.substring(5);
+            houseAge = Date.parse(dateText);
+        } else if (variableData.type === "DAYS_ON") {
+            const dateText = variableData.text.substring(5);
+
+        } else if (variableData.type === "PRICE_REDUCTION") {
+            const dateText = variableData.text.substring(variableData.text.indexOf('('), variableData.text.indexOf(')'));
+        }
     }
 
     // public findDeals = async (soldHouseList: { [id: string]: House }, forSaleHouseList: { [id: string]: House }, maxDistance: number, minProfit: number) => {

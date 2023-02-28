@@ -37,7 +37,10 @@ import FindInPageTwoToneIcon from '@mui/icons-material/FindInPageTwoTone';
 import ChevronRightTwoToneIcon from '@mui/icons-material/ChevronRightTwoTone';
 import SearchForm from './SearchForm';
 import AutocompleteInput from './AutocompleteInput';
-import { SearchContext } from '@/contexts/SearchContext';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectSearchData, setSearchLocation } from '@/store/searchSlice';
+import LocationSuggestion from '@/models/location_suggestions';
+import useSearch from '@/hooks/useSearch';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & { children: ReactElement<any, any> },
@@ -76,22 +79,13 @@ const DialogTitleWrapper = styled(DialogTitle)(
 );
 
 function HeaderSearch() {
-  const [openSearchResults, setOpenSearchResults] = useState(false);
-  const [searchValue, setSearchValue] = useState('');
-  const { searchData, search } = useContext(SearchContext);
+  const searchData = useSelector(selectSearchData);
+  const dispatch = useDispatch();
 
-  const handleSearchChange = (event: ChangeEvent<HTMLInputElement>): void => {
-    setSearchValue(event.target.value);
-
-    if (event.target.value) {
-      if (!openSearchResults) {
-        setOpenSearchResults(true);
-      }
-    } else {
-      setOpenSearchResults(false);
-    }
+  const setLocation = (location: LocationSuggestion) => {
+    dispatch(setSearchLocation(location));
   };
-
+  const { search } = useSearch();
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -103,7 +97,7 @@ function HeaderSearch() {
   };
 
   const handleSearch = () => {
-    search();
+    search(searchData);
     handleClose();
   };
 
@@ -125,7 +119,10 @@ function HeaderSearch() {
         onClose={handleClose}
       >
         <DialogTitleWrapper>
-          <AutocompleteInput />
+          <AutocompleteInput
+            setLocation={setLocation}
+            location={searchData.location}
+          />
         </DialogTitleWrapper>
         <Divider />
         <DialogContent>

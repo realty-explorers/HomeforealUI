@@ -8,6 +8,7 @@ import {
   CardActions,
   CardContent,
   CardMedia,
+  CardProps,
   Container,
   Divider,
   Grid,
@@ -25,6 +26,19 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import ExpandIcon from '@mui/icons-material/Expand';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { percentFormatter, priceFormatter } from '@/utils/converters';
+interface StyledCardProps extends CardProps {
+  selected?: boolean;
+}
+
+const StyledCard = styled(Card, {
+  shouldForwardProp: (prop) => prop !== 'selected'
+})<StyledCardProps>(({ selected, theme }) => ({
+  ...(selected && {
+    boxShadow:
+      '0px 0px 30px rgba(0, 24, 255, 0.8),0px 2px 20px rgba(159, 162, 191, 0.7)'
+  })
+}));
 
 const ListItemAvatarWrapper = styled(ListItemAvatar)(
   ({ theme }) => `
@@ -52,31 +66,44 @@ const ListItemAvatarWrapper = styled(ListItemAvatar)(
 `
 );
 
-const priceFormatter = (value: number) =>
-  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-const percentFormatter = (value: number) => `%${value.toFixed(2)}`;
-
 type PropertyCardProps = {
   deal: Deal;
   setSelectedDeal: (deal: Deal) => void;
+  selectedDeal: Deal;
 };
 const PropertyCard: React.FC<PropertyCardProps> = (
   props: PropertyCardProps
 ) => {
   const handleDealSelected = () => {
-    props.setSelectedDeal(props.deal);
+    if (props.selectedDeal === props.deal) props.setSelectedDeal(null);
+    else props.setSelectedDeal(props.deal);
   };
 
+  const [cardImage, setCardImage] = useState(props.deal.house.imgSrc);
+
   return (
-    <Card sx={{}}>
+    <StyledCard
+      selected={
+        props.selectedDeal &&
+        props.selectedDeal.house.id === props.deal.house.id
+      }
+    >
       <CardActionArea onClick={handleDealSelected}>
         <CardMedia
+          component="img"
           sx={{
-            height: 0,
-            paddingTop: '56.25%' // 16:9
+            // height: 0,
+            // paddingTop: '56.25%' // 16:9
+            aspectRatio: '16/9'
           }}
-          image={props.deal.house.imgSrc}
+          image={cardImage}
+          alt={props.deal.house.address}
           title={props.deal.house.address}
+          onError={() =>
+            setCardImage(
+              '/static/images/placeholders/illustrations/unknown-house.png'
+            )
+          }
         />
         <CardContent>
           <Grid xs={12} sm={12} item display="flex" alignItems="center">
@@ -158,7 +185,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           </IconButton> */}
         </Grid>
       </CardActions>
-    </Card>
+    </StyledCard>
   );
 };
 
