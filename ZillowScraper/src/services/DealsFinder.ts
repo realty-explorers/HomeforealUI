@@ -21,7 +21,32 @@ export default class DealsFinder {
         this.zillowHandler = new zillowHandler();
     }
 
-    public getDeals = async (regionId: number, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, daysOnZillow?: string) => {
+    public findProperties = async (regionId: number) => {
+        const regionInfo: RegionInfo = await this.getRegionData(regionId);
+        const completeZillowFilter = this.zillowHandler.constructCompleteZillowFilter();
+        const forSaleZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(regionInfo, completeZillowFilter, true);
+        const soldZillowSearchUrl = this.zillowHandler.constructZillowUrlQuery(regionInfo, completeZillowFilter, false);
+        const [forSaleHouseResults, soldHouseResults] = await Promise.all([this.getHousesData(forSaleZillowSearchUrl), this.getHousesData(soldZillowSearchUrl)]);
+        return {
+            forSale: forSaleHouseResults,
+            sold: soldHouseResults
+        }
+    }
+
+    public findDeals = async (forSaleProperties: House[], soldProperties: House[], distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, forSaleAge?: string, soldAge?: string) => {
+        const deals = await this.dealsFinder.findDealsV2(soldProperties, forSaleProperties, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, forSaleAge, soldAge);
+        saveData(deals, 'deals');
+        console.log('finished, deals: \n');
+        console.log(deals.map(deal => {
+            return {
+                url: deal.house.detailUrl,
+                profit: deal.profit
+            }
+        }));
+        return deals;
+    }
+
+    public findNewDeals = async (regionId: number, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, daysOnZillow?: string) => {
         const regionInfo: RegionInfo = await this.getRegionData(regionId);
         const soldZillowFilter = this.zillowHandler.constructZillowFilter(soldMinPrice, soldMaxPrice, daysOnZillow);
         const forSaleZillowFilter = this.zillowHandler.constructZillowFilter(undefined, undefined, daysOnZillow);

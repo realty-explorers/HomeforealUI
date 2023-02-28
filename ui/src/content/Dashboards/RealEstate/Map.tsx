@@ -1,174 +1,216 @@
-import React, { useCallback, useState, memo, useEffect } from 'react';
-import {
-  GoogleMap,
-  useJsApiLoader,
-  Circle,
-  Marker,
-  InfoBox,
-  InfoWindow,
-  OverlayView
-} from '@react-google-maps/api';
+import React, { useCallback, useState } from 'react';
 import Deal from '@/models/deal';
-import House from '@/models/house';
-import { Card, CardContent, CardMedia, Grid, List } from '@mui/material';
-import PropertyMapCard from './PropertyMapCard';
+import {
+  alpha,
+  Box,
+  Card,
+  CardActionArea,
+  CardActions,
+  CardContent,
+  CardMedia,
+  Container,
+  debounce,
+  Divider,
+  Grid,
+  IconButton,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  styled,
+  Tooltip,
+  Typography
+} from '@mui/material';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import ExpandIcon from '@mui/icons-material/Expand';
+import TrackChangesIcon from '@mui/icons-material/TrackChanges';
+import OtherHousesIcon from '@mui/icons-material/OtherHouses';
+import MapComponent from './MapComponent';
+import SliderInput from './SliderInput';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectSearchData,
+  setSearchDistance,
+  setSearchForSaleAge,
+  setSearchMaxArv,
+  setSearchMaxPrice,
+  setSearchMinArv,
+  setSearchMinPrice,
+  setSearchSoldAge,
+  setSearchUnderComps
+} from '@/store/searchSlice';
+import useSearch from '@/hooks/useSearch';
+import SliderRangeInput from './SliderRangeInput';
 
-const containerStyle = {
-  width: '100%',
-  height: '25em'
-};
+const MapCard = styled(Card)(({ theme }) => ({
+  margin: '0',
+  backgroundColor: 'rgba(255,255,255,0.5)'
+  // ...(selected && {
+  //   boxShadow:
+  //     '0px 0px 30px rgba(0, 24, 255, 0.8),0px 2px 20px rgba(159, 162, 191, 0.7)'
+  // })
+}));
 
-const center = {
-  lat: 33.429565,
-  lng: -86.84005
-};
+const GridDiv = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  '> svg': {
+    marginBottom: '0.5em'
+  }
+}));
 
-type MapsProps = {
+type MapProps = {
   selectedDeal?: Deal;
+  setSelectedDeal: (deal: Deal) => void;
 };
+const Map: React.FC<MapProps> = (props: MapProps) => {
+  const { search, searching } = useSearch();
+  const searchData = useSelector(selectSearchData);
+  const dispatch = useDispatch();
 
-const Maps: React.FC<MapsProps> = (props: MapsProps) => {
-  const { isLoaded } = useJsApiLoader({
-    id: 'google-map-script',
-    googleMapsApiKey: 'AIzaSyDRAjRxho27NBp9vLVYmuAxENL0QWf7Cvo'
-  });
-  const [map, setMap] = useState<google.maps.Map>();
-  const [selectedHouse, setSelectedHouse] = useState<string>('');
-  const onLoad = useCallback(function callback(map: google.maps.Map) {
-    setMap(map);
-    map.setCenter(center);
-    // This is just an example of getting and using the map instance!!! don't just blindly copy!
-    // const bounds = new window.google.maps.LatLngBounds(center);
-    // map.fitBounds(bounds);
-    // setMap(map);
-  }, []);
-
-  useEffect(() => {
-    if (props.selectedDeal) {
-      map.setCenter({
-        lat: props.selectedDeal.house.latitude,
-        lng: props.selectedDeal.house.longitude
-      });
-    }
-  }, [props.selectedDeal]);
-
-  const handleMouseHover = (houseId: string) => {
-    setSelectedHouse(houseId);
-  };
-  const handleMouseOut = (houseId: string) => {
-    setSelectedHouse('');
+  const searchProperties = (value: any) => {
+    search(value);
   };
 
-  const onUnmount = useCallback(function callback(map: any) {
-    // setMap(null);
-  }, []);
-
-  const selectedHouseMarker = () => {
-    return props.selectedDeal ? (
-      <Marker
-        position={{
-          lat: props.selectedDeal!.house.latitude,
-          lng: props.selectedDeal!.house.longitude
-        }}
-        // icon={props.selectedDeal!.house.imgSrc}
-      />
-    ) : (
-      <></>
-    );
+  const setMinPrice = (value: number) => {
+    dispatch(setSearchMinPrice(value.toString()));
   };
 
-  const soldHousesMarkers = () => {
-    return props.selectedDeal ? (
-      props.selectedDeal?.relevantSoldHouses.map(
-        (house: House, index: number) => (
-          <Marker
-            key={index}
-            position={{ lat: house.latitude, lng: house.longitude }}
-            icon={'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png'}
-            onMouseOver={() => handleMouseHover(house.zpid)}
-            onMouseOut={() => handleMouseOut(house.zpid)}
-            animation={
-              selectedHouse === house.zpid ? google.maps.Animation.BOUNCE : ''
-            }
-          >
-            {selectedHouse === house.zpid && (
-              <InfoWindow
-              // position={{ lat: house.latitude, lng: house.longitude }}
-              >
-                <PropertyMapCard house={house} />
-              </InfoWindow>
-            )}
-          </Marker>
-        )
-      )
-    ) : (
-      <></>
-    );
+  const setMaxPrice = (value: number) => {
+    dispatch(setSearchMaxPrice(value.toString()));
+  };
+  const setMinArv = (value: number) => {
+    dispatch(setSearchMinArv(value.toString()));
+  };
+  const setMaxArv = (value: number) => {
+    dispatch(setSearchMaxArv(value.toString()));
+  };
+  const setUnderComps = (value: number) => {
+    dispatch(setSearchUnderComps(value));
+  };
+  const setDistance = (value: number) => {
+    dispatch(setSearchDistance(value));
   };
 
-  const houseRadiusCircle = () => {
-    const distanceInKilometers = (props.selectedDeal?.distance || 0) * 1609.34;
-    const options = {
-      strokeColor: '#FF0000',
-      strokeOpacity: 0.3,
-      strokeWeight: 2,
-      fillColor: '#F9E076',
-      fillOpacity: 0.15,
-      clickable: false,
-      draggable: false,
-      editable: false,
-      visible: true,
-      radius: distanceInKilometers,
-      zIndex: 1
-    };
-
-    return props.selectedDeal ? (
-      <Circle
-        key={1}
-        // optional
-        // onLoad={onLoad}
-        // optional
-        // onUnmount={onUnmount}
-        // required
-        center={{
-          lat: props.selectedDeal.house.latitude,
-          lng: props.selectedDeal.house.longitude
-        }}
-        // required
-        options={options}
-      />
-    ) : (
-      <></>
-    );
+  const setForSaleAge = (value: string) => {
+    dispatch(setSearchForSaleAge(value));
   };
 
-  return isLoaded ? (
-    <GoogleMap
-      mapContainerStyle={containerStyle}
-      // center={
-      //   (props.selectedDeal && {
-      //     lat: props.selectedDeal.house.latitude,
-      //     lng: props.selectedDeal.house.longitude
-      //   }) ||
-      //   center
-      // }
-      zoom={12}
-      onLoad={onLoad}
-      onUnmount={onUnmount}
+  const setSoldAge = (value: string) => {
+    dispatch(setSearchSoldAge(value));
+  };
+
+  return (
+    <div
+      style={{
+        position: 'relative',
+        zIndex: 0,
+        width: '100%', // or you can use width: '100vw'
+        height: '100%' // or you can use height: '100vh'
+      }}
     >
-      {props.selectedDeal ? (
-        <>
-          {houseRadiusCircle()}
-          {selectedHouseMarker()}
-          {soldHousesMarkers()}
-        </>
-      ) : (
-        <></>
-      )}
-    </GoogleMap>
-  ) : (
-    <></>
+      <div style={{ position: 'absolute', zIndex: 1, right: 100, top: 5 }}>
+        <MapCard>
+          <CardContent>
+            <Grid
+              container
+              rowSpacing={2}
+              columnSpacing={3}
+              sx={{ width: 'auto', height: 200, margin: 0, padding: '0 1em' }}
+            >
+              <GridDiv>
+                <Tooltip title="Price" placement="bottom">
+                  <LocalOfferIcon color="warning" />
+                </Tooltip>
+                <SliderRangeInput
+                  inputProps={{
+                    title: 'Price',
+                    name: 'price',
+                    min: 0,
+                    max: 1000000,
+                    step: 100000
+                  }}
+                  minValueName={'minPrice'}
+                  maxValueName={'maxPrice'}
+                  value={[
+                    parseInt(searchData.minPrice),
+                    parseInt(searchData.maxPrice)
+                  ]}
+                  setMinValue={setMinPrice}
+                  setMaxValue={setMaxPrice}
+                  update={searchProperties}
+                />
+              </GridDiv>
+              <GridDiv>
+                <Tooltip title="ARV" placement="bottom">
+                  <OtherHousesIcon color="secondary " />
+                </Tooltip>
+                <SliderRangeInput
+                  inputProps={{
+                    title: 'ARV',
+                    name: 'arv',
+                    min: 0,
+                    max: 1000000,
+                    step: 100000
+                  }}
+                  minValueName={'minArv'}
+                  maxValueName={'maxArv'}
+                  value={[
+                    parseInt(searchData.minArv),
+                    parseInt(searchData.maxArv)
+                  ]}
+                  setMinValue={setMinArv}
+                  setMaxValue={setMaxArv}
+                  update={searchProperties}
+                />
+              </GridDiv>
+
+              <GridDiv>
+                <Tooltip title="Radius" placement="bottom">
+                  <TrackChangesIcon color="error" />
+                </Tooltip>
+                <SliderInput
+                  inputProps={{
+                    title: 'Radius',
+                    name: 'distance',
+                    min: 0,
+                    max: 10,
+                    step: 0.5
+                  }}
+                  value={searchData.distance}
+                  setValue={setDistance}
+                  update={searchProperties}
+                />
+              </GridDiv>
+              <GridDiv>
+                <Tooltip title="Comps" placement="bottom">
+                  <PriceCheckIcon color="success" />
+                </Tooltip>
+                <SliderInput
+                  inputProps={{
+                    title: 'Under Comps',
+                    name: 'underComps',
+                    min: 0,
+                    max: 100,
+                    step: 1
+                  }}
+                  value={searchData.underComps}
+                  setValue={setUnderComps}
+                  update={searchProperties}
+                />
+              </GridDiv>
+            </Grid>
+          </CardContent>
+        </MapCard>
+      </div>
+      <MapComponent
+        selectedDeal={props.selectedDeal}
+        setSelectedDeal={props.setSelectedDeal}
+        searching={searching}
+      />
+    </div>
   );
 };
 
-export default memo(Maps);
+export default Map;

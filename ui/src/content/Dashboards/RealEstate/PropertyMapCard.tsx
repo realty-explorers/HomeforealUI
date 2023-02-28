@@ -25,14 +25,21 @@ type PropertyMapCardProps = {
 const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   props: PropertyMapCardProps
 ) => {
+  const [cardImage, setCardImage] = useState(props.house.imgSrc);
+
   return (
     <>
       <Card sx={{ width: 200 }}>
         <CardMedia
           component="img"
           height="100"
-          image={props.house.imgSrc}
-          alt="green iguana"
+          image={cardImage}
+          alt={props.house.address}
+          onError={() =>
+            setCardImage(
+              '/static/images/placeholders/illustrations/unknown-house.png'
+            )
+          }
         />
         <CardContent>
           <Grid xs={12} sm={12} item display="flex" alignItems="center">

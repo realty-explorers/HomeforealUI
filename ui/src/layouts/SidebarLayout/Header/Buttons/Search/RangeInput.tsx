@@ -8,10 +8,13 @@ import {
   Typography
 } from '@mui/material';
 import { InputProps } from '@/components/Form/formTypes';
-import { SearchContext } from '@/contexts/SearchContext';
 
 type RangeInputProps = {
   inputProps: InputProps;
+  setMinValue: (minValue: string) => void;
+  setMaxValue: (maxValue: string) => void;
+  minValue: string;
+  maxValue: string;
 };
 const RangeInput: React.FC<RangeInputProps> = (props: RangeInputProps) => {
   const options = [
@@ -28,7 +31,6 @@ const RangeInput: React.FC<RangeInputProps> = (props: RangeInputProps) => {
   ];
   const [minInputValue, setMinInputValue] = React.useState('');
   const [maxInputValue, setMaxInputValue] = React.useState('');
-  const { searchData, setSearchData } = useContext(SearchContext);
 
   return (
     <Grid container spacing={2} className="search-numeric-input">
@@ -42,18 +44,14 @@ const RangeInput: React.FC<RangeInputProps> = (props: RangeInputProps) => {
           <Grid>
             <Autocomplete
               freeSolo
-              value={searchData[props.inputProps.name]['min']}
+              value={props.minValue}
               onChange={(event: any, newValue: string | null) => {
-                const newData = { ...searchData };
-                newData[props.inputProps.name]['min'] = newValue;
-                setSearchData(newData);
+                props.setMinValue(newValue);
               }}
               inputValue={minInputValue}
               onInputChange={(event, newInputValue) => {
                 setMinInputValue(newInputValue);
-                const newData = { ...searchData };
-                newData[props.inputProps.name]['min'] = newInputValue;
-                setSearchData(newData);
+                props.setMinValue(newInputValue);
               }}
               options={options}
               sx={{ width: 200 }}
@@ -66,18 +64,14 @@ const RangeInput: React.FC<RangeInputProps> = (props: RangeInputProps) => {
           <Grid>
             <Autocomplete
               freeSolo
-              value={searchData[props.inputProps.name]['max']}
+              value={props.maxValue}
               onChange={(event: any, newValue: string | null) => {
-                const newData = { ...searchData };
-                newData[props.inputProps.name]['max'] = newValue;
-                setSearchData(newData);
+                props.setMaxValue(newValue);
               }}
               inputValue={maxInputValue}
               onInputChange={(event, newInputValue) => {
                 setMaxInputValue(newInputValue);
-                const newData = { ...searchData };
-                newData[props.inputProps.name]['max'] = newInputValue;
-                setSearchData(newData);
+                props.setMaxValue(newInputValue);
               }}
               options={options}
               sx={{ width: 200 }}

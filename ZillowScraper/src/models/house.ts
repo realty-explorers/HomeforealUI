@@ -3,7 +3,7 @@ interface House {
     "id": string;
     "providerListingId": any;
     "imgSrc": string;
-    "hasImage": boolean;
+    "hasImage"?: boolean;
     "detailUrl": string;
     "statusType": string;
     "statusText": string;
@@ -15,7 +15,7 @@ interface House {
     "addressState": string;
     "addressZipcode": string;
     "isUndisclosedAddress": boolean;
-    "lotAreaString": string;
+    "lotAreaString"?: string;
     "beds": any;
     "baths": any;
     "area": any;
@@ -34,25 +34,25 @@ interface House {
             "latitude": number;
             "longitude": number;
             "price": number;
-            "datePriceChanged": number;
+            "datePriceChanged"?: number;
             "homeType": string;
             "homeStatus": string;
             "daysOnZillow": number;
             "isFeatured": boolean;
             "shouldHighlight": boolean;
             "listing_sub_type": any;
-            "priceReduction": string;
+            "priceReduction"?: string;
             "isUnmappable": boolean;
             "isPreforeclosureAuction": boolean;
             "homeStatusForHDP": string;
             "priceForHDP": number
-            "priceChange": number;
+            "priceChange"?: number;
             "isNonOwnerOccupied": boolean;
             "isPremierBuilder": boolean;
             "isZillowOwned": boolean;
             "currency": string;
             "country": string;
-            "unit": string;
+            "unit"?: string;
             "lotAreaValue": number;
             "lotAreaUnit": string;
             "livingArea": number;

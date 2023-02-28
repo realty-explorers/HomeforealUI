@@ -13,6 +13,7 @@ import createEmotionCache from 'src/createEmotionCache';
 import { SidebarProvider } from 'src/contexts/SidebarContext';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import { wrapper } from '@/store/store';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -54,4 +55,4 @@ function HomeforealApp(props: HomeforealAppProps) {
   );
 }
 
-export default HomeforealApp;
+export default wrapper.withRedux(HomeforealApp);

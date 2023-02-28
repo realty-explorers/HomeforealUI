@@ -8,18 +8,16 @@ import {
   Typography
 } from '@mui/material';
 import { InputProps } from '@/components/Form/formTypes';
-import { SearchContext } from '@/contexts/SearchContext';
 
 type DropdownInputProps = {
   inputProps: InputProps;
+  setValue: (value: string) => void;
+  value: string;
 };
 const DropdownInput: React.FC<DropdownInputProps> = (
   props: DropdownInputProps
 ) => {
   const options = ['1d', '7d', '14d', '30d', '90d', '6m', '12m', '24m', '36m'];
-  const { searchData, setSearchData } = useContext(SearchContext);
-
-  const [value, setValue] = React.useState<string | null>(options[0]);
   const [inputValue, setInputValue] = React.useState('');
 
   return (
@@ -33,11 +31,9 @@ const DropdownInput: React.FC<DropdownInputProps> = (
         <Grid container justifyContent="center">
           <Grid>
             <Autocomplete
-              value={searchData[props.inputProps.name]}
+              value={props.value}
               onChange={(event: any, newValue: string | null) => {
-                const newData = { ...searchData };
-                newData[props.inputProps.name] = newValue;
-                setSearchData(newData);
+                props.setValue(newValue);
               }}
               inputValue={inputValue}
               onInputChange={(event, newInputValue) => {

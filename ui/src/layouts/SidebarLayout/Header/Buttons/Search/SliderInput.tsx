@@ -8,20 +8,16 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import { UseFormRegister } from 'react-hook-form';
 import { InputProps } from '@/components/Form/formTypes';
-import { SearchContext } from '@/contexts/SearchContext';
 
 type SliderInputProps = {
   inputProps: InputProps;
+  setValue: (value: number) => void;
+  value: number;
 };
 const SliderInput: React.FC<SliderInputProps> = (props: SliderInputProps) => {
-  const { searchData, setSearchData } = useContext(SearchContext);
-
   const handleChange = (event: Event, newValue: number) => {
-    const newData = { ...searchData };
-    newData[props.inputProps.name] = newValue;
-    setSearchData(newData);
+    props.setValue(newValue);
   };
 
   return (
@@ -34,7 +30,8 @@ const SliderInput: React.FC<SliderInputProps> = (props: SliderInputProps) => {
       <Grid item xs={6}>
         <Slider
           {...props.inputProps}
-          value={searchData[props.inputProps.name]}
+          // value={searchData[props.inputProps.name]}
+          value={props.value}
           onChange={handleChange}
           aria-label="Default"
           valueLabelDisplay="auto"
