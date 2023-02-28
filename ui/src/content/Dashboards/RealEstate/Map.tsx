@@ -1,29 +1,8 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import Deal from '@/models/deal';
-import {
-  alpha,
-  Box,
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
-  CardMedia,
-  Container,
-  debounce,
-  Divider,
-  Grid,
-  IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  styled,
-  Tooltip,
-  Typography
-} from '@mui/material';
+import { Card, CardContent, Grid, styled, Tooltip } from '@mui/material';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
-import ExpandIcon from '@mui/icons-material/Expand';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import OtherHousesIcon from '@mui/icons-material/OtherHouses';
 import MapComponent from './MapComponent';
@@ -32,18 +11,18 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   selectSearchData,
   setSearchDistance,
-  setSearchForSaleAge,
+  // setSearchForSaleAge,
   setSearchMaxArv,
   setSearchMaxPrice,
   setSearchMinArv,
   setSearchMinPrice,
-  setSearchSoldAge,
+  // setSearchSoldAge,
   setSearchUnderComps
 } from '@/store/searchSlice';
 import useSearch from '@/hooks/useSearch';
 import SliderRangeInput from './SliderRangeInput';
 
-const MapCard = styled(Card)(({ theme }) => ({
+const MapCard = styled(Card)(({}) => ({
   margin: '0',
   backgroundColor: 'rgba(255,255,255,0.5)'
   // ...(selected && {
@@ -52,7 +31,7 @@ const MapCard = styled(Card)(({ theme }) => ({
   // })
 }));
 
-const GridDiv = styled('div')(({ theme }) => ({
+const GridDiv = styled('div')(({}) => ({
   display: 'flex',
   flexDirection: 'column',
   '> svg': {
@@ -65,12 +44,12 @@ type MapProps = {
   setSelectedDeal: (deal: Deal) => void;
 };
 const Map: React.FC<MapProps> = (props: MapProps) => {
-  const { search, searching } = useSearch();
+  const { searchDeals, searching } = useSearch();
   const searchData = useSelector(selectSearchData);
   const dispatch = useDispatch();
 
   const searchProperties = (value: any) => {
-    search(value);
+    searchDeals(value);
   };
 
   const setMinPrice = (value: number) => {
@@ -93,13 +72,13 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     dispatch(setSearchDistance(value));
   };
 
-  const setForSaleAge = (value: string) => {
-    dispatch(setSearchForSaleAge(value));
-  };
+  // const setForSaleAge = (value: string) => {
+  //   dispatch(setSearchForSaleAge(value));
+  // };
 
-  const setSoldAge = (value: string) => {
-    dispatch(setSearchSoldAge(value));
-  };
+  // const setSoldAge = (value: string) => {
+  //   dispatch(setSearchSoldAge(value));
+  // };
 
   return (
     <div
@@ -144,7 +123,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
               </GridDiv>
               <GridDiv>
                 <Tooltip title="ARV" placement="bottom">
-                  <OtherHousesIcon color="secondary " />
+                  <OtherHousesIcon color="secondary" />
                 </Tooltip>
                 <SliderRangeInput
                   inputProps={{

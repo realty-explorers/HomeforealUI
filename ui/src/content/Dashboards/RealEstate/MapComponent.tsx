@@ -4,18 +4,15 @@ import {
   useJsApiLoader,
   Circle,
   Marker,
-  InfoBox,
-  InfoWindow,
-  OverlayView
+  InfoWindow
 } from '@react-google-maps/api';
 import Deal from '@/models/deal';
 import House from '@/models/house';
-import { Card, CardContent, CardMedia, Grid, List } from '@mui/material';
 import PropertyMapCard from './PropertyMapCard';
 import { useSelector } from 'react-redux';
-import { selectSearchData, selectSearchResults } from '@/store/searchSlice';
+import { selectSearchResults } from '@/store/searchSlice';
 
-const containerStyle = {
+const containerStyle: React.CSSProperties = {
   position: 'relative',
   width: '100%',
   height: '25em'
@@ -36,11 +33,10 @@ const MapComponent: React.FC<MapComponentProps> = (
   props: MapComponentProps
 ) => {
   const searchResults = useSelector(selectSearchResults);
-  const searchData = useSelector(selectSearchData);
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: 'AIzaSyDRAjRxho27NBp9vLVYmuAxENL0QWf7Cvo'
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY
   });
   const [map, setMap] = useState<google.maps.Map>();
   const [hoveredHouse, setHoveredHouse] = useState<string>('');
@@ -67,11 +63,11 @@ const MapComponent: React.FC<MapComponentProps> = (
   const handleMouseHover = (houseId: string) => {
     setHoveredHouse(houseId);
   };
-  const handleMouseOut = (houseId: string) => {
+  const handleMouseOut = () => {
     setHoveredHouse('');
   };
 
-  const onUnmount = useCallback(function callback(map: any) {
+  const onUnmount = useCallback(function callback() {
     setMap(null);
   }, []);
 
@@ -99,7 +95,7 @@ const MapComponent: React.FC<MapComponentProps> = (
         key={index}
         position={{ lat: deal.house.latitude, lng: deal.house.longitude }}
         onMouseOver={() => handleMouseHover(deal.house.zpid)}
-        onMouseOut={() => handleMouseOut(deal.house.zpid)}
+        onMouseOut={() => handleMouseOut()}
         onClick={() => {
           props.setSelectedDeal(deal);
           setHoveredHouse('');
@@ -125,9 +121,9 @@ const MapComponent: React.FC<MapComponentProps> = (
             position={{ lat: house.latitude, lng: house.longitude }}
             icon={'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png'}
             onMouseOver={() => handleMouseHover(house.zpid)}
-            onMouseOut={() => handleMouseOut(house.zpid)}
+            onMouseOut={() => handleMouseOut()}
             animation={
-              hoveredHouse === house.zpid ? google.maps.Animation.BOUNCE : ''
+              hoveredHouse === house.zpid ? google.maps.Animation.BOUNCE : null
             }
           >
             {hoveredHouse === house.zpid && (
@@ -140,48 +136,6 @@ const MapComponent: React.FC<MapComponentProps> = (
           </Marker>
         )
       )
-    ) : (
-      <></>
-    );
-  };
-
-  const searchResultsRadiusCircle = () => {
-    console.log(searchData.location.metaData?.lng);
-    const distanceInKilometers = searchData.distance * 1609.34;
-    const options = {
-      strokeColor: '#FF0000',
-      // strokeOpacity: 0.3,
-      strokeOpacity: 0.1,
-      strokeWeight: 2,
-      fillColor: '#F9E076',
-      // fillOpacity: 0.15,
-      fillOpacity: 0.05,
-      clickable: false,
-      draggable: false,
-      editable: false,
-      visible: true,
-      radius: distanceInKilometers,
-      zIndex: 1
-    };
-    return searchResults.map((deal: Deal, index: number) => (
-      <Circle
-        key={index}
-        center={{
-          lat: deal.house.latitude,
-          lng: deal.house.longitude
-        }}
-        options={options}
-      />
-    ));
-
-    return searchData.location?.metaData ? (
-      <Circle
-        center={{
-          lat: searchData.location.metaData.lat,
-          lng: searchData.location.metaData.lng
-        }}
-        options={options}
-      />
     ) : (
       <></>
     );
@@ -231,10 +185,7 @@ const MapComponent: React.FC<MapComponentProps> = (
           {soldHousesMarkers()}
         </>
       ) : (
-        <>
-          {/* {searchResultsRadiusCircle()} */}
-          {searchResultsMarkers()}
-        </>
+        <>{searchResultsMarkers()}</>
       )}
     </GoogleMap>
   ) : (

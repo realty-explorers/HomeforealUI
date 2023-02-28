@@ -27,7 +27,8 @@ import {
   DialogTitle,
   Slide,
   Hidden,
-  DialogActions
+  DialogActions,
+  CircularProgress
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import { TransitionProps } from '@mui/material/transitions';
@@ -41,6 +42,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectSearchData, setSearchLocation } from '@/store/searchSlice';
 import LocationSuggestion from '@/models/location_suggestions';
 import useSearch from '@/hooks/useSearch';
+import { blue, green } from '@mui/material/colors';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & { children: ReactElement<any, any> },
@@ -85,7 +87,7 @@ function HeaderSearch() {
   const setLocation = (location: LocationSuggestion) => {
     dispatch(setSearchLocation(location));
   };
-  const { search } = useSearch();
+  const { searchProperties, searching } = useSearch();
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -97,8 +99,7 @@ function HeaderSearch() {
   };
 
   const handleSearch = () => {
-    search(searchData);
-    handleClose();
+    searchProperties(searchData);
   };
 
   return (
@@ -129,9 +130,31 @@ function HeaderSearch() {
           <SearchForm />
         </DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'center' }}>
-          <Button onClick={handleSearch} variant="outlined">
+          <Box sx={{ m: 1, position: 'relative' }}>
+            <Button
+              variant="contained"
+              // sx={buttonSx}
+              disabled={searching}
+              onClick={handleSearch}
+            >
+              Search
+            </Button>
+            {searching && (
+              <CircularProgress
+                size={24}
+                sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px'
+                }}
+              />
+            )}
+          </Box>
+          {/* <Button onClick={handleSearch} variant="outlined">
             Search
-          </Button>
+          </Button> */}
         </DialogActions>
       </DialogWrapper>
     </>

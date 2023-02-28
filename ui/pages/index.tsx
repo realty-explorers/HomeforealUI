@@ -1,17 +1,8 @@
-import {
-  Typography,
-  Box,
-  Card,
-  Container,
-  Button,
-  styled
-} from '@mui/material';
+import { Typography, Box, Card, Container, styled } from '@mui/material';
 import type { ReactElement } from 'react';
 import BaseLayout from 'src/layouts/BaseLayout';
-
 import Link from 'src/components/Link';
 import Head from 'next/head';
-
 import Logo from 'src/components/LogoSign';
 import Hero from 'src/content/Overview/Hero';
 
@@ -51,7 +42,7 @@ function Overview() {
               flex={1}
             >
               <Box />
-              <Box>
+              {/* <Box>
                 <Button
                   component={Link}
                   href="/dashboards/crypto"
@@ -60,7 +51,7 @@ function Overview() {
                 >
                   Live Preview
                 </Button>
-              </Box>
+              </Box> */}
             </Box>
           </Box>
         </Container>
@@ -69,12 +60,8 @@ function Overview() {
       <Container maxWidth="lg" sx={{ mt: 8 }}>
         <Typography textAlign="center" variant="subtitle1">
           Crafted by{' '}
-          <Link
-            href="https://bloomui.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            BloomUI.com
+          <Link href="#" target="_blank" rel="noopener noreferrer">
+            Sharon Fabin
           </Link>
         </Typography>
       </Container>

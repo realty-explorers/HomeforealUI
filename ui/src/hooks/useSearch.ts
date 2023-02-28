@@ -1,4 +1,4 @@
-import { findDeals } from "@/api/deals_api";
+import { findDeals, findProperties } from "@/api/deals_api";
 import { selectSearchData, setSearchResults } from "@/store/searchSlice";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -14,7 +14,7 @@ export const useSearch = () => {
 	// const searchData = useSelector(selectSearchData);
 	const dispatch = useDispatch();
 
-	const search = async (searchData: any) => {
+	const searchDeals = async (searchData: any) => {
 		try {
 			setSearching(true);
 			const response = await findDeals(
@@ -36,11 +36,29 @@ export const useSearch = () => {
 		}
 	};
 
+	const searchProperties = async (searchData: any) => {
+		try {
+			setSearching(true);
+			const response = await findProperties(
+				searchData.location.metaData.regionId
+			);
+			if (response.status === 200) {
+				alert('Search Finished')
+			} else throw Error(response.data);
+		} catch (error) {
+			console.log(JSON.stringify(error));
+			alert(JSON.stringify(error));
+		} finally {
+			setSearching(false);
+		}
+	};
+
 	// toggler name must be the field's name
 
 	return {
 		searching,
-		search
+		searchDeals,
+		searchProperties
 	};
 };
 

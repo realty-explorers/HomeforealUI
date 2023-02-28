@@ -1,14 +1,15 @@
-import type { ReactElement, ReactNode } from 'react';
+// import type { ReactElement, ReactNode } from 'react';
 
-import type { NextPage } from 'next';
-import type { AppProps } from 'next/app';
+// import type { NextPage } from 'next';
+// import type { AppProps } from 'next/app';
 import Head from 'next/head';
 import Router from 'next/router';
 import nProgress from 'nprogress';
 import 'nprogress/nprogress.css';
 import ThemeProvider from 'src/theme/ThemeProvider';
 import CssBaseline from '@mui/material/CssBaseline';
-import { CacheProvider, EmotionCache } from '@emotion/react';
+// import { CacheProvider, EmotionCache } from '@emotion/react';
+import { CacheProvider } from '@emotion/react';
 import createEmotionCache from 'src/createEmotionCache';
 import { SidebarProvider } from 'src/contexts/SidebarContext';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
@@ -17,16 +18,16 @@ import { wrapper } from '@/store/store';
 
 const clientSideEmotionCache = createEmotionCache();
 
-type NextPageWithLayout = NextPage & {
-  getLayout?: (page: ReactElement) => ReactNode;
-};
+// type NextPageWithLayout = NextPage & {
+//   getLayout?: (page: ReactElement) => ReactNode;
+// };
 
-interface HomeforealAppProps extends AppProps {
-  emotionCache?: EmotionCache;
-  Component: NextPageWithLayout;
-}
+// interface HomeforealAppPropsf extends AppProps {
+//   emotionCache?: EmotionCache;
+//   Component: NextPageWithLayout;
+// }
 
-function HomeforealApp(props: HomeforealAppProps) {
+function HomeforealApp(props: any) {
   const { Component, emotionCache = clientSideEmotionCache, pageProps } = props;
   const getLayout = Component.getLayout ?? ((page) => page);
 

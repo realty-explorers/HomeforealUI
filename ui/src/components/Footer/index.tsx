@@ -28,12 +28,8 @@ function Footer() {
           variant="subtitle1"
         >
           Crafted by{' '}
-          <Link
-            href="https://bloomui.com"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            BloomUI.com
+          <Link href="#" target="_blank" rel="noopener noreferrer">
+            Sharon Fabin
           </Link>
         </Typography>
       </Box>

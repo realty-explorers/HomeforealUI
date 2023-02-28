@@ -1,11 +1,10 @@
 import Deal from '@/models/deal';
 import { Grid, styled, Pagination, Grow } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { TransitionGroup } from 'react-transition-group';
 import PropertyCard from './PropertyCard';
 
 const CardsPagination = styled(Pagination)(
-  ({ theme }) => `
+  ({}) => `
     margin-top: 1em;
     display: flex;
     align-items: center;
@@ -14,7 +13,7 @@ const CardsPagination = styled(Pagination)(
 );
 
 const PropertyGrid = styled(Grid)(
-  ({ theme }) => `
+  ({}) => `
   .selected-card: {
     background-color: black
   }

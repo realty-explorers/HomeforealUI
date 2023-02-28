@@ -115,9 +115,8 @@ function Hero() {
             color="text.secondary"
             fontWeight="normal"
           >
-            High performance React template built with lots of powerful
-            Material-UI components across multiple product niches for fast &
-            perfect apps development processes
+            Lorem ipsum is placeholder text commonly used in the graphic, print,
+            and publishing industries for previewing layouts and visual mockups.
           </TypographyH2>
           <Button
             component={Link}
@@ -132,7 +131,7 @@ function Hero() {
             component="a"
             target="_blank"
             rel="noopener"
-            href="https://bloomui.com/product/tokyo-free-black-react-nextjs-material-ui-admin-dashboard"
+            href="/dashboards/real-estate"
             size="large"
             variant="text"
           >

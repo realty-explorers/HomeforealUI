@@ -86,7 +86,7 @@ function HeaderMenu() {
         }}
       >
         <List disablePadding component={Box} display="flex">
-          <ListItem
+          {/* <ListItem
             classes={{ root: 'MuiListItem-indicators' }}
             button
             component={Link}
@@ -96,18 +96,7 @@ function HeaderMenu() {
               primaryTypographyProps={{ noWrap: true }}
               primary="Buttons"
             />
-          </ListItem>
-          <ListItem
-            classes={{ root: 'MuiListItem-indicators' }}
-            button
-            component={Link}
-            href="/components/forms"
-          >
-            <ListItemText
-              primaryTypographyProps={{ noWrap: true }}
-              primary="Forms"
-            />
-          </ListItem>
+          </ListItem> */}
           <ListItem
             classes={{ root: 'MuiListItem-indicators' }}
             button
@@ -131,15 +120,6 @@ function HeaderMenu() {
       <Menu anchorEl={ref.current} onClose={handleClose} open={isOpen}>
         <MenuItem sx={{ px: 3 }} component={Link} href="/">
           Overview
-        </MenuItem>
-        <MenuItem sx={{ px: 3 }} component={Link} href="/components/tabs">
-          Tabs
-        </MenuItem>
-        <MenuItem sx={{ px: 3 }} component={Link} href="/components/cards">
-          Cards
-        </MenuItem>
-        <MenuItem sx={{ px: 3 }} component={Link} href="/components/modals">
-          Modals
         </MenuItem>
       </Menu>
     </>

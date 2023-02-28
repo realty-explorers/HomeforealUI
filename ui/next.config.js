@@ -5,11 +5,18 @@ const redirects = {
     return [
       {
         source: '/dashboards',
-        destination: '/dashboards/crypto',
+        destination: '/dashboards/real-estate',
         permanent: true
       }
     ];
   }
 };
 
-module.exports = withImages(redirects);
+const config = {
+  redirects,
+  typescript: {
+    ignoreBuildErrors: true,
+  }
+}
+
+module.exports = withImages(config);
