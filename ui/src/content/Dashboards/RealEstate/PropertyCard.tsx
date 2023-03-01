@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Deal from '@/models/deal';
 import {
   alpha,
@@ -81,6 +81,11 @@ const PropertyCard: React.FC<PropertyCardProps> = (
 
   const [cardImage, setCardImage] = useState(props.deal.house.imgSrc);
 
+  useEffect(() => {
+    setCardImage(props.deal.house.imgSrc);
+    return () => {};
+  }, [props.deal]);
+
   return (
     <StyledCard
       selected={
@@ -97,6 +102,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
             aspectRatio: '16/9'
           }}
           image={cardImage}
+          // image={props.deal.house.imgSrc}
           alt={props.deal.house.address}
           title={props.deal.house.address}
           onError={() =>
