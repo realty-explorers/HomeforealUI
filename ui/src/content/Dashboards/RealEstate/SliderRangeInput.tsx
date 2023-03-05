@@ -16,44 +16,52 @@ import {
   Typography
 } from '@mui/material';
 import { InputProps } from '@/components/Form/formTypes';
-import { useSelector } from 'react-redux';
-import { selectSearchData } from '@/store/searchSlice';
 
 type SliderRangeInputProps = {
   inputProps: InputProps;
   minValueName: string;
   maxValueName: string;
-  value: [number, number];
-  setMinValue: (value: number) => void;
-  setMaxValue: (value: number) => void;
-  update: (value: any) => void;
+  minValue: number;
+  maxValue: number;
+  update: (name: string, value: any) => void;
+  scale?: {
+    scale: (number: number) => number;
+    reverseScale: (number: number) => number;
+  };
 };
 const SliderRangeInput: React.FC<SliderRangeInputProps> = (
   props: SliderRangeInputProps
 ) => {
-  const searchData = useSelector(selectSearchData);
-  const update = useCallback(debounce(props.update, 400), [
-    props.value[0],
-    props.value[1]
-  ]);
-
   const handleChange = (event: Event, newValue: [number, number]) => {
-    props.setMinValue(newValue[0]);
-    props.setMaxValue(newValue[1]);
-    update({
-      ...searchData,
-      [props.minValueName]: newValue[0],
-      [props.maxValueName]: newValue[1]
-    });
+    props.update(
+      props.minValueName,
+      props.scale ? props.scale.scale(newValue[0]) : newValue[0]
+    );
+    props.update(
+      props.maxValueName,
+      props.scale ? props.scale.scale(newValue[1]) : newValue[1]
+    );
+    console.log(
+      `${props.inputProps.name}: ${
+        props.scale ? props.scale.reverseScale(props.minValue) : props.minValue
+      }`
+    );
   };
 
   return (
     <Slider
       {...props.inputProps}
-      value={props.value}
+      value={[
+        props.scale ? props.scale.reverseScale(props.minValue) : props.minValue,
+        props.scale ? props.scale.reverseScale(props.maxValue) : props.maxValue
+      ]}
+      scale={props.scale?.scale}
+      getAriaValueText={props.inputProps.format}
+      valueLabelFormat={props.inputProps.format}
       onChange={handleChange}
       orientation="vertical"
       valueLabelDisplay="auto"
+      aria-labelledby="non-linear-slider"
     />
   );
 };

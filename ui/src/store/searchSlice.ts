@@ -5,7 +5,7 @@ import Deal from "@/models/deal";
 import LocationSuggestion from "@/models/location_suggestions";
 
 // Type for our state
-type SearchData = {
+export interface SearchData {
     location: LocationSuggestion,
     minPrice: string;
     maxPrice: string;
@@ -13,8 +13,14 @@ type SearchData = {
     maxArv: string;
     underComps: number;
     distance: number;
-    forSaleAge: string;
-    soldAge: string;
+    forSaleAge: number;
+    soldAge: number;
+    minArea: number,
+    maxArea: number,
+    minBeds: number,
+    maxBeds: number,
+    minBaths: number,
+    maxBaths: number
 }
 
 type SearchResults = Deal[];
@@ -34,8 +40,14 @@ const initialState: SearchState = {
         maxArv: '1000000',
         underComps: 50,
         distance: 1,
-        forSaleAge: '6m',
-        soldAge: '6m'
+        forSaleAge: 180,
+        soldAge: 180,
+        minArea: 500,
+        maxArea: 10000,
+        minBeds: 1,
+        maxBeds: 9,
+        minBaths: 1,
+        maxBaths: 9
     },
     searchResults: []
 
@@ -68,11 +80,29 @@ export const searchSlice = createSlice({
         setSearchDistance(state, action) {
             state.searchData.distance = action.payload;
         },
+        setSearchSoldAge(state, action) {
+            state.searchData.soldAge = action.payload;
+        },
         setSearchForSaleAge(state, action) {
             state.searchData.forSaleAge = action.payload;
         },
-        setSearchSoldAge(state, action) {
-            state.searchData.soldAge = action.payload;
+        setSearchMinArea(state, action) {
+            state.searchData.minArea = action.payload;
+        },
+        setSearchMaxArea(state, action) {
+            state.searchData.maxArea = action.payload;
+        },
+        setSearchMinBeds(state, action) {
+            state.searchData.minBeds = action.payload;
+        },
+        setSearchMaxBeds(state, action) {
+            state.searchData.maxBeds = action.payload;
+        },
+        setSearchMinBaths(state, action) {
+            state.searchData.minBaths = action.payload;
+        },
+        setSearchMaxBaths(state, action) {
+            state.searchData.maxBaths = action.payload;
         },
         setSearchResults(state, action) {
             state.searchResults = action.payload;
@@ -91,7 +121,7 @@ export const searchSlice = createSlice({
     },
 });
 
-export const { setSearchResults, setSearchLocation, setSearchMinPrice, setSearchMaxPrice, setSearchMinArv, setSearchMaxArv, setSearchUnderComps, setSearchDistance, setSearchForSaleAge, setSearchSoldAge } = searchSlice.actions;
+export const { setSearchResults, setSearchLocation, setSearchMinPrice, setSearchMaxPrice, setSearchMinArv, setSearchMaxArv, setSearchUnderComps, setSearchDistance, setSearchForSaleAge, setSearchSoldAge, setSearchMinArea, setSearchMaxArea, setSearchMinBeds, setSearchMaxBeds, setSearchMinBaths, setSearchMaxBaths } = searchSlice.actions;
 
 export const selectSearchResults: (state: AppState) => SearchResults = (state: AppState) => state.search.searchResults;
 export const selectSearchData: (state: AppState) => SearchData = (state: AppState) => state.search.searchData;
