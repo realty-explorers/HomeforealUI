@@ -11,22 +11,22 @@ export default class DealsController {
 		this.dealsService = new DealsService();
 	}
 
-	public findNewDeals = async (
-		req: Request,
-		res: Response,
-		next: NextFunction
-	) => {
-		try {
-			const { regionId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, daysOnZillow } = req.body;
-			console.log(req.body);
-			const response = await this.dealsService.findNewDeals(regionId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, daysOnZillow);
-			res.json(response);
-		} catch (error: any) {
-			console.log(error);
-			res.status(500).send({ error: error.message });
-			// res.send();
-		}
-	};
+	// public findNewDeals = async (
+	// 	req: Request,
+	// 	res: Response,
+	// 	next: NextFunction
+	// ) => {
+	// 	try {
+	// 		const { regionId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, daysOnZillow } = req.body;
+	// 		console.log(req.body);
+	// 		const response = await this.dealsService.findNewDeals(regionId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, daysOnZillow);
+	// 		res.json(response);
+	// 	} catch (error: any) {
+	// 		console.log(error);
+	// 		res.status(500).send({ error: error.message });
+	// 		// res.send();
+	// 	}
+	// };
 
 	public findAllProperties = async (
 		req: Request,
@@ -45,15 +45,32 @@ export default class DealsController {
 		}
 	};
 
+	public findAllPropertiesProxy = async (
+		req: Request,
+		res: Response,
+		next: NextFunction
+	) => {
+		try {
+			const { regionId } = req.body;
+			console.log(req.body);
+			const response = await this.dealsService.findPropertiesProxy(regionId);
+			res.json(response);
+		} catch (error: any) {
+			console.log(error);
+			res.status(500).send({ error: error.message });
+			// res.send();
+		}
+	};
+
 	public findDeals = async (
 		req: Request,
 		res: Response,
 		next: NextFunction
 	) => {
 		try {
-			const { distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, forSaleAge, soldAge } = req.body;
+			const { regionId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, soldAge, forSaleAge, minArea, maxArea, minBeds, maxBeds, minBaths, maxBaths } = req.body;
 			console.log(req.body);
-			const response = await this.dealsService.findDeals(distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, forSaleAge, soldAge);
+			const response = await this.dealsService.findDeals(regionId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, soldAge, forSaleAge, minArea, maxArea, minBeds, maxBeds, minBaths, maxBaths);
 			res.json(response);
 		} catch (error: any) {
 			console.log(error);

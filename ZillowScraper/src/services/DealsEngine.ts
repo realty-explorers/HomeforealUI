@@ -22,48 +22,49 @@ export default class DealsEngine {
         return d; // returns the distance in meter
     };
 
-    public findDeals = async (soldHouses: House[], forSaleHouses: House[], maxDistance: number, minProfit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, forSaleAge?: string, soldAge?: string) => {
-        const deals: { profit: number, distance: number, house: House, relevantSoldHouses: House[] }[] = [];
-        for (const forSaleHouse of forSaleHouses) {
-            const validMinPrice = propertyMinPrice && forSaleHouse.price >= propertyMinPrice;
-            const validMaxPrice = propertyMaxPrice && propertyMaxPrice !== 0 && forSaleHouse.price <= propertyMaxPrice;
-            // const validAge = forSaleHouse.availabilityDate
-            if (propertyMinPrice && !validMinPrice || propertyMaxPrice && !validMaxPrice) continue;
+    // public findDeals = async (soldHouses: House[], forSaleHouses: House[], maxDistance: number, minProfit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, soldAge?: string, forSaleAge?: string) => {
+    //     const deals: { profit: number, distance: number, house: House, relevantSoldHouses: House[] }[] = [];
+    //     for (const forSaleHouse of forSaleHouses) {
+    //         const validMinPrice = propertyMinPrice && forSaleHouse.price >= propertyMinPrice;
+    //         const validMaxPrice = propertyMaxPrice && propertyMaxPrice !== 0 && forSaleHouse.price <= propertyMaxPrice;
+    //         // const validAge = forSaleHouse.availabilityDate
+    //         if (propertyMinPrice && !validMinPrice || propertyMaxPrice && !validMaxPrice) continue;
 
-            const houseAreaPrice = forSaleHouse.price / forSaleHouse.area;
-            let soldHousesPriceSum = 0
-            let soldHousesCount = 0
-            const relevantSoldHouses = [];
-            for (const soldHouse of soldHouses) {
-                const distance = this.getDistance(forSaleHouse.latitude, soldHouse.latitude, forSaleHouse.longitude, soldHouse.longitude);
-                if (distance <= maxDistance) {
-                    relevantSoldHouses.push(soldHouse);
-                    // soldHousesPriceSum += soldHouseList[soldHouseId].hdpData.homeInfo.price;
-                    soldHousesPriceSum += soldHouse.price / soldHouse.area;
-                    soldHousesCount++;
-                }
-            }
-            const soldHousesAveragePrice = soldHousesPriceSum / soldHousesCount;
-            const profit = 100 * (soldHousesAveragePrice - houseAreaPrice) / soldHousesAveragePrice;
-            if (profit >= minProfit) {
-                deals.push({
-                    profit,
-                    distance: maxDistance,
-                    house: forSaleHouse,
-                    relevantSoldHouses
-                })
-            }
-        }
-        return deals;
-    }
+    //         const houseAreaPrice = forSaleHouse.price / forSaleHouse.area;
+    //         let soldHousesPriceSum = 0
+    //         let soldHousesCount = 0
+    //         const relevantSoldHouses = [];
+    //         for (const soldHouse of soldHouses) {
+    //             const distance = this.getDistance(forSaleHouse.latitude, soldHouse.latitude, forSaleHouse.longitude, soldHouse.longitude);
+    //             if (distance <= maxDistance) {
+    //                 relevantSoldHouses.push(soldHouse);
+    //                 // soldHousesPriceSum += soldHouseList[soldHouseId].hdpData.homeInfo.price;
+    //                 soldHousesPriceSum += soldHouse.price / soldHouse.area;
+    //                 soldHousesCount++;
+    //             }
+    //         }
+    //         const soldHousesAveragePrice = soldHousesPriceSum / soldHousesCount;
+    //         const profit = 100 * (soldHousesAveragePrice - houseAreaPrice) / soldHousesAveragePrice;
+    //         if (profit >= minProfit) {
+    //             deals.push({
+    //                 profit,
+    //                 distance: maxDistance,
+    //                 house: forSaleHouse,
+    //                 relevantSoldHouses
+    //             })
+    //         }
+    //     }
+    //     return deals;
+    // }
 
 
-    public findDealsV2 = async (soldHouses: House[], forSaleHouses: House[], maxDistance: number, minProfit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, forSaleAge?: string, soldAge?: string) => {
+    public findDeals = async (soldHouses: House[], forSaleHouses: House[], maxDistance: number, minProfit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, soldAge?: string, forSaleAge?: string, minArea?: number, maxArea?: number, minBeds?: number, maxBeds?: number, minBaths?: number, maxBaths?: number) => {
         const deals: { profit: number, distance: number, house: House, relevantSoldHouses: House[] }[] = [];
         for (const forSaleHouse of forSaleHouses) {
             const validMinPrice = propertyMinPrice == undefined ? true : forSaleHouse.price >= propertyMinPrice;
             const validMaxPrice = propertyMaxPrice == undefined ? true : forSaleHouse.price <= propertyMaxPrice;
-            if (!validMinPrice || !validMaxPrice) continue;
+            const notValidForSaleHouse = !validMinPrice || !validMaxPrice;
+            if (notValidForSaleHouse) continue;
             const houseAreaPrice = forSaleHouse.price / forSaleHouse.area;
             let soldHousesPriceSum = 0
             let soldHousesCount = 0
@@ -71,7 +72,21 @@ export default class DealsEngine {
             for (const soldHouse of soldHouses) {
                 const validMinSoldPrice = soldMinPrice == undefined ? true : soldHouse.price >= soldMinPrice;
                 const validMaxSoldPrice = soldMaxPrice == undefined ? true : soldHouse.price <= soldMaxPrice;
-                if (!validMinSoldPrice || !validMaxSoldPrice) continue;
+                const validHouseAge = this.validateHouseAge(soldHouse.variableData, parseInt(soldAge!));
+                const validMinArea = minArea == undefined ? true : soldHouse.area >= minArea;
+                const validMaxArea = maxArea == undefined ? true : soldHouse.area <= maxArea;
+                const validMinBeds = minBeds == undefined ? true : soldHouse.beds >= minBeds;
+                const validMaxBeds = maxBeds == undefined ? true : soldHouse.beds <= maxBeds;
+                const validMinBaths = minBaths == undefined ? true : soldHouse.baths >= minBaths;
+                const validMaxBaths = maxBaths == undefined ? true : soldHouse.baths <= maxBaths;
+
+                const dateText = soldHouse.variableData.text.substring(5);
+                const houseDate = Date.parse(dateText)
+                const houseAge = Date.now() - houseDate;
+                const totalDays = Math.ceil(houseAge / (1000 * 3600 * 24));
+                console.log(`valid: ${validHouseAge} age: ${totalDays} + ${soldHouse.variableData.text}`)
+                const notValidSoldHouse = (!validMinSoldPrice || !validMaxSoldPrice || !validHouseAge || !validMinArea || !validMaxArea || !validMinBeds || !validMaxBeds || !validMinBaths || !validMaxBaths);
+                if (notValidSoldHouse) continue;
                 const distance = this.getDistance(forSaleHouse.latitude, soldHouse.latitude, forSaleHouse.longitude, soldHouse.longitude);
                 if (distance <= maxDistance) {
                     relevantSoldHouses.push(soldHouse);
@@ -95,18 +110,22 @@ export default class DealsEngine {
         return deals;
     }
 
-    private validateAge = (variableData: { type: string, text: string }) => {
-        let houseAge = null;
+    private validateHouseAge = (variableData: { type: string, text: string }, daysAge: number) => {
+        let houseDate = null;
         const tmp = "Sold 12/30/2022";
         if (variableData.type === "RECENTLY_SOLD") {
             const dateText = variableData.text.substring(5);
-            houseAge = Date.parse(dateText);
+            houseDate = Date.parse(dateText)
+            const houseAge = Date.now() - houseDate;
+            const totalDays = Math.ceil(houseAge / (1000 * 3600 * 24));
+            return totalDays <= daysAge;
         } else if (variableData.type === "DAYS_ON") {
             const dateText = variableData.text.substring(5);
 
         } else if (variableData.type === "PRICE_REDUCTION") {
             const dateText = variableData.text.substring(variableData.text.indexOf('('), variableData.text.indexOf(')'));
         }
+        return true;
     }
 
     // public findDeals = async (soldHouseList: { [id: string]: House }, forSaleHouseList: { [id: string]: House }, maxDistance: number, minProfit: number) => {

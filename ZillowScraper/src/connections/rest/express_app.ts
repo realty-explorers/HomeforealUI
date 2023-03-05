@@ -21,11 +21,11 @@ class App {
 	}
 
 	public startServer(port: string) {
-		// const privateKey = fs.readFileSync(process.env.CERTIFICATE_KEY_PATH!, 'utf8');
-		// const certificate = fs.readFileSync(process.env.CERTIFICATE_CERT_PATH!, 'utf8');
-		// const credentials = { key: privateKey, cert: certificate, port };
-		// this.server = https.createServer(credentials, this.app);
-		this.server = http.createServer(this.app);
+		const privateKey = fs.readFileSync(process.env.CERTIFICATE_KEY_PATH!, 'utf8');
+		const certificate = fs.readFileSync(process.env.CERTIFICATE_CERT_PATH!, 'utf8');
+		const credentials = { key: privateKey, cert: certificate, port };
+		this.server = https.createServer(credentials, this.app);
+		// this.server = http.createServer(this.app);
 		this.server.listen(port, () => {
 			console.log(`App listening on the port ${port}`);
 		});

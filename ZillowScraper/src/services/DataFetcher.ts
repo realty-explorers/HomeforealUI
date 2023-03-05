@@ -52,6 +52,22 @@ export default class DataFetcher {
         return null;
     }
 
+    private makeRequestProxy = async (url: string) => {
+        try {
+            const response = await axios.get(url, {
+                headers: {
+                    'User-Agent': this.userAgent
+                },
+                proxy: this.proxy
+            })
+            console.log('finished fetching');
+            return response;
+        } catch (error) {
+            console.log(error);
+        }
+        return null;
+    }
+
     private alterRequest = () => {
         this.userAgent = randomUserAgent.getRandom();
         this.proxy = this.randomizeProxy();
@@ -78,6 +94,26 @@ export default class DataFetcher {
             if (response) {
                 const validData = validateData(response.data);
                 if (validData) return response.data;
+            }
+            this.alterRequest();
+        }
+        return null;
+    }
+
+    public tryFetchProxy = async (url: string, validateData: (data: any) => boolean, maxTries?: number) => {
+        let tries = 0;
+        maxTries = maxTries ? maxTries : 100;
+        while (tries < maxTries) {
+            console.log(`fetching #${tries}`);
+            tries++;
+            const response = await this.makeRequestProxy(url);
+            if (response) {
+                let currentProxy = this.proxy;
+                const validData = validateData(response.data);
+                if (validData) {
+                    console.log(`working proxy: ${currentProxy}`);
+                    return response.data;
+                }
             }
             this.alterRequest();
         }

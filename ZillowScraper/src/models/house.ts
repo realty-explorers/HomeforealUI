@@ -56,6 +56,13 @@ interface House {
             "lotAreaValue": number;
             "lotAreaUnit": string;
             "livingArea": number;
+            "info3String"?: string,
+            "info2String"?: string,
+            "info1String"?: string,
+            "bathrooms"?: 2,
+            "bedrooms"?: 3,
+            "taxAssessedValue"?: 324640,
+
         }
     };
     "isSaved": boolean;
@@ -68,15 +75,18 @@ interface House {
     "has3DModel": boolean;
     "hasVideo": boolean;
     "isHomeRec": boolean;
-    "info2String": string;
-    "info3String": string;
-    "brokerName": string;
+    "info1String"?: string,
+    "info2String"?: string;
+    "info3String"?: string;
+    "brokerName"?: string;
     "hasAdditionalAttributions": boolean;
     "isFeaturedListing": boolean;
     "availabilityDate": any;
     "list": boolean;
     "relaxed": boolean;
     "maxPagination": number;
+    "unformattedPrice": number,
+    "latLong"?: { "latitude": number, "longitude": number },
 
 }
 export default House

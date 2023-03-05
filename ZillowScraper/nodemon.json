@@ -4,6 +4,7 @@
 		"README",
 		"forSaleResults.json",
 		"soldResults.json",
-		"deals.json"
+		"deals.json",
+		"housesCache.json"
 	]
 }
