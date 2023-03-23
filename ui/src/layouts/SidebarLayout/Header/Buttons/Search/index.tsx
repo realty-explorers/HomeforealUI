@@ -83,6 +83,9 @@ const DialogTitleWrapper = styled(DialogTitle)(
 function HeaderSearch() {
   const searchData = useSelector(selectSearchData);
   const dispatch = useDispatch();
+  const [suggestion, setSuggestion] = useState<LocationSuggestion>(
+    searchData.location
+  );
 
   const setLocation = (location: LocationSuggestion) => {
     dispatch(setSearchLocation(location));
@@ -99,7 +102,8 @@ function HeaderSearch() {
   };
 
   const handleSearch = () => {
-    searchProperties(searchData);
+    setLocation(suggestion);
+    searchProperties({ ...searchData, location: suggestion });
   };
 
   return (
@@ -121,14 +125,14 @@ function HeaderSearch() {
       >
         <DialogTitleWrapper>
           <AutocompleteInput
-            setLocation={setLocation}
-            location={searchData.location}
+            // setLocation={setLocation}
+            // location={searchData.location}
+            location={suggestion}
+            setLocation={setSuggestion}
           />
         </DialogTitleWrapper>
         <Divider />
-        <DialogContent>
-          <SearchForm />
-        </DialogContent>
+        <DialogContent>{/* <SearchForm /> */}</DialogContent>
         <DialogActions sx={{ display: 'flex', justifyContent: 'center' }}>
           <Box sx={{ m: 1, position: 'relative' }}>
             <Button

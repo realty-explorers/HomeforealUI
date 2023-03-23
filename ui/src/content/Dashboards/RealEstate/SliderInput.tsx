@@ -1,47 +1,36 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useState
-} from 'react';
-import {
-  alpha,
-  Autocomplete,
-  debounce,
-  Grid,
-  Slider,
-  styled,
-  TextField,
-  Typography
-} from '@mui/material';
+import React, { useState } from 'react';
+import { Slider } from '@mui/material';
 import { InputProps } from '@/components/Form/formTypes';
-import { useSelector } from 'react-redux';
-import { selectSearchData } from '@/store/searchSlice';
 
 type SliderInputProps = {
   inputProps: InputProps;
   value: number;
-  setValue: (value: number) => void;
-  update: (value: any) => void;
+  update: (name: string, value: any) => void;
+  scale?: {
+    scale: (number: number) => number;
+    reverseScale: (number: number) => number;
+  };
 };
-const SliderInput: React.FC<SliderInputProps> = (props: SliderInputProps) => {
-  const searchData = useSelector(selectSearchData);
-  const update = useCallback(debounce(props.update, 400), []);
 
+const SliderInput: React.FC<SliderInputProps> = (props: SliderInputProps) => {
   const handleChange = (event: Event, newValue: number) => {
-    props.setValue(newValue);
-    update({ ...searchData, [props.inputProps.name]: newValue });
+    props.update(
+      props.inputProps.name,
+      props.scale ? props.scale.scale(newValue) : newValue
+    );
   };
 
   return (
     <Slider
       {...props.inputProps}
-      value={props.value}
+      value={props.scale ? props.scale.reverseScale(props.value) : props.value}
+      scale={props.scale?.scale}
+      getAriaValueText={props.inputProps.format}
+      valueLabelFormat={props.inputProps.format}
       onChange={handleChange}
       orientation="vertical"
-      aria-label="Default"
       valueLabelDisplay="auto"
+      aria-labelledby="non-linear-slider"
     />
   );
 };

@@ -1,4 +1,10 @@
-import React, { useCallback, useState, memo, useEffect } from 'react';
+import React, {
+  useCallback,
+  useState,
+  memo,
+  useEffect,
+  createElement
+} from 'react';
 import {
   GoogleMap,
   useJsApiLoader,
@@ -9,13 +15,37 @@ import {
 import Deal from '@/models/deal';
 import House from '@/models/house';
 import PropertyMapCard from './PropertyMapCard';
-import { useSelector } from 'react-redux';
-import { selectSearchResults } from '@/store/searchSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  selectSearchData,
+  selectSearchResults,
+  setSearchDistance,
+  setSearchForSaleAge,
+  setSearchMaxArea,
+  // setSearchForSaleAge,
+  setSearchMaxArv,
+  setSearchMaxBaths,
+  setSearchMaxBeds,
+  setSearchMaxPrice,
+  setSearchMinArea,
+  setSearchMinArv,
+  setSearchMinBaths,
+  setSearchMinBeds,
+  setSearchMinPrice,
+  setSearchSoldAge,
+  // setSearchSoldAge,
+  setSearchUnderComps
+} from '@/store/searchSlice';
+import ReactDOM from 'react-dom';
+import MapControls from './MapControls';
+import { debounce } from '@mui/material';
+import useSearch from '@/hooks/useSearch';
+import { openGoogleSearch } from '@/utils/windowFunctions';
 
 const containerStyle: React.CSSProperties = {
   position: 'relative',
   width: '100%',
-  height: '25em'
+  height: '35em'
 };
 
 const center = {
@@ -32,20 +62,151 @@ type MapComponentProps = {
 const MapComponent: React.FC<MapComponentProps> = (
   props: MapComponentProps
 ) => {
+  const { searchDeals } = useSearch();
   const searchResults = useSelector(selectSearchResults);
+  const searchData = useSelector(selectSearchData);
+  const dispatch = useDispatch();
+
+  const updateMinPrice = (value: number) => {
+    dispatch(setSearchMinPrice(value.toString()));
+  };
+
+  const updateMaxPrice = (value: number) => {
+    dispatch(setSearchMaxPrice(value.toString()));
+  };
+  const updateMinArv = (value: number) => {
+    dispatch(setSearchMinArv(value.toString()));
+  };
+  const updateMaxArv = (value: number) => {
+    dispatch(setSearchMaxArv(value.toString()));
+  };
+  const updateUnderComps = (value: number) => {
+    dispatch(setSearchUnderComps(value));
+  };
+  const updateDistance = (value: number) => {
+    dispatch(setSearchDistance(value));
+  };
+
+  const updateSoldAge = (value: number) => {
+    dispatch(setSearchSoldAge(value));
+  };
+  const updateForSaleAge = (value: number) => {
+    dispatch(setSearchForSaleAge(value));
+  };
+  const updateMinArea = (value: number) => {
+    dispatch(setSearchMinArea(value));
+  };
+  const updateMaxArea = (value: number) => {
+    dispatch(setSearchMaxArea(value));
+  };
+  const updateMinBeds = (value: number) => {
+    dispatch(setSearchMinBeds(value));
+  };
+  const updateMaxBeds = (value: number) => {
+    dispatch(setSearchMaxBeds(value));
+  };
+  const updateMinBaths = (value: number) => {
+    dispatch(setSearchMinBaths(value));
+  };
+  const updateMaxBaths = (value: number) => {
+    dispatch(setSearchMaxBaths(value));
+  };
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY
   });
-  const [map, setMap] = useState<google.maps.Map>();
+  const [map, updateMap] = useState<google.maps.Map>();
+  const [root, setRoot] = useState<HTMLElement>();
   const [hoveredHouse, setHoveredHouse] = useState<string>('');
+
+  const update = (name: string, value: any) => {
+    switch (name) {
+      case 'minPrice':
+        updateMinPrice(value);
+        break;
+      case 'maxPrice':
+        updateMaxPrice(value);
+        break;
+      case 'minArv':
+        updateMinArv(value);
+        break;
+      case 'maxArv':
+        updateMaxArv(value);
+        break;
+      case 'underComps':
+        updateUnderComps(value);
+        break;
+      case 'distance':
+        updateDistance(value);
+        break;
+      case 'soldAge':
+        updateSoldAge(value);
+        break;
+      case 'forSaleAge':
+        updateForSaleAge(value);
+        break;
+      case 'minArea':
+        updateMinArea(value);
+        break;
+      case 'maxArea':
+        updateMaxArea(value);
+        break;
+      case 'minBeds':
+        updateMinBeds(value);
+        break;
+      case 'maxBeds':
+        updateMaxBeds(value);
+        break;
+      case 'minBaths':
+        updateMinBaths(value);
+        break;
+      case 'maxBaths':
+        updateMaxBaths(value);
+        break;
+      default:
+        break;
+    }
+    debounceUpdate({ ...searchData, [name]: value });
+  };
+
+  const debounceUpdate = useCallback(debounce(searchDeals, 400), []);
+
+  const loadMapControls = (root: HTMLElement) => {
+    ReactDOM.render(
+      <MapControls searchData={searchData} update={update} />,
+      root
+    );
+  };
+
+  const handleMapClicked = () => {
+    props.setSelectedDeal(null);
+  };
+
   const onLoad = useCallback(function callback(map: google.maps.Map) {
-    setMap(map);
+    updateMap(map);
     map.setCenter(center);
+    map.setOptions({
+      // fullscreenControlOptions: {
+      //   position: google.maps.ControlPosition.BOTTOM_LEFT
+      // },
+      streetViewControlOptions: {
+        position: google.maps.ControlPosition.BOTTOM_LEFT
+      }
+    });
+    const rootElement = document.createElement('div');
+    rootElement.id = 'map';
+    loadMapControls(rootElement);
+    setRoot(rootElement);
+    // map.controls[google.maps.ControlPosition.TOP_RIGHT].push(rootElement);
+    map.controls[google.maps.ControlPosition.TOP_RIGHT].push(rootElement);
   }, []);
 
   useEffect(() => {
+    if (map) {
+      loadMapControls(root);
+    }
+
     if (props.selectedDeal) {
       props.setSelectedDeal(
         searchResults.find(
@@ -56,9 +217,15 @@ const MapComponent: React.FC<MapComponentProps> = (
         lat: props.selectedDeal.house.latitude,
         lng: props.selectedDeal.house.longitude
       });
-    } else if (searchResults.length > 0) {
+    } else {
+      if (searchData.location.metaData) {
+        map.setCenter({
+          lat: searchData.location.metaData.lat,
+          lng: searchData.location.metaData.lng
+        });
+      }
     }
-  }, [props.selectedDeal, props.searching]);
+  }, [props.selectedDeal, props.searching, searchData, searchResults]);
 
   const handleMouseHover = (houseId: string) => {
     setHoveredHouse(houseId);
@@ -68,7 +235,7 @@ const MapComponent: React.FC<MapComponentProps> = (
   };
 
   const onUnmount = useCallback(function callback() {
-    setMap(null);
+    updateMap(null);
   }, []);
 
   const selectedHouseMarker = () => {
@@ -125,6 +292,7 @@ const MapComponent: React.FC<MapComponentProps> = (
             animation={
               hoveredHouse === house.zpid ? google.maps.Animation.BOUNCE : null
             }
+            onClick={() => openGoogleSearch(house.address)}
           >
             {hoveredHouse === house.zpid && (
               <InfoWindow
@@ -142,7 +310,7 @@ const MapComponent: React.FC<MapComponentProps> = (
   };
 
   const houseRadiusCircle = () => {
-    const distanceInKilometers = (props.selectedDeal?.distance || 0) * 1609.34;
+    const distanceInKilometers = (searchData.distance || 0) * 1609.34;
     const options = {
       strokeColor: '#FF0000',
       strokeOpacity: 0.3,
@@ -177,6 +345,7 @@ const MapComponent: React.FC<MapComponentProps> = (
       zoom={12}
       onLoad={onLoad}
       onUnmount={onUnmount}
+      onClick={handleMapClicked}
     >
       {props.selectedDeal ? (
         <>

@@ -1,0 +1,17 @@
+[
+  {
+    "set": {
+      "field": "_id",
+      "value": "{{address}}-{{city}}-{{state}}-{{zipCode}}",
+      "ignore_empty_value": true,
+      "description": "set id to address"
+    }
+  },
+  {
+    "set": {
+      "field": "id",
+      "copy_from": "_id",
+      "description": "set source id"
+    }
+  }
+]

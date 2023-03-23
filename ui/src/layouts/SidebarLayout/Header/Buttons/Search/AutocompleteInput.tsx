@@ -1,3 +1,4 @@
+import React, { useState, useMemo, useContext } from 'react';
 import {
   Box,
   debounce,
@@ -8,12 +9,10 @@ import {
   Typography
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
-import React, { useState, useMemo, useContext } from 'react';
 import LocationSuggestion from '@/models/location_suggestions';
 import { getLocationSuggestions } from 'src/api/location_api';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { SearchContext } from '@/contexts/SearchContext';
 
 const SearchInputWrapper = styled(TextField)(
   ({ theme }) => `
@@ -33,16 +32,13 @@ type AutocompleteInputProps = {
 const AutocompleteInput: React.FC<AutocompleteInputProps> = (
   props: AutocompleteInputProps
 ) => {
-  // const [suggestionValue, setSuggestionValue] =
-  React.useState<LocationSuggestion | null>(null);
   const [options, setOptions] = React.useState<LocationSuggestion[]>([]);
-  // const { searchData, setSearchData } = useContext(SearchContext);
 
   const fetch = useMemo(
     () =>
       debounce(async (searchTerm: string) => {
-        const results = await getLocationSuggestions(searchTerm);
-        setOptions(results.data);
+        const response = await getLocationSuggestions(searchTerm);
+        if (response.status === 200) setOptions(response.data);
       }, 400),
     []
   );
@@ -54,17 +50,12 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
       filterOptions={(x) => x}
       onChange={(event: any, newValue: LocationSuggestion | null) => {
         setOptions(newValue ? [newValue, ...options] : options);
-        // setSuggestionValue(newValue);
-        // const newData = { ...searchData };
-        // newData['location'] = newValue;
-        // setSearchData(newData);
         props.setLocation(newValue);
-        // props.setValue('location', newValue);
       }}
       options={options}
       getOptionLabel={(option?: LocationSuggestion) => option.display ?? ''}
       onInputChange={(event, newInputValue) => {
-        fetch(newInputValue);
+        if (newInputValue) fetch(newInputValue);
       }}
       renderInput={(params) => (
         <SearchInputWrapper
