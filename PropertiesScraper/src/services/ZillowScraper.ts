@@ -9,7 +9,8 @@ import Property from "../models/property";
 import ZillowHouse from "../models/zillowHouse";
 import RegionProperties from "../models/region_properties";
 import { addressToGeolocation } from "./location_helper";
-import states from '../../raw_data/states.json';
+import states from '../../src/states.json';
+import { constructPropertyId } from "../utils/utils";
 
 
 export default class ZillowScraper implements PropertyScraper {
@@ -204,7 +205,6 @@ export default class ZillowScraper implements PropertyScraper {
             for (const propertyResult of results as ZillowHouse[]) {
                 const nullableParameters = await this.fillNullableParameters(propertyResult);
                 const property: Property | any = {
-                    id: propertyResult.id,
                     primaryImage: propertyResult.imgSrc,
                     price: propertyResult.price,
                     address: propertyResult.address.toLowerCase(),
@@ -219,6 +219,7 @@ export default class ZillowScraper implements PropertyScraper {
                     longitude: nullableParameters.longitude,
                     listingDate: nullableParameters.listingDate,
                 }
+                property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
                 properties.push(property);
             }
         }

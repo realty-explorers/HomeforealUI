@@ -3,6 +3,7 @@ import {
 	ClientOptions,
 } from '@elastic/elasticsearch';
 import { BulkResponse } from '@elastic/elasticsearch/lib/api/types';
+import { readFileSync } from 'fs';
 import Property from '../models/property';
 import RegionStatus from '../models/region_status';
 
@@ -22,7 +23,7 @@ export default class PropertyRepository {
 				password: process.env.ELASTIC_PASSWORD!,
 			},
 			tls: {
-				ca: process.env.ELASTICSEARCH_CERTIFICATE,
+				ca: readFileSync(process.env.ELASTICSEARCH_CERTIFICATE_PATH!),
 				rejectUnauthorized: false,
 			}
 		};
@@ -83,8 +84,8 @@ export default class PropertyRepository {
 
 	public saveProperties = async (properties: Property[], state: string) => {
 		const index = this.getIndexByState(state);
-		const operations = properties.flatMap(doc => [{ index: { _index: index } }, doc])
-		const bulkResponse = await this.client!.bulk({ refresh: true, operations, pipeline: this.PROPERTY_PIPELINE })
+		const operations = properties.flatMap(doc => [{ index: { _index: index, _id: doc.id } }, doc])
+		const bulkResponse = await this.client!.bulk({ refresh: true, operations })
 		this.handleErrors(operations, bulkResponse);
 		const count = await this.client!.count({ index: index })
 		console.log(`Count: ${count}`);
@@ -114,5 +115,8 @@ export default class PropertyRepository {
 			console.log(erroredDocuments)
 		}
 	}
+
+
+
 
 }

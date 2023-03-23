@@ -1,7 +1,7 @@
 import * as puppeteer from "puppeteer";
 import { ZillowFilter, ZillowQuery, MapBounds } from "../models/zillow";
 import queryParser from 'query-string';
-import { calcDaysDifferenceToISO, saveData, sleep } from "../utils/utils";
+import { calcDaysDifferenceToISO, constructPropertyId, saveData, sleep } from "../utils/utils";
 import { RegionInfo, RegionSelection } from "../models/region_info";
 import RequestParameters from "../models/request_parameters";
 import DataFetcher from "./DataFetcher";
@@ -10,7 +10,7 @@ import Property from "../models/property";
 import RegionProperties from "../models/region_properties";
 import RealtorProperty from "../models/realtorProperty";
 import { addressToGeolocation } from "./location_helper";
-import states from '../../raw_data/states.json';
+import states from '../../src/states.json';
 
 
 export default class RealtorScraper implements PropertyScraper {
@@ -121,7 +121,6 @@ export default class RealtorScraper implements PropertyScraper {
             for (const propertyResult of results as RealtorProperty[]) {
                 const nullableParameters = await this.fillNullableParameters(propertyResult);
                 const property: Property | any = {
-                    id: propertyResult.listing_id,
                     forSale: regionProperties.isForSale,
                     primaryImage: nullableParameters.primaryPhoto,
                     price: propertyResult.list_price,
@@ -137,6 +136,7 @@ export default class RealtorScraper implements PropertyScraper {
                     longitude: nullableParameters.longitude,
                     listingDate: propertyResult.list_date
                 }
+                property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
                 properties.push(property);
             }
         }

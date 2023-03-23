@@ -29,4 +29,15 @@ const saveData = (allItems: any, fileName: string) => {
 	// });
 }
 
-export { sleep, saveData, calcDaysDifferenceToISO };
+
+const constructPropertyId = (address: string, city: string, state: string, zipCode: number) => {
+	const id = `${address}-${city}-${state}-${zipCode}`;
+	return id;
+}
+
+const constructRegionId = (city: string, state: string) => {
+	const id = `${city}-${state}`;
+	return id;
+}
+
+export { sleep, saveData, calcDaysDifferenceToISO, constructPropertyId, constructRegionId };

@@ -25,3 +25,5 @@ yarn-error.log*
 data.txt
 venv/
 raw_data/
+data/
+certs/
