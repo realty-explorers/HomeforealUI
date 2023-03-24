@@ -203,24 +203,32 @@ export default class ZillowScraper implements PropertyScraper {
         for (const propertiesResult of propertiesResults) {
             const results = propertiesResult['cat1']['searchResults']['listResults'];
             for (const propertyResult of results as ZillowHouse[]) {
-                const nullableParameters = await this.fillNullableParameters(propertyResult);
-                const property: Property | any = {
-                    primaryImage: propertyResult.imgSrc,
-                    price: propertyResult.price,
-                    address: propertyResult.address.toLowerCase(),
-                    street: propertyResult.addressStreet.toLowerCase(),
-                    city: propertyResult.addressCity.toLowerCase(),
-                    state: propertyResult.addressState.toLowerCase(),
-                    zipCode: +propertyResult.addressZipcode,
-                    beds: propertyResult.beds,
-                    baths: propertyResult.baths,
-                    area: propertyResult.area,
-                    latitude: nullableParameters.latitude,
-                    longitude: nullableParameters.longitude,
-                    listingDate: nullableParameters.listingDate,
+                try {
+                    const nullableParameters = await this.fillNullableParameters(propertyResult);
+                    const property: Property | any = {
+                        primaryImage: propertyResult.imgSrc,
+                        price: propertyResult.price,
+                        address: propertyResult.address.toLowerCase(),
+                        street: propertyResult.addressStreet.toLowerCase(),
+                        city: propertyResult.addressCity.toLowerCase(),
+                        state: propertyResult.addressState.toLowerCase(),
+                        zipCode: +propertyResult.addressZipcode,
+                        beds: propertyResult.beds,
+                        baths: propertyResult.baths,
+                        area: propertyResult.area,
+                        latitude: nullableParameters.latitude,
+                        longitude: nullableParameters.longitude,
+                        listingDate: nullableParameters.listingDate,
+                    }
+                    property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
+                    properties.push(property);
+                } catch (error) {
+                    console.log({
+                        error: 'Parsing Zillow property',
+                        data: propertyResult,
+                        message: error
+                    });
                 }
-                property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
-                properties.push(property);
             }
         }
         return properties;

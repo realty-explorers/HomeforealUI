@@ -6,6 +6,7 @@ import { BulkResponse } from '@elastic/elasticsearch/lib/api/types';
 import { readFileSync } from 'fs';
 import Property from '../models/property';
 import RegionStatus from '../models/region_status';
+import { constructRegionId } from '../utils/utils';
 
 export default class PropertyRepository {
 	private clientOptions: ClientOptions;
@@ -82,7 +83,78 @@ export default class PropertyRepository {
 		return response;
 	}
 
+
+	public getRegionStatus = async (city: string, state: string) => {
+		try {
+			const results = await this.client!.get<RegionStatus>({
+				index: this.REGION_STATUS_INDEX,
+				id: constructRegionId(city, state)
+			})
+			return results._source;
+		} catch (error) {
+			console.log(error);
+		}
+	}
+
+	private countResults = async (index: string, query: any) => {
+		const search_params = { index, body: { query } }
+		const count = await this.client?.count(search_params);
+		return count?.count;
+	}
+
+	private createPointInTime = async (index: string, keepAlive: string) => {
+		const response = await this.client?.openPointInTime({ index, keep_alive: keepAlive });
+		return response?.id;
+	}
+
+	private deletePointInTime = async (id: string) => {
+		const response = await this.client?.closePointInTime({ id: id });
+	}
+
+	private getAllResults = async (index: string, query: any) => {
+		const queryTime = '1m';
+		const search_params: any = {
+			body: { query },
+		};
+		let results: any[] = [];
+		try {
+			const pointInTimeId = await this.createPointInTime(index, queryTime);
+			const count = await this.countResults(index, query);
+			search_params['body']['sort'] = [{ "_shard_doc": "desc" }];
+			search_params['body']['pit'] = { id: pointInTimeId, keep_alive: queryTime };
+			search_params['body']['size'] = 10000
+			for (let i = 0; i < count!; i += 10000) {
+				const response = await this.client!.search(search_params);
+				const hits = response.hits.hits;
+				search_params['body']['pit'] = { id: response.pit_id, keep_alive: queryTime };
+				search_params['body']['search_after'] = hits[hits.length - 1].sort;
+				search_params['body']['track_total_hits'] = false;
+				const hitResults = response.hits.hits.map(hit => hit['_source']);
+				results.push(...hitResults);
+			}
+			await this.deletePointInTime(pointInTimeId!);
+		} catch (error) {
+			console.log(error);
+		}
+		return results;
+
+	}
+
+	public getProperties = async (city: string, state: string) => {
+		const propertiesSearchQuery = {
+			bool: {
+				must: {
+					match: { city: city }
+				}
+			},
+		}
+		const index = this.getIndexByState(state);
+		const results = await this.getAllResults(index, propertiesSearchQuery);
+		return results
+	}
+
 	public saveProperties = async (properties: Property[], state: string) => {
+		if (properties.length == 0) return;
 		const index = this.getIndexByState(state);
 		const operations = properties.flatMap(doc => [{ index: { _index: index, _id: doc.id } }, doc])
 		const bulkResponse = await this.client!.bulk({ refresh: true, operations })

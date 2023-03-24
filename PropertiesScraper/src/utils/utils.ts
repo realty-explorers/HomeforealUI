@@ -8,6 +8,14 @@ const calcDaysDifferenceToISO = (maxAge: number) => {
 	return ISODate;
 }
 
+const ISODifferenceToDays = (isoString: string) => {
+	const date = new Date(isoString);
+	const difference = Date.now() - date.getTime();
+	const daysToMilliseconds = 24 * 60 * 60 * 1000;
+	const daysDifference = difference / daysToMilliseconds;
+	return daysDifference;
+}
+
 const sleep = async (ms: number) => {
 	return new Promise((resolve) => {
 		setTimeout(resolve, ms);
@@ -40,4 +48,4 @@ const constructRegionId = (city: string, state: string) => {
 	return id;
 }
 
-export { sleep, saveData, calcDaysDifferenceToISO, constructPropertyId, constructRegionId };
+export { sleep, saveData, calcDaysDifferenceToISO, constructPropertyId, constructRegionId, ISODifferenceToDays };

@@ -35,8 +35,6 @@ export default class RealtorScraper implements PropertyScraper {
     }
     private states: { [state: string]: string };
 
-
-
     constructor() {
         this.states = states as { [state: string]: string }
     }
@@ -52,6 +50,9 @@ export default class RealtorScraper implements PropertyScraper {
             requests.push(request);
         }
         const propertiesResults = await Promise.all(requests);
+        for (const result of propertiesResults) {
+            const total = result['data']['home_search']['results'].length;
+        }
         const properties = await this.parseProperties([responseData, ...propertiesResults], regionProperties);
         return properties;
     }
@@ -95,21 +96,21 @@ export default class RealtorScraper implements PropertyScraper {
     }
 
     private getFullRequestParameters = (requestResult: any, regionProperties: RegionProperties) => {
-        const fullRequestParameters = [];
+        const fullRequestParameters: RequestParameters[] = [];
         const total = requestResult['data']['home_search']['total'];
-        console.log(total);
+        console.log(`Total properties: ${total}`);
         const pageCount = 200;
         let currentCount = 200;
         while (currentCount < total) {
             const defaultRequestParameters = this.getRequestParameters(regionProperties);
             const requestParameters = this.paginate(defaultRequestParameters, currentCount);
-            fullRequestParameters.push(requestParameters);
+            fullRequestParameters.push(JSON.parse(JSON.stringify(requestParameters)));
             currentCount += pageCount;
         }
         return fullRequestParameters;
     }
 
-    private paginate = (requestParameters: RequestParameters, startFrom: any) => {
+    private paginate = (requestParameters: RequestParameters, startFrom: number) => {
         requestParameters.body['variables']['offset'] = startFrom;
         return requestParameters;
     }
@@ -119,25 +120,38 @@ export default class RealtorScraper implements PropertyScraper {
         for (const propertiesResult of propertiesResults) {
             const results = propertiesResult['data']['home_search']['results'];
             for (const propertyResult of results as RealtorProperty[]) {
-                const nullableParameters = await this.fillNullableParameters(propertyResult);
-                const property: Property | any = {
-                    forSale: regionProperties.isForSale,
-                    primaryImage: nullableParameters.primaryPhoto,
-                    price: propertyResult.list_price,
-                    address: propertyResult.location.address.line.toLowerCase(),
-                    street: nullableParameters.street,
-                    city: propertyResult.location.address.city.toLowerCase(),
-                    state: propertyResult.location.address.state.toLowerCase(),
-                    zipCode: +propertyResult.location.address.postal_code,
-                    beds: nullableParameters.beds,
-                    baths: nullableParameters.baths,
-                    area: propertyResult.description.sqft,
-                    latitude: nullableParameters.latitude,
-                    longitude: nullableParameters.longitude,
-                    listingDate: propertyResult.list_date
+                try {
+
+                    if (!propertyResult.location?.address?.line) {
+                        console.log(propertyResult.location);
+                        continue;
+                    }
+                    const nullableParameters = await this.fillNullableParameters(propertyResult);
+                    const property: Property | any = {
+                        forSale: regionProperties.isForSale,
+                        primaryImage: nullableParameters.primaryPhoto,
+                        price: propertyResult.list_price,
+                        address: propertyResult.location.address.line.toLowerCase(),
+                        street: nullableParameters.street,
+                        city: propertyResult.location.address.city.toLowerCase(),
+                        state: propertyResult.location.address.state.toLowerCase(),
+                        zipCode: +propertyResult.location.address.postal_code,
+                        beds: nullableParameters.beds,
+                        baths: nullableParameters.baths,
+                        area: propertyResult.description.sqft,
+                        latitude: nullableParameters.latitude,
+                        longitude: nullableParameters.longitude,
+                        listingDate: propertyResult.list_date
+                    }
+                    property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
+                    properties.push(property);
+                } catch (error) {
+                    console.log({
+                        error: 'Parsing Realtor property',
+                        data: propertyResult,
+                        message: error
+                    });
                 }
-                property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
-                properties.push(property);
             }
         }
         return properties;
