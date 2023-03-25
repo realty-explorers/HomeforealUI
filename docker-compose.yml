@@ -14,6 +14,8 @@ services:
     volumes:
       - ./security/certbot/conf/:/etc/nginx/ssl/:ro
       - elastic_certs:/etc/elastic/certs/:ro
+    networks:
+      - esnet
   ui:
     image: "ghcr.io/sharonfabin/ui"
     ports:
@@ -68,6 +70,8 @@ services:
       interval: 1s
       timeout: 5s
       retries: 120
+    networks:
+      - esnet
   es01:
     depends_on:
       elastic_setup:
@@ -99,6 +103,8 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
+    networks:
+      - esnet
     #mem_limit: 1g
   kibana:
     depends_on:
@@ -126,6 +132,8 @@ services:
     volumes:
       - ./security/certbot/www/:/var/www/certbot/:rw
       - ./security/certbot/conf/:/etc/letsencrypt/:rw
+networks:
+  esnet:
 volumes:
   elastic_certs:
     driver: local
