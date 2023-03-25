@@ -14,6 +14,7 @@ export default class DealsFinder {
     private dataFetcher: AxiosDataFetcher;
     private dealsFinder: DealsEngine;
     private propertyScrapers: PropertyScraper[];
+    private propertyRepository: PropertyRepository;
 
     constructor() {
         this.dataFetcher = new AxiosDataFetcher();
@@ -21,6 +22,13 @@ export default class DealsFinder {
         const zillowScraper = new ZillowScraper();
         const realtorScraper = new RealtorScraper();
         this.propertyScrapers = [zillowScraper, realtorScraper];
+        this.propertyRepository = new PropertyRepository();
+        this.init();
+    }
+
+    private init = async () => {
+        await this.propertyRepository.connect();
+        await this.propertyRepository.setupDB();
     }
 
     private calcDateDifference = (dateString: string) => {
@@ -31,13 +39,10 @@ export default class DealsFinder {
     }
 
     public findProperties = async (regionProperties: RegionProperties) => {
-        const db = new PropertyRepository();
-        await db.connect();
-
         const properties = [];
-        const regionStatus = await db.getRegionStatus(regionProperties.city, regionProperties.state);
+        const regionStatus = await this.propertyRepository.getRegionStatus(regionProperties.city, regionProperties.state);
         if (regionStatus) {
-            const results = await db.getProperties(regionProperties.city, regionProperties.state);
+            const results = await this.propertyRepository.getProperties(regionProperties.city, regionProperties.state);
             properties.push(...results);
             const lastUpdateAge = this.calcDateDifference(regionStatus.lastUpdated);
             if (lastUpdateAge < 1) return properties;
@@ -60,8 +65,8 @@ export default class DealsFinder {
         const [forSaleProperties, soldProperties] = await Promise.all([forSalePropertiesScrapeTask, soldPropertiesScrapeTask]);
         const foundProperties = [...forSaleProperties, ...soldProperties];
 
-        await db.saveProperties(foundProperties, regionProperties.state);
-        await db.updateRegionStatus(updatedRegionStatus);
+        await this.propertyRepository.saveProperties(foundProperties, regionProperties.state);
+        await this.propertyRepository.updateRegionStatus(updatedRegionStatus);
 
         properties.push(...foundProperties)
         return properties;

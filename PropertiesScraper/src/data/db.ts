@@ -73,6 +73,27 @@ export default class PropertyRepository {
 		return response;
 	}
 
+	public setupDB = async () => {
+		const indexExists = await this.client!.indices.exists({ index: this.REGION_STATUS_INDEX });
+		if (!indexExists) await this.createRegionStatusIndex();
+	}
+
+
+	public createRegionStatusIndex = async () => {
+		const response = await this.client!.indices.create({
+			index: this.REGION_STATUS_INDEX,
+			mappings: {
+				properties: {
+					"city": { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+					"id": { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+					"lastUpdated": { "type": "date" },
+					"state": { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } }
+				}
+			}
+		});
+		return response;
+	}
+
 	public updateRegionStatus = async (regionStatus: RegionStatus) => {
 		const response = await this.client!.index({
 			index: this.REGION_STATUS_INDEX,

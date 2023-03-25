@@ -25,10 +25,4 @@ RUN npm ci --only=production
 COPY --from=0 /usr/src/app/build ./build
 
 
-ENV PORT=9000
-ENV AMQP_PATH=amqp://localhost
-ENV UPDATES_QUEUE=updates
-ENV UPDATES_EXCHANGE=updates_exchange
-ENV FRONT_URL=http://18.222.221.89
-
 CMD [ "node", "./build/src/main.js" ]
