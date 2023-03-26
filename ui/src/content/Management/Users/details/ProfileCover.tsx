@@ -99,7 +99,7 @@ const ProfileCover = ({ user }) => {
       <CardCover>
         <CardMedia image={user.coverImg} />
         <CardCoverAction>
-          <Input accept="image/*" id="change-cover" multiple type="file" />
+          <Input accept="image/*.jpg" id="change-cover" multiple type="file" />
           <label htmlFor="change-cover">
             <Button
               startIcon={<UploadTwoToneIcon />}

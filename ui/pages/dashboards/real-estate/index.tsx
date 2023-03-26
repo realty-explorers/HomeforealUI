@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from 'next/head';
 import SidebarLayout from '@/layouts/SidebarLayout';
-import { Box, Container, Grid } from '@mui/material';
+import { Box, Button, Container, Grid } from '@mui/material';
 import Footer from '@/components/Footer';
 import Map from '@/content/Dashboards/RealEstate/Map';
 import Properties from '@/content/Dashboards/RealEstate/Properties';
@@ -10,6 +11,10 @@ import { useSelector } from 'react-redux';
 import { selectSearchResults } from '@/store/searchSlice';
 
 function DashboardRealEstate() {
+  const { data, status } = useSession({
+    required: true
+  });
+
   const [selectedDeal, setSelectedDeal] = useState<Deal>();
 
   const searchResults = useSelector(selectSearchResults);
