@@ -11,6 +11,7 @@ import RegionProperties from "../models/region_properties";
 import { addressToGeolocation } from "./location_helper";
 import states from '../../src/states.json';
 import { constructPropertyId } from "../utils/utils";
+import ScrapeMetadata from "../models/scrape_metadata";
 
 
 export default class ZillowScraper implements PropertyScraper {
@@ -25,29 +26,25 @@ export default class ZillowScraper implements PropertyScraper {
         this.states = states as { [state: string]: string }
     }
 
-    public scrapeProperties = async (regionProperties: RegionProperties, dataFetcher: DataFetcher) => {
+    public scrapeMetadata = async (regionProperties: RegionProperties, dataFetcher: DataFetcher) => {
         const regionData = await this.getRegionData(this.regionToAddress(regionProperties.city, regionProperties.state), dataFetcher);
         const initRequestParameters = this.getRequestParameters(regionProperties, regionData);
         const maxTries = 25;
-        console.log('Fetching first page');
         const responseData = await dataFetcher.tryFetch(initRequestParameters, this.validateData, maxTries);
-        const requestsParameters = this.getFullRequestParameters(responseData, regionProperties, regionData);
-        console.log('Fetching all pages');
-        const requests: Promise<any>[] = [];
-        for (const requestParameter of requestsParameters) {
-            const request = dataFetcher.tryFetch(requestParameter, this.validateData, maxTries);
-            requests.push(request);
+        const scrapingInfo = this.extractScrapingInfo(responseData, regionProperties);
+        scrapingInfo.extra.regionData = regionData;
+        return scrapingInfo;
+    }
+
+
+    private extractScrapingInfo = (scrapingData: any, regionProperties: RegionProperties) => {
+        const totalPages = scrapingData['cat1']['searchList']['totalPages'];
+        const scrapingInfo: ScrapeMetadata = {
+            totalPages,
+            regionProperties
         }
-        const propertiesResults = await Promise.all(requests);
-        const properties = await this.parseProperties([responseData, ...propertiesResults]);
-        return properties;
+        return scrapingInfo;
     }
-
-    private regionToAddress = (city: string, state: string) => {
-        const address = `${city}, ${this.states[state]}`;
-        return address;
-    }
-
 
     private getRegionData = async (address: string, dataFetcher: DataFetcher) => {
         const regionId = await this.getRegionId(address, dataFetcher);
@@ -73,6 +70,39 @@ export default class ZillowScraper implements PropertyScraper {
         return regionId;
     }
 
+    private regionToAddress = (city: string, state: string) => {
+        const address = `${city}, ${this.states[state]}`;
+        return address;
+    }
+
+    public getRequestParameters = (regionProperties: RegionProperties, regionData: any,) => {
+        const requestQuery = this.constructQuery(regionProperties, regionData);
+        const url = this.constructRequestUrl(requestQuery)
+        const requestParameters = {
+            method: 'GET',
+            url: url,
+        }
+        return requestParameters;
+    }
+
+    public scrapeProperties = async (scrapingInfo: ScrapeMetadata, dataFetcher: DataFetcher) => {
+        const maxTries = 5;
+        const requestsParameters = this.getFullRequestParameters(scrapingInfo);
+        console.log('Fetching all pages');
+        const requests: Promise<any>[] = [];
+        for (const requestParameter of requestsParameters) {
+            const request = dataFetcher.tryFetch(requestParameter, this.validateData, maxTries);
+            requests.push(request);
+        }
+        const propertiesResults = await Promise.all(requests);
+        const properties = await this.parseProperties([...propertiesResults]);
+        return properties;
+    }
+
+
+
+
+
     private validateRegionData = (data: any) => {
         return data !== null;
     }
@@ -97,15 +127,6 @@ export default class ZillowScraper implements PropertyScraper {
         return query;
     }
 
-    public getRequestParameters = (regionProperties: RegionProperties, regionData: any,) => {
-        const requestQuery = this.constructQuery(regionProperties, regionData);
-        const url = this.constructRequestUrl(requestQuery)
-        const requestParameters = {
-            method: 'GET',
-            url: url,
-        }
-        return requestParameters;
-    }
 
     public constructQuery = (regionProperties: RegionProperties, regionData: any) => {
         const maxDaysOnZillow = '24m';
@@ -150,14 +171,13 @@ export default class ZillowScraper implements PropertyScraper {
         return false;
     }
 
-    private getFullRequestParameters = (requestResult: any, regionProperties: RegionProperties, regionData: any) => {
+    private getFullRequestParameters = (scrapingInfo: ScrapeMetadata) => {
         const fullRequestParameters = [];
-        const total = requestResult['cat1']['searchList']['totalPages'];
-        console.log(`Total requests: ${total}`)
+        const total = scrapingInfo.totalPages;
         const pageCount = 1;
-        let currentCount = 2;
+        let currentCount = 1;
         while (currentCount < total) {
-            const defaultRequestParameters = this.getRequestParameters(regionProperties, regionData);
+            const defaultRequestParameters = this.getRequestParameters(scrapingInfo.regionProperties, scrapingInfo.extra.regionInfo);
             const requestParameters = this.paginate(defaultRequestParameters, currentCount);
             fullRequestParameters.push(requestParameters);
             currentCount += pageCount;

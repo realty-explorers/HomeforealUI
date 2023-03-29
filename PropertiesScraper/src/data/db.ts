@@ -49,7 +49,7 @@ export default class PropertyRepository {
 	};
 
 	private getIndexByState = (state: string) => {
-		return `${this.PROPERTY_DEFAULT_INDEX}_${state}`;
+		return `${this.PROPERTY_DEFAULT_INDEX}_${state}`.replace(' ', '_');
 	}
 
 	public getPropertyById = async (id: string, state: string) => {
@@ -113,7 +113,7 @@ export default class PropertyRepository {
 			})
 			return results._source;
 		} catch (error) {
-			console.log(error);
+			console.log();
 		}
 	}
 

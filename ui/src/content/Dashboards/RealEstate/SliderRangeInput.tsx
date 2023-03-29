@@ -41,11 +41,6 @@ const SliderRangeInput: React.FC<SliderRangeInputProps> = (
       props.maxValueName,
       props.scale ? props.scale.scale(newValue[1]) : newValue[1]
     );
-    console.log(
-      `${props.inputProps.name}: ${
-        props.scale ? props.scale.reverseScale(props.minValue) : props.minValue
-      }`
-    );
   };
 
   return (

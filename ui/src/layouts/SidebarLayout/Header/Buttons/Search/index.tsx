@@ -1,32 +1,15 @@
+import { forwardRef, Ref, useState, ReactElement } from 'react';
 import {
-  forwardRef,
-  Ref,
-  useState,
-  ReactElement,
-  ChangeEvent,
-  useContext
-} from 'react';
-import {
-  Avatar,
-  Link,
   Box,
   Button,
   Divider,
   IconButton,
-  InputAdornment,
-  lighten,
-  List,
-  ListItem,
-  ListItemAvatar,
   TextField,
-  Theme,
   Tooltip,
-  Typography,
   Dialog,
   DialogContent,
   DialogTitle,
   Slide,
-  Hidden,
   DialogActions,
   CircularProgress
 } from '@mui/material';
@@ -42,7 +25,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { selectSearchData, setSearchLocation } from '@/store/searchSlice';
 import LocationSuggestion from '@/models/location_suggestions';
 import useSearch from '@/hooks/useSearch';
-import { blue, green } from '@mui/material/colors';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & { children: ReactElement<any, any> },

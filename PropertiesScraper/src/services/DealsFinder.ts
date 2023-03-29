@@ -8,6 +8,7 @@ import PropertyScraper from "./PropertyScraper";
 import RealtorScraper from "./RealtorScraper";
 import PropertyRepository from "../data/db";
 import RegionStatus from "../models/region_status";
+import { ScrapingManager } from "./ScrapingManager";
 
 export default class DealsFinder {
 
@@ -15,6 +16,7 @@ export default class DealsFinder {
     private dealsFinder: DealsEngine;
     private propertyScrapers: PropertyScraper[];
     private propertyRepository: PropertyRepository;
+    private scrapingManager: ScrapingManager;
 
     constructor() {
         this.dataFetcher = new AxiosDataFetcher();
@@ -24,6 +26,7 @@ export default class DealsFinder {
         this.propertyScrapers = [zillowScraper, realtorScraper];
         this.propertyRepository = new PropertyRepository();
         this.init();
+        this.scrapingManager = new ScrapingManager();
     }
 
     private init = async () => {
@@ -58,13 +61,7 @@ export default class DealsFinder {
             lastUpdated: new Date().toISOString()
         }
 
-        const forSaleRegionProperties = { ...regionProperties, isForSale: true };
-        const soldRegionProperties: RegionProperties = { ...regionProperties, isForSale: false };
-        const forSalePropertiesScrapeTask = this.propertyScrapers[1].scrapeProperties(forSaleRegionProperties, this.dataFetcher);
-        const soldPropertiesScrapeTask = this.propertyScrapers[1].scrapeProperties(soldRegionProperties, this.dataFetcher);
-        const [forSaleProperties, soldProperties] = await Promise.all([forSalePropertiesScrapeTask, soldPropertiesScrapeTask]);
-        const foundProperties = [...forSaleProperties, ...soldProperties];
-
+        const foundProperties = await this.scrapingManager.scrapeProperties(regionProperties);
         await this.propertyRepository.saveProperties(foundProperties, regionProperties.state);
         await this.propertyRepository.updateRegionStatus(updatedRegionStatus);
 

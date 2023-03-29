@@ -13,7 +13,7 @@ import {
   InfoWindow
 } from '@react-google-maps/api';
 import Deal from '@/models/deal';
-import House from '@/models/house';
+import CompsProperty from '@/models/comps_property';
 import PropertyMapCard from './PropertyMapCard';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -210,12 +210,12 @@ const MapComponent: React.FC<MapComponentProps> = (
     if (props.selectedDeal) {
       props.setSelectedDeal(
         searchResults.find(
-          (deal: Deal) => deal.house.id === props.selectedDeal.house.id
+          (deal: Deal) => deal.property.id === props.selectedDeal.property.id
         )
       );
       map.setCenter({
-        lat: props.selectedDeal.house.latitude,
-        lng: props.selectedDeal.house.longitude
+        lat: props.selectedDeal.property.latitude,
+        lng: props.selectedDeal.property.longitude
       });
     } else {
       if (searchData.location.metaData) {
@@ -242,8 +242,8 @@ const MapComponent: React.FC<MapComponentProps> = (
     return props.selectedDeal ? (
       <Marker
         position={{
-          lat: props.selectedDeal!.house.latitude,
-          lng: props.selectedDeal!.house.longitude
+          lat: props.selectedDeal!.property.latitude,
+          lng: props.selectedDeal!.property.longitude
         }}
         onClick={() => {
           props.setSelectedDeal(null);
@@ -260,19 +260,22 @@ const MapComponent: React.FC<MapComponentProps> = (
     return searchResults.map((deal: Deal, index: number) => (
       <Marker
         key={index}
-        position={{ lat: deal.house.latitude, lng: deal.house.longitude }}
-        onMouseOver={() => handleMouseHover(deal.house.zpid)}
+        position={{ lat: deal.property.latitude, lng: deal.property.longitude }}
+        onMouseOver={() => handleMouseHover(deal.property.id)}
         onMouseOut={() => handleMouseOut()}
         onClick={() => {
           props.setSelectedDeal(deal);
           setHoveredHouse('');
         }}
       >
-        {hoveredHouse === deal.house.zpid && (
+        {hoveredHouse === deal.property.id && (
           <InfoWindow
-            position={{ lat: deal.house.latitude, lng: deal.house.longitude }}
+            position={{
+              lat: deal.property.latitude,
+              lng: deal.property.longitude
+            }}
           >
-            <PropertyMapCard house={deal.house} />
+            <PropertyMapCard property={deal.property} />
           </InfoWindow>
         )}
       </Marker>
@@ -282,23 +285,31 @@ const MapComponent: React.FC<MapComponentProps> = (
   const soldHousesMarkers = () => {
     return props.selectedDeal ? (
       props.selectedDeal?.relevantSoldHouses.map(
-        (house: House, index: number) => (
+        (compsProperty: CompsProperty, index: number) => (
           <Marker
             key={index}
-            position={{ lat: house.latitude, lng: house.longitude }}
+            position={{
+              lat: compsProperty.latitude,
+              lng: compsProperty.longitude
+            }}
             icon={'http://maps.google.com/mapfiles/ms/icons/yellow-dot.png'}
-            onMouseOver={() => handleMouseHover(house.zpid)}
+            onMouseOver={() => handleMouseHover(compsProperty.id)}
             onMouseOut={() => handleMouseOut()}
             animation={
-              hoveredHouse === house.zpid ? google.maps.Animation.BOUNCE : null
+              hoveredHouse === compsProperty.id
+                ? google.maps.Animation.BOUNCE
+                : null
             }
-            onClick={() => openGoogleSearch(house.address)}
+            onClick={() => openGoogleSearch(compsProperty.address)}
           >
-            {hoveredHouse === house.zpid && (
+            {hoveredHouse === compsProperty.id && (
               <InfoWindow
-                position={{ lat: house.latitude, lng: house.longitude }}
+                position={{
+                  lat: compsProperty.latitude,
+                  lng: compsProperty.longitude
+                }}
               >
-                <PropertyMapCard house={house} />
+                <PropertyMapCard property={compsProperty} />
               </InfoWindow>
             )}
           </Marker>
@@ -329,8 +340,8 @@ const MapComponent: React.FC<MapComponentProps> = (
       <Circle
         key={1}
         center={{
-          lat: props.selectedDeal.house.latitude,
-          lng: props.selectedDeal.house.longitude
+          lat: props.selectedDeal.property.latitude,
+          lng: props.selectedDeal.property.longitude
         }}
         options={options}
       />

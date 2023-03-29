@@ -11,6 +11,7 @@ import RegionProperties from "../models/region_properties";
 import RealtorProperty from "../models/realtorProperty";
 import { addressToGeolocation } from "./location_helper";
 import states from '../../src/states.json';
+import ScrapeMetadata from "../models/scrape_metadata";
 
 
 export default class RealtorScraper implements PropertyScraper {
@@ -39,21 +40,36 @@ export default class RealtorScraper implements PropertyScraper {
         this.states = states as { [state: string]: string }
     }
 
-    public scrapeProperties = async (regionProperties: RegionProperties, dataFetcher: DataFetcher) => {
+    public scrapeMetadata = async (regionProperties: RegionProperties, dataFetcher: DataFetcher) => {
         const initRequestParameters = this.getRequestParameters(regionProperties);
         const maxTries = 25;
         const responseData = await dataFetcher.tryFetch(initRequestParameters, this.validateData, maxTries);
-        const requestsParameters = this.getFullRequestParameters(responseData, regionProperties);
-        const requests: Promise<any>[] = [];
+        const scrapingInfo = this.extractScrapingInfo(responseData, regionProperties);
+        return scrapingInfo;
+    }
+
+    private extractScrapingInfo = (scrapingData: any, regionProperties: RegionProperties) => {
+        if (!scrapingData) throw Error('No data found');
+        const totalProperties = scrapingData['data']['home_search']['total'];
+        console.log(`Total properties to scrape: ${totalProperties}`);
+        const totalPages = Math.ceil(totalProperties / 200);
+        const scrapingInfo: ScrapeMetadata = {
+            totalPages,
+            regionProperties
+        }
+        return scrapingInfo;
+    }
+
+    public scrapeProperties = async (scrapeInfo: ScrapeMetadata, dataFetcher: DataFetcher) => {
+        const maxTries = 25;
+        const requestsParameters = this.getFullRequestParameters(scrapeInfo);
+        let requests: Promise<any>[] = [];
         for (const requestParameters of requestsParameters) {
             const request = dataFetcher.tryFetch(requestParameters, this.validateData, maxTries);
             requests.push(request);
         }
         const propertiesResults = await Promise.all(requests);
-        for (const result of propertiesResults) {
-            const total = result['data']['home_search']['results'].length;
-        }
-        const properties = await this.parseProperties([responseData, ...propertiesResults], regionProperties);
+        const properties = await this.parseProperties([...propertiesResults], scrapeInfo.regionProperties);
         return properties;
     }
 
@@ -61,7 +77,9 @@ export default class RealtorScraper implements PropertyScraper {
         try {
             const parsedData: any = data['data']['home_search']['results'];
             return parsedData !== undefined;
-        } catch (error) { }
+        } catch (error) {
+            // throw Error('No data found');
+        }
         return false;
     }
 
@@ -95,14 +113,13 @@ export default class RealtorScraper implements PropertyScraper {
         return requestParameters;
     }
 
-    private getFullRequestParameters = (requestResult: any, regionProperties: RegionProperties) => {
+    private getFullRequestParameters = (scrapeInfo: ScrapeMetadata) => {
         const fullRequestParameters: RequestParameters[] = [];
-        const total = requestResult['data']['home_search']['total'];
-        console.log(`Total properties: ${total}`);
+        const total = scrapeInfo.totalPages;
         const pageCount = 200;
-        let currentCount = 200;
+        let currentCount = 0;
         while (currentCount < total) {
-            const defaultRequestParameters = this.getRequestParameters(regionProperties);
+            const defaultRequestParameters = this.getRequestParameters(scrapeInfo.regionProperties);
             const requestParameters = this.paginate(defaultRequestParameters, currentCount);
             fullRequestParameters.push(JSON.parse(JSON.stringify(requestParameters)));
             currentCount += pageCount;
@@ -121,9 +138,8 @@ export default class RealtorScraper implements PropertyScraper {
             const results = propertiesResult['data']['home_search']['results'];
             for (const propertyResult of results as RealtorProperty[]) {
                 try {
-
                     if (!propertyResult.location?.address?.line) {
-                        console.log(propertyResult.location);
+                        // console.log(propertyResult.location);
                         continue;
                     }
                     const nullableParameters = await this.fillNullableParameters(propertyResult);

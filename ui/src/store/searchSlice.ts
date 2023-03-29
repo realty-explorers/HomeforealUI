@@ -50,7 +50,6 @@ const initialState: SearchState = {
         maxBaths: 9
     },
     searchResults: []
-
 };
 
 // Actual Slice

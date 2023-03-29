@@ -1,6 +1,7 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import DealsService from '../services/deals_service';
 import { ParsedQs } from 'qs';
+import { RequestWithUser } from '../auth/auth_middleware';
 
 type QueryType = string | string[] | ParsedQs | ParsedQs[] | undefined;
 
@@ -12,14 +13,14 @@ export default class DealsController {
 	}
 
 	public findProperties = async (
-		req: Request,
+		req: RequestWithUser,
 		res: Response,
 		next: NextFunction
 	) => {
 		try {
 			const { city, state, soldPropertiesMaxAge, forSalePropertiesMaxAge } = req.body;
-			console.log(req.body);
-			const response = await this.dealsService.findProperties(city, state, soldPropertiesMaxAge, forSalePropertiesMaxAge);
+			const userId = req.user!.name;
+			const response = await this.dealsService.findProperties(userId, city, state, soldPropertiesMaxAge, forSalePropertiesMaxAge);
 			res.json(response);
 		} catch (error: any) {
 			console.log(error);
@@ -28,14 +29,14 @@ export default class DealsController {
 	};
 
 	public findDeals = async (
-		req: Request,
+		req: RequestWithUser,
 		res: Response,
 		next: NextFunction
 	) => {
 		try {
-			const { address, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, soldAge, forSaleAge, minArea, maxArea, minBeds, maxBeds, minBaths, maxBaths } = req.body;
-			console.log(req.body);
-			const response = await this.dealsService.findDeals(address, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, soldAge, forSaleAge, minArea, maxArea, minBeds, maxBeds, minBaths, maxBaths);
+			const { distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, soldAge, forSaleAge, minArea, maxArea, minBeds, maxBeds, minBaths, maxBaths } = req.body;
+			const userId = req.user!.name;
+			const response = await this.dealsService.findDeals(userId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, soldAge, forSaleAge, minArea, maxArea, minBeds, maxBeds, minBaths, maxBaths);
 			res.json(response);
 		} catch (error: any) {
 			console.log(error);

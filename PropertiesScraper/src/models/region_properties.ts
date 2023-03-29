@@ -2,7 +2,7 @@ interface RegionProperties {
     city: string,
     state: string,
     isForSale?: boolean;
-    soldPropertiesMaxAge: number;
+    soldPropertiesMaxAge?: number;
     forSalePropertiesMaxAge?: number;
 }
 

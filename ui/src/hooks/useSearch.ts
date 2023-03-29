@@ -46,11 +46,12 @@ export const useSearch = () => {
 		}
 	};
 
-	const searchProperties = async (searchData: any) => {
+	const searchProperties = async (searchData: SearchData) => {
 		try {
 			setSearching(true);
 			const response = await findProperties(
-				searchData.location.metaData.regionId
+				searchData.location.metaData.city,
+				searchData.location.metaData.state
 			);
 			if (response.status === 200) {
 				alert('Search Finished')

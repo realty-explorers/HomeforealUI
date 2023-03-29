@@ -10,7 +10,8 @@ import {
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import LocationSuggestion from '@/models/location_suggestions';
-import { getLocationSuggestions } from 'src/api/location_api';
+// import { getLocationSuggestions } from '@/api/routes';
+import { getLocationSuggestions } from '@/api/location_api';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 

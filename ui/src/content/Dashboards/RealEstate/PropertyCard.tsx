@@ -79,10 +79,10 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     else props.setSelectedDeal(props.deal);
   };
 
-  const [cardImage, setCardImage] = useState(props.deal.house.imgSrc);
+  const [cardImage, setCardImage] = useState(props.deal.property.primaryImage);
 
   useEffect(() => {
-    setCardImage(props.deal.house.imgSrc);
+    setCardImage(props.deal.property.primaryImage);
     return () => {};
   }, [props.deal]);
 
@@ -90,7 +90,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     <StyledCard
       selected={
         props.selectedDeal &&
-        props.selectedDeal.house.id === props.deal.house.id
+        props.selectedDeal.property.id === props.deal.property.id
       }
     >
       <CardActionArea onClick={handleDealSelected}>
@@ -103,8 +103,8 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           }}
           image={cardImage}
           // image={props.deal.house.imgSrc}
-          alt={props.deal.house.address}
-          title={props.deal.house.address}
+          alt={props.deal.property.address}
+          title={props.deal.property.address}
           onError={() =>
             setCardImage(
               '/static/images/placeholders/illustrations/unknown-house.png'
@@ -133,7 +133,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
                 />
                 <Box>
                   <Typography align="right" variant="h4" noWrap>
-                    {priceFormatter(props.deal.house.price)}
+                    {priceFormatter(props.deal.property.price)}
                   </Typography>
                 </Box>
               </ListItem>
@@ -170,7 +170,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
                 />
                 <Box>
                   <Typography align="right" variant="h4" noWrap>
-                    {props.deal.house.area}
+                    {props.deal.property.area}
                   </Typography>
                 </Box>
               </ListItem>

@@ -5,6 +5,9 @@ import CredentialsProvider from "next-auth/providers/credentials";
 
 export const authOptions = {
     // Configure one or more authentication providers
+    // session: {
+    //     strategy: "jwt",
+    // },
     providers: [
         CognitoProvider({
             clientId: process.env.COGNITO_CLIENT_ID,
@@ -72,8 +75,13 @@ export const authOptions = {
             session.user.name = email.substring(0, email.indexOf('@'));
 
             return session
+        },
+        pages: {
+            signIn: '/auth/signIn',
+            error: '/auth/signIn'
         }
-    }
+
+    },
 }
 
 export default NextAuth(authOptions)

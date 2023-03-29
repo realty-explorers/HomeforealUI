@@ -1,5 +1,5 @@
 import Deal from '@/models/deal';
-import House from '@/models/house';
+import Property from '@/models/property';
 import { priceFormatter } from '@/utils/converters';
 import {
   Grid,
@@ -20,12 +20,12 @@ import { TransitionGroup } from 'react-transition-group';
 import PropertyCard from './PropertyCard';
 
 type PropertyMapCardProps = {
-  house: House;
+  property: Property;
 };
 const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   props: PropertyMapCardProps
 ) => {
-  const [cardImage, setCardImage] = useState(props.house.imgSrc);
+  const [cardImage, setCardImage] = useState(props.property.primaryImage);
 
   return (
     <>
@@ -34,7 +34,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
           component="img"
           height="100"
           image={cardImage}
-          alt={props.house.address}
+          alt={props.property.address}
           onError={() =>
             setCardImage(
               '/static/images/placeholders/illustrations/unknown-house.png'
@@ -60,7 +60,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 />
                 <Box>
                   <Typography align="right" noWrap>
-                    {priceFormatter(props.house.price)}
+                    {priceFormatter(props.property.price)}
                   </Typography>
                 </Box>
               </ListItem>
@@ -76,7 +76,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 />
                 <Box>
                   <Typography align="right" noWrap>
-                    {props.house.area}
+                    {props.property.area}
                   </Typography>
                 </Box>
               </ListItem>
@@ -91,7 +91,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 />
                 <Box>
                   <Typography align="right" noWrap>
-                    {props.house.beds}
+                    {props.property.beds}
                   </Typography>
                 </Box>
               </ListItem>
@@ -106,7 +106,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 />
                 <Box>
                   <Typography align="right" noWrap>
-                    {props.house.baths}
+                    {props.property.baths}
                   </Typography>
                 </Box>
               </ListItem>

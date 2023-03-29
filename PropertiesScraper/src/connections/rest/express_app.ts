@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import cookieparser from 'cookie-parser';
 import * as https from 'https';
 import * as http from 'http';
 import router from '../../api';
@@ -66,6 +67,7 @@ class App {
 		});
 		this.app.use(express.urlencoded({ extended: false }));
 		this.app.use(express.json({ limit: '500mb' }));
+		this.app.use(cookieparser());
 	}
 }
 export default App;

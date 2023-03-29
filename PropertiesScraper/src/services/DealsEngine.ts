@@ -1,4 +1,5 @@
 import CompsProperty from "../models/comps_property";
+import Deal from "../models/deal";
 import Property from "../models/property";
 
 export default class DealsEngine {
@@ -8,7 +9,7 @@ export default class DealsEngine {
     }
 
     public findDeals = async (soldProperties: Property[], forSaleProperties: Property[], maxDistance: number, minProfit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, soldAge?: number, forSaleAge?: number, minArea?: number, maxArea?: number, minBeds?: number, maxBeds?: number, minBaths?: number, maxBaths?: number) => {
-        const deals: { profit: number, distance: number, property: Property, relevantSoldHouses: CompsProperty[] }[] = [];
+        const deals: Deal[] = [];
         for (const forSaleProperty of forSaleProperties) {
             const validMinPrice = propertyMinPrice == undefined ? true : forSaleProperty.price >= propertyMinPrice;
             const validMaxPrice = propertyMaxPrice == undefined ? true : forSaleProperty.price <= propertyMaxPrice;

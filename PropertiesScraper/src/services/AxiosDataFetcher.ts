@@ -102,7 +102,7 @@ export default class AxiosDataFetcher implements DataFetcher {
         let tries = 0;
         maxTries = maxTries ? maxTries : 100;
         while (tries < maxTries) {
-            console.log(`fetching #${tries}`);
+            // console.log(`fetching #${tries}`);
             tries++;
             const response = await this.makeRequest(requestParameters);
             if (response) {

@@ -12,31 +12,6 @@ interface SidebarLayoutProps {
 const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
   const theme = useTheme();
 
-  // const search = async () => {
-  //   try {
-  //     setLoading(true);
-  //     const response = await findDeals(
-  //       searchData.location['metaData'].regionId,
-  //       searchData.distance,
-  //       searchData.underComps,
-  //       parseInt(searchData.arv.min),
-  //       parseInt(searchData.arv.max),
-  //       parseInt(searchData.price.min),
-  //       parseInt(searchData.price.max),
-  //       searchData.lastSold
-  //     );
-  //     if (response.status === 200) {
-  //       setSearchResults(response.data);
-  //       alert('done');
-  //     } else throw Error(response.data);
-  //   } catch (error) {
-  //     console.log(JSON.stringify(error));
-  //     alert(JSON.stringify(error));
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   return (
     <>
       <Box

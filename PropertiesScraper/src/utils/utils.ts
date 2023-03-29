@@ -4,7 +4,6 @@ const calcDaysDifferenceToISO = (maxAge: number) => {
 	const daysToMilliseconds = 24 * 60 * 60 * 1000;
 	const difference = Date.now() - maxAge * daysToMilliseconds;
 	const ISODate = (new Date(difference)).toISOString();
-	console.log(ISODate);
 	return ISODate;
 }
 
