@@ -36,6 +36,8 @@ export const useSearch = () => {
 			);
 			if (response.status === 200) {
 				dispatch(setSearchResults(response.data));
+			} else if (response.status === 401) {
+				alert("You are not logged in!");
 			} else throw Error(response.data);
 		} catch (error) {
 			console.log(JSON.stringify(error));

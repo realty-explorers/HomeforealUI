@@ -1,7 +1,6 @@
 import { Router, Request, Response, NextFunction } from 'express';
 import { ParsedQs } from 'qs';
 import LocationService from '../services/location_service';
-import { getToken } from "next-auth/jwt"
 
 type QueryType = string | string[] | ParsedQs | ParsedQs[] | undefined;
 

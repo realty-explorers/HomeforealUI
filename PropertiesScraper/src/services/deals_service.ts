@@ -8,11 +8,11 @@ export default class DealsService {
 	private dealsFinder: DealsFinder;
 	private propertiesCache: PropertiesCache;
 
-
 	constructor() {
 		this.dealsFinder = new DealsFinder();
 		this.propertiesCache = new PropertiesCache();
 	}
+
 
 	public findProperties = async (id: string, city: string, state: string, soldPropertiesMaxAge: number, forSalePropertiesMaxAge: number) => {
 		//TODO: change to default ages in production

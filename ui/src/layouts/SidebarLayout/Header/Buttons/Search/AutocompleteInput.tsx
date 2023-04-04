@@ -14,6 +14,7 @@ import LocationSuggestion from '@/models/location_suggestions';
 import { getLocationSuggestions } from '@/api/location_api';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { signOut } from 'next-auth/react';
 
 const SearchInputWrapper = styled(TextField)(
   ({ theme }) => `
@@ -38,8 +39,20 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
   const fetch = useMemo(
     () =>
       debounce(async (searchTerm: string) => {
-        const response = await getLocationSuggestions(searchTerm);
-        if (response.status === 200) setOptions(response.data);
+        try {
+          const response = await getLocationSuggestions(searchTerm);
+          if (response.status === 200) setOptions(response.data);
+          else throw Error('Something went wrong');
+        } catch (error) {
+          if (
+            error.response &&
+            error.response.status &&
+            (error.response.status === 400 || error.response.status === 401)
+          ) {
+            alert('Unauthorized');
+            signOut();
+          } else alert(error);
+        }
       }, 400),
     []
   );

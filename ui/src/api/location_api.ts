@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-const gateway_url = `${process.env.DEALS_SERVICE_HOST}`;
+const gateway_url = `${process.env.NEXT_PUBLIC_DEALS_SERVICE_HOST}`;
 // const gateway_url = `http://localhost:9001`;
 
 const getLocationSuggestions = async (searchTerm: string) => {
-	return axios.get(`http://localhost:9001/api/v1/location/suggest?searchTerm=${searchTerm}`, {
+	return axios.get(`${gateway_url}/api/v1/location/suggest?searchTerm=${searchTerm}`, {
 		headers: {
 			'Access-Control-Allow-Origin': '*'
 		},

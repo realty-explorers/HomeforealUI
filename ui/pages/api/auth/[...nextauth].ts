@@ -1,18 +1,24 @@
 import NextAuth, { Session } from "next-auth"
 import CognitoProvider from "next-auth/providers/cognito";
 import CredentialsProvider from "next-auth/providers/credentials";
+import { CognitoUserPool, CognitoUser } from 'amazon-cognito-identity-js';
 
+const poolData = {
+    UserPoolId: process.env.NEXT_AUTH_COGNITO_USER_POOL_ID,
+    ClientId: process.env.NEXT_AUTH_COGNITO_CLIENT_ID,
+};
+// const userPool = new CognitoUserPool(poolData);
 
 export const authOptions = {
-    // Configure one or more authentication providers
-    // session: {
-    //     strategy: "jwt",
-    // },
+    session: {
+        maxAge: 60
+    },
     providers: [
         CognitoProvider({
             clientId: process.env.COGNITO_CLIENT_ID,
             clientSecret: process.env.COGNITO_CLIENT_SECRET,
             issuer: process.env.COGNITO_ISSUER,
+
         }),
         // CredentialsProvider({
         //     name: 'Credentials',
@@ -67,18 +73,22 @@ export const authOptions = {
         // })
     ],
     callbacks: {
-        async session({ session, token, user }) {
-            // Send properties to the client, like an access_token and user id from a provider.
-            session.accessToken = token.accessToken
-            session.user.id = token.id
-            const email = session.user.email as string;
-            session.user.name = email.substring(0, email.indexOf('@'));
-
-            return session
+        async jwt({ token, user, account, profile, isNewUser }) {
+            if (account?.access_token) {
+                token.accessToken = account.access_token;
+                token.idToken = account.id_token;
+            }
+            return token;
         },
-        pages: {
-            signIn: '/auth/signIn',
-            error: '/auth/signIn'
+        async session({ session, token, user }) {
+            if (token.accessToken) {
+                session.accessToken = token.accessToken;
+                session.idToken = token.idToken;
+                session.user.email = token.email;
+                session.user.id = token.sub;
+                session.user.name = token.email.substring(0, token.email.indexOf('@'));
+            }
+            return session
         }
 
     },
