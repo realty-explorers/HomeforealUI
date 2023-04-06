@@ -3,10 +3,12 @@ import { AppState } from "./store";
 import { HYDRATE } from "next-redux-wrapper";
 import Deal from "@/models/deal";
 import LocationSuggestion from "@/models/location_suggestions";
+import Location from "@/models/location_data";
 
 // Type for our state
 export interface SearchData {
     location: LocationSuggestion,
+    locationData: Location,
     minPrice: string;
     maxPrice: string;
     minArv: string;
@@ -34,6 +36,7 @@ export interface SearchState {
 const initialState: SearchState = {
     searchData: {
         location: {} as LocationSuggestion,
+        locationData: {} as Location,
         minPrice: '0',
         maxPrice: '1000000',
         minArv: '0',
@@ -60,6 +63,9 @@ export const searchSlice = createSlice({
         // Action to set the authentication status
         setSearchLocation(state, action) {
             state.searchData.location = action.payload;
+        },
+        setSearchLocationData(state, action) {
+            state.searchData.locationData = action.payload;
         },
         setSearchMinPrice(state, action) {
             state.searchData.minPrice = action.payload;
@@ -120,7 +126,7 @@ export const searchSlice = createSlice({
     },
 });
 
-export const { setSearchResults, setSearchLocation, setSearchMinPrice, setSearchMaxPrice, setSearchMinArv, setSearchMaxArv, setSearchUnderComps, setSearchDistance, setSearchForSaleAge, setSearchSoldAge, setSearchMinArea, setSearchMaxArea, setSearchMinBeds, setSearchMaxBeds, setSearchMinBaths, setSearchMaxBaths } = searchSlice.actions;
+export const { setSearchResults, setSearchLocation, setSearchLocationData, setSearchMinPrice, setSearchMaxPrice, setSearchMinArv, setSearchMaxArv, setSearchUnderComps, setSearchDistance, setSearchForSaleAge, setSearchSoldAge, setSearchMinArea, setSearchMaxArea, setSearchMinBeds, setSearchMaxBeds, setSearchMinBaths, setSearchMaxBaths } = searchSlice.actions;
 
 export const selectSearchResults: (state: AppState) => SearchResults = (state: AppState) => state.search.searchResults;
 export const selectSearchData: (state: AppState) => SearchData = (state: AppState) => state.search.searchData;

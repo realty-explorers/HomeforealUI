@@ -10,7 +10,8 @@ import {
   useJsApiLoader,
   Circle,
   Marker,
-  InfoWindow
+  InfoWindow,
+  Polygon
 } from '@react-google-maps/api';
 import Deal from '@/models/deal';
 import CompsProperty from '@/models/comps_property';
@@ -238,6 +239,34 @@ const MapComponent: React.FC<MapComponentProps> = (
     updateMap(null);
   }, []);
 
+  const locationBounds = () => {
+    const bounds = searchData.locationData.bounds;
+    if (bounds) {
+      const arr = bounds.map((bound) => {
+        const bs = bound.map((b) => {
+          return {
+            lat: b.longitude,
+            lng: b.latitude
+          };
+        });
+        return bs;
+      });
+      return (
+        <Polygon
+          paths={arr}
+          options={{
+            fillColor: '#267dab',
+            fillOpacity: 0.4,
+            strokeColor: '#267dab',
+            strokeOpacity: 1,
+            strokeWeight: 2
+          }}
+        />
+      );
+    }
+    return <></>;
+  };
+
   const selectedHouseMarker = () => {
     return props.selectedDeal ? (
       <Marker
@@ -367,6 +396,8 @@ const MapComponent: React.FC<MapComponentProps> = (
       ) : (
         <>{searchResultsMarkers()}</>
       )}
+
+      {locationBounds()}
     </GoogleMap>
   ) : (
     <></>
