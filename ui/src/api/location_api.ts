@@ -12,6 +12,16 @@ const getLocationSuggestions = async (searchTerm: string) => {
 	});
 };
 
+const getLocationData = async (city: string, state: string) => {
+	return axios.get(`${gateway_url}/api/v1/location/data?city=${city}&state=${state}`, {
+		headers: {
+			'Access-Control-Allow-Origin': '*'
+		},
+		withCredentials: true
+	});
+};
+
 export {
 	getLocationSuggestions,
+	getLocationData
 };

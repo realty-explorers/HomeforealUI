@@ -1,5 +1,6 @@
 import { findDeals, findProperties } from "@/api/deals_api";
-import { SearchData, selectSearchData, setSearchResults } from "@/store/searchSlice";
+import { getLocationData } from "@/api/location_api";
+import { SearchData, selectSearchData, setSearchLocationData, setSearchResults } from "@/store/searchSlice";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -51,13 +52,18 @@ export const useSearch = () => {
 	const searchProperties = async (searchData: SearchData) => {
 		try {
 			setSearching(true);
-			const response = await findProperties(
+			const propertiesResponse = await findProperties(
 				searchData.location.metaData.city,
 				searchData.location.metaData.state
 			);
-			if (response.status === 200) {
+			const locationResponse = await getLocationData(
+				searchData.location.metaData.city,
+				searchData.location.metaData.state
+			);
+			if (propertiesResponse.status === 200 && locationResponse.status === 200) {
+				dispatch(setSearchLocationData(locationResponse.data));
 				alert('Search Finished')
-			} else throw Error(response.data);
+			} else throw Error(propertiesResponse.data);
 		} catch (error) {
 			console.log(JSON.stringify(error));
 			alert(JSON.stringify(error));
