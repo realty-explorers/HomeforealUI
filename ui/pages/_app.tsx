@@ -37,8 +37,8 @@ function HomeforealApp(props: HomeforealAppProps) {
   Router.events.on('routeChangeComplete', nProgress.done);
 
   return (
-    <SessionProvider session={props.session}>
-      <CacheProvider value={emotionCache}>
+    <CacheProvider value={emotionCache}>
+      <SessionProvider session={props.session}>
         <Head>
           <title>Homeforeal App</title>
           <meta
@@ -54,8 +54,8 @@ function HomeforealApp(props: HomeforealAppProps) {
             </LocalizationProvider>
           </ThemeProvider>
         </SidebarProvider>
-      </CacheProvider>
-    </SessionProvider>
+      </SessionProvider>
+    </CacheProvider>
   );
 }
 

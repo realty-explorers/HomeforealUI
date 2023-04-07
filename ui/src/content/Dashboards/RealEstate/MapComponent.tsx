@@ -386,6 +386,7 @@ const MapComponent: React.FC<MapComponentProps> = (
       onLoad={onLoad}
       onUnmount={onUnmount}
       onClick={handleMapClicked}
+      options={{ gestureHandling: 'greedy' }}
     >
       {props.selectedDeal ? (
         <>

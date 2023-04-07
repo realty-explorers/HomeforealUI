@@ -8,7 +8,10 @@ interface Location {
         height: number;
         zoom?: number;
     }[];
-    bounds: bound[];
+    bounds: {
+        type: string;
+        coordinates: bound[] | bound[][];
+    };
 }
 
 type bound = {

@@ -35,7 +35,8 @@ export default class LocationService {
         const stateAbbreviation = this.states[state];
         console.log(state);
         console.log(stateAbbreviation);
-        const url = `${this.LOCATION_SERVICE_URL}${city}_${stateAbbreviation}`;
+        const cityName = city.replace(' ', '-');
+        const url = `${this.LOCATION_SERVICE_URL}${cityName}_${stateAbbreviation}`;
         console.log(url);
         const requestParameters = {
             method: 'GET',
@@ -89,7 +90,7 @@ export default class LocationService {
                     longitude: locationData['center']['lng']
                 },
                 breakPoints: locationData['breakpoints'],
-                bounds: this.parseBounds(boundaries['coordinates'])
+                bounds: this.parseBounds(boundaries)
             }
             return location;
         } catch (error) {
@@ -99,15 +100,37 @@ export default class LocationService {
     }
 
     private parseBounds = (bounds: any) => {
-        const boundaries = bounds.map((bound: any) => {
-            const boundary = bound.map((point: any) => {
-                return {
-                    latitude: point[0],
-                    longitude: point[1]
-                }
-            });
-            return boundary;
+        const type = bounds['type'];
+        const boundsData = bounds['coordinates'];
+        if (type === 'MultiPolygon') {
+            console.log(boundsData)
+            const polygons = this.parseMultiPolygon(boundsData);
+            return polygons;
+        }
+        const polygon = this.parsePolygon(boundsData);
+        return polygon;
+    }
+
+    private parseMultiPolygon = (polygonData: any) => {
+        console.log(polygonData.length)
+        const multiPolygon = polygonData.map((polygon: any) => this.parseMultiPolygon(polygon));
+        return multiPolygon;
+    }
+
+
+    private parsePolygon = (polygonData: any) => {
+        const polygon = polygonData.map((bound: any) => this.parseBoundary(bound));
+        return polygon;
+    }
+
+
+    private parseBoundary = (polygonData: any) => {
+        const boundary = polygonData.map((pointData: any) => {
+            return {
+                latitude: pointData[0],
+                longitude: pointData[1]
+            }
         });
-        return boundaries;
+        return boundary;
     }
 }
