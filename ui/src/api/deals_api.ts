@@ -7,7 +7,7 @@ const findProperties = async (city: string, state: string) => {
 		city, state
 	}, {
 		headers: {
-			'Access-Control-Allow-Origin': '*'
+			'Access-Control-Allow-Origin': '*',
 		},
 		withCredentials: true,
 		// timeout: 120000

@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { selectSearchResults } from '@/store/searchSlice';
 
 function DashboardRealEstate() {
-  const { data, status } = useSession({
+  const { data, status }: any = useSession({
     required: true
   });
 

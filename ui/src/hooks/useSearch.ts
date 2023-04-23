@@ -12,6 +12,7 @@ export const useSearch = () => {
 
 	const [searching, setSearching] = useState<boolean>(false);;
 
+
 	// const searchData = useSelector(selectSearchData);
 	const dispatch = useDispatch();
 

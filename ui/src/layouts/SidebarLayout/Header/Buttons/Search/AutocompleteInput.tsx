@@ -14,7 +14,7 @@ import LocationSuggestion from '@/models/location_suggestions';
 import { getLocationSuggestions } from '@/api/location_api';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 const SearchInputWrapper = styled(TextField)(
   ({ theme }) => `

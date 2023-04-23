@@ -6,7 +6,7 @@ const gateway_url = `${process.env.NEXT_PUBLIC_DEALS_SERVICE_HOST}`;
 const getLocationSuggestions = async (searchTerm: string) => {
 	return axios.get(`${gateway_url}/api/v1/location/suggest?searchTerm=${searchTerm}`, {
 		headers: {
-			'Access-Control-Allow-Origin': '*'
+			'Access-Control-Allow-Origin': '*',
 		},
 		withCredentials: true
 	});
