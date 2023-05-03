@@ -1,6 +1,10 @@
 import Deal from '@/models/deal';
 import Property from '@/models/property';
-import { priceFormatter } from '@/utils/converters';
+import {
+  distanceFormatter,
+  percentFormatter,
+  priceFormatter
+} from '@/utils/converters';
 import {
   Grid,
   styled,
@@ -18,14 +22,24 @@ import {
 import { useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import PropertyCard from './PropertyCard';
+import CompsProperty from '@/models/comps_property';
 
 type PropertyMapCardProps = {
-  property: Property;
+  property: CompsProperty;
 };
 const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   props: PropertyMapCardProps
 ) => {
   const [cardImage, setCardImage] = useState(props.property.primaryImage);
+
+  const showDistance = () => {
+    try {
+      return distanceFormatter(props.property.distance);
+    } catch (e) {
+      console.log(e);
+      return 0;
+    }
+  };
 
   return (
     <>
@@ -49,6 +63,21 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 width: '100%'
               }}
             >
+              <ListItem disableGutters sx={{ padding: 0 }}>
+                <ListItemText
+                  primary="Add."
+                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
+                  secondaryTypographyProps={{
+                    variant: 'subtitle2',
+                    noWrap: true
+                  }}
+                />
+                <Box>
+                  <Typography align="right" noWrap>
+                    {props.property.address}
+                  </Typography>
+                </Box>
+              </ListItem>
               <ListItem disableGutters sx={{ padding: 0 }}>
                 <ListItemText
                   primary="Price"
@@ -107,6 +136,22 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 <Box>
                   <Typography align="right" noWrap>
                     {props.property.baths}
+                  </Typography>
+                </Box>
+              </ListItem>
+
+              <ListItem disableGutters sx={{ padding: 0 }}>
+                <ListItemText
+                  primary="Distance"
+                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
+                  secondaryTypographyProps={{
+                    variant: 'subtitle2',
+                    noWrap: true
+                  }}
+                />
+                <Box>
+                  <Typography align="right" noWrap>
+                    {showDistance()}
                   </Typography>
                 </Box>
               </ListItem>

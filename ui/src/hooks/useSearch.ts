@@ -12,6 +12,8 @@ export const useSearch = () => {
 
 	const [searching, setSearching] = useState<boolean>(false);;
 
+	const searchDataGlobal = useSelector(selectSearchData);
+
 
 	// const searchData = useSelector(selectSearchData);
 	const dispatch = useDispatch();
@@ -43,7 +45,9 @@ export const useSearch = () => {
 			} else throw Error(response.data);
 		} catch (error) {
 			console.log(JSON.stringify(error));
-			if (!searchData.location.metaData) alert("No selected location!");
+			if (!searchData.location.metaData) {
+				alert("No selected location!");
+			}
 			else alert(error);
 		} finally {
 			setSearching(false);
@@ -54,16 +58,22 @@ export const useSearch = () => {
 		try {
 			setSearching(true);
 			const propertiesResponse = await findProperties(
+				searchData.location.display,
+				searchData.location.metaData.regionType,
 				searchData.location.metaData.city,
 				searchData.location.metaData.state
 			);
 			const locationResponse = await getLocationData(
+				searchData.location.display,
+				searchData.location.metaData.regionType,
 				searchData.location.metaData.city,
 				searchData.location.metaData.state
 			);
 			if (propertiesResponse.status === 200 && locationResponse.status === 200) {
 				dispatch(setSearchLocationData(locationResponse.data));
-				alert('Search Finished')
+				console.log(JSON.stringify(searchData.location))
+				searchDeals({ ...searchDataGlobal, location: searchData.location });
+				// alert('Search Finished')
 			} else throw Error(propertiesResponse.data);
 		} catch (error) {
 			console.log(JSON.stringify(error));

@@ -242,10 +242,10 @@ export const GreyGooseTheme = createTheme({
     menuItemHeadingColor: colors.layout.sidebar.menuItemHeadingColor,
     boxShadow:
       '2px 0 3px rgba(159, 162, 191, .18), 1px 0 1px rgba(159, 162, 191, 0.32)',
-    width: '290px'
+    width: '200px'
   },
   header: {
-    height: '80px',
+    height: '60px',
     background: colors.alpha.white[100],
     boxShadow: colors.shadows.cardSm,
     textColor: colors.secondary.main
@@ -926,9 +926,9 @@ export const GreyGooseTheme = createTheme({
         },
         root: {
           '.MuiAutocomplete-inputRoot.MuiOutlinedInput-root .MuiAutocomplete-endAdornment':
-            {
-              right: 14
-            }
+          {
+            right: 14
+          }
         },
         clearIndicator: {
           background: colors.error.lighter,

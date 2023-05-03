@@ -14,7 +14,7 @@ export default class DealsService {
 	}
 
 
-	public findProperties = async (id: string, city: string, state: string, soldPropertiesMaxAge: number, forSalePropertiesMaxAge: number) => {
+	public findProperties = async (id: string, display: string, type: string, city: string, state: string, soldPropertiesMaxAge: number, forSalePropertiesMaxAge: number) => {
 		//TODO: change to default ages in production
 		// const regionProperties: RegionProperties = {
 		// 	city: city.toLowerCase(),
@@ -24,6 +24,8 @@ export default class DealsService {
 		// }
 
 		const regionProperties: RegionProperties = {
+			display: display.toLowerCase(),
+			type: type.toLowerCase(),
 			city: city.toLowerCase(),
 			state: state.toLowerCase(),
 			soldPropertiesMaxAge: 180,

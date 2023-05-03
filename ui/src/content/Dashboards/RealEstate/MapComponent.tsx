@@ -38,15 +38,16 @@ import {
   setSearchUnderComps
 } from '@/store/searchSlice';
 import ReactDOM from 'react-dom';
-import MapControls from './MapControls';
+import MapControls from './MapComponents/MapControls';
 import { debounce } from '@mui/material';
 import useSearch from '@/hooks/useSearch';
 import { openGoogleSearch } from '@/utils/windowFunctions';
+import CardsPanel from './MapComponents/CardsPanel';
 
 const containerStyle: React.CSSProperties = {
   position: 'relative',
   width: '100%',
-  height: '35em'
+  height: '100%'
 };
 
 const center = {
@@ -174,10 +175,10 @@ const MapComponent: React.FC<MapComponentProps> = (
   const debounceUpdate = useCallback(debounce(searchDeals, 400), []);
 
   const loadMapControls = (root: HTMLElement) => {
-    ReactDOM.render(
-      <MapControls searchData={searchData} update={update} />,
-      root
-    );
+    // ReactDOM.render(
+    //   <MapControls searchData={searchData} update={update} />,
+    //   root
+    // );
   };
 
   const handleMapClicked = () => {
@@ -240,29 +241,65 @@ const MapComponent: React.FC<MapComponentProps> = (
   }, []);
 
   const locationBounds = () => {
-    const bounds = searchData.locationData.bounds;
+    const bounds: any = searchData.locationData.bounds;
+    console.log(searchData.locationData.type);
     if (bounds) {
-      const arr = bounds.map((bound) => {
-        const bs = bound.map((b) => {
-          return {
-            lat: b.longitude,
-            lng: b.latitude
-          };
+      if (searchData.locationData.type === 'Polygon') {
+        console.log('in polygon');
+        const arr = bounds.map((bound) => {
+          const bs = bound.map((b) => {
+            return {
+              lat: b.longitude,
+              lng: b.latitude
+            };
+          });
+          return bs;
         });
-        return bs;
-      });
-      return (
-        <Polygon
-          paths={arr}
-          options={{
-            fillColor: '#267dab',
-            fillOpacity: 0.4,
-            strokeColor: '#267dab',
-            strokeOpacity: 1,
-            strokeWeight: 2
-          }}
-        />
-      );
+        return (
+          <Polygon
+            paths={arr}
+            options={{
+              fillColor: '#267dab',
+              // fillOpacity: 0.4,
+              fillOpacity: 0.1,
+              strokeColor: '#267dab',
+              strokeOpacity: 1,
+              strokeWeight: 2
+            }}
+          />
+        );
+      } else {
+        const arrr = bounds.map((a) => {
+          const arr = a.map((bound) => {
+            const bs = bound.map((b) => {
+              return {
+                lat: b.longitude,
+                lng: b.latitude
+              };
+            });
+            return bs;
+          });
+          return arr;
+        });
+        console.log(JSON.stringify(arrr));
+
+        return arrr.map((a, index) => {
+          return (
+            <Polygon
+              key={index}
+              paths={a}
+              options={{
+                fillColor: '#267dab',
+                // fillOpacity: 0.4,
+                fillOpacity: 0.1,
+                strokeColor: '#267dab',
+                strokeOpacity: 1,
+                strokeWeight: 2
+              }}
+            />
+          );
+        });
+      }
     }
     return <></>;
   };
@@ -290,6 +327,10 @@ const MapComponent: React.FC<MapComponentProps> = (
       <Marker
         key={index}
         position={{ lat: deal.property.latitude, lng: deal.property.longitude }}
+        icon={{
+          url: '/static/images/pins/greenPin.png',
+          scaledSize: new google.maps.Size(40, 40)
+        }}
         onMouseOver={() => handleMouseHover(deal.property.id)}
         onMouseOut={() => handleMouseOut()}
         onClick={() => {
@@ -386,8 +427,28 @@ const MapComponent: React.FC<MapComponentProps> = (
       onLoad={onLoad}
       onUnmount={onUnmount}
       onClick={handleMapClicked}
-      options={{ gestureHandling: 'greedy' }}
+      options={{
+        gestureHandling: 'greedy',
+        styles: [
+          {
+            elementType: 'labels',
+            featureType: 'poi.business',
+            stylers: [{ visibility: 'off' }]
+          },
+          {
+            elementType: 'labels',
+            featureType: 'poi',
+            stylers: [{ visibility: 'off' }]
+          }
+        ]
+      }}
     >
+      <CardsPanel
+        deals={searchResults}
+        selectedDeal={props.selectedDeal}
+        setSelectedDeal={props.setSelectedDeal}
+      />
+      <MapControls searchData={searchData} update={update} />
       {props.selectedDeal ? (
         <>
           {houseRadiusCircle()}

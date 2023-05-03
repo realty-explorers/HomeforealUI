@@ -18,9 +18,9 @@ export default class DealsController {
 		next: NextFunction
 	) => {
 		try {
-			const { city, state, soldPropertiesMaxAge, forSalePropertiesMaxAge } = req.body;
+			const { city, state, display, type, soldPropertiesMaxAge, forSalePropertiesMaxAge } = req.body;
 			const userId = req.user!.name;
-			const response = await this.dealsService.findProperties(userId, city, state, soldPropertiesMaxAge, forSalePropertiesMaxAge);
+			const response = await this.dealsService.findProperties(userId, display, type, city, state, soldPropertiesMaxAge, forSalePropertiesMaxAge);
 			res.json(response);
 		} catch (error: any) {
 			console.log(error);

@@ -11,7 +11,7 @@ const poolData = {
 
 export const authOptions = {
     session: {
-        maxAge: 60
+        maxAge: 60 * 60
     },
     providers: [
         CognitoProvider({
@@ -73,7 +73,7 @@ export const authOptions = {
     ],
     callbacks: {
         async jwt({ token, user, account, profile, isNewUser }) {
-            console.log("****jwt: ", JSON.stringify(token))
+            // console.log("****jwt: ", JSON.stringify(token))
             if (account?.access_token) {
                 token.accessToken = account.access_token;
                 token.idToken = account.id_token;

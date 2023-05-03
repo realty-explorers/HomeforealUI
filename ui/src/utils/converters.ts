@@ -2,6 +2,7 @@
 const priceFormatter = (value: number) =>
     `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 const percentFormatter = (value: number) => `%${value.toFixed(2)}`;
+const distanceFormatter = (value: number) => `${value.toFixed(2)} Miles`;
 
 
 const priceScale = (value: number) => {
@@ -88,9 +89,9 @@ const ageFormatter = (value: number) => {
         '24 months',
         '36 months',
     ];
-    return `${units[ageReverseScale(value)]}`;
+    return `${units[ageReverseScale(value)]} `;
 }
 
 
 
-export { priceFormatter, percentFormatter, ageFormatter, priceScale, priceReverseScale, ageScale, ageReverseScale };
+export { priceFormatter, distanceFormatter, percentFormatter, ageFormatter, priceScale, priceReverseScale, ageScale, ageReverseScale };

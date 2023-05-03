@@ -4,7 +4,9 @@ import { CognitoIdentityProviderClient, GetUserCommand } from '@aws-sdk/client-c
 // import { getToken } from "next-auth/jwt";
 import jwkToPem from 'jwk-to-pem';
 import jwt from 'jsonwebtoken';
-
+import { jwtDecrypt } from 'jose';
+const { JWE } = require('node-jose')
+import * as _hkdf from '@panva/hkdf';
 interface RequestWithUser extends Request {
 	user?: User;
 }
@@ -18,38 +20,45 @@ class AuthMiddleware {
 		this.setUp();
 	}
 
+	private getDerivedEncryptionKey = async (secret: string) => {
+		return await _hkdf.default("sha256", secret, "", "NextAuth.js Generated Encryption Key", 32);
+	}
+
 
 	public verifyRequest = async (req: RequestWithUser, res: Response, next: NextFunction) => {
 		try {
-			// const secret = process.env.NEXTAUTH_SECRET!;
-			// const cookie = req.cookies['next-auth.session-token'];
+			const secret = process.env.NEXTAUTH_SECRET!;
+			const cookie = req.cookies['next-auth.session-token'];
+			const encryptionSecret = await this.getDerivedEncryptionKey(secret);
+			const token: any = await jwtDecrypt(cookie, encryptionSecret);
+
 			// //decode cookie
 
 			// const decodedToken = jwt.verify(cookie, secret);
 			// console.log('decodedToken: ' + decodedToken);
 			// console.log('cookie: ' + cookie);
 			// const token: any = await getToken({ req, secret: secret });
-			// if (token) {
-			// 	const jwtData = this.verifyToken(token.accessToken);
-			// 	const user: User = {
-			// 		id: token.sub,
-			// 		name: token.email,
-			// 		email: token.email,
-			// 	}
-			// 	req.user = user;
-			// 	next();
-			// }
-			// else {
-			// 	res.status(401).send({
-			// 		error: 'Authentication error',
-			// 	});
-			// }
-			req.user = {
-				id: 'name',
-				name: 'name',
-				email: 'name@name.com'
+			if (token) {
+				const jwtData = this.verifyToken(token.payload.accessToken);
+				const user: User = {
+					id: token.payload.sub,
+					name: token.payload.email,
+					email: token.payload.email,
+				}
+				req.user = user;
+				next();
 			}
-			next();
+			else {
+				res.status(401).send({
+					error: 'Authentication error',
+				});
+			}
+			// req.user = {
+			// 	id: 'name',
+			// 	name: 'name',
+			// 	email: 'name@name.com'
+			// }
+			// next();
 		} catch (error) {
 			console.log(error);
 			res.status(401).send({ error });

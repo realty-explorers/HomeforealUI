@@ -44,16 +44,16 @@ export default class DealsFinder {
     public findProperties = async (regionProperties: RegionProperties) => {
         const properties = [];
         const regionStatus = await this.propertyRepository.getRegionStatus(regionProperties.city, regionProperties.state);
-        if (regionStatus) {
-            const results = await this.propertyRepository.getProperties(regionProperties.city, regionProperties.state);
-            properties.push(...results);
-            const lastUpdateAge = this.calcDateDifference(regionStatus.lastUpdated);
-            if (lastUpdateAge < 1) return properties;
-            const updateTimeFrame = ISODifferenceToDays(regionStatus.lastUpdated);
-            regionProperties.forSalePropertiesMaxAge = updateTimeFrame;
-            regionProperties.soldPropertiesMaxAge = updateTimeFrame;
-            console.log(`Finding new properties in timeframe: ${updateTimeFrame} days`);
-        }
+        // if (regionStatus) {
+        //     const results = await this.propertyRepository.getProperties(regionProperties.city, regionProperties.state);
+        //     properties.push(...results);
+        //     const lastUpdateAge = this.calcDateDifference(regionStatus.lastUpdated);
+        //     if (lastUpdateAge < 1) return properties;
+        //     const updateTimeFrame = ISODifferenceToDays(regionStatus.lastUpdated);
+        //     regionProperties.forSalePropertiesMaxAge = updateTimeFrame;
+        //     regionProperties.soldPropertiesMaxAge = updateTimeFrame;
+        //     console.log(`Finding new properties in timeframe: ${updateTimeFrame} days`);
+        // }
         const updatedRegionStatus: RegionStatus = {
             id: constructRegionId(regionProperties.city, regionProperties.state),
             city: regionProperties.city,

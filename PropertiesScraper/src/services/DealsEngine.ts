@@ -19,7 +19,18 @@ export default class DealsEngine {
             let soldHousesPriceSum = 0
             let soldHousesCount = 0
             const relevantSoldHouses = [];
+            const trueARVHouses = [];
             for (const soldProperty of soldProperties) {
+                //New true ARV algorithm
+                const true_validMinArea = minArea == undefined ? true : soldProperty.area >= forSaleProperty.area - 500;
+                const true_validMaxArea = maxArea == undefined ? true : soldProperty.area <= forSaleProperty.area + 500;
+                const true_distance = this.getDistance(forSaleProperty.latitude, soldProperty.latitude, forSaleProperty.longitude, soldProperty.longitude);
+                if (true_distance <= maxDistance) {
+                    const sqftPrice = soldProperty.price / soldProperty.area;
+                    trueARVHouses.push(soldProperty);
+                }
+
+
                 const validMinSoldPrice = soldMinPrice == undefined ? true : soldProperty.price >= soldMinPrice;
                 const validMaxSoldPrice = soldMaxPrice == undefined ? true : soldProperty.price <= soldMaxPrice;
                 const validHouseAge = this.validatePropertyAge(soldProperty.listingDate, soldAge!);
@@ -39,13 +50,22 @@ export default class DealsEngine {
                     soldHousesPriceSum += soldProperty.price / soldProperty.area;
                     soldHousesCount++;
                 }
+
             }
             const soldHousesAveragePrice = soldHousesPriceSum / soldHousesCount;
             const profit = 100 * (soldHousesAveragePrice - houseAreaPrice) / soldHousesAveragePrice;
             if (profit >= minProfit) {
+                trueARVHouses.sort((a, b) => a.price / a.area - b.price / b.area);
+                const index = Math.floor(trueARVHouses.length * 0.7);
+                const relevantHouses = trueARVHouses.slice(index);
+                const sum = relevantHouses.reduce((acc, curr) => acc + curr.price / curr.area, 0);
+                const averageSqftPrice = sum / relevantHouses.length;
+                const trueArv = 100 * (averageSqftPrice - houseAreaPrice) / averageSqftPrice;
+
                 console.log(forSaleProperty.price)
                 deals.push({
                     profit,
+                    trueArv,
                     distance: maxDistance,
                     property: forSaleProperty,
                     relevantSoldHouses

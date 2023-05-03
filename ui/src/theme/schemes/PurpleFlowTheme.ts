@@ -240,10 +240,10 @@ export const PurpleFlowTheme = createTheme({
     menuItemIconColorActive: colors.layout.sidebar.menuItemIconColorActive,
     menuItemHeadingColor: colors.layout.sidebar.menuItemHeadingColor,
     boxShadow: '1px 1px 1px 0 #e0e0e0',
-    width: '290px'
+    width: '200px'
   },
   header: {
-    height: '80px',
+    height: '60px',
     background: '#fbf9fb',
     boxShadow: '0 1px 1px #e0e0e0',
     textColor: themeColors.black
@@ -924,9 +924,9 @@ export const PurpleFlowTheme = createTheme({
         },
         root: {
           '.MuiAutocomplete-inputRoot.MuiOutlinedInput-root .MuiAutocomplete-endAdornment':
-            {
-              right: 14
-            }
+          {
+            right: 14
+          }
         },
         clearIndicator: {
           background: colors.error.lighter,

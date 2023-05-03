@@ -12,6 +12,7 @@ interface Location {
         type: string;
         coordinates: bound[] | bound[][];
     };
+    type: string;
 }
 
 type bound = {

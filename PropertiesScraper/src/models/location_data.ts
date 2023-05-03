@@ -8,11 +8,13 @@ interface Location {
         height: number;
         zoom?: number;
     }[];
-    bounds: {
-        bound: {
-            latitude: number;
-            longitude: number;
-        }[]
-    }[];
+    bounds: { latitude: number, longitude: number }[][] | { latitude: number, longitude: number }[][][];
+    type: string;
+    // bounds: {
+    //     bound: {
+    //         latitude: number;
+    //         longitude: number;
+    //     }[]
+    // }[];
 }
 export default Location;

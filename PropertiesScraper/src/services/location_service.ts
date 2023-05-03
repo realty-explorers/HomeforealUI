@@ -6,6 +6,9 @@ import states from '../../src/states.json';
 import states_abbreviations from '../../src/states_abbreviations.json';
 import Location from '../models/location_data';
 
+type Polygon = [number, number][][];
+type MultiPolygon = Polygon[];
+
 export default class LocationService {
 
     private readonly SUGGESTION_SERVICE_URL = "https://www.zillowstatic.com/autocomplete/v3/suggestions?q=";
@@ -31,12 +34,18 @@ export default class LocationService {
         return suggestions;
     }
 
-    public getLocationData = async (city: string, state: string) => {
+    public getLocationData = async (display: string, type: string, city: string, state: string) => {
         const stateAbbreviation = this.states[state];
+        console.log(display)
+        console.log(type)
         console.log(state);
         console.log(stateAbbreviation);
         const cityName = city.replace(' ', '-');
-        const url = `${this.LOCATION_SERVICE_URL}${cityName}_${stateAbbreviation}`;
+        let url = `${this.LOCATION_SERVICE_URL}${cityName}_${stateAbbreviation}`;
+        if (type === 'neighborhood') {
+            const neighborhoodName = display.substring(0, display.indexOf(','));
+            url = `${this.LOCATION_SERVICE_URL}${neighborhoodName}_${cityName}_${stateAbbreviation}`;
+        }
         console.log(url);
         const requestParameters = {
             method: 'GET',
@@ -90,7 +99,8 @@ export default class LocationService {
                     longitude: locationData['center']['lng']
                 },
                 breakPoints: locationData['breakpoints'],
-                bounds: this.parseBounds(boundaries)
+                bounds: this.parseBounds(boundaries),
+                type: boundaries['type']
             }
             return location;
         } catch (error) {
@@ -104,33 +114,33 @@ export default class LocationService {
         const boundsData = bounds['coordinates'];
         if (type === 'MultiPolygon') {
             console.log(boundsData)
-            const polygons = this.parseMultiPolygon(boundsData);
+            const polygons = this.parseMultiPolygon(boundsData as MultiPolygon);
             return polygons;
         }
-        const polygon = this.parsePolygon(boundsData);
+        const polygon = this.parsePolygon(boundsData as Polygon);
         return polygon;
     }
 
-    private parseMultiPolygon = (polygonData: any) => {
-        console.log(polygonData.length)
-        const multiPolygon = polygonData.map((polygon: any) => this.parseMultiPolygon(polygon));
-        return multiPolygon;
+    private parseMultiPolygon = (multiPolygonData: MultiPolygon) => {
+        console.log(multiPolygonData.length)
+        const data = multiPolygonData.map((polygon: Polygon) => this.parsePolygon(polygon))
+        return data;
     }
 
 
-    private parsePolygon = (polygonData: any) => {
-        const polygon = polygonData.map((bound: any) => this.parseBoundary(bound));
+    private parsePolygon = (polygonData: Polygon) => {
+        const polygon = polygonData.map((bound: [number, number][]) => this.parseBoundary(bound));
         return polygon;
     }
 
 
-    private parseBoundary = (polygonData: any) => {
-        const boundary = polygonData.map((pointData: any) => {
+    private parseBoundary = (boundary: [number, number][]) => {
+        const parsedBoundary = boundary.map((pointData: [number, number]) => {
             return {
                 latitude: pointData[0],
                 longitude: pointData[1]
             }
         });
-        return boundary;
+        return parsedBoundary;
     }
 }

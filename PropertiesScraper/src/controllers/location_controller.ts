@@ -32,9 +32,11 @@ export default class LocationController {
 		next: NextFunction
 	) => {
 		try {
+			const display = req.query['display'] as string;
+			const type = req.query['type'] as string;
 			const city = req.query['city'] as string;
 			const state = req.query['state'] as string;
-			const response = await this.locationService.getLocationData(city, state);
+			const response = await this.locationService.getLocationData(display, type, city, state);
 			res.json(response);
 		} catch (error: any) {
 			console.log(error);

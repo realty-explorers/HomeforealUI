@@ -25,13 +25,15 @@ export default class RealtorScraper implements PropertyScraper {
                 "status": ["for_sale", "ready_to_build"],
                 "type": ["condos", "condo_townhome_rowhome_coop", "multi_family", "single_family", "townhomes", "duplex_triplex", "mobile", "condo_townhome"],
                 "primary": true,
-                "search_location": { "location": "Chicago, IL" }
+                "search_location": { "location": "Chicago, IL" },
+                "contingent": false,
+                "pending": false
             },
             "limit": 200,
             "offset": 0,
             "sort_type": "relevant",
             "bucket": { "sort": "modelF" },
-            "by_prop_type": ["home"]
+            "by_prop_type": ["home"],
         },
     }
     private states: { [state: string]: string };
@@ -65,6 +67,8 @@ export default class RealtorScraper implements PropertyScraper {
         const requestsParameters = this.getFullRequestParameters(scrapeInfo);
         let requests: Promise<any>[] = [];
         for (const requestParameters of requestsParameters) {
+            console.log(requestParameters)
+            console.log(JSON.stringify(requestParameters))
             const request = dataFetcher.tryFetch(requestParameters, this.validateData, maxTries);
             requests.push(request);
         }
@@ -94,11 +98,16 @@ export default class RealtorScraper implements PropertyScraper {
             if (regionProperties.soldPropertiesMaxAge)
                 requestQuery.variables.query["list_date"] = { "min": calcDaysDifferenceToISO(regionProperties.soldPropertiesMaxAge) };
         }
-        requestQuery.variables.query.search_location.location = this.regionToAddress(regionProperties.city, regionProperties.state);
+        requestQuery.variables.query.search_location.location = this.regionToAddress(regionProperties.display, regionProperties.type, regionProperties.city, regionProperties.state);
         return requestQuery;
     }
 
-    private regionToAddress = (city: string, state: string) => {
+    private regionToAddress = (display: string, type: string, city: string, state: string) => {
+        if (type === 'neighborhood') {
+            const neighborhoodName = display.substring(0, display.indexOf(','));
+            const address = `${neighborhoodName} ${city}, ${this.states[state]}`;
+            return address;
+        }
         const address = `${city}, ${this.states[state]}`;
         return address;
     }
@@ -181,6 +190,13 @@ export default class RealtorScraper implements PropertyScraper {
             baths: propertyResult.description.baths ?? 0,
             latitude: propertyResult.location.address.coordinate?.lat ?? 0,
             longitude: propertyResult.location.address.coordinate?.lon ?? 0,
+        }
+        if (!propertyResult.primary_photo?.href) {
+            parameters.primaryPhoto = ''
+        } else {
+            //TODO: handle errors with length and substring
+            const photoUrl = propertyResult.primary_photo.href;
+            parameters.primaryPhoto = photoUrl.substring(0, photoUrl.length - 4) + 'od-w480_h360_x2.webp';
         }
         if (!parameters.latitude || !parameters.longitude) {
             // const coordinates = await addressToGeolocation(`${propertyResult.location.address.line} ${propertyResult.location.address.city} ${propertyResult.location.address.state} ${propertyResult.location.address.postal_code}`);

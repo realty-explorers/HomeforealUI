@@ -2,9 +2,10 @@ import axios from 'axios';
 
 const gateway_url = `${process.env.NEXT_PUBLIC_DEALS_SERVICE_HOST}`;
 
-const findProperties = async (city: string, state: string) => {
+
+const findProperties = async (display: string, type: string, city: string, state: string) => {
 	return axios.post(`${gateway_url}/api/v1/deals/findProperties`, {
-		city, state
+		city, state, display, type
 	}, {
 		headers: {
 			'Access-Control-Allow-Origin': '*',

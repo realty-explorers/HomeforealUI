@@ -24,10 +24,10 @@ function DashboardRealEstate() {
       <Head>
         <title>Real Estate Dashboard</title>
       </Head>
-      <Box sx={{ marginBottom: 5 }}>
+      <Box sx={{ marginBottom: 5, height: '100%' }}>
         <Map selectedDeal={selectedDeal} setSelectedDeal={setSelectedDeal} />
       </Box>
-      <Container maxWidth="lg">
+      {/* <Container maxWidth="lg">
         <Grid
           container
           direction="row"
@@ -43,8 +43,8 @@ function DashboardRealEstate() {
             />
           </Grid>
         </Grid>
-      </Container>
-      <Footer />
+      </Container> */}
+      {/* <Footer /> */}
     </>
   );
 }

@@ -3,6 +3,7 @@ import Property from "./property";
 
 interface Deal {
     profit: number,
+    trueArv: number,
     distance: number,
     property: Property,
     relevantSoldHouses: CompsProperty[];

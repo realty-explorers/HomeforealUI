@@ -83,9 +83,10 @@ function HeaderSearch() {
     setOpen(false);
   };
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
     setLocation(suggestion);
-    searchProperties({ ...searchData, location: suggestion });
+    await searchProperties({ ...searchData, location: suggestion });
+    setOpen(false);
   };
 
   return (

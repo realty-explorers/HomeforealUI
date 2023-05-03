@@ -48,6 +48,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
             position: 'relative',
             zIndex: 5,
             display: 'block',
+            height: '100%',
             flex: 1,
             pt: `${theme.header.height}`,
             [theme.breakpoints.up('lg')]: {
@@ -55,7 +56,9 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
             }
           }}
         >
-          <Box display="block">{children}</Box>
+          <Box display="block" sx={{ height: '100%' }}>
+            {children}
+          </Box>
         </Box>
       </Box>
     </>

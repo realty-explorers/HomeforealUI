@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Deal from '@/models/deal';
+import { openGoogleSearch } from '@/utils/windowFunctions';
 import {
   alpha,
   Box,
@@ -22,7 +23,9 @@ import {
 } from '@mui/material';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import ShareIcon from '@mui/icons-material/Share';
+import LinkIcon from '@mui/icons-material/Link';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import PriceChangeIcon from '@mui/icons-material/PriceChange';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import ExpandIcon from '@mui/icons-material/Expand';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
@@ -37,8 +40,19 @@ const StyledCard = styled(Card, {
   ...(selected && {
     boxShadow:
       '0px 0px 30px rgba(0, 24, 255, 0.8),0px 2px 20px rgba(159, 162, 191, 0.7)'
-  })
+  }),
+  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+  width: '15rem',
+  height: '19rem',
+  flexShrink: 0
 }));
+
+const StyledListItem = styled(ListItem)(
+  ({ theme }) => `
+  padding: 0;
+  padding-bottom: ${theme.spacing(1)};
+  `
+);
 
 const ListItemAvatarWrapper = styled(ListItemAvatar)(
   ({ theme }) => `
@@ -47,7 +61,7 @@ const ListItemAvatarWrapper = styled(ListItemAvatar)(
   align-items: center;
   justify-content: center;
   margin-right: ${theme.spacing(1)};
-  padding: ${theme.spacing(0.5)};
+  // padding: ${theme.spacing(0.5)};
   border-radius: 60px;
   background: ${
     theme.palette.mode === 'dark'
@@ -81,6 +95,14 @@ const PropertyCard: React.FC<PropertyCardProps> = (
 
   const [cardImage, setCardImage] = useState(props.deal.property.primaryImage);
 
+  const showFixedValue = (value: number) => {
+    try {
+      return percentFormatter(value);
+    } catch (e) {
+      return value;
+    }
+  };
+
   useEffect(() => {
     setCardImage(props.deal.property.primaryImage);
     return () => {};
@@ -99,7 +121,9 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           sx={{
             // height: 0,
             // paddingTop: '56.25%' // 16:9
-            aspectRatio: '16/9'
+            aspectRatio: '16/9',
+            backgroundColor: 'black',
+            height: '7em'
           }}
           image={cardImage}
           // image={props.deal.house.imgSrc}
@@ -111,15 +135,25 @@ const PropertyCard: React.FC<PropertyCardProps> = (
             )
           }
         />
-        <CardContent>
+        <CardContent sx={{ paddingBottom: 0 }}>
+          <span
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              paddingBottom: 1
+            }}
+          >
+            {props.deal.property.address}
+          </span>
           <Grid xs={12} sm={12} item display="flex" alignItems="center">
+            {/* <h4>{props.deal.property.address}</h4> */}
             <List
               disablePadding
               sx={{
                 width: '100%'
               }}
             >
-              <ListItem disableGutters>
+              <StyledListItem disableGutters>
                 <ListItemAvatarWrapper>
                   <LocalOfferIcon color="warning" />
                 </ListItemAvatarWrapper>
@@ -136,14 +170,14 @@ const PropertyCard: React.FC<PropertyCardProps> = (
                     {priceFormatter(props.deal.property.price)}
                   </Typography>
                 </Box>
-              </ListItem>
+              </StyledListItem>
 
-              <ListItem disableGutters>
+              <StyledListItem disableGutters>
                 <ListItemAvatarWrapper>
-                  <PriceCheckIcon color="success" />
+                  <PriceChangeIcon color="success" />
                 </ListItemAvatarWrapper>
                 <ListItemText
-                  primary="Comps"
+                  primary="%⇩ARV"
                   primaryTypographyProps={{ variant: 'h5', noWrap: true }}
                   secondaryTypographyProps={{
                     variant: 'subtitle2',
@@ -152,11 +186,30 @@ const PropertyCard: React.FC<PropertyCardProps> = (
                 />
                 <Box>
                   <Typography align="right" variant="h4" noWrap>
-                    {percentFormatter(props.deal.profit)}
+                    {showFixedValue(props.deal.profit)}
                   </Typography>
                 </Box>
-              </ListItem>
-              <ListItem disableGutters>
+              </StyledListItem>
+
+              <StyledListItem disableGutters>
+                <ListItemAvatarWrapper>
+                  <PriceCheckIcon color="success" />
+                </ListItemAvatarWrapper>
+                <ListItemText
+                  primary="%⇩True-ARV"
+                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
+                  secondaryTypographyProps={{
+                    variant: 'subtitle2',
+                    noWrap: true
+                  }}
+                />
+                <Box>
+                  <Typography align="right" variant="h4" noWrap>
+                    {showFixedValue(props.deal.trueArv)}
+                  </Typography>
+                </Box>
+              </StyledListItem>
+              <StyledListItem disableGutters>
                 <ListItemAvatarWrapper>
                   <ExpandIcon color="primary" />
                 </ListItemAvatarWrapper>
@@ -173,7 +226,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
                     {props.deal.property.area}
                   </Typography>
                 </Box>
-              </ListItem>
+              </StyledListItem>
             </List>
           </Grid>
         </CardContent>
@@ -183,8 +236,12 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           <IconButton aria-label="add to favorites">
             <FavoriteOutlinedIcon />
           </IconButton>
-          <IconButton aria-label="share">
-            <ShareIcon />
+          <IconButton
+            aria-label="share"
+            onClick={() => openGoogleSearch(props.deal.property.address)}
+          >
+            {/* <ShareIcon /> */}
+            <LinkIcon />
           </IconButton>
           {/* <IconButton aria-label="share" onClick={handleLocationAction}>
             <LocationOnIcon />

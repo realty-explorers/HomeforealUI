@@ -41,7 +41,8 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
       debounce(async (searchTerm: string) => {
         try {
           const response = await getLocationSuggestions(searchTerm);
-          if (response.status === 200) setOptions(response.data);
+          if (response.status === 200 && response.data)
+            setOptions(response.data);
           else throw Error('Something went wrong');
         } catch (error) {
           if (
@@ -69,7 +70,11 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
       options={options}
       getOptionLabel={(option?: LocationSuggestion) => option.display ?? ''}
       onInputChange={(event, newInputValue) => {
-        if (newInputValue) fetch(newInputValue);
+        try {
+          if (newInputValue) fetch(newInputValue);
+        } catch (e) {
+          console.log(e);
+        }
       }}
       renderInput={(params) => (
         <SearchInputWrapper
