@@ -22,4 +22,8 @@ export default class PropertiesCache {
         return this.propertiesCache[id];
     }
 
+    public getKeys = async () => {
+        return Object.keys(this.propertiesCache);
+    }
+
 }

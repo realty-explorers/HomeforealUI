@@ -17,12 +17,25 @@ import {
   ListItem,
   ListItemText,
   Box,
-  Typography
+  Typography,
+  Link
 } from '@mui/material';
 import { useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import PropertyCard from './PropertyCard';
 import CompsProperty from '@/models/comps_property';
+import { openGoogleSearch } from '@/utils/windowFunctions';
+
+const AddressLink = styled('h3')(({ theme }) => ({
+  padding: 0,
+  margin: 0,
+  textAlign: 'center',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  paddingBottom: '2px',
+  cursor: 'pointer'
+}));
 
 type PropertyMapCardProps = {
   property: CompsProperty;
@@ -55,7 +68,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
             )
           }
         />
-        <CardContent>
+        <CardContent sx={{ paddingTop: '1em' }}>
           <Grid xs={12} sm={12} item display="flex" alignItems="center">
             <List
               disablePadding
@@ -63,21 +76,11 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 width: '100%'
               }}
             >
-              <ListItem disableGutters sx={{ padding: 0 }}>
-                <ListItemText
-                  primary="Add."
-                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
-                  secondaryTypographyProps={{
-                    variant: 'subtitle2',
-                    noWrap: true
-                  }}
-                />
-                <Box>
-                  <Typography align="right" noWrap>
-                    {props.property.address}
-                  </Typography>
-                </Box>
-              </ListItem>
+              <AddressLink
+                onClick={() => openGoogleSearch(props.property.address)}
+              >
+                {props.property.address}
+              </AddressLink>
               <ListItem disableGutters sx={{ padding: 0 }}>
                 <ListItemText
                   primary="Price"

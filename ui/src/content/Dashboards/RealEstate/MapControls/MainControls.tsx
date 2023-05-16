@@ -1,12 +1,22 @@
 import React, { useEffect, useState } from 'react';
-import { Card, CardContent, Grid, styled, Tooltip } from '@mui/material';
+import {
+  Box,
+  Card,
+  CardContent,
+  Grid,
+  ListItem,
+  ListItemText,
+  styled,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import OtherHousesIcon from '@mui/icons-material/OtherHouses';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import SliderRangeInput from './SliderRangeInput';
-import SliderInput from './SliderInput';
+import SliderRangeInput from '../SliderRangeInput';
+import SliderInput from '../SliderInput';
 import {
   ageFormatter,
   ageReverseScale,
@@ -15,14 +25,21 @@ import {
   priceReverseScale,
   priceScale
 } from '@/utils/converters';
+import SliderField from './SliderField';
 
 const GridDiv = styled('div')(({}) => ({
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'row',
+  width: '100%',
+  height: '2rem',
   '> svg': {
     marginBottom: '0.5em'
   },
   margin: '0 0.2em'
+}));
+
+const LabelContainer = styled(Grid)(({ theme }) => ({
+  display: 'flex'
 }));
 
 type MainControlsProps = {
@@ -34,10 +51,7 @@ const MainControls: React.FC<MainControlsProps> = (
 ) => {
   return (
     <>
-      <GridDiv>
-        <Tooltip title="Price" placement="bottom">
-          <LocalOfferIcon color="warning" />
-        </Tooltip>
+      <SliderField fieldName="Price">
         <SliderRangeInput
           inputProps={{
             title: 'Price',
@@ -54,11 +68,8 @@ const MainControls: React.FC<MainControlsProps> = (
           update={props.update}
           scale={{ scale: priceScale, reverseScale: priceReverseScale }}
         />
-      </GridDiv>
-      <GridDiv>
-        <Tooltip title="ARV" placement="bottom">
-          <OtherHousesIcon color="secondary" />
-        </Tooltip>
+      </SliderField>
+      <SliderField fieldName="ARV">
         <SliderRangeInput
           inputProps={{
             title: 'ARV',
@@ -75,12 +86,8 @@ const MainControls: React.FC<MainControlsProps> = (
           update={props.update}
           scale={{ scale: priceScale, reverseScale: priceReverseScale }}
         />
-      </GridDiv>
-
-      <GridDiv>
-        <Tooltip title="Radius" placement="bottom">
-          <TrackChangesIcon color="error" />
-        </Tooltip>
+      </SliderField>
+      <SliderField fieldName="Radius">
         <SliderInput
           inputProps={{
             title: 'Radius',
@@ -92,14 +99,11 @@ const MainControls: React.FC<MainControlsProps> = (
           value={props.searchData.distance}
           update={props.update}
         />
-      </GridDiv>
-      <GridDiv>
-        <Tooltip title="Comps" placement="bottom">
-          <PriceCheckIcon color="success" />
-        </Tooltip>
+      </SliderField>
+      <SliderField fieldName="%⇩Comps">
         <SliderInput
           inputProps={{
-            title: 'Under Comps',
+            title: '%⇩Comps',
             name: 'underComps',
             min: 0,
             max: 100,
@@ -108,14 +112,11 @@ const MainControls: React.FC<MainControlsProps> = (
           value={props.searchData.underComps}
           update={props.update}
         />
-      </GridDiv>
-      <GridDiv>
-        <Tooltip title="Age" placement="bottom">
-          <AccessTimeIcon />
-        </Tooltip>
+      </SliderField>
+      <SliderField fieldName="Comps Age">
         <SliderInput
           inputProps={{
-            title: 'Age',
+            title: 'Comps Age',
             name: 'soldAge',
             min: 0,
             max: 8,
@@ -126,7 +127,7 @@ const MainControls: React.FC<MainControlsProps> = (
           update={props.update}
           scale={{ scale: ageScale, reverseScale: ageReverseScale }}
         />
-      </GridDiv>
+      </SliderField>
     </>
   );
 };

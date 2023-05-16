@@ -1,3 +1,4 @@
+import BuyBox from "../models/buybox";
 import CompsProperty from "../models/comps_property";
 import Deal from "../models/deal";
 import Property from "../models/property";
@@ -8,12 +9,14 @@ export default class DealsEngine {
 
     }
 
-    public findDeals = async (soldProperties: Property[], forSaleProperties: Property[], maxDistance: number, minProfit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, soldAge?: number, forSaleAge?: number, minArea?: number, maxArea?: number, minBeds?: number, maxBeds?: number, minBaths?: number, maxBaths?: number) => {
+    public findDeals = async (soldProperties: Property[], forSaleProperties: Property[], buyBox: BuyBox) => {
         const deals: Deal[] = [];
         for (const forSaleProperty of forSaleProperties) {
-            const validMinPrice = propertyMinPrice == undefined ? true : forSaleProperty.price >= propertyMinPrice;
-            const validMaxPrice = propertyMaxPrice == undefined ? true : forSaleProperty.price <= propertyMaxPrice;
-            const notValidForSaleHouse = !validMinPrice || !validMaxPrice;
+            const validMinPrice = buyBox.minPrice == undefined ? true : forSaleProperty.price >= buyBox.minPrice;
+            const validMaxPrice = buyBox.maxPrice == undefined ? true : forSaleProperty.price <= buyBox.maxPrice;
+            const validMinArea = buyBox.forSaleMinArea == undefined ? true : forSaleProperty.area >= buyBox.forSaleMinArea;
+            const validMaxArea = buyBox.forSaleMaxArea == undefined ? true : forSaleProperty.area <= buyBox.forSaleMaxArea;
+            const notValidForSaleHouse = !validMinPrice || !validMaxPrice || !validMinArea || !validMaxArea;
             if (notValidForSaleHouse) continue;
             const houseAreaPrice = forSaleProperty.price / forSaleProperty.area;
             let soldHousesPriceSum = 0
@@ -22,29 +25,30 @@ export default class DealsEngine {
             const trueARVHouses = [];
             for (const soldProperty of soldProperties) {
                 //New true ARV algorithm
-                const true_validMinArea = minArea == undefined ? true : soldProperty.area >= forSaleProperty.area - 500;
-                const true_validMaxArea = maxArea == undefined ? true : soldProperty.area <= forSaleProperty.area + 500;
+                const true_validMinArea = buyBox.soldMinArea == undefined ? true : soldProperty.area >= forSaleProperty.area - 500;
+                const true_validMaxArea = buyBox.soldMaxArea == undefined ? true : soldProperty.area <= forSaleProperty.area + 500;
+                const true_validArea = true_validMinArea && true_validMaxArea;
                 const true_distance = this.getDistance(forSaleProperty.latitude, soldProperty.latitude, forSaleProperty.longitude, soldProperty.longitude);
-                if (true_distance <= maxDistance) {
+                if (true_validArea && buyBox.compsMaxDistance && true_distance <= buyBox.compsMaxDistance) {
                     const sqftPrice = soldProperty.price / soldProperty.area;
                     trueARVHouses.push(soldProperty);
                 }
 
 
-                const validMinSoldPrice = soldMinPrice == undefined ? true : soldProperty.price >= soldMinPrice;
-                const validMaxSoldPrice = soldMaxPrice == undefined ? true : soldProperty.price <= soldMaxPrice;
-                const validHouseAge = this.validatePropertyAge(soldProperty.listingDate, soldAge!);
-                const validMinArea = minArea == undefined ? true : soldProperty.area >= minArea;
-                const validMaxArea = maxArea == undefined ? true : soldProperty.area <= maxArea;
-                const validMinBeds = minBeds == undefined ? true : soldProperty.beds >= minBeds;
-                const validMaxBeds = maxBeds == undefined ? true : soldProperty.beds <= maxBeds;
-                const validMinBaths = minBaths == undefined ? true : soldProperty.baths >= minBaths;
-                const validMaxBaths = maxBaths == undefined ? true : soldProperty.baths <= maxBaths;
+                const validMinSoldPrice = buyBox.minArv == undefined ? true : soldProperty.price >= buyBox.minArv;
+                const validMaxSoldPrice = buyBox.maxArv == undefined ? true : soldProperty.price <= buyBox.maxArv;
+                const validHouseAge = this.validatePropertyAge(soldProperty.listingDate, buyBox.onSoldDays!);
+                const validSoldMinArea = buyBox.soldMinArea == undefined ? true : soldProperty.area >= buyBox.soldMinArea;
+                const validSoldMaxArea = buyBox.soldMaxArea == undefined ? true : soldProperty.area <= buyBox.soldMaxArea;
+                const validMinBeds = buyBox.minBeds == undefined ? true : soldProperty.beds >= buyBox.minBeds;
+                const validMaxBeds = buyBox.maxBeds == undefined ? true : soldProperty.beds <= buyBox.maxBeds;
+                const validMinBaths = buyBox.minBaths == undefined ? true : soldProperty.baths >= buyBox.minBaths;
+                const validMaxBaths = buyBox.maxBaths == undefined ? true : soldProperty.baths <= buyBox.maxBaths;
 
-                const notValidSoldHouse = (!validMinSoldPrice || !validMaxSoldPrice || !validHouseAge || !validMinArea || !validMaxArea || !validMinBeds || !validMaxBeds || !validMinBaths || !validMaxBaths);
+                const notValidSoldHouse = (!validMinSoldPrice || !validMaxSoldPrice || !validHouseAge || !validSoldMinArea || !validSoldMaxArea || !true_validMaxArea || !validMinBeds || !validMaxBeds || !validMinBaths || !validMaxBaths);
                 if (notValidSoldHouse) continue;
                 const distance = this.getDistance(forSaleProperty.latitude, soldProperty.latitude, forSaleProperty.longitude, soldProperty.longitude);
-                if (distance <= maxDistance) {
+                if (distance <= buyBox.compsMaxDistance) {
                     const compsProperty = { ...soldProperty, distance };
                     relevantSoldHouses.push(compsProperty);
                     soldHousesPriceSum += soldProperty.price / soldProperty.area;
@@ -54,7 +58,7 @@ export default class DealsEngine {
             }
             const soldHousesAveragePrice = soldHousesPriceSum / soldHousesCount;
             const profit = 100 * (soldHousesAveragePrice - houseAreaPrice) / soldHousesAveragePrice;
-            if (profit >= minProfit) {
+            if (profit >= buyBox.underComps) {
                 trueARVHouses.sort((a, b) => a.price / a.area - b.price / b.area);
                 const index = Math.floor(trueARVHouses.length * 0.7);
                 const relevantHouses = trueARVHouses.slice(index);
@@ -66,7 +70,7 @@ export default class DealsEngine {
                 deals.push({
                     profit,
                     trueArv,
-                    distance: maxDistance,
+                    distance: buyBox.compsMaxDistance,
                     property: forSaleProperty,
                     relevantSoldHouses
                 })

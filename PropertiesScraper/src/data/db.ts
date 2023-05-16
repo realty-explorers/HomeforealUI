@@ -7,12 +7,14 @@ import { readFileSync } from 'fs';
 import Property from '../models/property';
 import RegionStatus from '../models/region_status';
 import { constructRegionId } from '../utils/utils';
+import BuyBox from '../models/buybox';
 
 export default class PropertyRepository {
 	private clientOptions: ClientOptions;
 	private client?: Client;
 	private readonly PROPERTY_DEFAULT_INDEX = 'properties';
 	private readonly REGION_STATUS_INDEX = 'region_status';
+	private readonly BUYBOX_INDEX = 'region_status';
 	private readonly REGION_STATUS_PIPELINE = 'region_status_set_id';
 	private readonly PROPERTY_PIPELINE = 'id pipeline';
 
@@ -74,8 +76,10 @@ export default class PropertyRepository {
 	}
 
 	public setupDB = async () => {
-		const indexExists = await this.client!.indices.exists({ index: this.REGION_STATUS_INDEX });
+		let indexExists = await this.client!.indices.exists({ index: this.REGION_STATUS_INDEX });
 		if (!indexExists) await this.createRegionStatusIndex();
+		// indexExists = await this.client!.indices.exists({ index: this.BUYBOX_INDEX });
+		// if (!indexExists) await this.createBuyBoxIndex();
 	}
 
 
@@ -93,6 +97,45 @@ export default class PropertyRepository {
 		});
 		return response;
 	}
+
+	public createBuyBoxIndex = async () => {
+		const response = await this.client!.indices.create({
+			index: this.REGION_STATUS_INDEX,
+			mappings: {
+				properties: {
+					"id": { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+					"userId": { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+					"timestamp": { "type": "date" },
+					"location": { "type": "text", "fields": { "keyword": { "type": "keyword", "ignore_above": 256 } } },
+					"distance": { "type": "float" },
+					"underComps": { "type": "float" },
+					"minArv": { "type": "integer" },
+					"maxArv": { "type": "integer" },
+					"minPrice": { "type": "integer" },
+					"maxPrice": { "type": "integer" },
+					"onSaleDays": { "type": "integer" },
+					"onSoldDays": { "type": "integer" },
+					"minArea": { "type": "integer" },
+					"maxArea": { "type": "integer" },
+					"minBeds": { "type": "short" },
+					"maxBeds": { "type": "short" },
+					"minBaths": { "type": "short" },
+					"maxBaths": { "type": "short" },
+				}
+			}
+		});
+		return response;
+	}
+
+	// public addBuyBox = async (buyBox: BuyBox) => {
+	// 	const response = await this.client!.index({
+	// 		index: this.BUYBOX_INDEX,
+	// 		id: buyBox.id!,
+	// 		document: buyBox,
+	// 	});
+	// 	console.log(response);
+	// 	return response;
+	// }
 
 	public updateRegionStatus = async (regionStatus: RegionStatus) => {
 		const response = await this.client!.index({

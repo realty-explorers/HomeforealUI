@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Slider } from '@mui/material';
 import { InputProps } from '@/components/Form/formTypes';
+import { AirbnbThumbComponent, StyledSlider } from './StyledSlider';
 
 type SliderInputProps = {
   inputProps: InputProps;
@@ -21,14 +22,15 @@ const SliderInput: React.FC<SliderInputProps> = (props: SliderInputProps) => {
   };
 
   return (
-    <Slider
+    <StyledSlider
       {...props.inputProps}
+      components={{ Thumb: AirbnbThumbComponent }}
       value={props.scale ? props.scale.reverseScale(props.value) : props.value}
       scale={props.scale?.scale}
       getAriaValueText={props.inputProps.format}
       valueLabelFormat={props.inputProps.format}
       onChange={handleChange}
-      orientation="vertical"
+      orientation="horizontal"
       valueLabelDisplay="auto"
       aria-labelledby="non-linear-slider"
     />

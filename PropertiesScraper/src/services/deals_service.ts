@@ -3,6 +3,7 @@ import DealsFinder from './DealsFinder';
 import Property from '../models/property';
 import RegionProperties from '../models/region_properties';
 import PropertiesCache from './PropertiesCache';
+import BuyBox from '../models/buybox';
 
 export default class DealsService {
 	private dealsFinder: DealsFinder;
@@ -33,14 +34,18 @@ export default class DealsService {
 		}
 		const properties = await this.dealsFinder.findProperties(regionProperties);
 		this.propertiesCache.cacheProperties(id, properties);
+		const keys = await this.propertiesCache.getKeys();
+		console.log(keys);
 		return properties;
 	}
 
-	public findDeals = async (id: string, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, soldAge?: number, forSaleAge?: number, minArea?: number, maxArea?: number, minBeds?: number, maxBeds?: number, minBaths?: number, maxBaths?: number) => {
+	public findDeals = async (id: string, buyBox: BuyBox) => {
 		const properties = await this.propertiesCache.getProperties(id);
+		const keys = await this.propertiesCache.getKeys();
+		console.log(keys);
 		const forSaleProperties = properties.filter(property => property.forSale === true);
 		const soldProperties = properties.filter(property => property.forSale === false);
-		const deals = await this.dealsFinder.findDeals(soldProperties, forSaleProperties, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, soldAge, forSaleAge, minArea, maxArea, minBeds, maxBeds, minBaths, maxBaths);
+		const deals = await this.dealsFinder.findDeals(soldProperties, forSaleProperties, buyBox);
 		return deals;
 	}
 }

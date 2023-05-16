@@ -3,21 +3,13 @@ import { styled, Tooltip } from '@mui/material';
 import ExpandIcon from '@mui/icons-material/Expand';
 import HotelIcon from '@mui/icons-material/Hotel';
 import WcIcon from '@mui/icons-material/Wc';
-import SliderRangeInput from './SliderRangeInput';
+import SliderRangeInput from '../SliderRangeInput';
 import {
   priceFormatter,
   priceReverseScale,
   priceScale
 } from '@/utils/converters';
-
-const GridDiv = styled('div')(({}) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  '> svg': {
-    marginBottom: '0.5em'
-  },
-  margin: '0 0.2em'
-}));
+import SliderField from './SliderField';
 
 type AdvancedControlsProps = {
   update: (name: string, value: any) => void;
@@ -28,10 +20,7 @@ const AdvancedControls: React.FC<AdvancedControlsProps> = (
 ) => {
   return (
     <>
-      <GridDiv>
-        <Tooltip title="Baths" placement="bottom">
-          <WcIcon color="error" />
-        </Tooltip>
+      <SliderField fieldName="Baths">
         <SliderRangeInput
           inputProps={{
             title: 'Baths',
@@ -46,11 +35,8 @@ const AdvancedControls: React.FC<AdvancedControlsProps> = (
           maxValue={props.searchData.maxBaths}
           update={props.update}
         />
-      </GridDiv>
-      <GridDiv>
-        <Tooltip title="Beds" placement="bottom">
-          <HotelIcon color="success" />
-        </Tooltip>
+      </SliderField>
+      <SliderField fieldName="Beds">
         <SliderRangeInput
           inputProps={{
             title: 'Beds',
@@ -65,26 +51,39 @@ const AdvancedControls: React.FC<AdvancedControlsProps> = (
           maxValue={props.searchData.maxBeds}
           update={props.update}
         />
-      </GridDiv>
-      <GridDiv>
-        <Tooltip title="Area" placement="bottom">
-          <ExpandIcon color="primary" />
-        </Tooltip>
+      </SliderField>
+      <SliderField fieldName="Sqft">
         <SliderRangeInput
           inputProps={{
-            title: 'Area',
-            name: 'area',
+            title: 'Sqft',
+            name: 'forSaleArea',
             min: 500,
             max: 10000,
             step: 50
           }}
-          minValueName={'minArea'}
-          maxValueName={'maxArea'}
-          minValue={props.searchData.minArea}
-          maxValue={props.searchData.maxArea}
+          minValueName={'minForSaleArea'}
+          maxValueName={'maxForSaleArea'}
+          minValue={props.searchData.minForSaleArea}
+          maxValue={props.searchData.maxForSaleArea}
           update={props.update}
         />
-      </GridDiv>
+      </SliderField>
+      <SliderField fieldName="Comps Sqft">
+        <SliderRangeInput
+          inputProps={{
+            title: 'Sqft',
+            name: 'soldArea',
+            min: 500,
+            max: 10000,
+            step: 50
+          }}
+          minValueName={'minSoldArea'}
+          maxValueName={'maxSoldArea'}
+          minValue={props.searchData.minSoldArea}
+          maxValue={props.searchData.maxSoldArea}
+          update={props.update}
+        />
+      </SliderField>
     </>
   );
 };

@@ -13,6 +13,7 @@ export const authOptions = {
     session: {
         maxAge: 60 * 60
     },
+    secret: process.env.NEXTAUTH_SECRET,
     providers: [
         CognitoProvider({
             clientId: process.env.COGNITO_CLIENT_ID,

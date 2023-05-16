@@ -7,6 +7,7 @@ import jwt from 'jsonwebtoken';
 import { jwtDecrypt } from 'jose';
 const { JWE } = require('node-jose')
 import * as _hkdf from '@panva/hkdf';
+import axios from 'axios';
 interface RequestWithUser extends Request {
 	user?: User;
 }
@@ -28,7 +29,11 @@ class AuthMiddleware {
 	public verifyRequest = async (req: RequestWithUser, res: Response, next: NextFunction) => {
 		try {
 			const secret = process.env.NEXTAUTH_SECRET!;
-			const cookie = req.cookies['next-auth.session-token'];
+			//cookie name for http is next-auth.session-token
+			//cookie name for https is __Secure-next-auth.session-token
+			const cookieName = process.env.__DEV__ ? 'next-auth.session-token' : '__Secure-next-auth.session-token';
+			const cookie = req.cookies[cookieName];
+			// const cookie = req.cookies['next-auth.session-token'];
 			const encryptionSecret = await this.getDerivedEncryptionKey(secret);
 			const token: any = await jwtDecrypt(cookie, encryptionSecret);
 
@@ -85,11 +90,11 @@ class AuthMiddleware {
 		const URL = `https://cognito-idp.${poolRegion}.amazonaws.com/${userPoolId}/.well-known/jwks.json`;
 
 		try {
-			const response = await fetch(URL);
+			const response = await axios.get(URL);
 			if (response.status !== 200) {
 				throw 'request not successful'
 			}
-			const data = await response.json();
+			const data = await response.data;
 			const { keys } = data;
 			for (let i = 0; i < keys.length; i++) {
 				const key_id = keys[i].kid;

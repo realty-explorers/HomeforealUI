@@ -44,7 +44,9 @@ const StyledCard = styled(Card, {
   backgroundColor: 'rgba(255, 255, 255, 0.8)',
   width: '15rem',
   height: '19rem',
-  flexShrink: 0
+  flexShrink: 0,
+  margin: '0 0.5rem',
+  pointerEvents: 'all'
 }));
 
 const StyledListItem = styled(ListItem)(
@@ -79,6 +81,17 @@ const ListItemAvatarWrapper = styled(ListItemAvatar)(
   }
 `
 );
+
+const AddressLink = styled('h3')(({ theme }) => ({
+  padding: 0,
+  margin: 0,
+  textAlign: 'center',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  paddingBottom: '2px',
+  cursor: 'pointer'
+}));
 
 type PropertyCardProps = {
   deal: Deal;
@@ -135,16 +148,8 @@ const PropertyCard: React.FC<PropertyCardProps> = (
             )
           }
         />
-        <CardContent sx={{ paddingBottom: 0 }}>
-          <span
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              paddingBottom: 1
-            }}
-          >
-            {props.deal.property.address}
-          </span>
+        <CardContent sx={{ paddingBottom: 0, paddingTop: '1em' }}>
+          <AddressLink>{props.deal.property.address}</AddressLink>
           <Grid xs={12} sm={12} item display="flex" alignItems="center">
             {/* <h4>{props.deal.property.address}</h4> */}
             <List

@@ -1,7 +1,7 @@
 import Deal from '@/models/deal';
 import { Grid, styled, Pagination, Grow } from '@mui/material';
 import { useEffect, useState } from 'react';
-import PropertyCard from './PropertyCard';
+import PropertyCard from './MapComponents/PropertyCard';
 
 const CardsPagination = styled(Pagination)(
   ({}) => `

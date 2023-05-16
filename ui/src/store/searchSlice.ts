@@ -17,8 +17,10 @@ export interface SearchData {
     distance: number;
     forSaleAge: number;
     soldAge: number;
-    minArea: number,
-    maxArea: number,
+    minSoldArea: number,
+    maxSoldArea: number,
+    minForSaleArea: number,
+    maxForSaleArea: number,
     minBeds: number,
     maxBeds: number,
     minBaths: number,
@@ -45,8 +47,10 @@ const initialState: SearchState = {
         distance: 1,
         forSaleAge: 180,
         soldAge: 180,
-        minArea: 500,
-        maxArea: 10000,
+        minSoldArea: 500,
+        maxSoldArea: 10000,
+        minForSaleArea: 500,
+        maxForSaleArea: 10000,
         minBeds: 1,
         maxBeds: 9,
         minBaths: 1,
@@ -91,11 +95,18 @@ export const searchSlice = createSlice({
         setSearchForSaleAge(state, action) {
             state.searchData.forSaleAge = action.payload;
         },
-        setSearchMinArea(state, action) {
-            state.searchData.minArea = action.payload;
+        setSearchSoldMinArea(state, action) {
+            state.searchData.minSoldArea = action.payload;
         },
-        setSearchMaxArea(state, action) {
-            state.searchData.maxArea = action.payload;
+        setSearchSoldMaxArea(state, action) {
+            state.searchData.maxSoldArea = action.payload;
+        },
+
+        setSearchForSaleMinArea(state, action) {
+            state.searchData.minForSaleArea = action.payload;
+        },
+        setSearchForSaleMaxArea(state, action) {
+            state.searchData.maxForSaleArea = action.payload;
         },
         setSearchMinBeds(state, action) {
             state.searchData.minBeds = action.payload;
@@ -126,7 +137,7 @@ export const searchSlice = createSlice({
     },
 });
 
-export const { setSearchResults, setSearchLocation, setSearchLocationData, setSearchMinPrice, setSearchMaxPrice, setSearchMinArv, setSearchMaxArv, setSearchUnderComps, setSearchDistance, setSearchForSaleAge, setSearchSoldAge, setSearchMinArea, setSearchMaxArea, setSearchMinBeds, setSearchMaxBeds, setSearchMinBaths, setSearchMaxBaths } = searchSlice.actions;
+export const { setSearchResults, setSearchLocation, setSearchLocationData, setSearchMinPrice, setSearchMaxPrice, setSearchMinArv, setSearchMaxArv, setSearchUnderComps, setSearchDistance, setSearchForSaleAge, setSearchSoldAge, setSearchSoldMinArea, setSearchSoldMaxArea, setSearchForSaleMinArea, setSearchForSaleMaxArea, setSearchMinBeds, setSearchMaxBeds, setSearchMinBaths, setSearchMaxBaths } = searchSlice.actions;
 
 export const selectSearchResults: (state: AppState) => SearchResults = (state: AppState) => state.search.searchResults;
 export const selectSearchData: (state: AppState) => SearchData = (state: AppState) => state.search.searchData;

@@ -12,7 +12,7 @@ type MultiPolygon = Polygon[];
 export default class LocationService {
 
     private readonly SUGGESTION_SERVICE_URL = "https://www.zillowstatic.com/autocomplete/v3/suggestions?q=";
-    private readonly LOCATION_SERVICE_URL = "https://www.realtor.com/api/v1/maps/area?area_type=city&slug_id=";
+    private readonly LOCATION_SERVICE_URL = "https://www.realtor.com/api/v1/maps/area";
     private dataFetcher: AxiosDataFetcher;
     private states: { [state: string]: string };
     private states_abbreviations: { [state: string]: string };
@@ -41,10 +41,12 @@ export default class LocationService {
         console.log(state);
         console.log(stateAbbreviation);
         const cityName = city.replace(' ', '-');
-        let url = `${this.LOCATION_SERVICE_URL}${cityName}_${stateAbbreviation}`;
+        const cityUrlParameters = '?area_type=city&slug_id=';
+        let url = `${this.LOCATION_SERVICE_URL}${cityUrlParameters}${cityName}_${stateAbbreviation}`;
         if (type === 'neighborhood') {
-            const neighborhoodName = display.substring(0, display.indexOf(','));
-            url = `${this.LOCATION_SERVICE_URL}${neighborhoodName}_${cityName}_${stateAbbreviation}`;
+            const neighborhoodName = display.substring(0, display.indexOf(',')).replace(' ', '-');
+            const urlParameters = '?area_type=neighborhood&slug_id=';
+            url = `${this.LOCATION_SERVICE_URL}${urlParameters}${neighborhoodName}_${cityName}_${stateAbbreviation}`;
         }
         console.log(url);
         const requestParameters = {

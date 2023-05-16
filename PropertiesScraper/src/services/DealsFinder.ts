@@ -9,6 +9,7 @@ import RealtorScraper from "./RealtorScraper";
 import PropertyRepository from "../data/db";
 import RegionStatus from "../models/region_status";
 import { ScrapingManager } from "./ScrapingManager";
+import BuyBox from "../models/buybox";
 
 export default class DealsFinder {
 
@@ -70,8 +71,8 @@ export default class DealsFinder {
 
     }
 
-    public findDeals = async (soldProperties: Property[], forSaleProperties: Property[], distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, soldAge?: number, forSaleAge?: number, minArea?: number, maxArea?: number, minBeds?: number, maxBeds?: number, minBaths?: number, maxBaths?: number) => {
-        const deals = await this.dealsFinder.findDeals(soldProperties, forSaleProperties, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, soldAge, forSaleAge, minArea, maxArea, minBeds, maxBeds, minBaths, maxBaths);
+    public findDeals = async (soldProperties: Property[], forSaleProperties: Property[], buyBox: BuyBox) => {
+        const deals = await this.dealsFinder.findDeals(soldProperties, forSaleProperties, buyBox);
         saveData(deals, 'deals');
         console.log('finished, deals: \n');
         console.log(deals.map(deal => {

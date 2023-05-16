@@ -155,7 +155,7 @@ export default class RealtorScraper implements PropertyScraper {
                     const property: Property | any = {
                         forSale: regionProperties.isForSale,
                         primaryImage: nullableParameters.primaryPhoto,
-                        price: propertyResult.list_price,
+                        price: regionProperties.isForSale ? propertyResult.list_price : propertyResult.description.sold_price,
                         address: propertyResult.location.address.line.toLowerCase(),
                         street: nullableParameters.street,
                         city: propertyResult.location.address.city.toLowerCase(),

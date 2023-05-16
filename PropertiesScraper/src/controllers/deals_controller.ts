@@ -34,9 +34,9 @@ export default class DealsController {
 		next: NextFunction
 	) => {
 		try {
-			const { distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, soldAge, forSaleAge, minArea, maxArea, minBeds, maxBeds, minBaths, maxBaths } = req.body;
+			const { buyBox } = req.body;
 			const userId = req.user!.name;
-			const response = await this.dealsService.findDeals(userId, distance, profit, soldMinPrice, soldMaxPrice, propertyMinPrice, propertyMaxPrice, soldAge, forSaleAge, minArea, maxArea, minBeds, maxBeds, minBaths, maxBaths);
+			const response = await this.dealsService.findDeals(userId, buyBox);
 			res.json(response);
 		} catch (error: any) {
 			console.log(error);
