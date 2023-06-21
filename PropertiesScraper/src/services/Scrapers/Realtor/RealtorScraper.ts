@@ -1,23 +1,24 @@
 import * as puppeteer from "puppeteer";
-import { ZillowFilter, ZillowQuery, MapBounds } from "../models/zillow";
+import { ZillowFilter, ZillowQuery, MapBounds } from "../../../models/zillow";
 import queryParser from 'query-string';
-import { calcDaysDifferenceToISO, constructPropertyId, saveData, sleep } from "../utils/utils";
-import { RegionInfo, RegionSelection } from "../models/region_info";
-import RequestParameters from "../models/request_parameters";
-import DataFetcher from "./DataFetcher";
-import PropertyScraper from "./PropertyScraper";
-import Property from "../models/property";
-import RegionProperties from "../models/region_properties";
-import RealtorProperty from "../models/realtorProperty";
-import { addressToGeolocation } from "./location_helper";
-import states from '../../src/states.json';
-import ScrapeMetadata from "../models/scrape_metadata";
+import { calcDaysDifferenceToISO, constructPropertyId, saveData, sleep } from "../../../utils/utils";
+import { RegionInfo, RegionSelection } from "../../../models/region_info";
+import RequestParameters from "../../../models/request_parameters";
+import DataFetcher from "../../DataFetcher";
+import PropertyScraper from "../../PropertyScraper";
+import Property from "../../../models/property";
+import RegionProperties from "../../../models/region_properties";
+import RealtorProperty from "../../../models/realtorProperty";
+import { addressToGeolocation } from "../../location_helper";
+import states from '../../../states.json';
+import ScrapeMetadata from "../../../models/scrape_metadata";
+import RealtorAddressScraper from "./RealtorAddressScraper";
 
 
 export default class RealtorScraper implements PropertyScraper {
 
     private readonly rootUrl = 'https://www.realtor.com/api/v1/hulk_main_srp?schema=vesta';
-    private readonly defaultQuery = 'query ConsumerSearchMainQuery($query: HomeSearchCriteria!, $limit: Int, $offset: Int, $sort: [SearchAPISort], $sort_type: SearchSortType, $client_data: JSON, $bucket: SearchAPIBucket) {home_search: home_search(query: $query, sort: $sort, limit: $limit, offset: $offset, sort_type: $sort_type, client_data: $client_data, bucket: $bucket, ){count total results {property_id list_price rent_to_own{rent right_to_purchase provider} primary_photo (https: true){href} listing_id status permalink price_reduced_amount description{beds baths baths_full baths_half baths_1qtr baths_3qtr garage stories type sub_type lot_sqft sqft year_built sold_price sold_date name} location{address{line postal_code state state_code city coordinate {lat lon}} county {name fips_code}} flags{is_coming_soon is_pending is_foreclosure is_contingent is_new_construction is_new_listing (days: 14) is_price_reduced (days: 30) is_plan is_subdivision} list_date last_update_date coming_soon_date photos(limit: 5, https: true){href}}}}';
+    private readonly defaultQuery = 'query ConsumerSearchMainQuery($query: HomeSearchCriteria!, $limit: Int, $offset: Int, $sort: [SearchAPISort], $sort_type: SearchSortType, $client_data: JSON, $bucket: SearchAPIBucket) {home_search: home_search(query: $query, sort: $sort, limit: $limit, offset: $offset, sort_type: $sort_type, client_data: $client_data, bucket: $bucket, ){count total results {property_id list_price rent_to_own{rent right_to_purchase provider} primary_photo (https: true){href} listing_id status permalink price_reduced_amount description{beds baths baths_full baths_half baths_1qtr baths_3qtr garage stories type sub_type lot_sqft sqft year_built sold_price sold_date name} location{address{line postal_code state state_code city coordinate {lat lon}} neighborhoods {name level} county {name fips_code}} flags{is_coming_soon is_pending is_foreclosure is_contingent is_new_construction is_new_listing (days: 14) is_price_reduced (days: 30) is_plan is_subdivision} list_date last_update_date coming_soon_date photos(limit: 5, https: true){href}}}}';
     private readonly defaultRequestJson: any = {
         "query": this.defaultQuery,
         "variables": {
@@ -37,9 +38,11 @@ export default class RealtorScraper implements PropertyScraper {
         },
     }
     private states: { [state: string]: string };
+    private addressScraper: RealtorAddressScraper
 
     constructor() {
         this.states = states as { [state: string]: string }
+        this.addressScraper = new RealtorAddressScraper();
     }
 
     public scrapeMetadata = async (regionProperties: RegionProperties, dataFetcher: DataFetcher) => {
@@ -62,13 +65,16 @@ export default class RealtorScraper implements PropertyScraper {
         return scrapingInfo;
     }
 
+    public scrapeProperty = async (display: string, dataFetcher: DataFetcher) => {
+        const data = await this.addressScraper.getAddressData(display, dataFetcher);
+        return data;
+    }
+
     public scrapeProperties = async (scrapeInfo: ScrapeMetadata, dataFetcher: DataFetcher) => {
         const maxTries = 25;
         const requestsParameters = this.getFullRequestParameters(scrapeInfo);
         let requests: Promise<any>[] = [];
         for (const requestParameters of requestsParameters) {
-            console.log(requestParameters)
-            console.log(JSON.stringify(requestParameters))
             const request = dataFetcher.tryFetch(requestParameters, this.validateData, maxTries);
             requests.push(request);
         }
@@ -124,14 +130,14 @@ export default class RealtorScraper implements PropertyScraper {
 
     private getFullRequestParameters = (scrapeInfo: ScrapeMetadata) => {
         const fullRequestParameters: RequestParameters[] = [];
-        const total = scrapeInfo.totalPages;
-        const pageCount = 200;
+        const totalPages = scrapeInfo.totalPages;
+        const perPage = 200;
         let currentCount = 0;
-        while (currentCount < total) {
+        while (currentCount < totalPages * perPage) {
             const defaultRequestParameters = this.getRequestParameters(scrapeInfo.regionProperties);
             const requestParameters = this.paginate(defaultRequestParameters, currentCount);
             fullRequestParameters.push(JSON.parse(JSON.stringify(requestParameters)));
-            currentCount += pageCount;
+            currentCount += perPage;
         }
         return fullRequestParameters;
     }

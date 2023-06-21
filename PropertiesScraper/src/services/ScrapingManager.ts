@@ -4,8 +4,8 @@ import ScrapeMetadata from "../models/scrape_metadata";
 import AxiosDataFetcher from "./AxiosDataFetcher";
 import DataFetcher from "./DataFetcher";
 import PropertyScraper from "./PropertyScraper";
-import RealtorScraper from "./RealtorScraper";
-import ZillowScraper from "./ZillowScraper";
+import RealtorScraper from "./Scrapers/Realtor/RealtorScraper";
+import ZillowScraper from "./Scrapers/ZillowScraper";
 
 enum Scraper {
     Zillow,
@@ -54,6 +54,7 @@ export class ScrapingManager {
     }
 
     public scrapeProperties = async (regionProperties: RegionProperties) => {
+        if (regionProperties.type === 'address') return await this.getAddressProperties(regionProperties);
         const scrapersRegionProperties = this.constructScrapersRegionProperties(regionProperties);
         const scrapersMetadataResults = await this.scrapeMetadata(scrapersRegionProperties);
         console.log('after metadata')
@@ -72,5 +73,22 @@ export class ScrapingManager {
         }
         console.log(`Finished scraping, total properties: ${properties.length}`);
         return properties;
+    }
+
+    private getAddressProperties = async (regionProperties: RegionProperties) => {
+        console.log('scraping address');
+        const property = await this.propertyScrapers[Scraper.Realtor].scrapeProperty(regionProperties.display, this.dataFetcher);
+        regionProperties.isForSale = false;
+        if (property.neighborhood) {
+            regionProperties.type = 'neighborhood';
+            regionProperties.display = `${property.neighborhood}, ${property.city}, ${property.state}`;
+        } else {
+            regionProperties.type = 'city';
+            regionProperties.display = `${property.city}, ${property.state}`;
+        }
+        const scrapeMetadata = await this.scrapeMetadata([regionProperties]);
+        console.log(`Scraping ${scrapeMetadata[0].totalPages} pages`);
+        const soldProperties = await this.propertyScrapers[Scraper.Realtor].scrapeProperties(scrapeMetadata[0], this.dataFetcher);
+        return [...soldProperties, property];
     }
 }

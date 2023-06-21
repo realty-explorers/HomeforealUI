@@ -39,12 +39,15 @@ export default class DealsService {
 		return properties;
 	}
 
-	public findDeals = async (id: string, buyBox: BuyBox) => {
+	public findDeals = async (id: string, buyBox: BuyBox, addressPrice?: number) => {
 		const properties = await this.propertiesCache.getProperties(id);
 		const keys = await this.propertiesCache.getKeys();
 		console.log(keys);
 		const forSaleProperties = properties.filter(property => property.forSale === true);
 		const soldProperties = properties.filter(property => property.forSale === false);
+		if (addressPrice && forSaleProperties[0]) {
+			forSaleProperties[0].price = addressPrice;
+		}
 		const deals = await this.dealsFinder.findDeals(soldProperties, forSaleProperties, buyBox);
 		return deals;
 	}

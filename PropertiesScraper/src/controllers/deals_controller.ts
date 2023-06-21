@@ -34,9 +34,9 @@ export default class DealsController {
 		next: NextFunction
 	) => {
 		try {
-			const { buyBox } = req.body;
+			const { buyBox, addressPrice } = req.body;
 			const userId = req.user!.name;
-			const response = await this.dealsService.findDeals(userId, buyBox);
+			const response = await this.dealsService.findDeals(userId, buyBox, addressPrice);
 			res.json(response);
 		} catch (error: any) {
 			console.log(error);

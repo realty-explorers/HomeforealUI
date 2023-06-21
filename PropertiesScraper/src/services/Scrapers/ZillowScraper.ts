@@ -1,17 +1,17 @@
 import * as puppeteer from "puppeteer";
-import { ZillowFilter, ZillowQuery, MapBounds } from "../models/zillow";
+import { ZillowFilter, ZillowQuery, MapBounds } from "../../models/zillow";
 import queryParser from 'query-string';
-import { RegionInfo, RegionSelection } from "../models/region_info";
-import RequestParameters from "../models/request_parameters";
-import PropertyScraper from "./PropertyScraper";
-import DataFetcher from "./DataFetcher";
-import Property from "../models/property";
-import ZillowHouse from "../models/zillowHouse";
-import RegionProperties from "../models/region_properties";
-import { addressToGeolocation } from "./location_helper";
-import states from '../../src/states.json';
-import { constructPropertyId } from "../utils/utils";
-import ScrapeMetadata from "../models/scrape_metadata";
+import { RegionInfo, RegionSelection } from "../../models/region_info";
+import RequestParameters from "../../models/request_parameters";
+import PropertyScraper from "../PropertyScraper";
+import DataFetcher from "../DataFetcher";
+import Property from "../../models/property";
+import ZillowHouse from "../../models/zillowHouse";
+import RegionProperties from "../../models/region_properties";
+import { addressToGeolocation } from "../location_helper";
+import states from '../../states.json';
+import { constructPropertyId } from "../../utils/utils";
+import ScrapeMetadata from "../../models/scrape_metadata";
 
 
 export default class ZillowScraper implements PropertyScraper {
@@ -97,6 +97,10 @@ export default class ZillowScraper implements PropertyScraper {
         const propertiesResults = await Promise.all(requests);
         const properties = await this.parseProperties([...propertiesResults]);
         return properties;
+    }
+
+    public scrapeProperty = async (display: string, dataFetcher: DataFetcher) => {
+        return {} as Property;
     }
 
 

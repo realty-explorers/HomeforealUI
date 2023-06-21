@@ -1,6 +1,7 @@
 import { findDeals, findProperties } from "@/api/deals_api";
 import { getLocationData } from "@/api/location_api";
 import { SearchData, selectSearchData, setSearchLocationData, setSearchResults } from "@/store/searchSlice";
+import { add } from "date-fns";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -18,7 +19,7 @@ export const useSearch = () => {
 	// const searchData = useSelector(selectSearchData);
 	const dispatch = useDispatch();
 
-	const searchDeals = async (searchData: SearchData) => {
+	const searchDeals = async (searchData: SearchData, addressPrice?: number) => {
 		try {
 			setSearching(true);
 			const response = await findDeals(
@@ -39,6 +40,7 @@ export const useSearch = () => {
 				searchData.maxBeds,
 				searchData.minBaths,
 				searchData.maxBaths,
+				addressPrice
 			);
 			if (response.status === 200) {
 				dispatch(setSearchResults(response.data));
@@ -59,27 +61,35 @@ export const useSearch = () => {
 	const searchProperties = async (searchData: SearchData) => {
 		try {
 			setSearching(true);
+			let areaType = '';
+			let addressPrice = undefined;
+			if (searchData.location.resultType === 'Address') {
+				areaType = 'address';
+				addressPrice = +prompt('Enter the price of the property');
+			} else if (searchData.location.resultType === 'Region') {
+				areaType = searchData.location.metaData.regionType;
+			}
 			const propertiesResponse = await findProperties(
 				searchData.location.display,
-				searchData.location.metaData.regionType,
+				areaType,
 				searchData.location.metaData.city,
 				searchData.location.metaData.state
 			);
 			const locationResponse = await getLocationData(
 				searchData.location.display,
-				searchData.location.metaData.regionType,
+				areaType,
 				searchData.location.metaData.city,
 				searchData.location.metaData.state
 			);
 			if (propertiesResponse.status === 200 && locationResponse.status === 200) {
 				dispatch(setSearchLocationData(locationResponse.data));
 				console.log(JSON.stringify(searchData.location))
-				searchDeals({ ...searchDataGlobal, location: searchData.location });
+				searchDeals({ ...searchDataGlobal, location: searchData.location }, addressPrice);
 				// alert('Search Finished')
 			} else throw Error(propertiesResponse.data);
 		} catch (error) {
-			console.log(JSON.stringify(error));
-			alert(JSON.stringify(error));
+			console.log(error);
+			alert(error);
 		} finally {
 			setSearching(false);
 		}

@@ -28,42 +28,42 @@ class AuthMiddleware {
 
 	public verifyRequest = async (req: RequestWithUser, res: Response, next: NextFunction) => {
 		try {
-			const secret = process.env.NEXTAUTH_SECRET!;
-			//cookie name for http is next-auth.session-token
-			//cookie name for https is __Secure-next-auth.session-token
-			const cookieName = process.env.__DEV__ ? 'next-auth.session-token' : '__Secure-next-auth.session-token';
-			const cookie = req.cookies[cookieName];
-			// const cookie = req.cookies['next-auth.session-token'];
-			const encryptionSecret = await this.getDerivedEncryptionKey(secret);
-			const token: any = await jwtDecrypt(cookie, encryptionSecret);
+			// const secret = process.env.NEXTAUTH_SECRET!;
+			// //cookie name for http is next-auth.session-token
+			// //cookie name for https is __Secure-next-auth.session-token
+			// const cookieName = process.env.__DEV__ ? 'next-auth.session-token' : '__Secure-next-auth.session-token';
+			// const cookie = req.cookies[cookieName];
+			// // const cookie = req.cookies['next-auth.session-token'];
+			// const encryptionSecret = await this.getDerivedEncryptionKey(secret);
+			// const token: any = await jwtDecrypt(cookie, encryptionSecret);
 
-			// //decode cookie
+			// // //decode cookie
 
-			// const decodedToken = jwt.verify(cookie, secret);
-			// console.log('decodedToken: ' + decodedToken);
-			// console.log('cookie: ' + cookie);
-			// const token: any = await getToken({ req, secret: secret });
-			if (token) {
-				const jwtData = this.verifyToken(token.payload.accessToken);
-				const user: User = {
-					id: token.payload.sub,
-					name: token.payload.email,
-					email: token.payload.email,
-				}
-				req.user = user;
-				next();
-			}
-			else {
-				res.status(401).send({
-					error: 'Authentication error',
-				});
-			}
-			// req.user = {
-			// 	id: 'name',
-			// 	name: 'name',
-			// 	email: 'name@name.com'
+			// // const decodedToken = jwt.verify(cookie, secret);
+			// // console.log('decodedToken: ' + decodedToken);
+			// // console.log('cookie: ' + cookie);
+			// // const token: any = await getToken({ req, secret: secret });
+			// if (token) {
+			// 	const jwtData = this.verifyToken(token.payload.accessToken);
+			// 	const user: User = {
+			// 		id: token.payload.sub,
+			// 		name: token.payload.email,
+			// 		email: token.payload.email,
+			// 	}
+			// 	req.user = user;
+			// 	next();
 			// }
-			// next();
+			// else {
+			// 	res.status(401).send({
+			// 		error: 'Authentication error',
+			// 	});
+			// }
+			req.user = {
+				id: 'name',
+				name: 'name',
+				email: 'name@name.com'
+			}
+			next();
 		} catch (error) {
 			console.log(error);
 			res.status(401).send({ error });
