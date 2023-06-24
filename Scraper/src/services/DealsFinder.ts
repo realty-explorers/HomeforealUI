@@ -1,11 +1,11 @@
 import Property from "../models/property";
 import AxiosDataFetcher from "./AxiosDataFetcher";
 import DealsEngine from "./DealsEngine";
-import ZillowScraper from "./Scrapers/ZillowScraper";
+import ZillowScraper from "./ZillowScraper";
 import { constructRegionId, ISODifferenceToDays, saveData } from '../utils/utils';
 import RegionProperties from "../models/region_properties";
 import PropertyScraper from "./PropertyScraper";
-import RealtorScraper from "./Scrapers/Realtor/RealtorScraper";
+import RealtorScraper from "./RealtorScraper";
 import PropertyRepository from "../data/db";
 import RegionStatus from "../models/region_status";
 import { ScrapingManager } from "./ScrapingManager";

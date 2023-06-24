@@ -1,0 +1,10 @@
+{
+	"ignore": [
+		"data.json",
+		"README",
+		"forSaleResults.json",
+		"soldResults.json",
+		"deals.json",
+		"housesCache.json"
+	]
+}

@@ -5,9 +5,6 @@ import AxiosDataFetcher from './AxiosDataFetcher';
 import states from '../../src/states.json';
 import states_abbreviations from '../../src/states_abbreviations.json';
 import Location from '../models/location_data';
-import { url } from 'envalid';
-import RealtorScraper from './Scrapers/Realtor/RealtorScraper';
-import PropertyScraper from './PropertyScraper';
 
 type Polygon = [number, number][][];
 type MultiPolygon = Polygon[];
@@ -19,13 +16,11 @@ export default class LocationService {
     private dataFetcher: AxiosDataFetcher;
     private states: { [state: string]: string };
     private states_abbreviations: { [state: string]: string };
-    private propertyScraper: PropertyScraper;
 
     constructor() {
         this.dataFetcher = new AxiosDataFetcher();
         this.states = states as { [state: string]: string }
         this.states_abbreviations = states_abbreviations as { [state: string]: string }
-        this.propertyScraper = new RealtorScraper();
     }
 
     public getLocationSuggestions = async (searchTerm: string) => {
@@ -40,9 +35,25 @@ export default class LocationService {
     }
 
     public getLocationData = async (display: string, type: string, city: string, state: string) => {
-        const requestParameters = await this.getRequestParameters(display, type, city, state);
-        console.log(`url: ${requestParameters?.url}`);
-        const urlData = await this.dataFetcher.tryFetch(requestParameters!, this.validateLocationData);
+        const stateAbbreviation = this.states[state];
+        console.log(display)
+        console.log(type)
+        console.log(state);
+        console.log(stateAbbreviation);
+        const cityName = city.replace(' ', '-');
+        const cityUrlParameters = '?area_type=city&slug_id=';
+        let url = `${this.LOCATION_SERVICE_URL}${cityUrlParameters}${cityName}_${stateAbbreviation}`;
+        if (type === 'neighborhood') {
+            const neighborhoodName = display.substring(0, display.indexOf(',')).replace(' ', '-');
+            const urlParameters = '?area_type=neighborhood&slug_id=';
+            url = `${this.LOCATION_SERVICE_URL}${urlParameters}${neighborhoodName}_${cityName}_${stateAbbreviation}`;
+        }
+        console.log(url);
+        const requestParameters = {
+            method: 'GET',
+            url: url
+        }
+        const urlData = await this.dataFetcher.tryFetch(requestParameters, this.validateLocationData);
         const locationData = await this.extractLocationData(urlData);
         const location = {
             city,
@@ -50,18 +61,6 @@ export default class LocationService {
             ...locationData,
         }
         return location;
-    }
-
-    private getRequestParameters = async (display: string, type: string, city: string, state: string) => {
-        const stateAbbreviation = this.states[state];
-        console.log('display: ' + display + ' type: ' + type + ' city: ' + city + ' state: ' + state + ' stateAbbreviation: ' + stateAbbreviation);
-        if (type === 'city') {
-            return this.getCityRequestParameters(city, stateAbbreviation);
-        } else if (type === 'neighborhood') {
-            return this.getNeighborhoodRequestParameters(city, display, stateAbbreviation);
-        } else if (type === 'address') {
-            return await this.getAddressRequestParameters(display, stateAbbreviation);
-        }
     }
 
     private validateSuggestionsData = (data: any) => {
@@ -145,36 +144,5 @@ export default class LocationService {
             }
         });
         return parsedBoundary;
-    }
-    private getAddressRequestParameters = async (display: string, stateAbbreviation: string) => {
-        const propertyData = await this.propertyScraper.scrapeProperty(display, this.dataFetcher);
-        if (propertyData.neighborhood) {
-            console.log('neighborhood: ' + propertyData.neighborhood);
-            const display = propertyData.neighborhood + ', ' + propertyData.city;
-            return this.getNeighborhoodRequestParameters(propertyData.city, display, stateAbbreviation);
-        } else {
-            return this.getCityRequestParameters(propertyData.city, stateAbbreviation);
-        }
-    }
-
-    private getNeighborhoodRequestParameters(city: string, display: string, stateAbbreviation: string) {
-        const cityName = city.replace(' ', '-');
-        const neighborhoodName = display.substring(0, display.indexOf(',')).replace(' ', '-');
-        const urlParameters = '?area_type=neighborhood&slug_id=';
-        const url = `${this.LOCATION_SERVICE_URL}${urlParameters}${neighborhoodName}_${cityName}_${stateAbbreviation}`;
-        return {
-            method: 'GET',
-            url: url
-        };
-    }
-
-    private getCityRequestParameters(city: string, stateAbbreviation: string) {
-        const cityName = city.replace(' ', '-');
-        const urlParameters = '?area_type=city&slug_id=';
-        const url = `${this.LOCATION_SERVICE_URL}${urlParameters}${cityName}_${stateAbbreviation}`;
-        return {
-            method: 'GET',
-            url: url
-        };
     }
 }

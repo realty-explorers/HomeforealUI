@@ -6,7 +6,6 @@ interface Property {
     price: number;
     address: string;
     street: string;
-    neighborhood: string;
     city: string;
     state: string
     zipCode: number;

@@ -15,7 +15,7 @@ const findProperties = async (display: string, type: string, city: string, state
 	});
 };
 
-const findDeals = async (regionId: number, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, soldAge?: number, forSaleAge?: number, minSoldArea?: number, maxSoldArea?: number, minForSaleArea?: number, maxForSaleArea?: number, minBeds?: number, maxBeds?: number, minBaths?: number, maxBaths?: number) => {
+const findDeals = async (regionId: number, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, soldAge?: number, forSaleAge?: number, minSoldArea?: number, maxSoldArea?: number, minForSaleArea?: number, maxForSaleArea?: number, minBeds?: number, maxBeds?: number, minBaths?: number, maxBaths?: number, addressPrice?: number) => {
 	const buyBox = {
 		compsMaxDistance: distance,
 		underComps: profit,
@@ -35,7 +35,7 @@ const findDeals = async (regionId: number, distance: number, profit: number, sol
 		maxBaths: maxBaths
 	}
 	return axios.post(`${gateway_url}/api/v1/deals/findDeals`, {
-		regionId, buyBox
+		regionId, buyBox, addressPrice
 	}, {
 		headers: {
 			'Access-Control-Allow-Origin': '*'
