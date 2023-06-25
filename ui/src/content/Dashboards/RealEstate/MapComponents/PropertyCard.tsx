@@ -27,6 +27,7 @@ import LinkIcon from '@mui/icons-material/Link';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import PriceChangeIcon from '@mui/icons-material/PriceChange';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import InsightsIcon from '@mui/icons-material/Insights';
 import ExpandIcon from '@mui/icons-material/Expand';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { percentFormatter, priceFormatter } from '@/utils/converters';
@@ -173,6 +174,24 @@ const PropertyCard: React.FC<PropertyCardProps> = (
                 <Box>
                   <Typography align="right" variant="h4" noWrap>
                     {priceFormatter(props.deal.property.price)}
+                  </Typography>
+                </Box>
+              </StyledListItem>
+              <StyledListItem disableGutters>
+                <ListItemAvatarWrapper>
+                  <InsightsIcon color="inherit" />
+                </ListItemAvatarWrapper>
+                <ListItemText
+                  primary="≈ ARV"
+                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
+                  secondaryTypographyProps={{
+                    variant: 'subtitle2',
+                    noWrap: true
+                  }}
+                />
+                <Box>
+                  <Typography align="right" variant="h4" noWrap>
+                    {priceFormatter(`${props.deal.estimatedArv?.toFixed(0)}`)}
                   </Typography>
                 </Box>
               </StyledListItem>

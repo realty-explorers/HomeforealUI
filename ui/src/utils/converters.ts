@@ -1,5 +1,5 @@
 
-const priceFormatter = (value: number) =>
+const priceFormatter = (value: number | string) =>
     `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 const percentFormatter = (value: number) => `%${value.toFixed(2)}`;
 const distanceFormatter = (value: number) => `${value.toFixed(2)} Miles`;
