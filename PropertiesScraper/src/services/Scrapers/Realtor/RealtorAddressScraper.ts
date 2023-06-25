@@ -57,7 +57,7 @@ export default class RealtorAddressScraper {
         const nullParameters = await this.fillNullableParameters(property);
         const propertyData: Property = {
             id: '1',
-            forSale: true,
+            forSale: property.status === 'for_sale',
             primaryImage: property?.photos[0]?.href ?? '',
             price: property['list_price'],
             address: property['location']['address']['line'],

@@ -4,11 +4,13 @@ import { HYDRATE } from "next-redux-wrapper";
 import Deal from "@/models/deal";
 import LocationSuggestion from "@/models/location_suggestions";
 import Location from "@/models/location_data";
+import Property from "@/models/property";
 
 // Type for our state
 export interface SearchData {
     location: LocationSuggestion,
     locationData: Location,
+    areaType: string;
     minPrice: string;
     maxPrice: string;
     minArv: string;
@@ -28,10 +30,13 @@ export interface SearchData {
 }
 
 type SearchResults = Deal[];
+type SearchAnalyzedProperty = Property;
 export interface SearchState {
     searchData: SearchData;
     searchResults: SearchResults;
+    searchAnalyzedProperty?: SearchAnalyzedProperty;
 }
+
 
 
 // Initial state
@@ -39,6 +44,7 @@ const initialState: SearchState = {
     searchData: {
         location: {} as LocationSuggestion,
         locationData: {} as Location,
+        areaType: '',
         minPrice: '0',
         maxPrice: '1000000',
         minArv: '0',
@@ -56,7 +62,8 @@ const initialState: SearchState = {
         minBaths: 1,
         maxBaths: 9
     },
-    searchResults: []
+    searchResults: [],
+    searchAnalyzedProperty: null
 };
 
 // Actual Slice
@@ -123,7 +130,9 @@ export const searchSlice = createSlice({
         setSearchResults(state, action) {
             state.searchResults = action.payload;
         },
-
+        setSearchAnalyzedProperty(state, action) {
+            state.searchAnalyzedProperty = action.payload;
+        }
     },
 
     // Special reducer for hydrating the state. Special case for next-redux-wrapper
@@ -137,9 +146,10 @@ export const searchSlice = createSlice({
     },
 });
 
-export const { setSearchResults, setSearchLocation, setSearchLocationData, setSearchMinPrice, setSearchMaxPrice, setSearchMinArv, setSearchMaxArv, setSearchUnderComps, setSearchDistance, setSearchForSaleAge, setSearchSoldAge, setSearchSoldMinArea, setSearchSoldMaxArea, setSearchForSaleMinArea, setSearchForSaleMaxArea, setSearchMinBeds, setSearchMaxBeds, setSearchMinBaths, setSearchMaxBaths } = searchSlice.actions;
+export const { setSearchAnalyzedProperty, setSearchResults, setSearchLocation, setSearchLocationData, setSearchMinPrice, setSearchMaxPrice, setSearchMinArv, setSearchMaxArv, setSearchUnderComps, setSearchDistance, setSearchForSaleAge, setSearchSoldAge, setSearchSoldMinArea, setSearchSoldMaxArea, setSearchForSaleMinArea, setSearchForSaleMaxArea, setSearchMinBeds, setSearchMaxBeds, setSearchMinBaths, setSearchMaxBaths } = searchSlice.actions;
 
 export const selectSearchResults: (state: AppState) => SearchResults = (state: AppState) => state.search.searchResults;
 export const selectSearchData: (state: AppState) => SearchData = (state: AppState) => state.search.searchData;
+export const selectSearchAnalyzedProperty: (state: AppState) => SearchAnalyzedProperty = (state: AppState) => state.search.searchAnalyzedProperty;
 
 export default searchSlice.reducer;
