@@ -10,11 +10,14 @@ import {
   priceScale
 } from '@/utils/converters';
 import SliderField from './SliderField';
+import { Check } from '@mui/icons-material';
+import PropertyTypeFilter from './PropertyTypeFilter';
 
 type AdvancedControlsProps = {
   update: (name: string, value: any) => void;
   searchData: any;
 };
+
 const AdvancedControls: React.FC<AdvancedControlsProps> = (
   props: AdvancedControlsProps
 ) => {
@@ -84,6 +87,7 @@ const AdvancedControls: React.FC<AdvancedControlsProps> = (
           update={props.update}
         />
       </SliderField>
+      <PropertyTypeFilter />
     </>
   );
 };
