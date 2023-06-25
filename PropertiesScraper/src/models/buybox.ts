@@ -1,3 +1,5 @@
+import { PropertyType } from "./property";
+
 interface BuyBox {
     location?: string;
     compsMaxDistance: number;
@@ -16,6 +18,7 @@ interface BuyBox {
     maxBeds?: number;
     minBaths?: number;
     maxBaths?: number;
+    propertyType?: PropertyType;
 }
 
 export default BuyBox;

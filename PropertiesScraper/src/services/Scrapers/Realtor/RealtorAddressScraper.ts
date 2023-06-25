@@ -66,6 +66,7 @@ export default class RealtorAddressScraper {
             city: property['location']['address']['city'],
             state: property['location']['address']['state_code'],
             zipCode: +property['location']['address']['postal_code'],
+            type: property['description']['type'],
             beds: nullParameters.beds,
             baths: nullParameters.baths,
             area: property['description']['sqft'],

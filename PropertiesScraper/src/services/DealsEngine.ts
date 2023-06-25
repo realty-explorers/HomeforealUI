@@ -12,11 +12,12 @@ export default class DealsEngine {
     public findDeals = async (soldProperties: Property[], forSaleProperties: Property[], buyBox: BuyBox) => {
         const deals: Deal[] = [];
         for (const forSaleProperty of forSaleProperties) {
+            const validPropertyType = buyBox.propertyType == undefined ? true : forSaleProperty.type === buyBox.propertyType;
             const validMinPrice = buyBox.minPrice == undefined ? true : forSaleProperty.price >= buyBox.minPrice;
             const validMaxPrice = buyBox.maxPrice == undefined ? true : forSaleProperty.price <= buyBox.maxPrice;
             const validMinArea = buyBox.forSaleMinArea == undefined ? true : forSaleProperty.area >= buyBox.forSaleMinArea;
             const validMaxArea = buyBox.forSaleMaxArea == undefined ? true : forSaleProperty.area <= buyBox.forSaleMaxArea;
-            const notValidForSaleHouse = !validMinPrice || !validMaxPrice || !validMinArea || !validMaxArea;
+            const notValidForSaleHouse = !validPropertyType || !validMinPrice || !validMaxPrice || !validMinArea || !validMaxArea;
             if (notValidForSaleHouse) continue;
             const houseAreaPrice = forSaleProperty.price / forSaleProperty.area;
             let soldHousesPriceSum = 0
@@ -35,6 +36,7 @@ export default class DealsEngine {
                 }
 
 
+                const validSoldPropertyType = buyBox.propertyType == undefined ? true : soldProperty.type === buyBox.propertyType;
                 const validMinSoldPrice = buyBox.minArv == undefined ? true : soldProperty.price >= buyBox.minArv;
                 const validMaxSoldPrice = buyBox.maxArv == undefined ? true : soldProperty.price <= buyBox.maxArv;
                 const validHouseAge = this.validatePropertyAge(soldProperty.listingDate, buyBox.onSoldDays!);
@@ -45,7 +47,7 @@ export default class DealsEngine {
                 const validMinBaths = buyBox.minBaths == undefined ? true : soldProperty.baths >= buyBox.minBaths;
                 const validMaxBaths = buyBox.maxBaths == undefined ? true : soldProperty.baths <= buyBox.maxBaths;
 
-                const notValidSoldHouse = (!validMinSoldPrice || !validMaxSoldPrice || !validHouseAge || !validSoldMinArea || !validSoldMaxArea || !true_validMaxArea || !validMinBeds || !validMaxBeds || !validMinBaths || !validMaxBaths);
+                const notValidSoldHouse = (!validSoldPropertyType || !validMinSoldPrice || !validMaxSoldPrice || !validHouseAge || !validSoldMinArea || !validSoldMaxArea || !true_validMaxArea || !validMinBeds || !validMaxBeds || !validMinBaths || !validMaxBaths);
                 if (notValidSoldHouse) continue;
                 const distance = this.getDistance(forSaleProperty.latitude, soldProperty.latitude, forSaleProperty.longitude, soldProperty.longitude);
                 if (distance <= buyBox.compsMaxDistance) {

@@ -6,7 +6,7 @@ import { RegionInfo, RegionSelection } from "../../../models/region_info";
 import RequestParameters from "../../../models/request_parameters";
 import DataFetcher from "../../DataFetcher";
 import PropertyScraper from "../../PropertyScraper";
-import Property from "../../../models/property";
+import Property, { PropertyType } from "../../../models/property";
 import RegionProperties from "../../../models/region_properties";
 import RealtorProperty from "../../../models/realtorProperty";
 import { addressToGeolocation } from "../../location_helper";
@@ -167,6 +167,7 @@ export default class RealtorScraper implements PropertyScraper {
                         city: propertyResult.location.address.city.toLowerCase(),
                         state: propertyResult.location.address.state.toLowerCase(),
                         zipCode: +propertyResult.location.address.postal_code,
+                        type: nullableParameters.type,
                         beds: nullableParameters.beds,
                         baths: nullableParameters.baths,
                         area: propertyResult.description.sqft,
@@ -196,6 +197,7 @@ export default class RealtorScraper implements PropertyScraper {
             baths: propertyResult.description.baths ?? 0,
             latitude: propertyResult.location.address.coordinate?.lat ?? 0,
             longitude: propertyResult.location.address.coordinate?.lon ?? 0,
+            type: PropertyType.OTHER,
         }
         if (!propertyResult.primary_photo?.href) {
             parameters.primaryPhoto = ''
@@ -209,7 +211,34 @@ export default class RealtorScraper implements PropertyScraper {
             // parameters.latitude = coordinates.latitude;
             // parameters.longitude = coordinates.longitude;
         }
+        if (propertyResult.description.type) {
+            parameters.type = this.parsePropertyType(propertyResult.description.type);
+        }
         return parameters;
     }
 
+    private parsePropertyType = (dataType: string) => {
+        let type = PropertyType.OTHER;
+        switch (dataType) {
+            case 'single_family':
+                type = PropertyType.SINGLE_FAMILY;
+                break;
+            case 'multi_family':
+                type = PropertyType.MULTI_FAMILY;
+                break;
+            case 'condos':
+                type = PropertyType.CONDO;
+                break;
+            case 'town_house':
+                type = PropertyType.TOWN_HOUSE;
+                break;
+            case 'mobile_house':
+                type = PropertyType.MOBILE_HOUSE;
+                break;
+            default:
+                type = PropertyType.OTHER;
+                break;
+        }
+        return type;
+    }
 }
