@@ -12,13 +12,8 @@ export default class DealsEngine {
     public findDeals = async (soldProperties: Property[], forSaleProperties: Property[], buyBox: BuyBox) => {
         const deals: Deal[] = [];
         for (const forSaleProperty of forSaleProperties) {
-            const validPropertyType = buyBox.propertyType == undefined ? true : forSaleProperty.type === buyBox.propertyType;
-            const validMinPrice = buyBox.minPrice == undefined ? true : forSaleProperty.price >= buyBox.minPrice;
-            const validMaxPrice = buyBox.maxPrice == undefined ? true : forSaleProperty.price <= buyBox.maxPrice;
-            const validMinArea = buyBox.forSaleMinArea == undefined ? true : forSaleProperty.area >= buyBox.forSaleMinArea;
-            const validMaxArea = buyBox.forSaleMaxArea == undefined ? true : forSaleProperty.area <= buyBox.forSaleMaxArea;
-            const notValidForSaleHouse = !validPropertyType || !validMinPrice || !validMaxPrice || !validMinArea || !validMaxArea;
-            if (notValidForSaleHouse) continue;
+            const isValidForSaleProperty = this.isValidForSaleProperty(forSaleProperty, buyBox);
+            if (!isValidForSaleProperty) continue;
             const houseAreaPrice = forSaleProperty.price / forSaleProperty.area;
             const relevantSoldHouses = [];
             const trueARVHouses = [];
@@ -49,6 +44,16 @@ export default class DealsEngine {
             }
         }
         return deals;
+    }
+
+    private isValidForSaleProperty = (forSaleProperty: Property, buyBox: BuyBox) => {
+        const validPropertyType = buyBox.propertyType == undefined ? true : forSaleProperty.type === buyBox.propertyType;
+        const validMinPrice = buyBox.minPrice == undefined ? true : forSaleProperty.price >= buyBox.minPrice;
+        const validMaxPrice = buyBox.maxPrice == undefined ? true : forSaleProperty.price <= buyBox.maxPrice;
+        const validMinArea = buyBox.forSaleMinArea == undefined ? true : forSaleProperty.area >= buyBox.forSaleMinArea;
+        const validMaxArea = buyBox.forSaleMaxArea == undefined ? true : forSaleProperty.area <= buyBox.forSaleMaxArea;
+        const validProperty = validPropertyType && validMinPrice && validMaxPrice && validMinArea && validMaxArea;
+        return validProperty;
     }
 
     private isValidTrueARV = (soldProperty: Property, forSaleProperty: Property, buyBox: BuyBox) => {
