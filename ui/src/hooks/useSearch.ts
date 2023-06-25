@@ -1,6 +1,7 @@
 import { findDeals, findProperties } from "@/api/deals_api";
 import { getLocationData } from "@/api/location_api";
-import { SearchData, selectSearchData, setSearchLocationData, setSearchResults } from "@/store/searchSlice";
+import Property from "@/models/property";
+import { SearchData, selectSearchData, setSearchAnalyzedProperty, setSearchLocationData, setSearchResults } from "@/store/searchSlice";
 import { add } from "date-fns";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -19,7 +20,7 @@ export const useSearch = () => {
 	// const searchData = useSelector(selectSearchData);
 	const dispatch = useDispatch();
 
-	const searchDeals = async (searchData: SearchData, addressPrice?: number) => {
+	const searchDeals = async (searchData: SearchData, updatedProperty?: Property) => {
 		try {
 			setSearching(true);
 			const response = await findDeals(
@@ -40,7 +41,7 @@ export const useSearch = () => {
 				searchData.maxBeds,
 				searchData.minBaths,
 				searchData.maxBaths,
-				addressPrice
+				updatedProperty
 			);
 			if (response.status === 200) {
 				dispatch(setSearchResults(response.data));
@@ -61,11 +62,10 @@ export const useSearch = () => {
 	const searchProperties = async (searchData: SearchData) => {
 		try {
 			setSearching(true);
+			dispatch(setSearchAnalyzedProperty(null));
 			let areaType = '';
-			let addressPrice = undefined;
 			if (searchData.location.resultType === 'Address') {
 				areaType = 'address';
-				addressPrice = +prompt('Enter the price of the property');
 			} else if (searchData.location.resultType === 'Region') {
 				areaType = searchData.location.metaData.regionType;
 			}
@@ -83,8 +83,9 @@ export const useSearch = () => {
 			);
 			if (propertiesResponse.status === 200 && locationResponse.status === 200) {
 				dispatch(setSearchLocationData(locationResponse.data));
-				console.log(JSON.stringify(searchData.location))
-				searchDeals({ ...searchDataGlobal, location: searchData.location }, addressPrice);
+				if (areaType === 'address') dispatch(setSearchAnalyzedProperty(propertiesResponse.data[0]));
+				// console.log(JSON.stringify(searchData.location))
+				// searchDeals({ ...searchDataGlobal, location: searchData.location }, addressPrice);
 				// alert('Search Finished')
 			} else throw Error(propertiesResponse.data);
 		} catch (error) {

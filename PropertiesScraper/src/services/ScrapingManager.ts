@@ -89,6 +89,6 @@ export class ScrapingManager {
         const scrapeMetadata = await this.scrapeMetadata([regionProperties]);
         console.log(`Scraping ${scrapeMetadata[0].totalPages} pages`);
         const soldProperties = await this.propertyScrapers[Scraper.Realtor].scrapeProperties(scrapeMetadata[0], this.dataFetcher);
-        return [...soldProperties, property];
+        return [property, ...soldProperties];
     }
 }

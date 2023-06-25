@@ -32,11 +32,13 @@ export default class DealsEngine {
                 const sum = relevantHouses.reduce((acc, curr) => acc + curr.price / curr.area, 0);
                 const averageSqftPrice = sum / relevantHouses.length;
                 const trueArv = 100 * (averageSqftPrice - houseAreaPrice) / averageSqftPrice;
+                const estimatedArv = forSaleProperty.price / (100 - trueArv) * 100;
 
                 console.log(forSaleProperty.price)
                 deals.push({
                     profit,
                     trueArv,
+                    estimatedArv: estimatedArv,
                     distance: buyBox.compsMaxDistance,
                     property: forSaleProperty,
                     relevantSoldHouses
