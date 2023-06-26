@@ -7,7 +7,8 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
-import { Checkbox, ListItemText } from '@mui/material';
+import DoneIcon from '@mui/icons-material/Done';
+import { Checkbox, Grid, ListItemText } from '@mui/material';
 import Property, { PropertyType } from '@/models/property';
 
 const ITEM_HEIGHT = 48;
@@ -76,43 +77,76 @@ export default function PropertyTypeFilter(props: PropertyTypeFilterProps) {
     props.update('propertyTypes', properties);
   };
 
+  const handleClicked = (event: React.MouseEvent<HTMLElement>) => {
+    const name = event.currentTarget.innerText;
+    if (props.propertyTypes.includes(labelToProperty[name])) {
+      props.update(
+        'propertyTypes',
+        props.propertyTypes.filter((type) => type !== labelToProperty[name])
+      );
+    } else {
+      props.update('propertyTypes', [
+        ...props.propertyTypes,
+        labelToProperty[name]
+      ]);
+    }
+  };
+
   return (
-    <FormControl sx={{ m: 1, width: '100%' }}>
-      <InputLabel id="demo-multiple-chip-label">Property Types</InputLabel>
-      <Select
-        labelId="demo-multiple-chip-label"
-        id="demo-multiple-chip"
-        multiple
-        value={props.propertyTypes}
-        defaultValue={props.propertyTypes}
-        onChange={handleChange}
-        input={
-          <OutlinedInput id="select-multiple-chip" label="Property Types" />
-        }
-        renderValue={(selected: any) => (
-          <Box
-            sx={{
-              display: 'flex',
-              gap: 0.5,
-              overflowX: 'scroll',
-              '::-webkit-scrollbar': { display: 'none' }
-            }}
-          >
-            {selected.map((value) => (
-              <Chip key={value} label={propertyTypeToLabel[value]} />
-            ))}
-          </Box>
-        )}
-        MenuProps={MenuProps}
-      >
-        {names.map((name) => (
-          <MenuItem key={name} value={name} style={getStyles(name, theme)}>
-            {/* {name} */}
-            <Checkbox checked={props.propertyTypes.indexOf(name) > -1} />
-            <ListItemText primary={propertyTypeToLabel[name]} />
-          </MenuItem>
-        ))}
-      </Select>
-    </FormControl>
+    <Grid
+      container
+      justifyContent="center"
+      rowGap={1}
+      sx={{ margin: '1rem 0' }}
+    >
+      {names.map((name) => (
+        <Chip
+          sx={{ margin: '0 0.5rem' }}
+          key={name}
+          label={propertyTypeToLabel[name]}
+          icon={props.propertyTypes.includes(name) ? <DoneIcon /> : <></>}
+          clickable
+          color={props.propertyTypes.includes(name) ? 'primary' : 'default'}
+          onClick={handleClicked}
+        />
+      ))}
+    </Grid>
+    // <FormControl sx={{ m: 1, width: '100%' }}>
+    //   <InputLabel id="demo-multiple-chip-label">Property Types</InputLabel>
+    //   <Select
+    //     labelId="demo-multiple-chip-label"
+    //     id="demo-multiple-chip"
+    //     multiple
+    //     value={props.propertyTypes}
+    //     defaultValue={props.propertyTypes}
+    //     onChange={handleChange}
+    //     input={
+    //       <OutlinedInput id="select-multiple-chip" label="Property Types" />
+    //     }
+    //     renderValue={(selected: any) => (
+    //       <Box
+    //         sx={{
+    //           display: 'flex',
+    //           gap: 0.5,
+    //           overflowX: 'scroll',
+    //           '::-webkit-scrollbar': { display: 'none' }
+    //         }}
+    //       >
+    //         {selected.map((value) => (
+    //           <Chip key={value} label={propertyTypeToLabel[value]} />
+    //         ))}
+    //       </Box>
+    //     )}
+    //     MenuProps={MenuProps}
+    //   >
+    //     {names.map((name) => (
+    //       <MenuItem key={name} value={name} style={getStyles(name, theme)}>
+    //         {/* {name} */}
+    //         <Checkbox checked={props.propertyTypes.indexOf(name) > -1} />
+    //         <ListItemText primary={propertyTypeToLabel[name]} />
+    //       </MenuItem>
+    //     ))}
+    //   </Select>
+    // </FormControl>
   );
 }
