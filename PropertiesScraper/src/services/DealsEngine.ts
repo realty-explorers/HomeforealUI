@@ -33,8 +33,6 @@ export default class DealsEngine {
                 const averageSqftPrice = sum / relevantHouses.length;
                 const trueArv = 100 * (averageSqftPrice - houseAreaPrice) / averageSqftPrice;
                 const estimatedArv = forSaleProperty.price / (100 - trueArv) * 100;
-
-                console.log(forSaleProperty.price)
                 deals.push({
                     profit,
                     trueArv,
@@ -49,7 +47,7 @@ export default class DealsEngine {
     }
 
     private isValidForSaleProperty = (forSaleProperty: Property, buyBox: BuyBox) => {
-        const validPropertyType = buyBox.propertyType == undefined ? true : forSaleProperty.type === buyBox.propertyType;
+        const validPropertyType = buyBox.propertyTypes == undefined ? true : buyBox.propertyTypes.includes(forSaleProperty.type);
         const validMinPrice = buyBox.minPrice == undefined ? true : forSaleProperty.price >= buyBox.minPrice;
         const validMaxPrice = buyBox.maxPrice == undefined ? true : forSaleProperty.price <= buyBox.maxPrice;
         const validMinArea = buyBox.forSaleMinArea == undefined ? true : forSaleProperty.area >= buyBox.forSaleMinArea;
@@ -59,16 +57,17 @@ export default class DealsEngine {
     }
 
     private isValidTrueARV = (soldProperty: Property, forSaleProperty: Property, buyBox: BuyBox) => {
+        const validPropertyType = buyBox.propertyTypes == undefined ? true : buyBox.propertyTypes.includes(soldProperty.type);
         const validMinArea = buyBox.soldMinArea == undefined ? true : soldProperty.area >= forSaleProperty.area * 0.9;
         const validMaxArea = buyBox.soldMaxArea == undefined ? true : soldProperty.area <= forSaleProperty.area * 1.1;
         const distance = this.getDistance(forSaleProperty.latitude, soldProperty.latitude, forSaleProperty.longitude, soldProperty.longitude);
         const validDistance = buyBox.compsMaxDistance == undefined ? true : distance <= buyBox.compsMaxDistance;
-        const validProperty = validMinArea && validMaxArea && validDistance;
+        const validProperty = validPropertyType && validMinArea && validMaxArea && validDistance;
         return validProperty;
     }
 
     private isValidSoldProperty = (soldProperty: Property, forSaleProperty: Property, buyBox: BuyBox) => {
-        const validSoldPropertyType = buyBox.propertyType == undefined ? true : soldProperty.type === buyBox.propertyType;
+        const validSoldPropertyType = buyBox.propertyTypes == undefined ? true : buyBox.propertyTypes.includes(soldProperty.type);
         const validMinSoldPrice = buyBox.minArv == undefined ? true : soldProperty.price >= buyBox.minArv;
         const validMaxSoldPrice = buyBox.maxArv == undefined ? true : soldProperty.price <= buyBox.maxArv;
         const validHouseAge = this.validatePropertyAge(soldProperty.listingDate, buyBox.onSoldDays!);

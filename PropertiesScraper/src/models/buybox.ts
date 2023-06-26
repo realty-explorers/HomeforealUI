@@ -18,7 +18,7 @@ interface BuyBox {
     maxBeds?: number;
     minBaths?: number;
     maxBaths?: number;
-    propertyType?: PropertyType;
+    propertyTypes?: PropertyType[];
 }
 
 export default BuyBox;
