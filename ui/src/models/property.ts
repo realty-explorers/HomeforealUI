@@ -9,6 +9,7 @@ interface Property {
     city: string;
     state: string
     zipCode: number;
+    type: PropertyType;
     beds: number;
     baths: number;
     area: number;
@@ -16,4 +17,14 @@ interface Property {
     longitude: number;
     listingDate: string;
 }
+
+enum PropertyType {
+    OTHER = 'other',
+    CONDO = 'condo',
+    TOWN_HOUSE = 'town_house',
+    SINGLE_FAMILY = 'single_family',
+    MULTI_FAMILY = 'multi_family',
+    MOBILE_HOUSE = 'mobile_house',
+}
 export default Property
+export { PropertyType };

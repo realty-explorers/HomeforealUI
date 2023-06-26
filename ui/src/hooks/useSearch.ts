@@ -41,6 +41,7 @@ export const useSearch = () => {
 				searchData.maxBeds,
 				searchData.minBaths,
 				searchData.maxBaths,
+				searchData.propertyTypes,
 				updatedProperty
 			);
 			if (response.status === 200) {

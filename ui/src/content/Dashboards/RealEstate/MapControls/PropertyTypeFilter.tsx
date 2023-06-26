@@ -8,6 +8,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import Chip from '@mui/material/Chip';
 import { Checkbox, ListItemText } from '@mui/material';
+import Property, { PropertyType } from '@/models/property';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -20,35 +21,59 @@ const MenuProps = {
   }
 };
 
+const propertyTypeToLabel = {
+  [PropertyType.SINGLE_FAMILY]: 'Single Family',
+  [PropertyType.MULTI_FAMILY]: 'Multi Family',
+  [PropertyType.CONDO]: 'Condos',
+  [PropertyType.TOWN_HOUSE]: 'Townhomes',
+  [PropertyType.MOBILE_HOUSE]: 'Mobile Homes'
+};
+
+const labelToProperty: { [label: string]: PropertyType } = {
+  'Single Family': PropertyType.SINGLE_FAMILY,
+  'Multi Family': PropertyType.MULTI_FAMILY,
+  Condos: PropertyType.CONDO,
+  Townhomes: PropertyType.TOWN_HOUSE,
+  'Mobile Homes': PropertyType.MOBILE_HOUSE
+};
+
 const names = [
-  'Single Family',
-  'Multi Family',
-  'Condos',
-  'Townhomes',
-  'Mobile Homes'
+  PropertyType.SINGLE_FAMILY,
+  PropertyType.MULTI_FAMILY,
+  PropertyType.CONDO,
+  PropertyType.TOWN_HOUSE,
+  PropertyType.MOBILE_HOUSE
 ];
 
-function getStyles(name: string, personName: readonly string[], theme: Theme) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium
-  };
-}
+type PropertyTypeFilterProps = {
+  propertyTypes: PropertyType[];
+  update: (name: string, value: any) => void;
+};
 
-export default function PropertyTypeFilter() {
+export default function PropertyTypeFilter(props: PropertyTypeFilterProps) {
   const theme = useTheme();
   const [personName, setPersonName] = React.useState<string[]>([]);
 
-  const handleChange = (event: SelectChangeEvent<typeof personName>) => {
+  function getStyles(name: PropertyType, theme: Theme) {
+    return {
+      fontWeight:
+        props.propertyTypes.indexOf(name) === -1
+          ? theme.typography.fontWeightRegular
+          : theme.typography.fontWeightMedium
+    };
+  }
+  // const [personName, setPersonName] = React.useState<string[]>([]);
+
+  const handleChange = (event: SelectChangeEvent<PropertyType>) => {
     const {
       target: { value }
     } = event;
-    setPersonName(
+    const properties =
       // On autofill we get a stringified value.
-      typeof value === 'string' ? value.split(',') : value
-    );
+      typeof value === 'string'
+        ? value.split(',').map((label) => labelToProperty[label])
+        : value;
+    props.update('propertyTypes', properties);
   };
 
   return (
@@ -58,7 +83,8 @@ export default function PropertyTypeFilter() {
         labelId="demo-multiple-chip-label"
         id="demo-multiple-chip"
         multiple
-        value={personName}
+        value={props.propertyTypes}
+        defaultValue={props.propertyTypes}
         onChange={handleChange}
         input={
           <OutlinedInput id="select-multiple-chip" label="Property Types" />
@@ -73,21 +99,17 @@ export default function PropertyTypeFilter() {
             }}
           >
             {selected.map((value) => (
-              <Chip key={value} label={value} />
+              <Chip key={value} label={propertyTypeToLabel[value]} />
             ))}
           </Box>
         )}
         MenuProps={MenuProps}
       >
         {names.map((name) => (
-          <MenuItem
-            key={name}
-            value={name}
-            style={getStyles(name, personName, theme)}
-          >
+          <MenuItem key={name} value={name} style={getStyles(name, theme)}>
             {/* {name} */}
-            <Checkbox checked={personName.indexOf(name) > -1} />
-            <ListItemText primary={name} />
+            <Checkbox checked={props.propertyTypes.indexOf(name) > -1} />
+            <ListItemText primary={propertyTypeToLabel[name]} />
           </MenuItem>
         ))}
       </Select>

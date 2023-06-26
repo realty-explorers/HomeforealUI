@@ -1,4 +1,4 @@
-import Property from '@/models/property';
+import Property, { PropertyType } from '@/models/property';
 import axios from 'axios';
 
 const gateway_url = `${process.env.NEXT_PUBLIC_DEALS_SERVICE_HOST}`;
@@ -16,7 +16,7 @@ const findProperties = async (display: string, type: string, city: string, state
 	});
 };
 
-const findDeals = async (regionId: number, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, soldAge?: number, forSaleAge?: number, minSoldArea?: number, maxSoldArea?: number, minForSaleArea?: number, maxForSaleArea?: number, minBeds?: number, maxBeds?: number, minBaths?: number, maxBaths?: number, updatedProperty?: Property) => {
+const findDeals = async (regionId: number, distance: number, profit: number, soldMinPrice?: number, soldMaxPrice?: number, propertyMinPrice?: number, propertyMaxPrice?: number, soldAge?: number, forSaleAge?: number, minSoldArea?: number, maxSoldArea?: number, minForSaleArea?: number, maxForSaleArea?: number, minBeds?: number, maxBeds?: number, minBaths?: number, maxBaths?: number, propertyTypes?: PropertyType[], updatedProperty?: Property) => {
 	const buyBox = {
 		compsMaxDistance: distance,
 		underComps: profit,
@@ -33,7 +33,8 @@ const findDeals = async (regionId: number, distance: number, profit: number, sol
 		minBeds: minBeds,
 		maxBeds: maxBeds,
 		minBaths: minBaths,
-		maxBaths: maxBaths
+		maxBaths: maxBaths,
+		propertyTypes: propertyTypes,
 	}
 	return axios.post(`${gateway_url}/api/v1/deals/findDeals`, {
 		regionId, buyBox, updatedProperty

@@ -37,7 +37,8 @@ import {
   setSearchMinPrice,
   setSearchSoldAge,
   // setSearchSoldAge,
-  setSearchUnderComps
+  setSearchUnderComps,
+  setSearchPropertyTypes
 } from '@/store/searchSlice';
 import ReactDOM from 'react-dom';
 import MapControls from './MapControls/MapControls';
@@ -126,6 +127,9 @@ const MapComponent: React.FC<MapComponentProps> = (
   const updateMaxBaths = (value: number) => {
     dispatch(setSearchMaxBaths(value));
   };
+  const updatePropertyTypes = (value: string[]) => {
+    dispatch(setSearchPropertyTypes(value));
+  };
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -182,6 +186,9 @@ const MapComponent: React.FC<MapComponentProps> = (
         break;
       case 'maxBaths':
         updateMaxBaths(value);
+        break;
+      case 'propertyTypes':
+        updatePropertyTypes(value);
         break;
       default:
         break;
