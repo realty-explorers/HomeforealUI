@@ -14,7 +14,7 @@ import MainControls from './MainControls';
 import AdvancedControls from './AdvancedControls';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
-import AddressForm from '@/layouts/SidebarLayout/Header/Buttons/Search/AddressForm';
+import PropertyForm from './PropertyForm';
 import useSearch from '@/hooks/useSearch';
 import { useSelector } from 'react-redux';
 import { selectSearchAnalyzedProperty } from '@/store/searchSlice';
@@ -36,7 +36,7 @@ const AdjustingCard = styled(Card)(({}) => ({
   width: '20rem',
   position: 'absolute',
   top: 0,
-  right: '30rem'
+  right: '31rem'
   // height: '35%'
 }));
 
@@ -110,13 +110,11 @@ const MapControls: React.FC<MapControlsProps> = (props: MapControlsProps) => {
   return (
     <>
       <AdjustingCard>
-        <CardContent sx={{ height: '100%' }}>
-          <AddressForm
-            searching={searching}
-            property={searchAnalyzedProperty}
-            searchDeals={searchNewDeals}
-          />
-        </CardContent>
+        <PropertyForm
+          searching={searching}
+          property={searchAnalyzedProperty}
+          searchDeals={searchNewDeals}
+        />
       </AdjustingCard>
       <ParametersCard>
         <CardContent sx={{ height: '100%' }}>
