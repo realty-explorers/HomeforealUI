@@ -31,6 +31,8 @@ import InsightsIcon from '@mui/icons-material/Insights';
 import ExpandIcon from '@mui/icons-material/Expand';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { percentFormatter, priceFormatter } from '@/utils/converters';
+import { setSearchAnalyzedProperty } from '@/store/searchSlice';
+import { useDispatch } from 'react-redux';
 interface StyledCardProps extends CardProps {
   selected?: boolean;
 }
@@ -102,9 +104,15 @@ type PropertyCardProps = {
 const PropertyCard: React.FC<PropertyCardProps> = (
   props: PropertyCardProps
 ) => {
+  const dispatch = useDispatch();
   const handleDealSelected = () => {
-    if (props.selectedDeal === props.deal) props.setSelectedDeal(null);
-    else props.setSelectedDeal(props.deal);
+    if (props.selectedDeal === props.deal) {
+      dispatch(setSearchAnalyzedProperty(null));
+      props.setSelectedDeal(null);
+    } else {
+      props.setSelectedDeal(props.deal);
+      dispatch(setSearchAnalyzedProperty(props.deal.property));
+    }
   };
 
   const [cardImage, setCardImage] = useState(props.deal.property.primaryImage);

@@ -13,12 +13,12 @@ import {
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import Property from '@/models/property';
 
-type SearchFormProps = {
+type PropertyFormProps = {
   searching: boolean;
   property?: Property;
   searchDeals: (estimatedPrice: number, estimatedArea: number) => Promise<void>;
 };
-const AddressForm = (props: SearchFormProps) => {
+const PropertyForm = (props: PropertyFormProps) => {
   const [price, setPrice] = useState(props.property?.price);
   const [area, setArea] = useState(props.property?.area);
 
@@ -52,13 +52,14 @@ const AddressForm = (props: SearchFormProps) => {
         alignItems="center"
         textAlign={'center'}
         rowSpacing={2}
+        sx={{ padding: '1rem 1em' }}
       >
-        <Grid xs={12} item>
-          <Typography variant="h5">
-            The property you are looking for is{' '}
-            {props.property?.forSale ? 'for sale' : 'off market'}.
-          </Typography>
-        </Grid>
+        {/* <Grid xs={12} item>
+        <Typography variant="h5">
+          The property you are looking for is{' '}
+          {props.property?.forSale ? 'for sale' : 'off market'}.
+        </Typography>
+      </Grid> */}
         <Grid xs={12} item>
           <TextField
             id="outlined-search"
@@ -85,27 +86,27 @@ const AddressForm = (props: SearchFormProps) => {
           />
         </Grid>
         <Grid xs={12} item container justifyContent="center" spacing={0}>
-          <Grid xs={1} item container justifyContent="end">
+          {/* <Grid xs={1} item container justifyContent="end">
             <IconButton color="primary" onClick={handleReset}>
               <RestartAltIcon />
             </IconButton>
-          </Grid>
+          </Grid> */}
 
-          <Grid xs={2} item>
-            <Button
-              variant="contained"
-              // sx={buttonSx}
-              disabled={props.searching}
-              onClick={handleSearch}
-            >
-              Search Property
-            </Button>
-          </Grid>
-          <Grid xs={1} item></Grid>
+          {/* <Grid xs={2} item> */}
+          <Button
+            variant="contained"
+            // sx={buttonSx}
+            disabled={props.searching}
+            onClick={handleSearch}
+          >
+            Apply Changes
+          </Button>
+          {/* </Grid> */}
+          {/* <Grid xs={1} item></Grid> */}
         </Grid>
       </Grid>
     </Collapse>
   );
 };
 
-export default AddressForm;
+export default PropertyForm;

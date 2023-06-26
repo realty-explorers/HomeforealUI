@@ -14,14 +14,29 @@ import MainControls from './MainControls';
 import AdvancedControls from './AdvancedControls';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
+import PropertyForm from './PropertyForm';
+import useSearch from '@/hooks/useSearch';
+import { useSelector } from 'react-redux';
+import { selectSearchAnalyzedProperty } from '@/store/searchSlice';
+import Property from '@/models/property';
 
-const MapCard = styled(Card)(({}) => ({
+const ParametersCard = styled(Card)(({}) => ({
   margin: '0',
   backgroundColor: 'rgba(255,255,255,0.8)',
   width: '30rem',
   position: 'absolute',
   top: 0,
   right: 0
+  // height: '35%'
+}));
+
+const AdjustingCard = styled(Card)(({}) => ({
+  margin: '0',
+  backgroundColor: 'rgba(255,255,255,0.8)',
+  width: '20rem',
+  position: 'absolute',
+  top: 0,
+  right: '31rem'
   // height: '35%'
 }));
 
@@ -74,48 +89,72 @@ type MapControlsProps = {
 };
 const MapControls: React.FC<MapControlsProps> = (props: MapControlsProps) => {
   const [expanded, setExpanded] = React.useState(false);
+  const { searchProperties, searchDeals, searching } = useSearch();
+  const searchAnalyzedProperty = useSelector(selectSearchAnalyzedProperty);
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
+  const searchNewDeals = async (
+    estimatedPrice: number,
+    estimatedArea: number
+  ) => {
+    const updatedProperty: Property = {
+      ...searchAnalyzedProperty,
+      price: estimatedPrice,
+      area: estimatedArea
+    };
+    await searchDeals({ ...props.searchData }, updatedProperty);
+  };
+
   return (
-    <MapCard>
-      <CardContent sx={{ height: '100%' }}>
-        <Grid
-          container
-          rowSpacing={2}
-          columnSpacing={3}
-          justifyContent="center"
-          sx={{ width: 'auto', height: '100%', margin: 0, padding: '0 1em' }}
-        >
-          <h3 style={{ margin: '0.5rem 0', padding: 0 }}>Search Parameters</h3>
-          <MainControls update={props.update} searchData={props.searchData} />
-
-          <ExpandMore
-            expand={expanded}
-            onClick={handleExpandClick}
-            aria-expanded={expanded}
-            aria-label="show more"
+    <>
+      <AdjustingCard>
+        <PropertyForm
+          searching={searching}
+          property={searchAnalyzedProperty}
+          searchDeals={searchNewDeals}
+        />
+      </AdjustingCard>
+      <ParametersCard>
+        <CardContent sx={{ height: '100%' }}>
+          <Grid
+            container
+            rowSpacing={2}
+            columnSpacing={3}
+            justifyContent="center"
+            sx={{ width: 'auto', height: '100%', margin: 0, padding: '0 1em' }}
           >
-            <ExpandMoreIcon />
-            {/* <ReadMoreIcon /> */}
-          </ExpandMore>
+            <h3 style={{ margin: '0.5rem 0', padding: 0 }}>
+              Search Parameters
+            </h3>
+            <MainControls update={props.update} searchData={props.searchData} />
 
-          <ControlsCollapse
-            in={expanded}
-            timeout="auto"
-            unmountOnExit
-            orientation="vertical"
-            component={Grid}
-          >
-            <AdvancedControls
-              searchData={props.searchData}
-              update={props.update}
-            />
-          </ControlsCollapse>
-        </Grid>
+            <ExpandMore
+              expand={expanded}
+              onClick={handleExpandClick}
+              aria-expanded={expanded}
+              aria-label="show more"
+            >
+              <ExpandMoreIcon />
+              {/* <ReadMoreIcon /> */}
+            </ExpandMore>
 
-        {/* <Grid
+            <ControlsCollapse
+              in={expanded}
+              timeout="auto"
+              unmountOnExit
+              orientation="vertical"
+              component={Grid}
+            >
+              <AdvancedControls
+                searchData={props.searchData}
+                update={props.update}
+              />
+            </ControlsCollapse>
+          </Grid>
+
+          {/* <Grid
           container
           rowSpacing={2}
           columnSpacing={3}
@@ -132,8 +171,9 @@ const MapControls: React.FC<MapControlsProps> = (props: MapControlsProps) => {
             searchData={props.searchData}
           />
         </Grid> */}
-      </CardContent>
-    </MapCard>
+        </CardContent>
+      </ParametersCard>
+    </>
   );
 };
 

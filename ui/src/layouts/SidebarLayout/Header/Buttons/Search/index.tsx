@@ -32,9 +32,6 @@ import {
 } from '@/store/searchSlice';
 import LocationSuggestion from '@/models/location_suggestions';
 import useSearch from '@/hooks/useSearch';
-import { add } from 'date-fns';
-import AddressForm from './AddressForm';
-import Property from '@/models/property';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & { children: ReactElement<any, any> },
@@ -72,17 +69,8 @@ const DialogTitleWrapper = styled(DialogTitle)(
 `
 );
 
-const AddressSearchForm = styled(Box)(
-  ({ theme }) => `
-    padding: ${theme.spacing(3)};
-    background: ${theme.colors.alpha.black[5]};
-`
-);
-
 function HeaderSearch() {
   const searchData = useSelector(selectSearchData);
-  const searchResults = useSelector(selectSearchResults);
-  const searchAnalyzedProperty = useSelector(selectSearchAnalyzedProperty);
   const dispatch = useDispatch();
   const [suggestion, setSuggestion] = useState<LocationSuggestion>(
     searchData.location
@@ -110,27 +98,6 @@ function HeaderSearch() {
       ...searchData,
       location: suggestion
     });
-    let addressPrice = undefined;
-    if (suggestion.resultType === 'Address') {
-      // alert(JSON.stringify(searchAnalyzedProperty));
-      // setSearchedProperty(searchAnalyzedProperty);
-      // addressPrice = +prompt('Enter the price of the property');
-    }
-    // await searchDeals({ ...searchData, location: suggestion }, addressPrice);
-    // setAddressSearched(false);
-    // setOpen(false);
-  };
-
-  const searchNewDeals = async (
-    estimatedPrice: number,
-    estimatedArea: number
-  ) => {
-    const updatedProperty: Property = {
-      ...searchAnalyzedProperty,
-      price: estimatedPrice,
-      area: estimatedArea
-    };
-    await searchDeals({ ...searchData, location: suggestion }, updatedProperty);
     setOpen(false);
   };
 
@@ -188,13 +155,6 @@ function HeaderSearch() {
             Search
           </Button> */}
         </DialogActions>
-        <DialogContent>
-          <AddressForm
-            searching={searching}
-            property={searchAnalyzedProperty}
-            searchDeals={searchNewDeals}
-          />
-        </DialogContent>
       </DialogWrapper>
     </>
   );

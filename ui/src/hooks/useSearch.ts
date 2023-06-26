@@ -84,9 +84,9 @@ export const useSearch = () => {
 			);
 			if (propertiesResponse.status === 200 && locationResponse.status === 200) {
 				dispatch(setSearchLocationData(locationResponse.data));
-				if (areaType === 'address') dispatch(setSearchAnalyzedProperty(propertiesResponse.data[0]));
+				// if (areaType === 'address') dispatch(setSearchAnalyzedProperty(propertiesResponse.data[0]));
 				// console.log(JSON.stringify(searchData.location))
-				// searchDeals({ ...searchDataGlobal, location: searchData.location }, addressPrice);
+				searchDeals({ ...searchDataGlobal, location: searchData.location });
 				// alert('Search Finished')
 			} else throw Error(propertiesResponse.data);
 		} catch (error) {
