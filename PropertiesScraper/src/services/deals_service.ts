@@ -43,12 +43,16 @@ export default class DealsService {
 		const properties = await this.propertiesCache.getProperties(id);
 		const keys = await this.propertiesCache.getKeys();
 		console.log(keys);
-		const forSaleProperties = properties.filter(property => property.forSale === true);
 		const soldProperties = properties.filter(property => property.forSale === false);
-		if (updatedProperty && forSaleProperties[0]) {
-			forSaleProperties[0].price = updatedProperty.price;
-			forSaleProperties[0].area = updatedProperty.area;
+		const forSaleProperties = properties.filter(property => property.forSale === true);
+		if (updatedProperty) {
+			const index = forSaleProperties.findIndex(property => property.id === updatedProperty.id)
+			if (index !== -1) forSaleProperties[index] = updatedProperty;
 		}
+		// if (updatedProperty && forSaleProperties[0]) {
+		// 	forSaleProperties[0].price = updatedProperty.price;
+		// 	forSaleProperties[0].area = updatedProperty.area;
+		// }
 		const deals = await this.dealsFinder.findDeals(soldProperties, forSaleProperties, buyBox);
 		return deals;
 	}
