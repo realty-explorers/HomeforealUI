@@ -10,6 +10,7 @@ import {
   CardContent,
   CardMedia,
   CardProps,
+  Chip,
   Container,
   Divider,
   Grid,
@@ -29,6 +30,8 @@ import PriceChangeIcon from '@mui/icons-material/PriceChange';
 import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import InsightsIcon from '@mui/icons-material/Insights';
 import ExpandIcon from '@mui/icons-material/Expand';
+import BarChartIcon from '@mui/icons-material/BarChart';
+import ImportContactsIcon from '@mui/icons-material/ImportContacts';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { percentFormatter, priceFormatter } from '@/utils/converters';
 import { setSearchAnalyzedProperty } from '@/store/searchSlice';
@@ -46,8 +49,8 @@ const StyledCard = styled(Card, {
   }),
   backgroundColor: 'rgba(255, 255, 255, 0.8)',
   width: '15rem',
-  height: '19rem',
-  flexShrink: 0,
+  // height: '19rem',
+  // flexShrink: 0,
   margin: '0 0.5rem',
   pointerEvents: 'all'
 }));
@@ -157,8 +160,20 @@ const PropertyCard: React.FC<PropertyCardProps> = (
             )
           }
         />
-        <CardContent sx={{ paddingBottom: 0, paddingTop: '1em' }}>
-          <AddressLink>{props.deal.property.address}</AddressLink>
+        <CardContent sx={{ paddingBottom: 0, paddingTop: '0em' }}>
+          {/* <AddressLink>{props.deal.property.address}</AddressLink> */}
+          <Grid
+            container
+            justifyContent={'center'}
+            sx={{ margin: '0.5rem 0 0.2rem 0' }}
+          >
+            <Chip
+              label={props.deal.property.address}
+              clickable
+              size="small"
+              onClick={() => openGoogleSearch(props.deal.property.address)}
+            />
+          </Grid>
           <Grid xs={12} sm={12} item display="flex" alignItems="center">
             {/* <h4>{props.deal.property.address}</h4> */}
             <List
@@ -263,17 +278,14 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           </Grid>
         </CardContent>
       </CardActionArea>
-      <CardActions disableSpacing>
+      <CardActions disableSpacing sx={{ padding: 0 }}>
         <Grid container justifyContent="center">
           <IconButton aria-label="add to favorites">
             <FavoriteOutlinedIcon />
           </IconButton>
-          <IconButton
-            aria-label="share"
-            onClick={() => openGoogleSearch(props.deal.property.address)}
-          >
-            {/* <ShareIcon /> */}
-            <LinkIcon />
+
+          <IconButton aria-label="share">
+            <ImportContactsIcon />
           </IconButton>
           {/* <IconButton aria-label="share" onClick={handleLocationAction}>
             <LocationOnIcon />
