@@ -59,6 +59,7 @@ export default class RealtorAddressScraper {
             id: '1',
             forSale: property.status === 'for_sale',
             primaryImage: property?.photos[0]?.href ?? '',
+            images: nullParameters.images,
             price: property['list_price'],
             address: property['location']['address']['line'],
             street: property['location']['address']['line'],
@@ -81,6 +82,7 @@ export default class RealtorAddressScraper {
     private fillNullableParameters = async (propertyResult: any) => {
         const parameters: any = {
             primaryPhoto: propertyResult.photos[0]?.href ?? '',
+            images: propertyResult.photos?.map((photo: any) => photo.href) || [],
             street: null,
             beds: propertyResult.description.beds ?? 0,
             baths: propertyResult.description.baths ?? 0,
