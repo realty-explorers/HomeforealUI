@@ -60,13 +60,14 @@ export default function MoreDetailsModal(props: DialogTitleProps) {
           <Grid item xs={6}>
             <PhotoCarousel images={props.deal?.property.images || []} />
           </Grid>
+          <Grid item xs={6}></Grid>
           <Grid item xs={6}>
             <PropertiesTable properties={props.deal?.trueArvProperties || []} />
           </Grid>
 
-          <Grid item xs={6}></Grid>
-
-          <Grid item xs={6}></Grid>
+          <Grid item xs={6}>
+            <PropertiesTable properties={props.deal?.soldProperties || []} />
+          </Grid>
         </Grid>
       </DialogContent>
     </BootstrapDialog>
