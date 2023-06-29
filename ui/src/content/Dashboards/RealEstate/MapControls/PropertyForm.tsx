@@ -8,7 +8,8 @@ import {
   Typography,
   Collapse,
   Button,
-  IconButton
+  IconButton,
+  IconButtonProps
 } from '@mui/material';
 import RestartAltIcon from '@mui/icons-material/RestartAlt';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -19,6 +20,10 @@ type PropertyFormProps = {
   property?: Property;
   searchDeals: (estimatedPrice: number, estimatedArea: number) => Promise<void>;
 };
+
+interface ExpandMoreProps extends IconButtonProps {
+  expand: boolean;
+}
 
 const ExpandMore = styled((props: ExpandMoreProps) => {
   const { expand, ...other } = props;
