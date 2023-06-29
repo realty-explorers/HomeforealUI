@@ -18,10 +18,12 @@ export default class DealsEngine {
             const relevantSoldHouses = [];
             const trueARVHouses = [];
             for (const soldProperty of soldProperties) {
-                const validTrueARV = this.isValidTrueARV(soldProperty, forSaleProperty, buyBox);
-                const validSoldProperty = this.isValidSoldProperty(soldProperty, forSaleProperty, buyBox);
-                if (validTrueARV) trueARVHouses.push(soldProperty);
-                if (validSoldProperty) relevantSoldHouses.push(soldProperty);
+                const distance = this.getDistance(forSaleProperty.latitude, soldProperty.latitude, forSaleProperty.longitude, soldProperty.longitude);
+                const validTrueARV = this.isValidTrueARV(soldProperty, forSaleProperty, buyBox, distance);
+                const validSoldProperty = this.isValidSoldProperty(soldProperty, forSaleProperty, buyBox, distance);
+                const compsProperty = { ...soldProperty, distance };
+                if (validTrueARV) trueARVHouses.push(compsProperty);
+                if (validSoldProperty) relevantSoldHouses.push(compsProperty);
             }
             const averagePriceAreaRatio = relevantSoldHouses.reduce((acc, curr) => acc + curr.price / curr.area, 0) / relevantSoldHouses.length;
             const profit = 100 * (averagePriceAreaRatio - houseAreaPrice) / averagePriceAreaRatio;
@@ -56,17 +58,16 @@ export default class DealsEngine {
         return validProperty;
     }
 
-    private isValidTrueARV = (soldProperty: Property, forSaleProperty: Property, buyBox: BuyBox) => {
+    private isValidTrueARV = (soldProperty: Property, forSaleProperty: Property, buyBox: BuyBox, distance?: number) => {
         const validPropertyType = buyBox.propertyTypes == undefined ? true : buyBox.propertyTypes.includes(soldProperty.type);
         const validMinArea = buyBox.soldMinArea == undefined ? true : soldProperty.area >= forSaleProperty.area * 0.9;
         const validMaxArea = buyBox.soldMaxArea == undefined ? true : soldProperty.area <= forSaleProperty.area * 1.1;
-        const distance = this.getDistance(forSaleProperty.latitude, soldProperty.latitude, forSaleProperty.longitude, soldProperty.longitude);
-        const validDistance = buyBox.compsMaxDistance == undefined ? true : distance <= buyBox.compsMaxDistance;
+        const validDistance = distance == undefined ? true : distance <= buyBox.compsMaxDistance;
         const validProperty = validPropertyType && validMinArea && validMaxArea && validDistance;
         return validProperty;
     }
 
-    private isValidSoldProperty = (soldProperty: Property, forSaleProperty: Property, buyBox: BuyBox) => {
+    private isValidSoldProperty = (soldProperty: Property, forSaleProperty: Property, buyBox: BuyBox, distance?: number) => {
         const validSoldPropertyType = buyBox.propertyTypes == undefined ? true : buyBox.propertyTypes.includes(soldProperty.type);
         const validMinSoldPrice = buyBox.minArv == undefined ? true : soldProperty.price >= buyBox.minArv;
         const validMaxSoldPrice = buyBox.maxArv == undefined ? true : soldProperty.price <= buyBox.maxArv;
@@ -77,8 +78,7 @@ export default class DealsEngine {
         const validMaxBeds = buyBox.maxBeds == undefined ? true : soldProperty.beds <= buyBox.maxBeds;
         const validMinBaths = buyBox.minBaths == undefined ? true : soldProperty.baths >= buyBox.minBaths;
         const validMaxBaths = buyBox.maxBaths == undefined ? true : soldProperty.baths <= buyBox.maxBaths;
-        const distance = this.getDistance(forSaleProperty.latitude, soldProperty.latitude, forSaleProperty.longitude, soldProperty.longitude);
-        const validDistance = buyBox.compsMaxDistance == undefined ? true : distance <= buyBox.compsMaxDistance;
+        const validDistance = distance == undefined ? true : distance <= buyBox.compsMaxDistance;
         const validProperty = validSoldPropertyType && validMinSoldPrice && validMaxSoldPrice && validHouseAge && validSoldMinArea && validSoldMaxArea && validMinBeds && validMaxBeds && validMinBaths && validMaxBaths && validDistance;
         return validProperty;
     }
