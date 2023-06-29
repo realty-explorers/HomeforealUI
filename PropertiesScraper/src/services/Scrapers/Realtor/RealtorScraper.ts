@@ -162,7 +162,8 @@ export default class RealtorScraper implements PropertyScraper {
                         forSale: regionProperties.isForSale,
                         primaryImage: nullableParameters.primaryPhoto,
                         images: nullableParameters.images,
-                        price: regionProperties.isForSale ? propertyResult.list_price : propertyResult.description.sold_price,
+                        price: propertyResult.list_price,
+                        soldPrice: regionProperties.isForSale ? null : propertyResult.description.sold_price,
                         address: propertyResult.location.address.line.toLowerCase(),
                         street: nullableParameters.street,
                         city: propertyResult.location.address.city.toLowerCase(),
@@ -174,7 +175,8 @@ export default class RealtorScraper implements PropertyScraper {
                         area: propertyResult.description.sqft,
                         latitude: nullableParameters.latitude,
                         longitude: nullableParameters.longitude,
-                        listingDate: propertyResult.list_date
+                        listingDate: propertyResult.list_date,
+                        soldDate: propertyResult.description.sold_date,
                     }
                     property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
                     properties.push(property);

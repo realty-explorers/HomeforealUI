@@ -5,16 +5,15 @@ import SidebarLayout from '@/layouts/SidebarLayout';
 import { Box, Button, Container, Grid } from '@mui/material';
 import Footer from '@/components/Footer';
 import Map from '@/content/Dashboards/RealEstate/Map';
-import Properties from '@/content/Dashboards/RealEstate/PropertyCards';
 import Deal from '@/models/deal';
 import { useSelector } from 'react-redux';
 import { selectSearchResults } from '@/store/searchSlice';
 import MoreDetailsModal from '@/content/Dashboards/RealEstate/DetailsPanel/MoreDetailsModal';
 
 function DashboardRealEstate() {
-  const { data, status }: any = useSession({
-    required: true
-  });
+  // const { data, status }: any = useSession({
+  //   required: true
+  // });
 
   const [selectedDeal, setSelectedDeal] = useState<Deal>();
   const [openMoreDetails, setOpenMoreDetails] = useState<boolean>(false);
