@@ -4,6 +4,7 @@ interface Property {
     primaryImage: string,
     images?: string[]
     price: number;
+    soldPrice?: number;
     address: string;
     street: string;
     city: string;
@@ -16,6 +17,7 @@ interface Property {
     latitude: number;
     longitude: number;
     listingDate: string;
+    soldDate?: string;
 }
 
 enum PropertyType {
