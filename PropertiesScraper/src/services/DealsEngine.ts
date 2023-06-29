@@ -15,24 +15,24 @@ export default class DealsEngine {
             const isValidForSaleProperty = this.isValidForSaleProperty(forSaleProperty, buyBox);
             if (!isValidForSaleProperty) continue;
             const houseAreaPrice = forSaleProperty.price / forSaleProperty.area;
-            const relevantSoldHouses = [];
-            const trueARVHouses = [];
+            const relevantSoldProperties: CompsProperty[] = [];
+            const trueARVProperties: CompsProperty[] = [];
             for (const soldProperty of soldProperties) {
                 const distance = this.getDistance(forSaleProperty.latitude, soldProperty.latitude, forSaleProperty.longitude, soldProperty.longitude);
                 const validTrueARV = this.isValidTrueARV(soldProperty, forSaleProperty, buyBox, distance);
                 const validSoldProperty = this.isValidSoldProperty(soldProperty, forSaleProperty, buyBox, distance);
                 const compsProperty = { ...soldProperty, distance };
-                if (validTrueARV) trueARVHouses.push(compsProperty);
-                if (validSoldProperty) relevantSoldHouses.push(compsProperty);
+                if (validTrueARV) trueARVProperties.push(compsProperty);
+                if (validSoldProperty) relevantSoldProperties.push(compsProperty);
             }
-            const averagePriceAreaRatio = relevantSoldHouses.reduce((acc, curr) => acc + curr.price / curr.area, 0) / relevantSoldHouses.length;
+            const averagePriceAreaRatio = relevantSoldProperties.reduce((acc, curr) => acc + curr.price / curr.area, 0) / relevantSoldProperties.length;
             const profit = 100 * (averagePriceAreaRatio - houseAreaPrice) / averagePriceAreaRatio;
             if (profit >= buyBox.underComps) {
-                trueARVHouses.sort((a, b) => a.price / a.area - b.price / b.area);
-                const index = Math.floor(trueARVHouses.length * 0.7);
-                const relevantHouses = trueARVHouses.slice(index);
-                const sum = relevantHouses.reduce((acc, curr) => acc + curr.price / curr.area, 0);
-                const averageSqftPrice = sum / relevantHouses.length;
+                trueARVProperties.sort((a, b) => a.price / a.area - b.price / b.area);
+                const index = Math.floor(trueARVProperties.length * 0.7);
+                const relevantTrueARVProperties = trueARVProperties.slice(index);
+                const sum = relevantTrueARVProperties.reduce((acc, curr) => acc + curr.price / curr.area, 0);
+                const averageSqftPrice = sum / relevantTrueARVProperties.length;
                 const trueArv = 100 * (averageSqftPrice - houseAreaPrice) / averageSqftPrice;
                 const estimatedArv = forSaleProperty.price / (100 - trueArv) * 100;
                 deals.push({
@@ -41,7 +41,8 @@ export default class DealsEngine {
                     estimatedArv: estimatedArv,
                     distance: buyBox.compsMaxDistance,
                     property: forSaleProperty,
-                    relevantSoldHouses
+                    soldProperties: relevantSoldProperties,
+                    trueArvProperties: relevantTrueARVProperties
                 })
             }
         }
