@@ -6,7 +6,7 @@ import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import OtherHousesIcon from '@mui/icons-material/OtherHouses';
 import MapComponent from './MapComponent';
-import SliderInput from './SliderInput';
+import SliderInput from './FormFields/SliderInput';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   selectSearchData,
@@ -20,11 +20,11 @@ import {
   setSearchUnderComps
 } from '@/store/searchSlice';
 import useSearch from '@/hooks/useSearch';
-import SliderRangeInput from './SliderRangeInput';
 
 type MapProps = {
   selectedDeal?: Deal;
   setSelectedDeal: (deal: Deal) => void;
+  setOpenMoreDetails: (open: boolean) => void;
 };
 const Map: React.FC<MapProps> = (props: MapProps) => {
   const { searchDeals, searching } = useSearch();
@@ -67,6 +67,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     <MapComponent
       selectedDeal={props.selectedDeal}
       setSelectedDeal={props.setSelectedDeal}
+      setOpenMoreDetails={props.setOpenMoreDetails}
       searching={searching}
     />
   );

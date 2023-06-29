@@ -44,6 +44,7 @@ type CardsPanelProps = {
   deals: Deal[];
   selectedDeal: Deal;
   setSelectedDeal: (deal: Deal) => void;
+  setOpenMoreDetails: (open: boolean) => void;
 };
 
 const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
@@ -75,6 +76,7 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
               deal={deal}
               selectedDeal={props.selectedDeal}
               setSelectedDeal={props.setSelectedDeal}
+              setOpenMoreDetails={props.setOpenMoreDetails}
             />
           );
         })}

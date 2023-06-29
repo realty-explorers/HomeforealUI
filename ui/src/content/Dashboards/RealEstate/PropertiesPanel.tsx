@@ -27,7 +27,7 @@ type PropertiesProps = {
   selectedDeal: Deal;
   setSelectedDeal: (deal: Deal) => void;
 };
-const Properties: React.FC<PropertiesProps> = (props: PropertiesProps) => {
+const PropertiesPanel: React.FC<PropertiesProps> = (props: PropertiesProps) => {
   const [perPage, setPerPage] = useState<number>(4);
   const [page, setPage] = useState<number>(1);
   const [transitionDone, setTransitionDone] = useState<boolean>(false);
@@ -73,7 +73,7 @@ const Properties: React.FC<PropertiesProps> = (props: PropertiesProps) => {
               .map((deal: Deal, index: number) => {
                 return (
                   <PropertyGrid xs={12} sm={6} md={3} item key={index}>
-                    <PropertyCard
+                    {/* <PropertyCard
                       deal={deal}
                       selectedDeal={props.selectedDeal}
                       setSelectedDeal={props.setSelectedDeal}
@@ -81,7 +81,7 @@ const Properties: React.FC<PropertiesProps> = (props: PropertiesProps) => {
                       //   props.selectedDeal &&
                       //   props.selectedDeal.house.id === deal.house.id
                       // }
-                    />
+                    /> */}
                   </PropertyGrid>
                 );
               })}
@@ -101,4 +101,4 @@ const Properties: React.FC<PropertiesProps> = (props: PropertiesProps) => {
   );
 };
 
-export default Properties;
+export default PropertiesPanel;

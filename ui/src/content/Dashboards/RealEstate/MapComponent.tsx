@@ -66,6 +66,7 @@ const center = {
 type MapComponentProps = {
   selectedDeal?: Deal;
   setSelectedDeal: (deal: Deal) => void;
+  setOpenMoreDetails: (open: boolean) => void;
   searching: boolean;
 };
 
@@ -267,6 +268,7 @@ const MapComponent: React.FC<MapComponentProps> = (
         deals={searchResults}
         selectedDeal={props.selectedDeal}
         setSelectedDeal={props.setSelectedDeal}
+        setOpenMoreDetails={props.setOpenMoreDetails}
       />
       <MapControls searchData={searchData} update={update} />
       <LocationBounds searchData={searchData} />

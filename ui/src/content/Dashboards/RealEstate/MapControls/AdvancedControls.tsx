@@ -3,7 +3,7 @@ import { styled, Tooltip } from '@mui/material';
 import ExpandIcon from '@mui/icons-material/Expand';
 import HotelIcon from '@mui/icons-material/Hotel';
 import WcIcon from '@mui/icons-material/Wc';
-import SliderRangeInput from '../SliderRangeInput';
+import SliderRangeInput from '../FormFields/SliderRangeInput';
 import {
   priceFormatter,
   priceReverseScale,
