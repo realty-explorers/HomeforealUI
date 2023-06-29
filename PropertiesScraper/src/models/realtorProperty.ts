@@ -99,7 +99,7 @@ interface RealtorProperty {
     "list_date": string,
     "last_update_date": string,
     "coming_soon_date": string,
-    "photos": { "href": string }[],
+    "photos"?: { "href": string }[],
     "tags": string[],
     "branding":
     {

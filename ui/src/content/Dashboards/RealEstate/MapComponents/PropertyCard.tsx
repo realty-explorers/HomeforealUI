@@ -102,12 +102,14 @@ const AddressLink = styled('h3')(({ theme }) => ({
 type PropertyCardProps = {
   deal: Deal;
   setSelectedDeal: (deal: Deal) => void;
+  setOpenMoreDetails: (open: boolean) => void;
   selectedDeal: Deal;
 };
 const PropertyCard: React.FC<PropertyCardProps> = (
   props: PropertyCardProps
 ) => {
   const dispatch = useDispatch();
+  const [cardImage, setCardImage] = useState(props.deal.property.primaryImage);
   const handleDealSelected = () => {
     if (props.selectedDeal === props.deal) {
       dispatch(setSearchAnalyzedProperty(null));
@@ -118,7 +120,11 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     }
   };
 
-  const [cardImage, setCardImage] = useState(props.deal.property.primaryImage);
+  const handleOpenDetails = () => {
+    props.setSelectedDeal(props.deal);
+    dispatch(setSearchAnalyzedProperty(props.deal.property));
+    props.setOpenMoreDetails(true);
+  };
 
   const showFixedValue = (value: number) => {
     try {
@@ -284,7 +290,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
             <FavoriteOutlinedIcon />
           </IconButton>
 
-          <IconButton aria-label="share">
+          <IconButton aria-label="share" onClick={handleOpenDetails}>
             <ImportContactsIcon />
           </IconButton>
           {/* <IconButton aria-label="share" onClick={handleLocationAction}>

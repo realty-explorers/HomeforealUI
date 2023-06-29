@@ -15,8 +15,8 @@ import PriceCheckIcon from '@mui/icons-material/PriceCheck';
 import TrackChangesIcon from '@mui/icons-material/TrackChanges';
 import OtherHousesIcon from '@mui/icons-material/OtherHouses';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
-import SliderRangeInput from '../SliderRangeInput';
-import SliderInput from '../SliderInput';
+import SliderRangeInput from '../FormFields/SliderRangeInput';
+import SliderInput from '../FormFields/SliderInput';
 import {
   ageFormatter,
   ageReverseScale,
