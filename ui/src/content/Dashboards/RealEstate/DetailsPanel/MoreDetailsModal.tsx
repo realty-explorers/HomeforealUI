@@ -12,6 +12,7 @@ import Deal from '@/models/deal';
 import { Grid } from '@mui/material';
 import PhotoCarousel from './PhotoCarousel';
 import PropertiesTable from './PropertiesTable';
+import DetailsPanel from './DetailsPanel';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   // '& .MuiDialogContent-root': {
@@ -60,7 +61,9 @@ export default function MoreDetailsModal(props: DialogTitleProps) {
           <Grid item xs={6}>
             <PhotoCarousel images={props.deal?.property.images || []} />
           </Grid>
-          <Grid item xs={6}></Grid>
+          <Grid item xs={6}>
+            <DetailsPanel property={props.deal?.property} />
+          </Grid>
           <Grid item xs={6}>
             <PropertiesTable properties={props.deal?.trueArvProperties || []} />
           </Grid>
