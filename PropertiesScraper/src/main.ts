@@ -18,5 +18,4 @@ const startApp = async () => {
 	);
 	await app.start();
 };
-
 startApp();
