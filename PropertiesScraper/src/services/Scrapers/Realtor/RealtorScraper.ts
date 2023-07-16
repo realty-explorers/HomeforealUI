@@ -161,7 +161,9 @@ export default class RealtorScraper implements PropertyScraper {
                     const property: Property | any = {
                         forSale: regionProperties.isForSale,
                         primaryImage: nullableParameters.primaryPhoto,
-                        price: regionProperties.isForSale ? propertyResult.list_price : propertyResult.description.sold_price,
+                        images: nullableParameters.images,
+                        price: propertyResult.list_price,
+                        soldPrice: regionProperties.isForSale ? null : propertyResult.description.sold_price,
                         address: propertyResult.location.address.line.toLowerCase(),
                         street: nullableParameters.street,
                         city: propertyResult.location.address.city.toLowerCase(),
@@ -173,7 +175,8 @@ export default class RealtorScraper implements PropertyScraper {
                         area: propertyResult.description.sqft,
                         latitude: nullableParameters.latitude,
                         longitude: nullableParameters.longitude,
-                        listingDate: propertyResult.list_date
+                        listingDate: propertyResult.list_date,
+                        soldDate: propertyResult.description.sold_date,
                     }
                     property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
                     properties.push(property);
@@ -191,20 +194,14 @@ export default class RealtorScraper implements PropertyScraper {
 
     private fillNullableParameters = async (propertyResult: RealtorProperty) => {
         const parameters = {
-            primaryPhoto: propertyResult.primary_photo?.href ?? '',
+            primaryPhoto: this.getImageUrl(propertyResult.primary_photo?.href),
+            images: propertyResult.photos?.map(photo => this.getImageUrl(photo.href)) || [],
             street: null,
             beds: propertyResult.description.beds ?? 0,
             baths: propertyResult.description.baths ?? 0,
             latitude: propertyResult.location.address.coordinate?.lat ?? 0,
             longitude: propertyResult.location.address.coordinate?.lon ?? 0,
             type: PropertyType.OTHER,
-        }
-        if (!propertyResult.primary_photo?.href) {
-            parameters.primaryPhoto = ''
-        } else {
-            //TODO: handle errors with length and substring
-            const photoUrl = propertyResult.primary_photo.href;
-            parameters.primaryPhoto = photoUrl.substring(0, photoUrl.length - 4) + 'od-w480_h360_x2.webp';
         }
         if (!parameters.latitude || !parameters.longitude) {
             // const coordinates = await addressToGeolocation(`${propertyResult.location.address.line} ${propertyResult.location.address.city} ${propertyResult.location.address.state} ${propertyResult.location.address.postal_code}`);
@@ -215,6 +212,12 @@ export default class RealtorScraper implements PropertyScraper {
             parameters.type = this.parsePropertyType(propertyResult.description.type);
         }
         return parameters;
+    }
+
+    private getImageUrl = (url: string) => {
+        if (!url) return '';
+        const imageUrl = url.substring(0, url.length - 4) + 'od-w480_h360_x2.webp';
+        return imageUrl;
     }
 
     private parsePropertyType = (dataType: string) => {

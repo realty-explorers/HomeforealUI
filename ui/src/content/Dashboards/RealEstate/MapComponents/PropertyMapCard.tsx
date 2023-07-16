@@ -92,7 +92,11 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 />
                 <Box>
                   <Typography align="right" noWrap>
-                    {priceFormatter(props.property.price)}
+                    {priceFormatter(
+                      props.property.forSale
+                        ? props.property.price
+                        : props.property.soldPrice
+                    )}
                   </Typography>
                 </Box>
               </ListItem>

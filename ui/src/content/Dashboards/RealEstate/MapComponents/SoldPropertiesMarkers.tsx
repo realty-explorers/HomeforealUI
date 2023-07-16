@@ -31,7 +31,7 @@ const SoldPropertiesMarkers = (props: SoldPropertiesMarkersProps) => {
   return (
     <>
       {props.selectedDeal ? (
-        props.selectedDeal?.relevantSoldHouses.map(
+        props.selectedDeal?.soldProperties.map(
           (compsProperty: CompsProperty, index: number) => (
             <Marker
               key={index}

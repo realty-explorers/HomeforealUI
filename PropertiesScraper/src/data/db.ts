@@ -224,7 +224,9 @@ export default class PropertyRepository {
 		const bulkResponse = await this.client!.bulk({ refresh: true, operations })
 		this.handleErrors(operations, bulkResponse);
 		const count = await this.client!.count({ index: index })
-		console.log(`Count: ${count}`);
+		console.log(`Count: ${count.count}`);
+		const a = await this.getProperties('homewood', 'alabama');
+		console.log(a);
 		return bulkResponse;
 	}
 

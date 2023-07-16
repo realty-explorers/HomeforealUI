@@ -7,7 +7,8 @@ interface Deal {
     estimatedArv: number,
     distance: number,
     property: Property,
-    relevantSoldHouses: CompsProperty[];
+    soldProperties: CompsProperty[];
+    trueArvProperties: CompsProperty[];
 }
 
 export default Deal;

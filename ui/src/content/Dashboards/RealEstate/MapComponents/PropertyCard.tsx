@@ -14,6 +14,7 @@ import {
   Container,
   Divider,
   Grid,
+  Icon,
   IconButton,
   List,
   ListItem,
@@ -36,6 +37,7 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { percentFormatter, priceFormatter } from '@/utils/converters';
 import { setSearchAnalyzedProperty } from '@/store/searchSlice';
 import { useDispatch } from 'react-redux';
+import IconListItem from '../DetailsPanel/IconListItem';
 interface StyledCardProps extends CardProps {
   selected?: boolean;
 }
@@ -102,12 +104,14 @@ const AddressLink = styled('h3')(({ theme }) => ({
 type PropertyCardProps = {
   deal: Deal;
   setSelectedDeal: (deal: Deal) => void;
+  setOpenMoreDetails: (open: boolean) => void;
   selectedDeal: Deal;
 };
 const PropertyCard: React.FC<PropertyCardProps> = (
   props: PropertyCardProps
 ) => {
   const dispatch = useDispatch();
+  const [cardImage, setCardImage] = useState(props.deal.property.primaryImage);
   const handleDealSelected = () => {
     if (props.selectedDeal === props.deal) {
       dispatch(setSearchAnalyzedProperty(null));
@@ -118,7 +122,11 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     }
   };
 
-  const [cardImage, setCardImage] = useState(props.deal.property.primaryImage);
+  const handleOpenDetails = () => {
+    // props.setSelectedDeal(props.deal);
+    // dispatch(setSearchAnalyzedProperty(props.deal.property));
+    // props.setOpenMoreDetails(true);
+  };
 
   const showFixedValue = (value: number) => {
     try {
@@ -182,98 +190,35 @@ const PropertyCard: React.FC<PropertyCardProps> = (
                 width: '100%'
               }}
             >
-              <StyledListItem disableGutters>
-                <ListItemAvatarWrapper>
-                  <LocalOfferIcon color="warning" />
-                </ListItemAvatarWrapper>
-                <ListItemText
-                  primary="Price"
-                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
-                  secondaryTypographyProps={{
-                    variant: 'subtitle2',
-                    noWrap: true
-                  }}
-                />
-                <Box>
-                  <Typography align="right" variant="h4" noWrap>
-                    {priceFormatter(props.deal.property.price)}
-                  </Typography>
-                </Box>
-              </StyledListItem>
-              <StyledListItem disableGutters>
-                <ListItemAvatarWrapper>
-                  <InsightsIcon color="inherit" />
-                </ListItemAvatarWrapper>
-                <ListItemText
-                  primary="≈ ARV"
-                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
-                  secondaryTypographyProps={{
-                    variant: 'subtitle2',
-                    noWrap: true
-                  }}
-                />
-                <Box>
-                  <Typography align="right" variant="h4" noWrap>
-                    {priceFormatter(`${props.deal.estimatedArv?.toFixed(0)}`)}
-                  </Typography>
-                </Box>
-              </StyledListItem>
+              <IconListItem
+                icon={<LocalOfferIcon color="warning" />}
+                title="Price"
+                value={priceFormatter(props.deal.property.price)}
+              />
 
-              <StyledListItem disableGutters>
-                <ListItemAvatarWrapper>
-                  <PriceChangeIcon color="success" />
-                </ListItemAvatarWrapper>
-                <ListItemText
-                  primary="%⇩ARV"
-                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
-                  secondaryTypographyProps={{
-                    variant: 'subtitle2',
-                    noWrap: true
-                  }}
-                />
-                <Box>
-                  <Typography align="right" variant="h4" noWrap>
-                    {showFixedValue(props.deal.profit)}
-                  </Typography>
-                </Box>
-              </StyledListItem>
+              <IconListItem
+                icon={<InsightsIcon color="inherit" />}
+                title={'≈ ARV'}
+                value={priceFormatter(`${props.deal.estimatedArv?.toFixed(0)}`)}
+              />
 
-              <StyledListItem disableGutters>
-                <ListItemAvatarWrapper>
-                  <PriceCheckIcon color="success" />
-                </ListItemAvatarWrapper>
-                <ListItemText
-                  primary="%⇩True-ARV"
-                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
-                  secondaryTypographyProps={{
-                    variant: 'subtitle2',
-                    noWrap: true
-                  }}
-                />
-                <Box>
-                  <Typography align="right" variant="h4" noWrap>
-                    {showFixedValue(props.deal.trueArv)}
-                  </Typography>
-                </Box>
-              </StyledListItem>
-              <StyledListItem disableGutters>
-                <ListItemAvatarWrapper>
-                  <ExpandIcon color="primary" />
-                </ListItemAvatarWrapper>
-                <ListItemText
-                  primary="Sqft"
-                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
-                  secondaryTypographyProps={{
-                    variant: 'subtitle2',
-                    noWrap: true
-                  }}
-                />
-                <Box>
-                  <Typography align="right" variant="h4" noWrap>
-                    {props.deal.property.area}
-                  </Typography>
-                </Box>
-              </StyledListItem>
+              <IconListItem
+                icon={<PriceChangeIcon color="success" />}
+                title="%⇩ARV"
+                value={showFixedValue(props.deal.profit)}
+              />
+
+              <IconListItem
+                icon={<PriceCheckIcon color="success" />}
+                title="%⇩True-ARV"
+                value={showFixedValue(props.deal.trueArv)}
+              />
+
+              <IconListItem
+                icon={<ExpandIcon color="primary" />}
+                title="Sqft"
+                value={props.deal.property.area}
+              />
             </List>
           </Grid>
         </CardContent>
@@ -284,7 +229,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
             <FavoriteOutlinedIcon />
           </IconButton>
 
-          <IconButton aria-label="share">
+          <IconButton aria-label="share" onClick={handleOpenDetails}>
             <ImportContactsIcon />
           </IconButton>
           {/* <IconButton aria-label="share" onClick={handleLocationAction}>
