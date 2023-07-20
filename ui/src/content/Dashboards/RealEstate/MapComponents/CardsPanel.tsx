@@ -45,6 +45,8 @@ type CardsPanelProps = {
   selectedDeal: Deal;
   setSelectedDeal: (deal: Deal) => void;
   setOpenMoreDetails: (open: boolean) => void;
+  trueArv: boolean;
+  setTrueArv: (trueArv: boolean) => void;
 };
 
 const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
@@ -77,6 +79,8 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
               selectedDeal={props.selectedDeal}
               setSelectedDeal={props.setSelectedDeal}
               setOpenMoreDetails={props.setOpenMoreDetails}
+              trueArv={props.trueArv}
+              setTrueArv={props.setTrueArv}
             />
           );
         })}

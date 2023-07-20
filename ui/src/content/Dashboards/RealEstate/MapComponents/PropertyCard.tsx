@@ -21,7 +21,10 @@ import {
   ListItemAvatar,
   ListItemText,
   styled,
-  Typography
+  Switch,
+  Tooltip,
+  Typography,
+  withStyles
 } from '@mui/material';
 import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
 import ShareIcon from '@mui/icons-material/Share';
@@ -38,6 +41,7 @@ import { percentFormatter, priceFormatter } from '@/utils/converters';
 import { setSearchAnalyzedProperty } from '@/store/searchSlice';
 import { useDispatch } from 'react-redux';
 import IconListItem from '../DetailsPanel/IconListItem';
+import IconSwitch from '../FormFields/IconSwitch';
 interface StyledCardProps extends CardProps {
   selected?: boolean;
 }
@@ -101,11 +105,20 @@ const AddressLink = styled('h3')(({ theme }) => ({
   cursor: 'pointer'
 }));
 
+const StyledTooltip = styled(Tooltip)({
+  margin: '4px',
+  tooltipPlacementRight: {
+    margin: '4px'
+  }
+});
+
 type PropertyCardProps = {
   deal: Deal;
   setSelectedDeal: (deal: Deal) => void;
   setOpenMoreDetails: (open: boolean) => void;
   selectedDeal: Deal;
+  trueArv: boolean;
+  setTrueArv: (trueArv: boolean) => void;
 };
 const PropertyCard: React.FC<PropertyCardProps> = (
   props: PropertyCardProps
@@ -224,14 +237,28 @@ const PropertyCard: React.FC<PropertyCardProps> = (
         </CardContent>
       </CardActionArea>
       <CardActions disableSpacing sx={{ padding: 0 }}>
-        <Grid container justifyContent="center">
-          <IconButton aria-label="add to favorites">
-            <FavoriteOutlinedIcon />
-          </IconButton>
+        <Grid container justifyContent="center" alignItems="center">
+          <Grid item xs={4}></Grid>
+          <Grid item xs={4}>
+            <IconButton aria-label="add to favorites">
+              <FavoriteOutlinedIcon />
+            </IconButton>
 
-          <IconButton aria-label="share" onClick={handleOpenDetails}>
-            <ImportContactsIcon />
-          </IconButton>
+            <IconButton aria-label="share" onClick={handleOpenDetails}>
+              <ImportContactsIcon />
+            </IconButton>
+          </Grid>
+          <Grid item xs={4}>
+            {props.selectedDeal &&
+              props.selectedDeal.property.id === props.deal.property.id && (
+                <StyledTooltip title="Toggle True-ARV" placement="right">
+                  <Switch
+                    checked={props.trueArv}
+                    onChange={() => props.setTrueArv(!props.trueArv)}
+                  />
+                </StyledTooltip>
+              )}
+          </Grid>
           {/* <IconButton aria-label="share" onClick={handleLocationAction}>
             <LocationOnIcon />
           </IconButton> */}
