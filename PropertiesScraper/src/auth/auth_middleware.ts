@@ -113,25 +113,6 @@ class AuthMiddleware {
 	}
 }
 
-// const verifyToken = async (token: string) => {
-// 	console.log('token: ' + token);
-// 	// const region = process.env.AWS_REGION;
-// 	// const userPoolId = process.env.AWS_COGNITO_USER_POOL_ID;
-// 	// const clientId = process.env.AWS_COGNITO_CLIENT_ID;
-// 	// const params = {
-// 	// 	AccessToken: token,
-// 	// };
-// 	// const client = new CognitoIdentityProviderClient({ region });
-// 	// const command = new GetUserCommand(params);
-// 	// console.log('meow1');
-// 	// const userData = await client.send(command);
-// 	// console.log('meow2');
-// 	// console.log(userData);
-// 	// const email = userData.UserAttributes!.find((attr) => attr.Name === "email")?.Value;
-// 	// const id = userData.UserAttributes!.find((attr) => attr.Name === "sub")?.Value;
-// 	// const user = { id: id!, email: email!, name: email! };
-// 	// return user;
-// }
 
 
 export default AuthMiddleware;

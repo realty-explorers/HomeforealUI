@@ -12,7 +12,7 @@ services:
     env_file:
       - deals.env
     volumes:
-      - ./security/certbot/conf/:/etc/nginx/ssl/:ro
+      - letsencrypt_conf:/etc/nginx/ssl/:ro
       - elastic_certs:/etc/elastic/certs/:ro
   ui:
     image: "ghcr.io/sharonfabin/ui"
@@ -98,7 +98,6 @@ services:
       - xpack.security.transport.ssl.certificate_authorities=certs/ca/ca.crt
       - xpack.security.transport.ssl.verification_mode=certificate
       - xpack.license.self_generated.type=${LICENSE}
-      - xpack.security.enrollment.enabled=true
     mem_limit: 1g
   kibana:
     depends_on:
@@ -119,14 +118,27 @@ services:
     restart: always
     volumes:
       - ./nginx/conf/:/etc/nginx/conf.d:ro
-      - ./security/certbot/www:/var/www/certbot/:ro
-      - ./security/certbot/conf/:/etc/nginx/ssl/:ro
+      - letsencrypt_www:/var/www/certbot/:ro
+      - letsencrypt_conf:/etc/nginx/ssl/:ro
   certbot:
     image: certbot/certbot:latest
+    command: certonly --webroot --preferred-challenges http-01 --server https://acme-v02.api.letsencrypt.org/directory --agree-tos --renew-by-default --text --email i.sharon.fabin@gmail.com --webroot-path=/var/www/certbot/ -d homeforeal.com
     volumes:
-      - ./security/certbot/www/:/var/www/certbot/:rw
-      - ./security/certbot/conf/:/etc/letsencrypt/:rw
+      - letsencrypt_www:/var/www/certbot/:rw
+      - letsencrypt_conf:/etc/letsencrypt/:rw
+  nginx_letsencrypt:
+    image: "ghcr.io/sharonfabin/nginx-letsencrypt"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - letsencrypt_www:/var/www/certbot/:ro
+      - letsencrypt_conf:/etc/nginx/ssl/:ro
 volumes:
+  letsencrypt_www:
+    driver: local
+  letsencrypt_conf:
+    driver: local
   elastic_certs:
     driver: local
   es01_data:
