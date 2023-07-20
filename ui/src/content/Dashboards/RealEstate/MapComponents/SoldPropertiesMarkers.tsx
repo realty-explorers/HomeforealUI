@@ -6,10 +6,63 @@ import PropertyMapCard from './PropertyMapCard';
 import { openGoogleSearch } from '@/utils/windowFunctions';
 import { Fade } from '@mui/material';
 
+const divStyle = {
+  cursor: 'default'
+};
+const CompsMarker = (props: {
+  compsProperty: CompsProperty;
+  handleMouseHover: any;
+  handleMouseOut: any;
+  hovered: boolean;
+  iconUrl: string;
+}) => {
+  return (
+    <Marker
+      position={{
+        lat: props.compsProperty.latitude,
+        lng: props.compsProperty.longitude
+      }}
+      icon={{
+        url: props.iconUrl,
+        scaledSize: new google.maps.Size(40, 40),
+        strokeWeight: 10,
+        strokeColor: 'white'
+      }}
+      onMouseOver={() => props.handleMouseHover(props.compsProperty.id)}
+      onMouseOut={() => props.handleMouseOut()}
+      animation={props.hovered ? google.maps.Animation.BOUNCE : null}
+      onClick={() => openGoogleSearch(props.compsProperty.address)}
+    >
+      {props.hovered && (
+        <OverlayView
+          position={{
+            lat: props.compsProperty.latitude,
+            lng: props.compsProperty.longitude
+          }}
+          mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
+        >
+          <Fade in={props.hovered} timeout={500}>
+            <div
+              style={divStyle}
+              onMouseEnter={() =>
+                props.handleMouseHover(props.compsProperty.id)
+              }
+              onMouseLeave={() => props.handleMouseOut()}
+            >
+              <PropertyMapCard property={props.compsProperty} />
+            </div>
+          </Fade>
+        </OverlayView>
+      )}
+    </Marker>
+  );
+};
+
 type SoldPropertiesMarkersProps = {
   searchResults: Deal[];
   setSelectedDeal: (deal: Deal) => void;
   selectedDeal?: Deal;
+  trueArv: boolean;
 };
 
 const SoldPropertiesMarkers = (props: SoldPropertiesMarkersProps) => {
@@ -24,63 +77,30 @@ const SoldPropertiesMarkers = (props: SoldPropertiesMarkersProps) => {
     const showTimeout = setTimeout(() => setHoveredProperty(''), 100);
     setShowOverlayTimeout(showTimeout);
   };
-  const divStyle = {
-    cursor: 'default'
+
+  const renderCompsMarkers = () => {
+    const compsProperties = props.trueArv
+      ? props.selectedDeal.trueArvProperties
+      : props.selectedDeal.soldProperties;
+    return compsProperties.map(
+      (compsProperty: CompsProperty, index: number) => (
+        <CompsMarker
+          compsProperty={compsProperty}
+          key={index}
+          handleMouseHover={handleMouseHover}
+          handleMouseOut={handleMouseOut}
+          hovered={hoveredProperty === compsProperty.id}
+          iconUrl={
+            props.trueArv
+              ? '/static/images/pins/greenPin.png'
+              : '/static/images/pins/yellowPin.png'
+          }
+        />
+      )
+    );
   };
 
-  return (
-    <>
-      {props.selectedDeal ? (
-        props.selectedDeal?.soldProperties.map(
-          (compsProperty: CompsProperty, index: number) => (
-            <Marker
-              key={index}
-              position={{
-                lat: compsProperty.latitude,
-                lng: compsProperty.longitude
-              }}
-              icon={{
-                url: '/static/images/pins/yellowPin.png',
-                scaledSize: new google.maps.Size(40, 40),
-                strokeWeight: 10,
-                strokeColor: 'white'
-              }}
-              onMouseOver={() => handleMouseHover(compsProperty.id)}
-              onMouseOut={() => handleMouseOut()}
-              animation={
-                hoveredProperty === compsProperty.id
-                  ? google.maps.Animation.BOUNCE
-                  : null
-              }
-              onClick={() => openGoogleSearch(compsProperty.address)}
-            >
-              {hoveredProperty === compsProperty.id && (
-                <OverlayView
-                  position={{
-                    lat: compsProperty.latitude,
-                    lng: compsProperty.longitude
-                  }}
-                  mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
-                >
-                  <Fade in={hoveredProperty === compsProperty.id} timeout={500}>
-                    <div
-                      style={divStyle}
-                      onMouseEnter={() => handleMouseHover(compsProperty.id)}
-                      onMouseLeave={() => handleMouseOut()}
-                    >
-                      <PropertyMapCard property={compsProperty} />
-                    </div>
-                  </Fade>
-                </OverlayView>
-              )}
-            </Marker>
-          )
-        )
-      ) : (
-        <></>
-      )}
-    </>
-  );
+  return <>{props.selectedDeal ? renderCompsMarkers() : <></>}</>;
 };
 
 export default SoldPropertiesMarkers;

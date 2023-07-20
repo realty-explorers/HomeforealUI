@@ -77,6 +77,7 @@ const MapComponent: React.FC<MapComponentProps> = (
   const searchResults = useSelector(selectSearchResults);
   const searchData = useSelector(selectSearchData);
   const dispatch = useDispatch();
+  const [trueArv, setTrueArv] = useState<boolean>(false);
 
   const updateMinPrice = (value: number) => {
     dispatch(setSearchMinPrice(value.toString()));
@@ -269,6 +270,8 @@ const MapComponent: React.FC<MapComponentProps> = (
         selectedDeal={props.selectedDeal}
         setSelectedDeal={props.setSelectedDeal}
         setOpenMoreDetails={props.setOpenMoreDetails}
+        trueArv={trueArv}
+        setTrueArv={setTrueArv}
       />
       <MapControls searchData={searchData} update={update} />
       <LocationBounds searchData={searchData} />
@@ -286,6 +289,7 @@ const MapComponent: React.FC<MapComponentProps> = (
             searchResults={searchResults}
             selectedDeal={props.selectedDeal}
             setSelectedDeal={props.setSelectedDeal}
+            trueArv={trueArv}
           />
         </>
       ) : (
