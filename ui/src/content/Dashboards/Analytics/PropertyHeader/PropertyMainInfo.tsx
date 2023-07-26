@@ -19,7 +19,7 @@ const PropertyMainInfo = (props: PropertyMainInfoProps) => {
           <Typography className={styles.infoHeader}>100$</Typography>
         </Grid>
         <Grid item xs={12}>
-          <Chip label="Active" color="success" />
+          <Chip label="Active" color="success" size="small" />
         </Grid>
         <Grid item xs={12}>
           <Typography className={styles.infoDescription}>Address</Typography>
