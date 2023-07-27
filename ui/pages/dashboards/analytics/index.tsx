@@ -16,8 +16,8 @@ import { useState } from 'react';
 
 const PropertyAnalytics = () => {
   return (
-    <Grid container>
-      <Grid item xs={6}>
+    <Grid container sx={{ height: '100%' }}>
+      <Grid item xs={6} sx={{ height: '100%', overflowY: 'scroll' }}>
         <PropertyHeader property={{} as Property} />
         <PropertyFacts property={{} as Property} />
         <PropertyFeatures property={{} as Property} />
