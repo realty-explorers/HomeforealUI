@@ -2,6 +2,7 @@ import CompsSection from '@/content/Dashboards/Analytics/CompsSection';
 import EnvironmentalIndicators from '@/content/Dashboards/Analytics/EnvironmentalIndicators';
 import ExpansesCalculator from '@/content/Dashboards/Analytics/ExpansesCalculator';
 import Map from '@/content/Dashboards/Analytics/Map';
+import OperationalExpanses from '@/content/Dashboards/Analytics/OperationalExpanses';
 import OwnershipInfo from '@/content/Dashboards/Analytics/OwnershipInfo';
 import PropertyFacts from '@/content/Dashboards/Analytics/PropertyFacts';
 import PropertyFeatures from '@/content/Dashboards/Analytics/PropertyFeatrues';
@@ -26,6 +27,8 @@ const PropertyAnalytics = () => {
         <CompsSection property={{} as Property} />
         <ExpansesCalculator property={{} as Property} />
         <RentComparable property={{} as Property} />
+        <CompsSection property={{} as Property} />
+        <OperationalExpanses property={{} as Property} />
       </Grid>
       <Grid item xs={6}>
         <Map />
