@@ -1,15 +1,17 @@
 import Property from '@/models/property';
-import { Grid, Typography } from '@mui/material';
+import { Button, Grid, Typography } from '@mui/material';
 import GridField from '@/components/Grid/GridField';
-import styles from './Analytics.module.scss';
+import analyticsStyles from './Analytics.module.scss';
 
 type OwnershipInfoProps = {
   property: Property;
 };
 const OwnershipInfo = (props: OwnershipInfoProps) => {
   return (
-    <Grid className={styles.sectionContainer}>
-      <h1 className={styles.sectionHeader}>Ownership Information</h1>
+    <Grid
+      className={`${analyticsStyles.yellowBorderedSection} ${analyticsStyles.sectionContainer}`}
+    >
+      <h1 className={analyticsStyles.sectionHeader}>Ownership Information</h1>
       <Grid container justifyContent="center" rowGap={3}>
         <Grid item xs={6} container rowGap={3}>
           <GridField size={12} label="Entity Name" value="meow" />
@@ -19,6 +21,13 @@ const OwnershipInfo = (props: OwnershipInfoProps) => {
           <GridField size={12} label="Sold this Year" value="meow" />
         </Grid>
         <Grid item xs={6}></Grid>
+      </Grid>
+      <Grid container justifyContent="flex-end">
+        <Button className={analyticsStyles.button}>
+          <Typography className={analyticsStyles.buttonText}>
+            Owner Buy Box
+          </Typography>
+        </Button>
       </Grid>
     </Grid>
   );

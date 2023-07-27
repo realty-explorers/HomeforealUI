@@ -5,6 +5,7 @@ import OwnershipInfo from '@/content/Dashboards/Analytics/OwnershipInfo';
 import PropertyFacts from '@/content/Dashboards/Analytics/PropertyFacts';
 import PropertyFeatures from '@/content/Dashboards/Analytics/PropertyFeatrues';
 import PropertyHeader from '@/content/Dashboards/Analytics/PropertyHeader';
+import SaleComparable from '@/content/Dashboards/Analytics/SaleComparable';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import Property from '@/models/property';
 import { Grid } from '@mui/material';
@@ -19,6 +20,7 @@ const PropertyAnalytics = () => {
         <PropertyFeatures property={{} as Property} />
         <EnvironmentalIndicators property={{} as Property} />
         <OwnershipInfo property={{} as Property} />
+        <SaleComparable property={{} as Property} />
         <CompsSection property={{} as Property} />
       </Grid>
       <Grid item xs={6}>
