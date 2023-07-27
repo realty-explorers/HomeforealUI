@@ -6,6 +6,7 @@ import OwnershipInfo from '@/content/Dashboards/Analytics/OwnershipInfo';
 import PropertyFacts from '@/content/Dashboards/Analytics/PropertyFacts';
 import PropertyFeatures from '@/content/Dashboards/Analytics/PropertyFeatrues';
 import PropertyHeader from '@/content/Dashboards/Analytics/PropertyHeader';
+import RentComparable from '@/content/Dashboards/Analytics/RentComparable';
 import SaleComparable from '@/content/Dashboards/Analytics/SaleComparable';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import Property from '@/models/property';
@@ -24,6 +25,7 @@ const PropertyAnalytics = () => {
         <SaleComparable property={{} as Property} />
         <CompsSection property={{} as Property} />
         <ExpansesCalculator property={{} as Property} />
+        <RentComparable property={{} as Property} />
       </Grid>
       <Grid item xs={6}>
         <Map />
