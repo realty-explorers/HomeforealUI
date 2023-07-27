@@ -1,6 +1,7 @@
 import {
   FormControl,
   Grid,
+  IconButton,
   InputAdornment,
   InputLabel,
   MenuItem,
@@ -8,18 +9,20 @@ import {
   Select,
   Typography
 } from '@mui/material';
+import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import styles from './ExpansesCalculator.module.scss';
 
 type ExpansesRowProps = {
   label: string;
+  removeExpanse: (label) => void;
 };
 const ExpansesRow = (props: ExpansesRowProps) => {
   return (
-    <Grid container alignItems="center">
-      <Grid xs={3} padding={'0 1rem 0 1rem'}>
+    <Grid container alignItems="center" columns={17}>
+      <Grid item xs={4} padding={'0 1rem 0 1rem'}>
         <Typography className={styles.label}>{props.label}</Typography>
       </Grid>
-      <Grid xs={3} paddingX={1}>
+      <Grid item xs={4} paddingX={1}>
         <FormControl>
           <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
           <OutlinedInput
@@ -29,7 +32,7 @@ const ExpansesRow = (props: ExpansesRowProps) => {
           />
         </FormControl>
       </Grid>
-      <Grid xs={3} paddingX={1}>
+      <Grid item xs={4} paddingX={1}>
         <FormControl fullWidth>
           <InputLabel id="demo-simple-select-label">Age</InputLabel>
           <Select
@@ -44,7 +47,7 @@ const ExpansesRow = (props: ExpansesRowProps) => {
           </Select>
         </FormControl>
       </Grid>
-      <Grid xs={3} paddingX={1}>
+      <Grid item xs={4} paddingX={1}>
         <FormControl fullWidth sx={{ m: 1 }}>
           <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
           <OutlinedInput
@@ -53,6 +56,15 @@ const ExpansesRow = (props: ExpansesRowProps) => {
             label="Amount"
           />
         </FormControl>
+      </Grid>
+      <Grid item xs={1}>
+        <Grid container justifyContent="center">
+          <IconButton>
+            <RemoveCircleOutlineIcon
+              onClick={() => props.removeExpanse(props.label)}
+            />
+          </IconButton>
+        </Grid>
       </Grid>
     </Grid>
   );

@@ -12,6 +12,15 @@ const MonthlyExpanses = (props: MonthlyExpansesProps) => {
     'Management',
     'Vacancy Rate'
   ]);
+
+  const handleAddExpanse = () => {
+    setExpanses([...expanses, 'New Expanse']);
+  };
+
+  const handleRemoveExpanse = (label: string) => {
+    setExpanses(expanses.filter((expanse) => expanse !== label));
+  };
+
   return (
     <Grid container>
       <Grid container justifyContent="center" alignItems="center" xs={6}>
@@ -26,10 +35,14 @@ const MonthlyExpanses = (props: MonthlyExpansesProps) => {
         </Typography>
       </Grid>
       {expanses.map((expanse, index) => (
-        <ExpansesRow label={expanse} key={index} />
+        <ExpansesRow
+          label={expanse}
+          key={index}
+          removeExpanse={handleRemoveExpanse}
+        />
       ))}
       <Grid item xs={12} justifyContent="flex-start">
-        <Button className={styles.addButton}>
+        <Button className={styles.addButton} onClick={handleAddExpanse}>
           <Typography className={styles.buttonText}>Add Expanses</Typography>
         </Button>
       </Grid>
