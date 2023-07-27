@@ -31,7 +31,7 @@ const IndicatorCard = (props: { title: string; content: string }) => {
           justifyContent="center"
           // alignItems="flex-end"
         >
-          <Typography className={styles.indicatorLink}>meow</Typography>
+          <Typography className={styles.indicatorLink}>More</Typography>
         </Grid>
       </Grid>
     </Card>

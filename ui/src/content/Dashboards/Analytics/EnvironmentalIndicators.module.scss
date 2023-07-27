@@ -1,6 +1,9 @@
 .indicatorCard {
   background-color: #f8f0d3;
   height: 10rem;
+  :hover {
+    background-color: #f6dc7e;
+  }
 }
 .indicatorHeader {
   color: #000;
