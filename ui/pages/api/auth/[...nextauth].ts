@@ -1,5 +1,6 @@
 import NextAuth, { Session } from "next-auth"
 import CognitoProvider from "next-auth/providers/cognito";
+import Auth0Provider from "next-auth/providers/auth0";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { CognitoUserPool, CognitoUser } from 'amazon-cognito-identity-js';
 
@@ -19,6 +20,11 @@ export const authOptions = {
             clientId: process.env.COGNITO_CLIENT_ID,
             clientSecret: process.env.COGNITO_CLIENT_SECRET,
             issuer: process.env.COGNITO_ISSUER,
+        }),
+        Auth0Provider({
+            clientId: process.env.AUTH0_CLIENT_ID,
+            clientSecret: process.env.AUTH0_CLIENT_SECRET,
+            issuer: process.env.AUTH0_DOMAIN
         }),
         // CredentialsProvider({
         //     name: 'Credentials',
@@ -72,28 +78,28 @@ export const authOptions = {
         //     }
         // })
     ],
-    callbacks: {
-        async jwt({ token, user, account, profile, isNewUser }) {
-            // console.log("****jwt: ", JSON.stringify(token))
-            if (account?.access_token) {
-                token.accessToken = account.access_token;
-                token.idToken = account.id_token;
-            }
-            return token;
-        },
-        async session({ session, token, user }) {
-            if (token.accessToken) {
-                session.accessToken = token.accessToken;
-                session.idToken = token.idToken;
-                session.user.email = token.email;
-                session.user.id = token.sub;
-                session.user.name = token.email.substring(0, token.email.indexOf('@'));
-                console.log(session.user.name)
-            }
-            return session
-        }
+    // callbacks: {
+    //     async jwt({ token, user, account, profile, isNewUser }) {
+    //         // console.log("****jwt: ", JSON.stringify(token))
+    //         if (account?.access_token) {
+    //             token.accessToken = account.access_token;
+    //             token.idToken = account.id_token;
+    //         }
+    //         return token;
+    //     },
+    //     async session({ session, token, user }) {
+    //         if (token.accessToken) {
+    //             session.accessToken = token.accessToken;
+    //             session.idToken = token.idToken;
+    //             session.user.email = token.email;
+    //             session.user.id = token.sub;
+    //             session.user.name = token.email.substring(0, token.email.indexOf('@'));
+    //             console.log(session.user.name)
+    //         }
+    //         return session
+    //     }
 
-    },
+    // },
 }
 
 export default NextAuth(authOptions)
