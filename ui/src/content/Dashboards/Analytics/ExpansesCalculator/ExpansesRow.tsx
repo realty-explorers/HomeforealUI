@@ -11,12 +11,14 @@ import {
 } from '@mui/material';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import styles from './ExpansesCalculator.module.scss';
+import { useState } from 'react';
 
 type ExpansesRowProps = {
   label: string;
   removeExpanse: (label) => void;
 };
 const ExpansesRow = (props: ExpansesRowProps) => {
+  const [removed, setRemoved] = useState(false);
   return (
     <Grid container alignItems="center" columns={17}>
       <Grid item xs={4} padding={'0 1rem 0 1rem'}>
@@ -59,10 +61,15 @@ const ExpansesRow = (props: ExpansesRowProps) => {
       </Grid>
       <Grid item xs={1}>
         <Grid container justifyContent="center">
-          <IconButton>
-            <RemoveCircleOutlineIcon
-              onClick={() => props.removeExpanse(props.label)}
-            />
+          <IconButton
+            onClick={() => {
+              setRemoved(true);
+              setTimeout(() => {
+                props.removeExpanse(props.label);
+              }, 300);
+            }}
+          >
+            <RemoveCircleOutlineIcon />
           </IconButton>
         </Grid>
       </Grid>

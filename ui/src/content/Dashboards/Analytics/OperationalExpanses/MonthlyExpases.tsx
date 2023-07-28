@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Button, Checkbox, Grid, Typography } from '@mui/material';
+import { Button, Checkbox, Grid, Grow, Typography } from '@mui/material';
 import ExpansesRow from './ExpansesRow';
 import styles from './ExpansesCalculator.module.scss';
 
@@ -35,11 +35,15 @@ const MonthlyExpanses = (props: MonthlyExpansesProps) => {
         </Typography>
       </Grid>
       {expanses.map((expanse, index) => (
-        <ExpansesRow
-          label={expanse}
-          key={index}
-          removeExpanse={handleRemoveExpanse}
-        />
+        <Grow in={expanses.includes(expanse)} key={index}>
+          <div>
+            <ExpansesRow
+              label={expanse}
+              key={index}
+              removeExpanse={handleRemoveExpanse}
+            />
+          </div>
+        </Grow>
       ))}
       <Grid item xs={12} justifyContent="flex-start">
         <Button className={styles.addButton} onClick={handleAddExpanse}>

@@ -13,11 +13,28 @@ import SidebarLayout from '@/layouts/SidebarLayout';
 import Property from '@/models/property';
 import { Grid } from '@mui/material';
 import { useState } from 'react';
+import styles from './index.module.scss';
+import styled from '@emotion/styled';
+
+const StyledGrid = styled(Grid)(({ theme }) => ({
+  height: '100%',
+  overflowY: 'scroll',
+  '&::-webkit-scrollbar': {
+    width: '0.4em'
+  },
+  '&::-webkit-scrollbar-track': {
+    boxShadow: 'inset 0 0 6px rgba(0,0,0,.1)'
+  },
+  '&::-webkit-scrollbar-thumb': {
+    borderRadius: '10px',
+    backgroundColor: 'rgba(0,0,0,1)'
+  }
+}));
 
 const PropertyAnalytics = () => {
   return (
     <Grid container sx={{ height: '100%' }}>
-      <Grid item xs={6} sx={{ height: '100%', overflowY: 'scroll' }}>
+      <StyledGrid item xs={6} sx={{ height: '100%', overflowY: 'scroll' }}>
         <PropertyHeader property={{} as Property} />
         <PropertyFacts property={{} as Property} />
         <PropertyFeatures property={{} as Property} />
@@ -29,7 +46,7 @@ const PropertyAnalytics = () => {
         <RentComparable property={{} as Property} />
         <CompsSection property={{} as Property} />
         <OperationalExpanses property={{} as Property} />
-      </Grid>
+      </StyledGrid>
       <Grid item xs={6}>
         <Map />
       </Grid>

@@ -37,19 +37,20 @@ type OperationalExpansesProps = {
 const OperationalExpanses = (props: OperationalExpansesProps) => {
   return (
     <Grid
-      container
-      className={`${analyticsStyles.sectionContainer}`}
-      alignItems="center"
-      justifyContent="center"
+      className={`${analyticsStyles.blackBorderedSection} ${analyticsStyles.sectionContainer}`}
       rowGap={3}
     >
-      <Grid item xs={6}>
-        <h1 className={analyticsStyles.sectionHeader}>Operational Expanses</h1>
+      <Grid container justifyContent="center" rowGap={3}>
+        <Grid item xs={6}>
+          <h1 className={analyticsStyles.sectionHeader}>
+            Operational Expanses
+          </h1>
+        </Grid>
+        <Grid item xs={6}>
+          <ValueCard title="Annual Expanses" value="$6,600" />
+        </Grid>
+        <MonthlyExpanses />
       </Grid>
-      <Grid item xs={6}>
-        <ValueCard title="Annual Expanses" value="$6,600" />
-      </Grid>
-      <MonthlyExpanses />
     </Grid>
   );
 };

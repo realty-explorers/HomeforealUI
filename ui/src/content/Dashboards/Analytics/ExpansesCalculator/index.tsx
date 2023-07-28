@@ -38,20 +38,19 @@ type ExpansesCalculatorProps = {
 const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
   return (
     <Grid
-      container
-      className={`${analyticsStyles.sectionContainer}`}
-      alignItems="center"
-      justifyContent="center"
-      rowGap={3}
+      className={`${analyticsStyles.blackBorderedSection} ${analyticsStyles.sectionContainer}`}
+      // sx={{ display: 'flex' }}
     >
-      <Grid item xs={6}>
-        <h1 className={analyticsStyles.sectionHeader}>Expanses Calculator</h1>
+      <Grid container justifyContent="center" rowGap={3}>
+        <Grid item xs={6}>
+          <h1 className={analyticsStyles.sectionHeader}>Expanses Calculator</h1>
+        </Grid>
+        <Grid item xs={6}>
+          <ValueCard title="Estimated Expanses" value="$27,000" />
+        </Grid>
+        <InitialInvestment />
+        <FinancingExpanses />
       </Grid>
-      <Grid item xs={6}>
-        <ValueCard title="Estimated Expanses" value="$27,000" />
-      </Grid>
-      <InitialInvestment />
-      <FinancingExpanses />
     </Grid>
   );
 };
