@@ -22,7 +22,7 @@ import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
 import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
-import { useSession, signOut } from 'next-auth/react';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
@@ -60,9 +60,10 @@ const UserBoxDescription = styled(Typography)(
 );
 
 function HeaderUserbox() {
-  const { data, status } = useSession({
-    required: true
-  });
+  // const { data, status } = useSession({
+  //   required: true
+  // });
+  const { user, error, isLoading } = useUser();
   const avatar = '/static/images/avatars/1.jpg';
   const role = 'User';
 
@@ -80,10 +81,14 @@ function HeaderUserbox() {
   return (
     <>
       <UserBoxButton color="secondary" ref={ref} onClick={handleOpen}>
-        <Avatar variant="rounded" alt={data?.user?.name} src={avatar} />
+        <Avatar
+          variant="rounded"
+          alt={user?.name}
+          src={user?.picture || avatar}
+        />
         <Hidden mdDown>
           <UserBoxText>
-            <UserBoxLabel variant="body1">{data?.user?.name}</UserBoxLabel>
+            <UserBoxLabel variant="body1">{user?.name}</UserBoxLabel>
             <UserBoxDescription variant="body2">{role}</UserBoxDescription>
           </UserBoxText>
         </Hidden>
@@ -105,9 +110,9 @@ function HeaderUserbox() {
         }}
       >
         <MenuUserBox sx={{ minWidth: 210 }} display="flex">
-          <Avatar variant="rounded" alt={data?.user?.name} src={avatar} />
+          <Avatar variant="rounded" alt={user?.name} src={avatar} />
           <UserBoxText>
-            <UserBoxLabel variant="body1">{data?.user?.name}</UserBoxLabel>
+            <UserBoxLabel variant="body1">{user?.name}</UserBoxLabel>
             <UserBoxDescription variant="body2">{role}</UserBoxDescription>
           </UserBoxText>
         </MenuUserBox>
@@ -134,7 +139,7 @@ function HeaderUserbox() {
         </List>
         <Divider />
         <Box sx={{ m: 1 }}>
-          <Button color="primary" fullWidth onClick={() => signOut()}>
+          <Button color="primary" fullWidth href="/api/auth/logout">
             <LockOpenTwoToneIcon sx={{ mr: 1 }} />
             Sign out
           </Button>

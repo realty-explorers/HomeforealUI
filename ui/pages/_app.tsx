@@ -14,7 +14,7 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { SessionProvider } from 'next-auth/react';
 import { wrapper } from '@/store/store';
-import { Session } from 'next-auth';
+import { UserProvider } from '@auth0/nextjs-auth0/client';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -25,7 +25,6 @@ type NextPageWithLayout = NextPage & {
 interface HomeforealAppProps extends AppProps {
   emotionCache?: EmotionCache;
   Component: NextPageWithLayout;
-  session: Session;
 }
 
 function HomeforealApp(props: HomeforealAppProps) {
@@ -38,7 +37,7 @@ function HomeforealApp(props: HomeforealAppProps) {
 
   return (
     <CacheProvider value={emotionCache}>
-      <SessionProvider session={props.session}>
+      <UserProvider>
         <Head>
           <title>Homeforeal App</title>
           <meta
@@ -54,7 +53,7 @@ function HomeforealApp(props: HomeforealAppProps) {
             </LocalizationProvider>
           </ThemeProvider>
         </SidebarProvider>
-      </SessionProvider>
+      </UserProvider>
     </CacheProvider>
   );
 }
