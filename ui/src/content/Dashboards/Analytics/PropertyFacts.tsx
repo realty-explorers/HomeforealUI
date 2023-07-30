@@ -2,6 +2,7 @@ import Property from '@/models/property';
 import { Button, Grid, Typography } from '@mui/material';
 import GridField from '@/components/Grid/GridField';
 import analyticsStyles from './Analytics.module.scss';
+import ThemedButton from '@/components/Buttons/ThemedButton';
 
 type PropertyFactsProps = {
   property: Property;
@@ -25,9 +26,7 @@ const PropertyFacts = (props: PropertyFactsProps) => {
         <GridField label="Floors" value="meow" />
       </Grid>
       <Grid container justifyContent="flex-end">
-        <Button className={analyticsStyles.button}>
-          <Typography className={analyticsStyles.buttonText}>More</Typography>
-        </Button>
+        <ThemedButton text="More" />
       </Grid>
     </Grid>
   );

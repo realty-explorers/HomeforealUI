@@ -2,6 +2,7 @@ import Property from '@/models/property';
 import { Button, Grid, Typography } from '@mui/material';
 import GridField from '@/components/Grid/GridField';
 import analyticsStyles from './Analytics.module.scss';
+import ThemedButton from '@/components/Buttons/ThemedButton';
 
 type OwnershipInfoProps = {
   property: Property;
@@ -23,11 +24,7 @@ const OwnershipInfo = (props: OwnershipInfoProps) => {
         <Grid item xs={6}></Grid>
       </Grid>
       <Grid container justifyContent="flex-end">
-        <Button className={analyticsStyles.button}>
-          <Typography className={analyticsStyles.buttonText}>
-            Owner Buy Box
-          </Typography>
-        </Button>
+        <ThemedButton text="Owner Buy Box" />
       </Grid>
     </Grid>
   );

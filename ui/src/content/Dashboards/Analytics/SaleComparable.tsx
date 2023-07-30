@@ -16,6 +16,7 @@ import ValueCard from '@/components/Cards/ValueCard';
 import styled from '@emotion/styled';
 import analyticsStyles from './Analytics.module.scss';
 import styles from './SaleComparable.module.scss';
+import ThemedButton from '@/components/Buttons/ThemedButton';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   borderBottom: 'none'
@@ -111,11 +112,7 @@ const SaleComparable = (props: SaleComparableProps) => {
         </TableContainer>
 
         <Grid container justifyContent="flex-end">
-          <Button className={analyticsStyles.button}>
-            <Typography className={analyticsStyles.buttonText}>
-              Market Facts
-            </Typography>
-          </Button>
+          <ThemedButton text="Market Facts" />
         </Grid>
       </Grid>
     </Grid>

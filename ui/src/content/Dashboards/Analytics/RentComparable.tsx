@@ -58,9 +58,7 @@ const RentComparable = (props: RentComparableProps) => {
             <TableBody>
               <TableRow>
                 <StyledTableCell component="th" scope="row">
-                  <Typography className={styles.cellText}>
-                    Price/Sqft
-                  </Typography>
+                  <Typography className={styles.cellText}>Rent/Sqft</Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   ------------------------------------------------
@@ -76,7 +74,7 @@ const RentComparable = (props: RentComparableProps) => {
               <TableRow>
                 <StyledTableCell component="th" scope="row">
                   <Typography className={styles.cellText}>
-                    Average DOM
+                    Total Comps
                   </Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">
@@ -92,9 +90,7 @@ const RentComparable = (props: RentComparableProps) => {
 
               <TableRow>
                 <StyledTableCell component="th" scope="row">
-                  <Typography className={styles.cellText}>
-                    Total Comps
-                  </Typography>
+                  <Typography className={styles.cellText}>Cap Rate</Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   ------------------------------------------------

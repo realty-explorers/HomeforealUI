@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Checkbox, Fade, Grid, Grow, Typography } from '@mui/material';
-import ExpansesRow from './ExpansesRow';
-import styles from './ExpansesCalculator.module.scss';
+import ExpansesRow from '../ExpansesRow';
+import styles from '../ExpansesCalculator.module.scss';
 
 type InitialInvestmentProps = {};
 const InitialInvestment = (props: InitialInvestmentProps) => {
@@ -23,7 +23,7 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
 
   return (
     <Grid container>
-      <Grid container justifyContent="center" alignItems="center" xs={6}>
+      <Grid container justifyContent="center" alignItems="center" item xs={6}>
         <Checkbox title="Select this property" />
         <Typography className={styles.checkboxLabel}>
           Initial Investment

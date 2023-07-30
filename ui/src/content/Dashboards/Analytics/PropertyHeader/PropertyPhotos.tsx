@@ -1,3 +1,4 @@
+import ThemedButton from '@/components/Buttons/ThemedButton';
 import Property from '@/models/property';
 import { Box, Grid } from '@mui/material';
 
@@ -19,18 +20,15 @@ const ViewMore = () => {
   return (
     <div style={{ position: 'relative', height: '100%', width: '100%   ' }}>
       <Image sx={{ opacity: '0.5' }} />
-      <h1
-        style={{
+      <ThemedButton
+        text="See More"
+        sx={{
           position: 'absolute',
           top: '50%',
           left: '50%',
-          transform: 'translate(-50%, -50%)',
-          padding: 0,
-          margin: 0
+          transform: 'translate(-50%, -50%)'
         }}
-      >
-        See More
-      </h1>
+      />
     </div>
   );
 };

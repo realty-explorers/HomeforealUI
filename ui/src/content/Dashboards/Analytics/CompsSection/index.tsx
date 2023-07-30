@@ -7,6 +7,21 @@ import styles from './CompsSection.module.scss';
 import PropertyCard from './PropertyCard';
 import CompsCard from './CompsCard';
 import CompsProperty from '@/models/comps_property';
+import styled from '@emotion/styled';
+import { Height } from '@mui/icons-material';
+
+const Wrapper = styled(Box)(({ theme }) => ({
+  '&::-webkit-scrollbar': {
+    height: '0.3rem'
+  },
+  '&::-webkit-scrollbar-track': {
+    boxShadow: 'inset 0 0 6px rgba(0,0,0,.1)'
+  },
+  '&::-webkit-scrollbar-thumb': {
+    borderRadius: '10px',
+    backgroundColor: 'rgba(0,0,0,1)'
+  }
+}));
 
 type CompsSectionProps = {
   property: Property;
@@ -21,7 +36,7 @@ const CompsSection = (props: CompsSectionProps) => {
         Edit comps filter
       </Typography>
 
-      <Box className={styles.cardsWrapper}>
+      <Wrapper className={styles.cardsWrapper}>
         <Grid item>
           <PropertyCard property={{} as Property} />
         </Grid>
@@ -30,7 +45,7 @@ const CompsSection = (props: CompsSectionProps) => {
             <CompsCard compsProperty={{} as CompsProperty} index={i + 1} />
           </Grid>
         ))}
-      </Box>
+      </Wrapper>
     </Grid>
   );
 };

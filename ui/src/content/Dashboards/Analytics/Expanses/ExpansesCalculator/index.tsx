@@ -22,37 +22,37 @@ import {
 import GridField from '@/components/Grid/GridField';
 import ValueCard from '@/components/Cards/ValueCard';
 import styled from '@emotion/styled';
-import analyticsStyles from '../Analytics.module.scss';
-import styles from './OperationalExpanses.module.scss';
-import ExpansesRow from './ExpansesRow';
-import MonthlyExpanses from './MonthlyExpases';
+import analyticsStyles from '../../Analytics.module.scss';
+import styles from './ExpansesCalculator.module.scss';
+import ExpansesRow from '../ExpansesRow';
+import InitialInvestment from './InitialInvestment';
+import FinancingExpanses from './FinancingExpanses';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   borderBottom: 'none'
 }));
 
-type OperationalExpansesProps = {
+type ExpansesCalculatorProps = {
   property: Property;
 };
-const OperationalExpanses = (props: OperationalExpansesProps) => {
+const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
   return (
     <Grid
       className={`${analyticsStyles.blackBorderedSection} ${analyticsStyles.sectionContainer}`}
-      rowGap={3}
+      // sx={{ display: 'flex' }}
     >
       <Grid container justifyContent="center" rowGap={3}>
         <Grid item xs={6}>
-          <h1 className={analyticsStyles.sectionHeader}>
-            Operational Expanses
-          </h1>
+          <h1 className={analyticsStyles.sectionHeader}>Expanses Calculator</h1>
         </Grid>
         <Grid item xs={6}>
-          <ValueCard title="Annual Expanses" value="$6,600" />
+          <ValueCard title="Estimated Expanses" value="$27,000" />
         </Grid>
-        <MonthlyExpanses />
+        <InitialInvestment />
+        <FinancingExpanses />
       </Grid>
     </Grid>
   );
 };
 
-export default OperationalExpanses;
+export default ExpansesCalculator;

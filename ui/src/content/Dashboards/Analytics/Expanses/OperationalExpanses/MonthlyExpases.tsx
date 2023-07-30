@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Button, Checkbox, Grid, Grow, Typography } from '@mui/material';
-import ExpansesRow from './ExpansesRow';
-import styles from './ExpansesCalculator.module.scss';
+import ExpansesRow from '../ExpansesRow';
+import styles from '../ExpansesCalculator.module.scss';
 
 type MonthlyExpansesProps = {};
 const MonthlyExpanses = (props: MonthlyExpansesProps) => {
@@ -23,7 +23,7 @@ const MonthlyExpanses = (props: MonthlyExpansesProps) => {
 
   return (
     <Grid container>
-      <Grid container justifyContent="center" alignItems="center" xs={6}>
+      <Grid container justifyContent="center" alignItems="center" item xs={6}>
         <Checkbox title="Select this property" />
         <Typography className={styles.checkboxLabel}>
           Monthly Expanses
