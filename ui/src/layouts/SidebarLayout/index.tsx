@@ -1,9 +1,30 @@
 import { FC, ReactNode, useState } from 'react';
-import { Box, alpha, lighten, useTheme } from '@mui/material';
+import { Box, alpha, lighten, styled, useTheme } from '@mui/material';
 import PropTypes from 'prop-types';
 
 import Sidebar from './Sidebar';
 import Header from './Header';
+
+const drawerWidth = 240;
+
+const MainWrapper = styled(Box, {
+  shouldForwardProp: (prop) => prop !== 'open'
+})<any>(({ theme, open }) => ({
+  display: 'flex',
+  flexDirection: 'column',
+  width: '100%',
+  height: '100vh',
+  paddingLeft: `calc(${theme.spacing(7)} + 1px)`,
+  transition: theme.transitions.create(['width', 'padding'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.enteringScreen
+  }),
+  ...(open && {
+    // marginLeft: drawerWidth,
+    // width: `calc(100% - ${drawerWidth}px)`,
+    paddingLeft: drawerWidth
+  })
+}));
 
 interface SidebarLayoutProps {
   children?: ReactNode;
@@ -11,56 +32,45 @@ interface SidebarLayoutProps {
 
 const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
   const theme = useTheme();
+  const [open, setOpen] = useState<boolean>(false);
 
   return (
     <>
-      <Box
-        sx={{
-          flex: 1,
-          height: '100%',
-
-          '.MuiPageTitle-wrapper': {
-            background:
-              theme.palette.mode === 'dark'
-                ? theme.colors.alpha.trueWhite[5]
-                : theme.colors.alpha.white[50],
-            marginBottom: `${theme.spacing(4)}`,
-            boxShadow:
-              theme.palette.mode === 'dark'
-                ? `0 1px 0 ${alpha(
-                    lighten(theme.colors.primary.main, 0.7),
-                    0.15
-                  )}, 0px 2px 4px -3px rgba(0, 0, 0, 0.2), 0px 5px 12px -4px rgba(0, 0, 0, .1)`
-                : `0px 2px 4px -3px ${alpha(
-                    theme.colors.alpha.black[100],
-                    0.1
-                  )}, 0px 5px 12px -4px ${alpha(
-                    theme.colors.alpha.black[100],
-                    0.05
-                  )}`
-          }
-        }}
-      >
-        <Header />
-        <Sidebar />
+      <MainWrapper open={open}>
+        <Sidebar open={open} setOpen={setOpen} />
+        <Header open={open} setOpen={setOpen} />
         <Box
+          sx={{
+            display: 'flex',
+            flexGrow: 1,
+            overflow: 'hidden',
+            width: '100%',
+            height: '100%'
+          }}
+        >
+          {children}
+        </Box>
+        {/* <Header open={open} setOpen={setOpen} />
+        <Sidebar open={open} setOpen={setOpen} /> */}
+        {/* <Box
           sx={{
             position: 'relative',
             zIndex: 5,
             display: 'block',
             height: '100vh',
+            width: '100%',
             flex: 1,
-            pt: `${theme.header.height}`,
-            [theme.breakpoints.up('lg')]: {
-              ml: `${theme.sidebar.width}`
-            }
+            pt: `${theme.header.height}`
+            // [theme.breakpoints.up('lg')]: {
+            //   ml: `${theme.sidebar.width}`
+            // }
           }}
         >
           <Box display="block" sx={{ height: '100%' }}>
             {children}
           </Box>
-        </Box>
-      </Box>
+        </Box> */}
+      </MainWrapper>
     </>
   );
 };

@@ -11,6 +11,8 @@ import styled from '@emotion/styled';
 import { Height } from '@mui/icons-material';
 
 const Wrapper = styled(Box)(({ theme }) => ({
+  width: '10rem',
+  overflow: 'hidden',
   '&::-webkit-scrollbar': {
     height: '0.3rem'
   },

@@ -15,6 +15,8 @@ import styles from './index.module.scss';
 import styled from '@emotion/styled';
 import ExpansesCalculator from '@/content/Dashboards/Analytics/Expanses/ExpansesCalculator';
 import OperationalExpanses from '@/content/Dashboards/Analytics/Expanses/OperationalExpanses';
+import SplitPane, { Pane, SashContent } from 'split-pane-react';
+import meow from './meow.module.scss';
 
 const StyledGrid = styled(Grid)(({ theme }) => ({
   height: '100%',
@@ -32,6 +34,13 @@ const StyledGrid = styled(Grid)(({ theme }) => ({
 }));
 
 const PropertyAnalytics = () => {
+  const [sizes, setSizes] = useState([100, 200]);
+  const layoutCSS = {
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
+  };
   return (
     <Grid container sx={{ height: '100%' }}>
       <StyledGrid item xs={6} sx={{ height: '100%', overflowY: 'scroll' }}>
@@ -47,9 +56,25 @@ const PropertyAnalytics = () => {
         <CompsSection property={{} as Property} />
         <OperationalExpanses property={{} as Property} />
       </StyledGrid>
-      <Grid item xs={6}>
+      {/* <Grid item xs={12} className={meow.demoWrap}>
+        <SplitPane
+          // split="vertical"
+          sizes={sizes}
+          onChange={setSizes}
+          sashRender={() => <SashContent type="sublime" />}
+        >
+          <Pane>
+            <div style={{ backgroundColor: '#ddd' }}>pane1</div>
+          </Pane>
+          <Pane>
+            <div style={{ backgroundColor: '#ccc' }}>pane2</div>
+          </Pane>
+          <Pane>
+            <div style={{ backgroundColor: '#eee' }}>pane3</div>
+          </Pane>
+        </SplitPane>
         <Map />
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };
