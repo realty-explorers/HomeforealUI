@@ -1,7 +1,6 @@
 import { InputProps } from '@/components/Form/formTypes';
 import styled from '@emotion/styled';
 import { Grid, Typography } from '@mui/material';
-import SliderRangeInput from '../SliderRangeInput';
 import {
   ageFormatter,
   ageReverseScale,
@@ -12,11 +11,11 @@ import {
 } from '@/utils/converters';
 import React, { Children } from 'react';
 
-const GridDiv = styled('div')(({}) => ({
+const GridDiv = styled(Grid)(({}) => ({
   display: 'flex',
   flexDirection: 'row',
   width: '100%',
-  height: '2rem',
+  // height: '2rem',
   '> svg': {
     marginBottom: '0.5em'
   },
@@ -35,13 +34,13 @@ type SliderFieldProps = {
 
 const SliderField: React.FC<SliderFieldProps> = (props: SliderFieldProps) => {
   return (
-    <GridDiv>
-      <LabelContainer item xs={3}>
+    <GridDiv container rowGap={1} marginBottom={2}>
+      <LabelContainer item xs={12}>
         <Typography align="right" noWrap variant="h5">
           {props.fieldName}
         </Typography>
       </LabelContainer>
-      <Grid item xs={9}>
+      <Grid item xs={12}>
         {props.children}
       </Grid>
     </GridDiv>

@@ -375,6 +375,18 @@ export const PureLightTheme = createTheme({
           MozOsxFontSmoothing: 'grayscale',
           WebkitFontSmoothing: 'antialiased'
         },
+
+        '*::-webkit-scrollbar': {
+          height: '0.3rem',
+          width: '0.3rem'
+        },
+        '*::-webkit-scrollbar-track': {
+          boxShadow: 'inset 0 0 6px rgba(0,0,0,.1)'
+        },
+        '*::-webkit-scrollbar-thumb': {
+          borderRadius: '10px',
+          backgroundColor: 'rgba(0,0,0,1)'
+        },
         '.child-popover .MuiPaper-root .MuiList-root': {
           flexDirection: 'column'
         },
@@ -462,10 +474,18 @@ export const PureLightTheme = createTheme({
           },
           '&:hover .MuiOutlinedInput-notchedOutline': {
             borderColor: colors.alpha.black[50]
+            // borderColor: '#9747FF'
+
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            borderColor: colors.alpha.black[50]
+
+            // borderColor: '#9747FF'
           },
           '&.Mui-focused:hover .MuiOutlinedInput-notchedOutline': {
-            borderColor: colors.primary.main
-          }
+            // borderColor: colors.primary.main
+          },
+
         }
       }
     },
@@ -1249,4 +1269,5 @@ export const PureLightTheme = createTheme({
     'none',
     'none'
   ]
+
 });

@@ -11,6 +11,7 @@ import { useRef, useState } from 'react';
 import Link from 'src/components/Link';
 
 import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
+import Logo from '@/components/Logo';
 
 const ListWrapper = styled(Box)(
   ({ theme }) => `
@@ -86,33 +87,27 @@ function HeaderMenu() {
         }}
       >
         <List disablePadding component={Box} display="flex">
-          {/* <ListItem
-            classes={{ root: 'MuiListItem-indicators' }}
-            button
-            component={Link}
-            href="/components/buttons"
-          >
-            <ListItemText
-              primaryTypographyProps={{ noWrap: true }}
-              primary="Buttons"
-            />
-          </ListItem> */}
+          <Logo />
           <ListItem
             classes={{ root: 'MuiListItem-indicators' }}
+            component={Link}
             button
-            ref={ref}
-            onClick={handleOpen}
+            href="/dashboards/real-estate"
           >
             <ListItemText
               primaryTypographyProps={{ noWrap: true }}
-              primary={
-                <Box display="flex" alignItems="center">
-                  Others
-                  <Box display="flex" alignItems="center" pl={0.3}>
-                    <ExpandMoreTwoToneIcon fontSize="small" />
-                  </Box>
-                </Box>
-              }
+              primary="Search"
+            />
+          </ListItem>
+          <ListItem
+            classes={{ root: 'MuiListItem-indicators' }}
+            component={Link}
+            button
+            href="/dashboards/buybox"
+          >
+            <ListItemText
+              primaryTypographyProps={{ noWrap: true }}
+              primary="BuyBox"
             />
           </ListItem>
         </List>

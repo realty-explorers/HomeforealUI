@@ -28,6 +28,15 @@ class AuthMiddleware {
 
 	public verifyRequest = async (req: RequestWithUser, res: Response, next: NextFunction) => {
 		try {
+			if (process.env.__DEV__) {
+				req.user = {
+					id: 'name',
+					name: 'name',
+					email: 'name@name.com'
+				}
+				next();
+				return;
+			}
 			const secret = process.env.NEXTAUTH_SECRET!;
 			//cookie name for http is next-auth.session-token
 			//cookie name for https is __Secure-next-auth.session-token
@@ -58,12 +67,6 @@ class AuthMiddleware {
 					error: 'Authentication error',
 				});
 			}
-			// req.user = {
-			// 	id: 'name',
-			// 	name: 'name',
-			// 	email: 'name@name.com'
-			// }
-			// next();
 		} catch (error) {
 			console.log(error);
 			res.status(401).send({ error });

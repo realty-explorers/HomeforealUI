@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { AppState } from "./store";
+import { AppState } from "../store";
 import { HYDRATE } from "next-redux-wrapper";
 import Deal from "@/models/deal";
 import LocationSuggestion from "@/models/location_suggestions";
@@ -157,10 +157,10 @@ export const searchSlice = createSlice({
     },
 });
 
-export const { setSearchAnalyzedProperty, setSearchResults, setSearchLocation, setSearchLocationData, setSearchMinPrice, setSearchMaxPrice, setSearchMinArv, setSearchMaxArv, setSearchUnderComps, setSearchDistance, setSearchForSaleAge, setSearchSoldAge, setSearchSoldMinArea, setSearchSoldMaxArea, setSearchForSaleMinArea, setSearchForSaleMaxArea, setSearchMinBeds, setSearchMaxBeds, setSearchMinBaths, setSearchMaxBaths, setSearchPropertyTypes } = searchSlice.actions;
+// export const { setSearchAnalyzedProperty, setSearchResults, setSearchLocation, setSearchLocationData, setSearchMinPrice, setSearchMaxPrice, setSearchMinArv, setSearchMaxArv, setSearchUnderComps, setSearchDistance, setSearchForSaleAge, setSearchSoldAge, setSearchSoldMinArea, setSearchSoldMaxArea, setSearchForSaleMinArea, setSearchForSaleMaxArea, setSearchMinBeds, setSearchMaxBeds, setSearchMinBaths, setSearchMaxBaths, setSearchPropertyTypes } = searchSlice.actions;
 
-export const selectSearchResults: (state: AppState) => SearchResults = (state: AppState) => state.search.searchResults;
-export const selectSearchData: (state: AppState) => SearchData = (state: AppState) => state.search.searchData;
-export const selectSearchAnalyzedProperty: (state: AppState) => SearchAnalyzedProperty = (state: AppState) => state.search.searchAnalyzedProperty;
+// export const selectSearchResults: (state: AppState) => SearchResults = (state: AppState) => state.search.searchResults;
+// export const selectSearchData: (state: AppState) => SearchData = (state: AppState) => state.search.searchData;
+// export const selectSearchAnalyzedProperty: (state: AppState) => SearchAnalyzedProperty = (state: AppState) => state.search.searchAnalyzedProperty;
 
-export default searchSlice.reducer;
+// export default searchSlice.reducer;

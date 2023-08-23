@@ -1,0 +1,57 @@
+.sectionContainer {
+  padding: 1rem;
+}
+
+.sectionHeader {
+  color: #000;
+  font-family: Poppins;
+  font-size: 1.875rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: capitalize;
+}
+
+.yellowSection {
+  background-color: rgba(248, 240, 211, 0.6);
+  margin: 1rem;
+  border-radius: 0.375rem;
+}
+
+.yellowBorderedSection {
+  border: 5px solid rgba(248, 240, 211, 0.6);
+  margin: 1rem;
+  border-radius: 0.375rem;
+}
+
+.blackBorderedSection {
+  border: 2px solid black;
+  margin: 1rem;
+  border-radius: 0.375rem;
+}
+
+.button {
+  border-radius: 0.4375rem;
+  background: var(--bottom-1, #f8f0d3);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.buttonText {
+  color: #000;
+  font-family: Poppins;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 159.5%; /* 1.79438rem */
+  text-transform: capitalize;
+}
+
+.text {
+  color: #000;
+  font-family: Poppins;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 159.5%; /* 1.79438rem */
+  text-transform: capitalize;
+}

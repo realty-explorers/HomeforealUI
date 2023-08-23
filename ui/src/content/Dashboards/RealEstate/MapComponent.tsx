@@ -1,56 +1,25 @@
-import React, {
-  useCallback,
-  useState,
-  memo,
-  useEffect,
-  createElement
-} from 'react';
-import {
-  GoogleMap,
-  useJsApiLoader,
-  Circle,
-  Marker,
-  InfoWindow,
-  Polygon
-} from '@react-google-maps/api';
+import React, { useCallback, useState, memo, useEffect } from 'react';
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import Deal from '@/models/deal';
-import CompsProperty from '@/models/comps_property';
-import PropertyMapCard from './MapComponents/PropertyMapCard';
+import { locationApiEndpoints } from '@/store/services/locationApiService';
+import { propertiesApiEndpoints } from '@/store/services/propertiesApiService';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectSearchData,
-  selectSearchResults,
-  setSearchDistance,
-  setSearchForSaleAge,
-  setSearchSoldMinArea,
-  setSearchSoldMaxArea,
-  setSearchForSaleMinArea,
-  setSearchForSaleMaxArea,
-  // setSearchForSaleAge,
-  setSearchMaxArv,
-  setSearchMaxBaths,
-  setSearchMaxBeds,
-  setSearchMaxPrice,
-  setSearchMinArv,
-  setSearchMinBaths,
-  setSearchMinBeds,
-  setSearchMinPrice,
-  setSearchSoldAge,
-  // setSearchSoldAge,
-  setSearchUnderComps,
-  setSearchPropertyTypes
-} from '@/store/searchSlice';
-import ReactDOM from 'react-dom';
 import MapControls from './MapControls/MapControls';
-import { debounce } from '@mui/material';
-import useSearch from '@/hooks/useSearch';
-import { openGoogleSearch } from '@/utils/windowFunctions';
 import CardsPanel from './MapComponents/CardsPanel';
 import LocationBounds from './MapComponents/LocationBounds';
 import PropertiesMarkers from './MapComponents/PropertiesMarkers';
-import PropertyRadius from './MapComponents/PropertyRadius';
 import SoldPropertiesMarkers from './MapComponents/SoldPropertiesMarkers';
 import SelectedPropertyMarker from './MapComponents/SelectedPropertyMarker';
+import {
+  selectProperties,
+  setSelectedDeal
+} from '@/store/slices/propertiesSlice';
+import { useGetPropertiesQuery } from '@/store/services/propertiesApiService';
+import { selectLocation } from '@/store/slices/locationSlice';
+import { skipToken } from '@reduxjs/toolkit/dist/query';
+import { selectFilter } from '@/store/slices/filterSlice';
+import PropertyRadius from './MapComponents/PropertyRadius';
+import MapControlPanel from './MapControlPanel/MapControlPanel';
 
 const containerStyle: React.CSSProperties = {
   position: 'relative',
@@ -63,75 +32,33 @@ const center = {
   lng: -86.84005
 };
 
-type MapComponentProps = {
-  selectedDeal?: Deal;
-  setSelectedDeal: (deal: Deal) => void;
-  setOpenMoreDetails: (open: boolean) => void;
-  searching: boolean;
-};
+type MapComponentProps = {};
 
 const MapComponent: React.FC<MapComponentProps> = (
   props: MapComponentProps
 ) => {
-  const { searchDeals } = useSearch();
-  const searchResults = useSelector(selectSearchResults);
-  const searchData = useSelector(selectSearchData);
+  const { selectedDeal } = useSelector(selectProperties);
+
   const dispatch = useDispatch();
-  const [trueArv, setTrueArv] = useState<boolean>(false);
+  const { suggestion } = useSelector(selectLocation);
+  const {
+    arvMargin,
+    compsMargin,
+    maxBaths,
+    minBaths,
+    maxBeds,
+    minBeds,
+    minListingPrice,
+    maxListingPrice
+  } = useSelector(selectFilter);
+  const locationState =
+    locationApiEndpoints.getLocationData.useQueryState(suggestion);
+  const propertiesState =
+    propertiesApiEndpoints.getDeals.useQueryState(suggestion);
 
-  const updateMinPrice = (value: number) => {
-    dispatch(setSearchMinPrice(value.toString()));
-  };
-
-  const updateMaxPrice = (value: number) => {
-    dispatch(setSearchMaxPrice(value.toString()));
-  };
-  const updateMinArv = (value: number) => {
-    dispatch(setSearchMinArv(value.toString()));
-  };
-  const updateMaxArv = (value: number) => {
-    dispatch(setSearchMaxArv(value.toString()));
-  };
-  const updateUnderComps = (value: number) => {
-    dispatch(setSearchUnderComps(value));
-  };
-  const updateDistance = (value: number) => {
-    dispatch(setSearchDistance(value));
-  };
-
-  const updateSoldAge = (value: number) => {
-    dispatch(setSearchSoldAge(value));
-  };
-  const updateForSaleAge = (value: number) => {
-    dispatch(setSearchForSaleAge(value));
-  };
-  const updateSoldMinArea = (value: number) => {
-    dispatch(setSearchSoldMinArea(value));
-  };
-  const updateSoldMaxArea = (value: number) => {
-    dispatch(setSearchSoldMaxArea(value));
-  };
-  const updateForSaleMinArea = (value: number) => {
-    dispatch(setSearchForSaleMinArea(value));
-  };
-  const updateForSaleMaxArea = (value: number) => {
-    dispatch(setSearchForSaleMaxArea(value));
-  };
-  const updateMinBeds = (value: number) => {
-    dispatch(setSearchMinBeds(value));
-  };
-  const updateMaxBeds = (value: number) => {
-    dispatch(setSearchMaxBeds(value));
-  };
-  const updateMinBaths = (value: number) => {
-    dispatch(setSearchMinBaths(value));
-  };
-  const updateMaxBaths = (value: number) => {
-    dispatch(setSearchMaxBaths(value));
-  };
-  const updatePropertyTypes = (value: string[]) => {
-    dispatch(setSearchPropertyTypes(value));
-  };
+  //Resubscribe to redux cache so the data wont be lost when the component unmounts
+  locationApiEndpoints.getLocationData.useQuerySubscription(suggestion);
+  propertiesApiEndpoints.getDeals.useQuerySubscription(suggestion);
 
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -139,69 +66,33 @@ const MapComponent: React.FC<MapComponentProps> = (
   });
   const [map, updateMap] = useState<google.maps.Map>();
 
-  const update = (name: string, value: any) => {
-    switch (name) {
-      case 'minPrice':
-        updateMinPrice(value);
-        break;
-      case 'maxPrice':
-        updateMaxPrice(value);
-        break;
-      case 'minArv':
-        updateMinArv(value);
-        break;
-      case 'maxArv':
-        updateMaxArv(value);
-        break;
-      case 'underComps':
-        updateUnderComps(value);
-        break;
-      case 'distance':
-        updateDistance(value);
-        break;
-      case 'soldAge':
-        updateSoldAge(value);
-        break;
-      case 'forSaleAge':
-        updateForSaleAge(value);
-        break;
-      case 'minSoldArea':
-        updateSoldMinArea(value);
-        break;
-      case 'maxSoldArea':
-        updateSoldMaxArea(value);
-        break;
-      case 'minForSaleArea':
-        updateForSaleMinArea(value);
-        break;
-      case 'maxForSaleArea':
-        updateForSaleMaxArea(value);
-        break;
-      case 'minBeds':
-        updateMinBeds(value);
-        break;
-      case 'maxBeds':
-        updateMaxBeds(value);
-        break;
-      case 'minBaths':
-        updateMinBaths(value);
-        break;
-      case 'maxBaths':
-        updateMaxBaths(value);
-        break;
-      case 'propertyTypes':
-        updatePropertyTypes(value);
-        break;
-      default:
-        break;
-    }
-    debounceUpdate({ ...searchData, [name]: value });
+  const filterDeals: (deals?: Deal[]) => Deal[] = (deals?: Deal[]) => {
+    const filteredDeals = deals?.filter((deal) => {
+      if (deal.property.beds < minBeds || deal.property.beds > maxBeds) {
+        return false;
+      }
+      if (deal.property.baths < minBaths || deal.property.baths > maxBaths) {
+        return false;
+      }
+      if (
+        deal.property.price < minListingPrice ||
+        deal.property.price > maxListingPrice
+      ) {
+        return false;
+      }
+      if (deal.profit < arvMargin) {
+        return false;
+      }
+      if (deal.profit < compsMargin) {
+        return false;
+      }
+      return true;
+    });
+    return filteredDeals;
   };
 
-  const debounceUpdate = useCallback(debounce(searchDeals, 400), []);
-
   const handleMapClicked = () => {
-    props.setSelectedDeal(null);
+    dispatch(setSelectedDeal(null));
   };
 
   const onLoad = useCallback(function callback(map: google.maps.Map) {
@@ -211,32 +102,32 @@ const MapComponent: React.FC<MapComponentProps> = (
       streetViewControlOptions: {
         position: google.maps.ControlPosition.LEFT_BOTTOM
       },
+      streetViewControl: false,
+      mapTypeControlOptions: {
+        position: google.maps.ControlPosition.LEFT_BOTTOM
+      },
       fullscreenControl: false
     });
     // map.controls[google.maps.ControlPosition.TOP_RIGHT].push(rootElement);
-    // map.controls[google.maps.ControlPosition.TOP_LEFT].clear();
+    map.controls[google.maps.ControlPosition.TOP_LEFT].clear();
   }, []);
 
   useEffect(() => {
-    if (props.selectedDeal) {
-      props.setSelectedDeal(
-        searchResults.find(
-          (deal: Deal) => deal.property.id === props.selectedDeal.property.id
-        )
-      );
+    console.log(locationState.data?.center.latitude);
+    if (selectedDeal && map) {
       map.panTo({
-        lat: props.selectedDeal.property.latitude,
-        lng: props.selectedDeal.property.longitude
+        lat: selectedDeal.property.latitude,
+        lng: selectedDeal.property.longitude
       });
     } else {
-      if (searchData.location.metaData) {
+      if (locationState.data && map) {
         map.panTo({
-          lat: searchData.location.metaData.lat,
-          lng: searchData.location.metaData.lng
+          lat: locationState.data.center.latitude,
+          lng: locationState.data.center.longitude
         });
       }
     }
-  }, [props.selectedDeal, props.searching, searchData, searchResults]);
+  }, [selectedDeal, locationState.currentData, propertiesState.currentData]);
 
   const onUnmount = useCallback(function callback() {
     updateMap(null);
@@ -266,36 +157,29 @@ const MapComponent: React.FC<MapComponentProps> = (
       }}
     >
       <CardsPanel
-        deals={searchResults}
-        selectedDeal={props.selectedDeal}
-        setSelectedDeal={props.setSelectedDeal}
-        setOpenMoreDetails={props.setOpenMoreDetails}
-        trueArv={trueArv}
-        setTrueArv={setTrueArv}
+        deals={filterDeals(propertiesState.data)}
+        selectedDeal={selectedDeal}
+        setSelectedDeal={(deal: Deal) => dispatch(setSelectedDeal(deal))}
       />
-      <MapControls searchData={searchData} update={update} />
-      <LocationBounds searchData={searchData} />
-      {props.selectedDeal ? (
+      {/* <MapControls /> */}
+      <MapControlPanel />
+      <LocationBounds locationData={locationState.data} />
+      {selectedDeal ? (
         <>
-          <PropertyRadius
-            selectedDeal={props.selectedDeal}
-            searchData={searchData}
-          />
+          {/* <PropertyRadius selectedDeal={selectedDeal} /> */}
           <SelectedPropertyMarker
-            selectedDeal={props.selectedDeal}
-            setSelectedDeal={props.setSelectedDeal}
+            selectedDeal={selectedDeal}
+            setSelectedDeal={(deal: Deal) => dispatch(setSelectedDeal(deal))}
           />
           <SoldPropertiesMarkers
-            searchResults={searchResults}
-            selectedDeal={props.selectedDeal}
-            setSelectedDeal={props.setSelectedDeal}
-            trueArv={trueArv}
+            selectedDeal={selectedDeal}
+            setSelectedDeal={(deal: Deal) => dispatch(setSelectedDeal(deal))}
           />
         </>
       ) : (
         <PropertiesMarkers
-          searchResults={searchResults}
-          setSelectedDeal={props.setSelectedDeal}
+          deals={propertiesState.data}
+          setSelectedDeal={(deal: Deal) => dispatch(setSelectedDeal(deal))}
         />
       )}
     </GoogleMap>

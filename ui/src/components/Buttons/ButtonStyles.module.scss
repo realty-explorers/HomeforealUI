@@ -1,0 +1,21 @@
+.button {
+  border-radius: 0.4375rem;
+  background: var(--bottom-1, #f8f0d3);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  &:hover {
+    background: var(--bottom, #e1dac2);
+  }
+  .buttonText {
+    color: #000;
+    font-family: Poppins;
+    font-size: 1.125rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 159.5%; /* 1.79438rem */
+    text-transform: capitalize;
+  }
+  // :hover {
+  //   border-radius: 0.4375rem;
+  //   background: var(--bottom, #e1dac2);
+  // }
+}

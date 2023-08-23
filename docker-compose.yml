@@ -9,8 +9,6 @@ services:
     image: "ghcr.io/sharonfabin/deals-service"
     ports:
       - "9001:9001"
-    env_file:
-      - deals.env
     volumes:
       - letsencrypt_conf:/etc/nginx/ssl/:ro
       - elastic_certs:/etc/elastic/certs/:ro
@@ -18,8 +16,6 @@ services:
     image: "ghcr.io/sharonfabin/ui"
     ports:
       - "3000:3000"
-    env_file:
-      - ui.env
   elastic_setup:
     image: docker.elastic.co/elasticsearch/elasticsearch:${STACK_VERSION}
     user: "0"
@@ -108,8 +104,6 @@ services:
       - kibana_data:/usr/share/kibana/data
     ports:
       - 5601:5601
-    env_file:
-      - kibana.env
   nginx:
     image: "nginx:latest"
     ports:

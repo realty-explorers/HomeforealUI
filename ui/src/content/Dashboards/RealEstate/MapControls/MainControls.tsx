@@ -1,31 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  Card,
-  CardContent,
-  Grid,
-  ListItem,
-  ListItemText,
-  styled,
-  Tooltip,
-  Typography
-} from '@mui/material';
-import LocalOfferIcon from '@mui/icons-material/LocalOffer';
-import PriceCheckIcon from '@mui/icons-material/PriceCheck';
-import TrackChangesIcon from '@mui/icons-material/TrackChanges';
-import OtherHousesIcon from '@mui/icons-material/OtherHouses';
-import AccessTimeIcon from '@mui/icons-material/AccessTime';
+import { Grid, styled } from '@mui/material';
 import SliderRangeInput from '../FormFields/SliderRangeInput';
 import SliderInput from '../FormFields/SliderInput';
 import {
-  ageFormatter,
-  ageReverseScale,
-  ageScale,
   priceFormatter,
   priceReverseScale,
   priceScale
 } from '@/utils/converters';
 import SliderField from './SliderField';
+import {
+  selectFilter,
+  setArvMargin,
+  setCompsMargin,
+  setMaxBaths,
+  setMinBeds,
+  setMaxBeds,
+  setMaxListingPrice,
+  setMinBaths,
+  setMinListingPrice
+} from '@/store/slices/filterSlice';
+import { useDispatch, useSelector } from 'react-redux';
 
 const GridDiv = styled('div')(({}) => ({
   display: 'flex',
@@ -42,92 +36,105 @@ const LabelContainer = styled(Grid)(({ theme }) => ({
   display: 'flex'
 }));
 
-type MainControlsProps = {
-  update: (name: string, value: any) => void;
-  searchData: any;
-};
+type MainControlsProps = {};
 const MainControls: React.FC<MainControlsProps> = (
   props: MainControlsProps
 ) => {
+  const dispatch = useDispatch();
+
+  const {
+    arvMargin,
+    compsMargin,
+    maxBaths,
+    minBaths,
+    maxBeds,
+    minBeds,
+    maxListingPrice,
+    minListingPrice
+  } = useSelector(selectFilter);
+
   return (
     <>
-      <SliderField fieldName="Price">
+      <SliderField fieldName="Listing Price">
         <SliderRangeInput
           inputProps={{
-            title: 'Price',
-            name: 'price',
+            title: 'Listing Price',
+            name: 'listingPrice',
             min: 0,
             max: 60,
             step: 1,
             format: priceFormatter
           }}
-          minValueName={'minPrice'}
-          maxValueName={'maxPrice'}
-          minValue={props.searchData.minPrice}
-          maxValue={props.searchData.maxPrice}
-          update={props.update}
+          minValue={minListingPrice}
+          maxValue={maxListingPrice}
+          updateMinValue={(value) => dispatch(setMinListingPrice(value))}
+          updateMaxValue={(value) => dispatch(setMaxListingPrice(value))}
           scale={{ scale: priceScale, reverseScale: priceReverseScale }}
         />
       </SliderField>
-      <SliderField fieldName="ARV">
-        <SliderRangeInput
-          inputProps={{
-            title: 'ARV',
-            name: 'arv',
-            min: 0,
-            max: 60,
-            step: 1,
-            format: priceFormatter
-          }}
-          minValueName={'minArv'}
-          maxValueName={'maxArv'}
-          minValue={props.searchData.minArv}
-          maxValue={props.searchData.maxArv}
-          update={props.update}
-          scale={{ scale: priceScale, reverseScale: priceReverseScale }}
-        />
-      </SliderField>
-      <SliderField fieldName="Radius">
+
+      <SliderField fieldName="Comps Margin">
         <SliderInput
           inputProps={{
-            title: 'Radius',
-            name: 'distance',
-            min: 0,
-            max: 10,
-            step: 0.5
-          }}
-          value={props.searchData.distance}
-          update={props.update}
-        />
-      </SliderField>
-      <SliderField fieldName="%⇩Comps">
-        <SliderInput
-          inputProps={{
-            title: '%⇩Comps',
+            title: 'Comps Margin',
             name: 'underComps',
             min: 0,
             max: 100,
             step: 1
           }}
-          value={props.searchData.underComps}
-          update={props.update}
+          value={compsMargin}
+          update={(value) => dispatch(setCompsMargin(value))}
         />
       </SliderField>
-      <SliderField fieldName="Comps Age">
+      <SliderField fieldName="ARV Margin">
         <SliderInput
           inputProps={{
-            title: 'Comps Age',
-            name: 'soldAge',
+            title: 'ARV Margin',
+            name: 'arvMargin',
             min: 0,
-            max: 8,
-            step: 1,
-            format: ageFormatter
+            max: 100,
+            step: 1
           }}
-          value={props.searchData.soldAge}
-          update={props.update}
-          scale={{ scale: ageScale, reverseScale: ageReverseScale }}
+          value={arvMargin}
+          update={(value) => dispatch(setArvMargin(value))}
         />
       </SliderField>
+
+      <SliderField fieldName="Baths">
+        <SliderRangeInput
+          inputProps={{
+            title: 'Baths',
+            name: 'baths',
+            min: 1,
+            max: 9,
+            step: 1
+          }}
+          minValue={minBaths}
+          maxValue={maxBaths}
+          updateMinValue={(value) => dispatch(setMinBaths(value))}
+          updateMaxValue={(value) => dispatch(setMaxBaths(value))}
+        />
+      </SliderField>
+      <SliderField fieldName="Beds">
+        <SliderRangeInput
+          inputProps={{
+            title: 'Beds',
+            name: 'beds',
+            min: 1,
+            max: 9,
+            step: 1
+          }}
+          minValue={minBeds}
+          maxValue={maxBeds}
+          updateMinValue={(value) => dispatch(setMinBeds(value))}
+          updateMaxValue={(value) => dispatch(setMaxBeds(value))}
+        />
+      </SliderField>
+      {/* <PropertyTypeFilter
+        propertyTypes={props.searchData.propertyTypes}
+        update={props.update}
+      /> */}
+      {/* <PropertyTypes /> */}
     </>
   );
 };

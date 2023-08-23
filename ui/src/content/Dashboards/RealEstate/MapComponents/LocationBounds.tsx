@@ -1,14 +1,15 @@
 import { Polygon } from '@react-google-maps/api';
 
 type LocationBoundsProps = {
-  searchData: any;
+  locationData: any;
 };
 
 const LocationBounds = (props: LocationBoundsProps) => {
-  const bounds: any = props.searchData.locationData.bounds;
-  console.log(props.searchData.locationData.type);
+  if (!props.locationData) return <></>;
+  const bounds: any = props.locationData.bounds;
+  console.log(props.locationData.type);
   if (bounds) {
-    if (props.searchData.locationData.type === 'Polygon') {
+    if (props.locationData.type === 'Polygon') {
       console.log('in polygon');
       const arr = bounds.map((bound) => {
         const bs = bound.map((b) => {

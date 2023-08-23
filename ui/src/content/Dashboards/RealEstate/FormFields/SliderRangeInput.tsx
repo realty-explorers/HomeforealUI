@@ -23,15 +23,15 @@ const StyledSlider = styled(Slider)(({ theme }) => ({
   height: 3,
   padding: '13px 0',
   '& .MuiSlider-thumb': {
-    height: 27,
-    width: 27,
+    height: 20,
+    width: 20,
     backgroundColor: '#fff',
     border: '1px solid currentColor',
     '&:hover': {
       boxShadow: '0 0 0 8px rgba(58, 133, 137, 0.16)'
     },
     '& .airbnb-bar': {
-      height: 9,
+      height: 7,
       width: 1,
       backgroundColor: 'currentColor',
       marginLeft: 1,
@@ -83,11 +83,10 @@ function AirbnbThumbComponent(props: AirbnbThumbComponentProps) {
 
 type SliderRangeInputProps = {
   inputProps: InputProps;
-  minValueName: string;
-  maxValueName: string;
   minValue: number;
   maxValue: number;
-  update: (name: string, value: any) => void;
+  updateMinValue: (value: any) => void;
+  updateMaxValue: (value: any) => void;
   scale?: {
     scale: (number: number) => number;
     reverseScale: (number: number) => number;
@@ -97,12 +96,10 @@ const SliderRangeInput: React.FC<SliderRangeInputProps> = (
   props: SliderRangeInputProps
 ) => {
   const handleChange = (event: Event, newValue: [number, number]) => {
-    props.update(
-      props.minValueName,
+    props.updateMinValue(
       props.scale ? props.scale.scale(newValue[0]) : newValue[0]
     );
-    props.update(
-      props.maxValueName,
+    props.updateMaxValue(
       props.scale ? props.scale.scale(newValue[1]) : newValue[1]
     );
   };

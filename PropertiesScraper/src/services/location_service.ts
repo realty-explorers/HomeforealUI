@@ -86,7 +86,21 @@ export default class LocationService {
             for (const locationSuggestion of locationSuggestions) {
                 locationSuggestion.metaData.state = this.states_abbreviations[locationSuggestion.metaData.state];
             }
-            return locationSuggestions;
+            const suggestions = locationSuggestions.map((locationSuggestion: LocationSuggestion) => {
+                let areaType = '';
+                if (locationSuggestion.resultType === 'Address') {
+                    areaType = 'address';
+                } else if (locationSuggestion.resultType === 'Region') {
+                    areaType = locationSuggestion.metaData.regionType;
+                }
+                return {
+                    display: locationSuggestion.display,
+                    type: areaType,
+                    city: locationSuggestion.metaData.city,
+                    state: locationSuggestion.metaData.state
+                }
+            });
+            return suggestions;
         } catch (error) {
             return null;
         }

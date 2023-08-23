@@ -3,11 +3,11 @@ import { Circle } from '@react-google-maps/api';
 
 type PropertyRadiusProps = {
   selectedDeal: Deal;
-  searchData: any;
 };
 
 const PropertyRadius = (props: PropertyRadiusProps) => {
-  const distanceInKilometers = (props.searchData.distance || 0) * 1609.34;
+  // const distanceInKilometers = (props.searchData.distance || 0) * 1609.34;
+  const distanceInKilometers = 0;
   const options = {
     strokeColor: '#FF0000',
     strokeOpacity: 0.3,

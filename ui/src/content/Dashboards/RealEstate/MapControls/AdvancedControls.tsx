@@ -23,38 +23,6 @@ const AdvancedControls: React.FC<AdvancedControlsProps> = (
 ) => {
   return (
     <>
-      <SliderField fieldName="Baths">
-        <SliderRangeInput
-          inputProps={{
-            title: 'Baths',
-            name: 'baths',
-            min: 1,
-            max: 9,
-            step: 1
-          }}
-          minValueName={'minBaths'}
-          maxValueName={'maxBaths'}
-          minValue={props.searchData.minBaths}
-          maxValue={props.searchData.maxBaths}
-          update={props.update}
-        />
-      </SliderField>
-      <SliderField fieldName="Beds">
-        <SliderRangeInput
-          inputProps={{
-            title: 'Beds',
-            name: 'beds',
-            min: 1,
-            max: 9,
-            step: 1
-          }}
-          minValueName={'minBeds'}
-          maxValueName={'maxBeds'}
-          minValue={props.searchData.minBeds}
-          maxValue={props.searchData.maxBeds}
-          update={props.update}
-        />
-      </SliderField>
       <SliderField fieldName="Sqft">
         <SliderRangeInput
           inputProps={{

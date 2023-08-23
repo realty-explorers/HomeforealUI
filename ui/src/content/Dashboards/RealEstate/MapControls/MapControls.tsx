@@ -15,15 +15,13 @@ import AdvancedControls from './AdvancedControls';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ReadMoreIcon from '@mui/icons-material/ReadMore';
 import PropertyForm from './PropertyForm';
-import useSearch from '@/hooks/useSearch';
 import { useSelector } from 'react-redux';
-import { selectSearchAnalyzedProperty } from '@/store/searchSlice';
 import Property from '@/models/property';
 
 const ParametersCard = styled(Card)(({}) => ({
   margin: '0',
   backgroundColor: 'rgba(255,255,255,0.8)',
-  width: '30rem',
+  width: '15rem',
   position: 'absolute',
   top: 0,
   right: 0
@@ -69,9 +67,15 @@ const ExpandMore = styled((props: ExpandMoreProps) => {
   position: 'absolute',
   bottom: '0',
   left: '50%',
-  margin: '0.5em',
   zIndex: 1000,
-  color: 'rgb(85 105 255)'
+  color: 'rgb(85 105 255)',
+  backgroundColor: 'white',
+  border: '1px solid #C2C2C2',
+  height: '1rem',
+  width: '3rem',
+  '&:hover, &:focus': {
+    backgroundColor: 'white'
+  }
 }));
 
 const ControlsCollapse = styled(Collapse)(({}) => ({
@@ -83,40 +87,32 @@ const ControlsCollapse = styled(Collapse)(({}) => ({
   }
 }));
 
-type MapControlsProps = {
-  update: (name: string, value: any) => void;
-  searchData: any;
-};
+type MapControlsProps = {};
 const MapControls: React.FC<MapControlsProps> = (props: MapControlsProps) => {
   const [expanded, setExpanded] = React.useState(false);
-  const { searchProperties, searchDeals, searching } = useSearch();
-  const searchAnalyzedProperty = useSelector(selectSearchAnalyzedProperty);
   const handleExpandClick = () => {
     setExpanded(!expanded);
   };
 
-  const searchNewDeals = async (
-    estimatedPrice: number,
-    estimatedArea: number
-  ) => {
-    const updatedProperty: Property = {
-      ...searchAnalyzedProperty,
-      price: estimatedPrice,
-      area: estimatedArea
-    };
-    await searchDeals({ ...props.searchData }, updatedProperty);
-  };
-
   return (
     <>
-      <AdjustingCard>
+      {/* <AdjustingCard>
         <PropertyForm
           searching={searching}
           property={searchAnalyzedProperty}
           searchDeals={searchNewDeals}
         />
-      </AdjustingCard>
-      <ParametersCard>
+      </AdjustingCard> */}
+      <ParametersCard sx={{ overflow: 'visible' }}>
+        <ExpandMore
+          expand={expanded}
+          onClick={handleExpandClick}
+          aria-expanded={expanded}
+          aria-label="show more"
+        >
+          <ExpandMoreIcon />
+          {/* <ReadMoreIcon /> */}
+        </ExpandMore>
         <CardContent sx={{ height: '100%' }}>
           <Grid
             container
@@ -125,20 +121,7 @@ const MapControls: React.FC<MapControlsProps> = (props: MapControlsProps) => {
             justifyContent="center"
             sx={{ width: 'auto', height: '100%', margin: 0, padding: '0 1em' }}
           >
-            <h3 style={{ margin: '0.5rem 0', padding: 0 }}>
-              Search Parameters
-            </h3>
-            <MainControls update={props.update} searchData={props.searchData} />
-
-            <ExpandMore
-              expand={expanded}
-              onClick={handleExpandClick}
-              aria-expanded={expanded}
-              aria-label="show more"
-            >
-              <ExpandMoreIcon />
-              {/* <ReadMoreIcon /> */}
-            </ExpandMore>
+            <h3 style={{ margin: '0.5rem 0', padding: 0 }}>Filters</h3>
 
             <ControlsCollapse
               in={expanded}
@@ -147,10 +130,11 @@ const MapControls: React.FC<MapControlsProps> = (props: MapControlsProps) => {
               orientation="vertical"
               component={Grid}
             >
-              <AdvancedControls
+              <MainControls />
+              {/* <AdvancedControls
                 searchData={props.searchData}
                 update={props.update}
-              />
+              /> */}
             </ControlsCollapse>
           </Grid>
 

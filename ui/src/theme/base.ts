@@ -127,6 +127,10 @@ declare module '@mui/material/styles' {
       boxShadow: React.CSSProperties['color'];
       textColor: React.CSSProperties['color'];
     };
+    scroll: {
+      scrollbarColor: string;
+      scrollbarWidth: string;
+    }
   }
 
   interface ThemeOptions {

@@ -101,7 +101,8 @@ export default function PropertyTypeFilter(props: PropertyTypeFilterProps) {
     >
       {names.map((name) => (
         <Chip
-          sx={{ margin: '0 0.5rem' }}
+          size="small"
+          sx={{ margin: '0 0.3rem', fontSize: '0.7rem' }}
           key={name}
           label={propertyTypeToLabel[name]}
           icon={props.propertyTypes.includes(name) ? <DoneIcon /> : <></>}

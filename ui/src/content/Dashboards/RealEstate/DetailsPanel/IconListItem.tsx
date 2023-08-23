@@ -51,7 +51,7 @@ type IconListItemProps = {
 const IconListItem = (props: IconListItemProps) => {
   return (
     <StyledListItem disableGutters>
-      <ListItemAvatarWrapper>{props.icon}</ListItemAvatarWrapper>
+      {/* <ListItemAvatarWrapper>{props.icon}</ListItemAvatarWrapper> */}
       <ListItemText
         primary={props.title}
         primaryTypographyProps={{ variant: 'h5', noWrap: true }}
@@ -61,7 +61,7 @@ const IconListItem = (props: IconListItemProps) => {
         }}
       />
       <Box>
-        <Typography align="right" variant="h4" noWrap>
+        <Typography align="right" variant="h6" noWrap>
           {props.value}
         </Typography>
       </Box>
