@@ -12,17 +12,7 @@ import { Height } from '@mui/icons-material';
 
 const Wrapper = styled(Box)(({ theme }) => ({
   width: '10rem',
-  overflow: 'hidden',
-  '&::-webkit-scrollbar': {
-    height: '0.3rem'
-  },
-  '&::-webkit-scrollbar-track': {
-    boxShadow: 'inset 0 0 6px rgba(0,0,0,.1)'
-  },
-  '&::-webkit-scrollbar-thumb': {
-    borderRadius: '10px',
-    backgroundColor: 'rgba(0,0,0,1)'
-  }
+  overflow: 'hidden'
 }));
 
 type CompsSectionProps = {

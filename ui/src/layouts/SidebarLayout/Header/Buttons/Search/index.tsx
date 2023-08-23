@@ -24,14 +24,19 @@ import ChevronRightTwoToneIcon from '@mui/icons-material/ChevronRightTwoTone';
 import SearchForm from './SearchForm';
 import AutocompleteInput from './AutocompleteInput';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-  selectSearchAnalyzedProperty,
-  selectSearchData,
-  selectSearchResults,
-  setSearchLocation
-} from '@/store/searchSlice';
 import LocationSuggestion from '@/models/location_suggestions';
-import useSearch from '@/hooks/useSearch';
+import {
+  useGetLocationDataQuery,
+  useGetLocationSuggestionQuery,
+  useLazyGetLocationDataQuery,
+  useLazyGetLocationSuggestionQuery
+} from '@/store/services/locationApiService';
+import { get } from 'http';
+import {
+  useLazyGetDealsQuery,
+  useLazyGetPropertiesQuery
+} from '@/store/services/propertiesApiService';
+import { selectLocation, setSuggestion } from '@/store/slices/locationSlice';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & { children: ReactElement<any, any> },
@@ -42,12 +47,13 @@ const Transition = forwardRef(function Transition(
 
 const DialogWrapper = styled(Dialog)(
   () => `
-    .MuiDialog-container {
-        height: auto;
-    }
+    // .MuiDialog-container {
+    //     height: auto;
+    // }
     
     .MuiDialog-paperScrollPaper {
-        max-height: calc(100vh - 64px)
+      position: absolute;
+      top: 64px;
     }
 `
 );
@@ -70,19 +76,22 @@ const DialogTitleWrapper = styled(DialogTitle)(
 );
 
 function HeaderSearch() {
-  const searchData = useSelector(selectSearchData);
+  // const searchData = useSelector(selectSearchData);
   const dispatch = useDispatch();
-  const [suggestion, setSuggestion] = useState<LocationSuggestion>(
-    searchData.location
-  );
+  const { suggestion } = useSelector(selectLocation);
+  const [getLocationData, locationDataState] = useLazyGetLocationDataQuery();
+  const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
+  const [getDealsData, dealsDataState] = useLazyGetDealsQuery();
+  // searchData.location
 
   // useEffect(() => {}, [searchAnalyzedProperty]);
 
-  const setLocation = (location: LocationSuggestion) => {
-    dispatch(setSearchLocation(location));
-  };
-  const { searchProperties, searchDeals, searching } = useSearch();
+  // const setLocation = (location: LocationSuggestion) => {
+  //   dispatch(setSearchLocation(location));
+  // };
+  // const { searchProperties, searchDeals, searching } = useSearch();
   const [open, setOpen] = useState(false);
+  const [meow, setMeow] = useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -93,12 +102,17 @@ function HeaderSearch() {
   };
 
   const handleSearch = async () => {
-    setLocation(suggestion);
-    await searchProperties({
-      ...searchData,
-      location: suggestion
-    });
-    setOpen(false);
+    const locationDataRequest = getLocationData(suggestion, true);
+    const propertiesDataRequest = getPropertiesData(suggestion);
+
+    await Promise.all([locationDataRequest, propertiesDataRequest]);
+
+    // const meow = await getDealsData(suggestion).unwrap();
+    // const response = await getDealsData(suggestion).unwrap();
+    // console.log(`deals resonse: ${isError}, ${error}, ${status}`, response);
+
+    const response = await getDealsData(suggestion).unwrap();
+    console.log('response from auto: ', response);
   };
 
   return (
@@ -123,7 +137,9 @@ function HeaderSearch() {
             // setLocation={setLocation}
             // location={searchData.location}
             location={suggestion}
-            setLocation={setSuggestion}
+            setLocation={(location: LocationSuggestion) =>
+              dispatch(setSuggestion(location))
+            }
           />
         </DialogTitleWrapper>
         <Divider />
@@ -133,12 +149,16 @@ function HeaderSearch() {
             <Button
               variant="contained"
               // sx={buttonSx}
-              disabled={searching}
+              disabled={
+                locationDataState.isFetching || propertiesDataState.isFetching
+              }
               onClick={handleSearch}
             >
               Search
             </Button>
-            {searching && (
+            {(locationDataState.isFetching ||
+              propertiesDataState.isFetching ||
+              dealsDataState.isFetching) && (
               <CircularProgress
                 size={24}
                 sx={{

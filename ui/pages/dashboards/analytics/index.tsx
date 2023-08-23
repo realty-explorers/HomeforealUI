@@ -56,6 +56,10 @@ const PropertyAnalytics = () => {
         <CompsSection property={{} as Property} />
         <OperationalExpanses property={{} as Property} />
       </StyledGrid>
+      <Grid item xs={6} sx={{ height: '100%' }}>
+        <Map />
+      </Grid>
+
       {/* <Grid item xs={12} className={meow.demoWrap}>
         <SplitPane
           // split="vertical"

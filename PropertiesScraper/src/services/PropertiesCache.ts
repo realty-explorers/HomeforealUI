@@ -10,7 +10,7 @@ export default class PropertiesCache {
 
     public cacheProperties = async (id: string, properties: Property[]) => {
         this.propertiesCache[id] = properties;
-        console.log(Object.keys(this.propertiesCache))
+        // console.log(Object.keys(this.propertiesCache))
     }
 
     public hasProperties = async (id: string) => {

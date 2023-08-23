@@ -15,10 +15,33 @@ import { useState } from 'react';
 
 type ExpansesRowProps = {
   label: string;
+  expanse: number;
+  setExpanse: (newValue: number) => void;
   removeExpanse: (label) => void;
+  priceTypes: { label: string; value: number }[];
 };
 const ExpansesRow = (props: ExpansesRowProps) => {
-  const [removed, setRemoved] = useState(false);
+  const [selectedType, setSelectedType] = useState<string>(
+    props.priceTypes?.[0].label
+  );
+
+  const handleChangeType = (event) => {
+    setSelectedType(event.target.value);
+  };
+
+  const handleChangeAmount = (event) => {
+    const value = event.target.value;
+    props.setExpanse(parseFloat(value));
+  };
+
+  const handleChangePercentage = (event) => {
+    const value = event.target.value;
+    const currentExpanse = props.priceTypes?.find(
+      (type) => type.label === selectedType
+    )?.value;
+    props.setExpanse((value * currentExpanse) / 100);
+  };
+
   return (
     <Grid container alignItems="center" columns={17}>
       <Grid item xs={4} padding={'0 1rem 0 1rem'}>
@@ -32,6 +55,13 @@ const ExpansesRow = (props: ExpansesRowProps) => {
             id="outlined-adornment-amount"
             endAdornment={<InputAdornment position="start">%</InputAdornment>}
             label="Amount"
+            value={
+              (props.expanse /
+                props.priceTypes?.find((type) => type.label === selectedType)
+                  ?.value) *
+              100
+            }
+            onChange={handleChangePercentage}
           />
         </FormControl>
       </Grid>
@@ -41,12 +71,17 @@ const ExpansesRow = (props: ExpansesRowProps) => {
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
-            value="listingPrice"
+            value={selectedType}
             label="Type"
-            onChange={() => {}}
+            onChange={handleChangeType}
           >
-            <MenuItem value="listingPrice">Listing Price</MenuItem>
-            <MenuItem value="arv">ARV</MenuItem>
+            {props.priceTypes?.map((type, index) => (
+              <MenuItem key={index} value={type.label}>
+                {type.label}
+              </MenuItem>
+            ))}
+            {/* <MenuItem value="listingPrice">Listing Price</MenuItem>
+            <MenuItem value="arv">ARV</MenuItem> */}
           </Select>
         </FormControl>
       </Grid>
@@ -57,6 +92,9 @@ const ExpansesRow = (props: ExpansesRowProps) => {
             id="outlined-adornment-amount"
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             label="Amount"
+            type="number"
+            value={props.expanse}
+            onChange={handleChangeAmount}
           />
         </FormControl>
       </Grid>
@@ -64,10 +102,7 @@ const ExpansesRow = (props: ExpansesRowProps) => {
         <Grid container justifyContent="center">
           <IconButton
             onClick={() => {
-              setRemoved(true);
-              setTimeout(() => {
-                props.removeExpanse(props.label);
-              }, 300);
+              props.removeExpanse(props.label);
             }}
           >
             <RemoveCircleOutlineIcon />

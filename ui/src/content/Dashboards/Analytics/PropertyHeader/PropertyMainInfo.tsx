@@ -16,13 +16,17 @@ const PropertyMainInfo = (props: PropertyMainInfoProps) => {
           >
             Listing Price
           </Typography>
-          <Typography className={styles.infoHeader}>100$</Typography>
+          <Typography className={styles.infoHeader}>
+            {props.property.price}$
+          </Typography>
         </Grid>
         <Grid item xs={12}>
           <Chip label="Active" color="success" size="small" />
         </Grid>
         <Grid item xs={12}>
-          <Typography className={styles.infoDescription}>Address</Typography>
+          <Typography className={styles.infoDescription}>
+            {props.property.address}
+          </Typography>
         </Grid>
       </Grid>
     </>

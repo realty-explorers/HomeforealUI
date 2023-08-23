@@ -6,15 +6,15 @@ const StyledSlider = styled(Slider)(({ theme }) => ({
   height: 3,
   padding: '13px 0',
   '& .MuiSlider-thumb': {
-    height: 27,
-    width: 27,
+    height: 20,
+    width: 20,
     backgroundColor: '#fff',
     border: '1px solid currentColor',
     '&:hover': {
       boxShadow: '0 0 0 8px rgba(58, 133, 137, 0.16)'
     },
     '& .airbnb-bar': {
-      height: 9,
+      height: 8,
       width: 1,
       backgroundColor: 'currentColor',
       marginLeft: 1,

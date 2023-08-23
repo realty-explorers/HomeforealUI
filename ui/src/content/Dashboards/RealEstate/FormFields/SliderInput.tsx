@@ -6,7 +6,7 @@ import { AirbnbThumbComponent, StyledSlider } from './StyledSlider';
 type SliderInputProps = {
   inputProps: InputProps;
   value: number;
-  update: (name: string, value: any) => void;
+  update: (value: any) => void;
   scale?: {
     scale: (number: number) => number;
     reverseScale: (number: number) => number;
@@ -15,10 +15,7 @@ type SliderInputProps = {
 
 const SliderInput: React.FC<SliderInputProps> = (props: SliderInputProps) => {
   const handleChange = (event: Event, newValue: number) => {
-    props.update(
-      props.inputProps.name,
-      props.scale ? props.scale.scale(newValue) : newValue
-    );
+    props.update(props.scale ? props.scale.scale(newValue) : newValue);
   };
 
   return (

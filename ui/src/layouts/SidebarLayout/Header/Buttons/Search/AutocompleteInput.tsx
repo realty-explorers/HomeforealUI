@@ -1,8 +1,11 @@
-import React, { useState, useMemo, useContext } from 'react';
+'use client';
+import React, { useState, useMemo, useContext, useEffect } from 'react';
 import {
   Box,
+  CircularProgress,
   debounce,
   Grid,
+  IconButton,
   InputAdornment,
   styled,
   TextField,
@@ -10,18 +13,43 @@ import {
 } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
 import LocationSuggestion from '@/models/location_suggestions';
-// import { getLocationSuggestions } from '@/api/routes';
-import { getLocationSuggestions } from '@/api/location_api';
 import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import { signOut, useSession } from 'next-auth/react';
+import { useDebounce } from '@/hooks/useDebounce';
+import {
+  useGetLocationSuggestionQuery,
+  useLazyGetLocationSuggestionQuery
+} from '@/store/services/locationApiService';
 
 const SearchInputWrapper = styled(TextField)(
   ({ theme }) => `
-    background: ${theme.colors.alpha.white[100]};
+      label.Mui-focused: {
+    color: rgb(0,0,0)
+  },
+   .MuiInput-underline:after: {
+    borderBottomColor: rgb(0,0,0)
+  },
+   .MuiFilledInput-underline:after: {
+    borderBottomColor: rgb(0,0,0)
+  },
+   .MuiOutlinedInput-root: {
+    &.Mui-focused fieldset: {
+      borderColor: rgb(0,0,0)
+    }
+  }
+
+    .MuiInputBase-root{
+        background: ${theme.colors.alpha.white[100]};
+        border-radius: 2rem;
+box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+    }
+    .MuiFocused{
+      border: none;
+    }
 
     .MuiInputBase-input {
-        font-size: ${theme.typography.pxToRem(17)};
+        // font-size: ${theme.typography.pxToRem(17)};
     }
 `
 );
@@ -30,20 +58,33 @@ type AutocompleteInputProps = {
   // setValue: UseFormSetValue<any>;
   setLocation: (location: LocationSuggestion) => void;
   location: LocationSuggestion;
+  search?: () => Promise<void>;
 };
 const AutocompleteInput: React.FC<AutocompleteInputProps> = (
   props: AutocompleteInputProps
 ) => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const debouncedSearchTerm = useDebounce<string>(searchTerm, 500);
+  // const { data } = useGetLocationSuggestionQuery(debouncedSearchTerm);
+  const [getLocationSuggestions, state] = useLazyGetLocationSuggestionQuery();
   const [options, setOptions] = React.useState<LocationSuggestion[]>([]);
+  const [searching, setSearching] = useState(false);
+
+  const handleSearch = async () => {
+    setSearching(true);
+    await props.search();
+    setSearching(false);
+  };
 
   const fetch = useMemo(
     () =>
       debounce(async (searchTerm: string) => {
         try {
-          const response = await getLocationSuggestions(searchTerm);
-          if (response.status === 200 && response.data)
-            setOptions(response.data);
-          else throw Error('Something went wrong');
+          const response = await getLocationSuggestions(
+            searchTerm,
+            true
+          ).unwrap();
+          setOptions(response);
         } catch (error) {
           if (
             error.response &&
@@ -58,38 +99,62 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
     []
   );
 
+  const handleInputChange = (event, newInput) => {
+    if (newInput) {
+      fetch(newInput);
+    }
+  };
+
   return (
     <Autocomplete
       freeSolo
-      value={props.location}
+      value={props.location || null}
       filterOptions={(x) => x}
       onChange={(event: any, newValue: LocationSuggestion | null) => {
         setOptions(newValue ? [newValue, ...options] : options);
         props.setLocation(newValue);
       }}
-      options={options}
+      options={options ?? []}
       getOptionLabel={(option?: LocationSuggestion) => option.display ?? ''}
-      onInputChange={(event, newInputValue) => {
-        try {
-          if (newInputValue) fetch(newInputValue);
-        } catch (e) {
-          console.log(e);
-        }
-      }}
+      onInputChange={handleInputChange}
       renderInput={(params) => (
         <SearchInputWrapper
           {...params}
           InputProps={{
             ...params.InputProps,
-            startAdornment: (
+            endAdornment: (
               <InputAdornment position="start">
-                <SearchTwoToneIcon />
+                <IconButton onClick={handleSearch} disabled={searching}>
+                  {searching ? (
+                    <CircularProgress
+                      size={24}
+                      sx={{
+                        position: 'absolute',
+                        top: '50%',
+                        left: '50%',
+                        marginTop: '-12px',
+                        marginLeft: '-12px'
+                      }}
+                    />
+                  ) : (
+                    <SearchTwoToneIcon htmlColor="#70757a" />
+                  )}
+                </IconButton>
               </InputAdornment>
-            )
+            ),
+            style: {
+              paddingRight: '0.5rem'
+            }
           }}
-          label="Location"
-          autoFocus
-          fullWidth
+          InputLabelProps={{
+            ...params.InputLabelProps,
+            variant: 'outlined'
+            // shrink: false
+          }}
+          label="Search Properties"
+          hiddenLabel
+          // autoFocus
+          // fullWidth
           value={props.location?.display}
         />
       )}

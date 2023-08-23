@@ -114,6 +114,10 @@ export default class RealtorScraper implements PropertyScraper {
             const address = `${neighborhoodName} ${city}, ${this.states[state]}`;
             return address;
         }
+        else if (type === 'zipcode') {
+            const address = `${display}, ${city}, ${this.states[state]}`;
+            return address;
+        }
         const address = `${city}, ${this.states[state]}`;
         return address;
     }

@@ -4,25 +4,30 @@ import { Card, CardContent, Grid } from '@mui/material';
 import PropertyMainInfo from './PropertyMainInfo';
 import PropertyDetails from './PropertyDetails';
 import analyticsStyles from '../Analytics.module.scss';
+import Deal from '@/models/deal';
+import clsx from 'clsx';
 
 type PropertyHeaderProps = {
-  property: Property;
+  deal: Deal;
 };
 const PropertyHeader = (props: PropertyHeaderProps) => {
   return (
-    <Grid className={analyticsStyles.sectionContainer}>
-      <Grid container rowGap={3}>
-        <Grid item xs={12}>
-          <PropertyPhotos property={props.property} />
-        </Grid>
-        <Grid item xs={12}>
-          <PropertyMainInfo property={props.property} />
-        </Grid>
-        <Grid item xs={12}>
-          <PropertyDetails property={props.property} />
-        </Grid>
-      </Grid>
-    </Grid>
+    <div
+      className={clsx([
+        analyticsStyles.sectionContainer,
+        'flex flex-col w-full h-auto'
+      ])}
+    >
+      <div className="flex">
+        <PropertyPhotos photos={props.deal?.property.images || []} />
+      </div>
+      <div className="flex">
+        <PropertyMainInfo property={props.deal?.property || ({} as Property)} />
+      </div>
+      <div className="flex">
+        <PropertyDetails property={props.deal?.property || ({} as Property)} />
+      </div>
+    </div>
   );
 };
 

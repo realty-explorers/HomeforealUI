@@ -14,16 +14,17 @@ const MainWrapper = styled(Box, {
   flexDirection: 'column',
   width: '100%',
   height: '100vh',
-  paddingLeft: `calc(${theme.spacing(7)} + 1px)`,
+  // paddingLeft: `calc(${theme.spacing(7)} + 1px)`,
   transition: theme.transitions.create(['width', 'padding'], {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.enteringScreen
   }),
-  ...(open && {
-    // marginLeft: drawerWidth,
-    // width: `calc(100% - ${drawerWidth}px)`,
-    paddingLeft: drawerWidth
-  })
+  ...(open &&
+    {
+      // marginLeft: drawerWidth,
+      // width: `calc(100% - ${drawerWidth}px)`,
+      // paddingLeft: drawerWidth
+    })
 }));
 
 interface SidebarLayoutProps {
@@ -37,7 +38,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
   return (
     <>
       <MainWrapper open={open}>
-        <Sidebar open={open} setOpen={setOpen} />
+        {/* <Sidebar open={open} setOpen={setOpen} /> */}
         <Header open={open} setOpen={setOpen} />
         <Box
           sx={{

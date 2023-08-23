@@ -59,10 +59,8 @@ const CompsMarker = (props: {
 };
 
 type SoldPropertiesMarkersProps = {
-  searchResults: Deal[];
   setSelectedDeal: (deal: Deal) => void;
   selectedDeal?: Deal;
-  trueArv: boolean;
 };
 
 const SoldPropertiesMarkers = (props: SoldPropertiesMarkersProps) => {
@@ -79,7 +77,7 @@ const SoldPropertiesMarkers = (props: SoldPropertiesMarkersProps) => {
   };
 
   const renderCompsMarkers = () => {
-    const compsProperties = props.trueArv
+    const compsProperties = false
       ? props.selectedDeal.trueArvProperties
       : props.selectedDeal.soldProperties;
     return compsProperties.map(
@@ -91,7 +89,7 @@ const SoldPropertiesMarkers = (props: SoldPropertiesMarkersProps) => {
           handleMouseOut={handleMouseOut}
           hovered={hoveredProperty === compsProperty.id}
           iconUrl={
-            props.trueArv
+            false
               ? '/static/images/pins/greenPin.png'
               : '/static/images/pins/yellowPin.png'
           }

@@ -1,0 +1,131 @@
+{
+	"property_id": "6752427281",
+	"listing_id": "2957009328",
+	"list_price": null,
+	"list_price_max": 3912,
+	"list_price_min": 2090,
+	"permalink": "8250-SW-72nd-Ct_Miami_FL_33143_M67524-27281",
+	"price_reduced_amount": null,
+	"matterport": false,
+	"has_specials": false,
+	"virtual_tours": null,
+	"status": "for_rent",
+	"list_date": "2023-06-21T12:13:34Z",
+	"lead_attributes": {
+		"lead_type": "rental_go_direct",
+		"is_premium_ldp": null
+	},
+	"pet_policy": {
+		"cats": true,
+		"dogs": true,
+		"dogs_small": false,
+		"dogs_large": true
+	},
+	"flags": {
+		"is_pending": null,
+		"is_new_listing": false
+	},
+	"location": {
+		"address": {
+			"line": "8250 SW 72nd Ct",
+			"city": "Miami",
+			"coordinate": {
+				"lat": 25.693788,
+				"lon": -80.310986
+			},
+			"country": "USA",
+			"state_code": "FL",
+			"postal_code": "33143"
+		},
+		"county": {
+			"name": "Miami-Dade",
+			"fips_code": "12086"
+		}
+	},
+	"description": {
+		"beds": null,
+		"beds_max": 3,
+		"beds_min": 0,
+		"baths_min": 1,
+		"baths_max": 2,
+		"baths_consolidated": null,
+		"garage": null,
+		"garage_min": null,
+		"garage_max": null,
+		"sqft": null,
+		"sqft_max": 1386,
+		"sqft_min": 435,
+		"name": "AMLI Dadeland",
+		"sub_type": null,
+		"type": "apartment",
+		"year_built": 2015
+	},
+	"units": [],
+	"branding": [
+		{
+			"type": "Office",
+			"photo": null,
+			"name": null
+		}
+	],
+	"source": {
+		"id": "ENTR",
+		"community_id": 3929369,
+		"type": "community",
+		"feed_type": "PMS"
+	},
+	"details": [
+		{
+			"category": "Community Features",
+			"text": [
+				"Entertainment areas overlooking stunning skyline views",
+				"24-hour state-of-the-art fitness center featuring Fitness on Demand",
+				"Two resort-style salt water pool",
+				"Clubroom Rental",
+				"Dog Friendly",
+				"Cat Friendly",
+				"Package reception self-service lockers",
+				"Garage",
+				"Elevator - West Building",
+				"Corporate furnished apartments via local partner",
+				"Aerial Yoga Studio",
+				"Billiards room with plasma TV and Shuffleboard",
+				"Bowling Alley",
+				"Clubroom with kitchen",
+				"Contemporary pool with cabanas",
+				"Controlled Access and Private Resident Parking in Gated Garage",
+				"Crossfit Equipment Gym",
+				"Cyber cafe with computer stations Wi-Fi and conference Room",
+				"Onsite recycling center",
+				"Pet Park",
+				"Play Ground",
+				"Smoke-Free Community",
+				"Spinning Studio",
+				"Storage units available",
+				"Sundeck",
+				"Trash and recycling center",
+				"Two landscaped courtyards",
+				"Gorgeous ceramic tile flooring in living areas kitchens and baths",
+				"Air Conditioner",
+				"Brilliant sunrooms or expansive patios/balconies in select homes",
+				"Ceiling Fan",
+				"Contemporary kitchens with Energy Star stainless steel appliances",
+				"Contemporary lighting package",
+				"Controlled Access",
+				"Dish Washer",
+				"Disposal",
+				"Elegant Quartz Countertops",
+				"Full-size washers and dryers",
+				"Kitchen islands with pendant lighting in select homes",
+				"Lofty nine-foot ceilings",
+				"Microwave",
+				"Oversized walk-in closets",
+				"Picturesque park and city skyline views in select homes",
+				"Washer and dryer in all apartments",
+				"Dogs Allowed",
+				"Cats Allowed"
+			],
+			"parent_category": "Community"
+		}
+	]
+}

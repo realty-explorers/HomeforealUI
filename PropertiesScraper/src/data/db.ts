@@ -22,13 +22,14 @@ export default class PropertyRepository {
 		this.clientOptions = {
 			node: process.env.ELASTIC_CLOUD_URL!,
 			auth: {
-				username: process.env.ELASTIC_USERNAME!,
-				password: process.env.ELASTIC_PASSWORD!,
+				// username: process.env.ELASTIC_USERNAME!,
+				// password: process.env.ELASTIC_PASSWORD!,
+				apiKey: process.env.ELASTIC_API_KEY!,
 			},
-			tls: {
-				ca: readFileSync(process.env.ELASTICSEARCH_CERTIFICATE_PATH!),
-				rejectUnauthorized: false,
-			}
+			// tls: {
+			// 	ca: readFileSync(process.env.ELASTICSEARCH_CERTIFICATE_PATH!),
+			// 	rejectUnauthorized: false,
+			// }
 		};
 	}
 	public connect = async () => {
@@ -78,6 +79,7 @@ export default class PropertyRepository {
 	public setupDB = async () => {
 		let indexExists = await this.client!.indices.exists({ index: this.REGION_STATUS_INDEX });
 		if (!indexExists) await this.createRegionStatusIndex();
+
 		// indexExists = await this.client!.indices.exists({ index: this.BUYBOX_INDEX });
 		// if (!indexExists) await this.createBuyBoxIndex();
 	}
@@ -225,8 +227,8 @@ export default class PropertyRepository {
 		this.handleErrors(operations, bulkResponse);
 		const count = await this.client!.count({ index: index })
 		console.log(`Count: ${count.count}`);
-		const a = await this.getProperties('homewood', 'alabama');
-		console.log(a);
+		// const a = await this.getProperties('homewood', 'alabama');
+		// console.log(a);
 		return bulkResponse;
 	}
 

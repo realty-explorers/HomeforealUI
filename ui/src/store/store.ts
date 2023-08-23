@@ -1,22 +1,27 @@
 import { configureStore, ThunkAction, Action } from "@reduxjs/toolkit";
-import { searchSlice } from "./searchSlice";
+import { searchSlice } from "./slices/searchSlice";
+import { locationReducer } from './slices/locationSlice';
+import { filterReducer } from './slices/filterSlice';
+import { propertiesReducer } from "./slices/propertiesSlice";
 import { createWrapper } from "next-redux-wrapper";
+import { locationApi } from "./services/locationApiService";
+import { propertiesApi } from "./services/propertiesApiService";
 
-const makeStore = () =>
-    configureStore({
-        reducer: {
-            [searchSlice.name]: searchSlice.reducer,
-        },
-        devTools: true,
-    });
+export const store = configureStore({
+    reducer: {
+        location: locationReducer,
+        filter: filterReducer,
+        properties: propertiesReducer,
+        [locationApi.reducerPath]: locationApi.reducer,
+        [propertiesApi.reducerPath]: propertiesApi.reducer,
+    },
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(locationApi.middleware).concat(propertiesApi.middleware),
+    devTools: true,
+});
 
-export type AppStore = ReturnType<typeof makeStore>;
-export type AppState = ReturnType<AppStore["getState"]>;
-export type AppThunk<ReturnType = void> = ThunkAction<
-    ReturnType,
-    AppState,
-    unknown,
-    Action
->;
+export type AppState = ReturnType<typeof store.getState>;
 
-export const wrapper = createWrapper<AppStore>(makeStore);
+export type AppDispatch = typeof store.dispatch;
+
+export default store;

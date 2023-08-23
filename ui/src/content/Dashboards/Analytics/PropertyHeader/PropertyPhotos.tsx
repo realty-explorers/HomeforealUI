@@ -11,7 +11,7 @@ const Image = (props: any) => {
       borderRadius="0.5rem"
       component="img"
       alt="The house from the offer."
-      src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
+      src={props.src || 'https://via.placeholder.com/150'}
     />
   );
 };
@@ -34,29 +34,24 @@ const ViewMore = () => {
 };
 
 type PropertyPhotosProps = {
-  property: Property;
+  photos: string[];
 };
 const PropertyPhotos = (props: PropertyPhotosProps) => {
   return (
     <>
-      <Grid
-        container
-        sx={{ height: '100%' }}
-        alignItems="center"
-        columnSpacing={3}
-      >
-        <Grid item xs={8} sx={{ height: '100%' }}>
-          <Image />
-        </Grid>
-        <Grid item xs={4} container sx={{ height: '100%' }} rowGap={3}>
-          <Grid item xs={12}>
-            <Image />
-          </Grid>
-          <Grid item xs={12}>
+      <div className="flex w-full h-80">
+        <div className="flex w-full lg:w-3/5 m-4">
+          <Image src={props.photos[0]} />
+        </div>
+        <div className="lg:flex flex-col hidden w-2/5 m-4">
+          <div className="flex h-1/2 pb-2">
+            <Image src={props.photos[1]} />
+          </div>
+          <div className="flex h-1/2 pt-2">
             <ViewMore />
-          </Grid>
-        </Grid>
-      </Grid>
+          </div>
+        </div>
+      </div>
     </>
   );
 };

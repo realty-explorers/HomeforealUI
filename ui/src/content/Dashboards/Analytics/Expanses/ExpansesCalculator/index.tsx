@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Property from '@/models/property';
 import {
   Button,
@@ -27,6 +27,7 @@ import styles from './ExpansesCalculator.module.scss';
 import ExpansesRow from '../ExpansesRow';
 import InitialInvestment from './InitialInvestment';
 import FinancingExpanses from './FinancingExpanses';
+import { set } from 'nprogress';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   borderBottom: 'none'
@@ -36,6 +37,17 @@ type ExpansesCalculatorProps = {
   property: Property;
 };
 const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
+  const [initialInvestmentExpanses, setInitialInvestmentExpanses] =
+    useState<number>(0);
+  const [financingExpanses, setFinancingExpanses] = useState<number>(0);
+
+  const totalExpanses = initialInvestmentExpanses + financingExpanses;
+
+  useEffect(() => {
+    setInitialInvestmentExpanses(0);
+    setFinancingExpanses(0);
+  }, [props.property]);
+
   return (
     <Grid
       className={`${analyticsStyles.blackBorderedSection} ${analyticsStyles.sectionContainer}`}
@@ -46,10 +58,19 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
           <h1 className={analyticsStyles.sectionHeader}>Expanses Calculator</h1>
         </Grid>
         <Grid item xs={6}>
-          <ValueCard title="Estimated Expanses" value="$27,000" />
+          <ValueCard
+            title="Estimated Expanses"
+            value={`$${totalExpanses.toFixed(0)}`}
+          />
         </Grid>
-        <InitialInvestment />
-        <FinancingExpanses />
+        <InitialInvestment
+          property={props.property}
+          setExpanses={setInitialInvestmentExpanses}
+        />
+        <FinancingExpanses
+          property={props.property}
+          setExpanses={setFinancingExpanses}
+        />
       </Grid>
     </Grid>
   );

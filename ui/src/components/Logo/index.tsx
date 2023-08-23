@@ -1,4 +1,4 @@
-import { Box, styled, Tooltip } from '@mui/material';
+import { Box, ListItem, ListItemText, styled, Tooltip } from '@mui/material';
 import Link from 'src/components/Link';
 
 const LogoWrapper = styled(Link)(
@@ -95,31 +95,23 @@ const VersionBadge = styled(Box)(
 
 const LogoText = styled(Box)(
   ({ theme }) => `
-        font-size: ${theme.typography.pxToRem(15)};
-        font-weight: ${theme.typography.fontWeightBold};
 `
 );
 
 function Logo() {
   return (
     <LogoWrapper href="/">
-      <LogoSignWrapper>
-        <LogoSign>
-          <LogoSignInner />
-        </LogoSign>
-      </LogoSignWrapper>
+      <div className="flex items-center justify-center w-8">
+        <img src="/favicon.ico" alt="logo" />
+      </div>
       <Box
         component="span"
         sx={{
           display: { xs: 'none', sm: 'inline-block' }
         }}
+        className="flex items-center ml-1"
       >
-        <LogoTextWrapper>
-          <Tooltip title="Version 1.0" arrow placement="right">
-            <VersionBadge>1.0</VersionBadge>
-          </Tooltip>
-          <LogoText>Homeforeal</LogoText>
-        </LogoTextWrapper>
+        <span>Homeforeal</span>
       </Box>
     </LogoWrapper>
   );

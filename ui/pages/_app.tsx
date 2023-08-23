@@ -1,3 +1,4 @@
+import '../styles/globals.css';
 import { ReactElement, ReactNode } from 'react';
 import type { NextPage } from 'next';
 import type { AppProps } from 'next/app';
@@ -13,8 +14,9 @@ import { SidebarProvider } from 'src/contexts/SidebarContext';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { SessionProvider } from 'next-auth/react';
-import { wrapper } from '@/store/store';
+import store, { wrapper } from '@/store/store';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
+import { Provider } from 'react-redux';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -36,26 +38,28 @@ function HomeforealApp(props: HomeforealAppProps) {
   Router.events.on('routeChangeComplete', nProgress.done);
 
   return (
-    <CacheProvider value={emotionCache}>
-      <UserProvider>
-        <Head>
-          <title>Homeforeal App</title>
-          <meta
-            name="viewport"
-            content="width=device-width, initial-scale=1, shrink-to-fit=no"
-          />
-        </Head>
-        <SidebarProvider>
-          <ThemeProvider>
-            <LocalizationProvider dateAdapter={AdapterDateFns}>
-              <CssBaseline />
-              {getLayout(<Component {...pageProps} />)}
-            </LocalizationProvider>
-          </ThemeProvider>
-        </SidebarProvider>
-      </UserProvider>
-    </CacheProvider>
+    <Provider store={store}>
+      <CacheProvider value={emotionCache}>
+        <UserProvider>
+          <Head>
+            <title>Homeforeal App</title>
+            <meta
+              name="viewport"
+              content="width=device-width, initial-scale=1, shrink-to-fit=no"
+            />
+          </Head>
+          <SidebarProvider>
+            <ThemeProvider>
+              <LocalizationProvider dateAdapter={AdapterDateFns}>
+                <CssBaseline />
+                {getLayout(<Component {...pageProps} />)}
+              </LocalizationProvider>
+            </ThemeProvider>
+          </SidebarProvider>
+        </UserProvider>
+      </CacheProvider>
+    </Provider>
   );
 }
 
-export default wrapper.withRedux(HomeforealApp);
+export default HomeforealApp;

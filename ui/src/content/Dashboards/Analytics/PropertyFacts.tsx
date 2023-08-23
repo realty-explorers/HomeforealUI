@@ -3,15 +3,19 @@ import { Button, Grid, Typography } from '@mui/material';
 import GridField from '@/components/Grid/GridField';
 import analyticsStyles from './Analytics.module.scss';
 import ThemedButton from '@/components/Buttons/ThemedButton';
+import ModalComponent from '@/components/Modals/ModalComponent';
+import { useState } from 'react';
 
 type PropertyFactsProps = {
   property: Property;
 };
 const PropertyFacts = (props: PropertyFactsProps) => {
+  const [open, setOpen] = useState<boolean>(false);
   return (
     <Grid
       className={`${analyticsStyles.yellowSection} ${analyticsStyles.sectionContainer}`}
     >
+      <ModalComponent open={open} setOpen={setOpen} propertySection="facts" />
       <h1 className={analyticsStyles.sectionHeader}>Property Facts</h1>
       <Grid container justifyContent="center" rowGap={3}>
         <GridField label="PropertyType" value="meow" />
@@ -26,7 +30,7 @@ const PropertyFacts = (props: PropertyFactsProps) => {
         <GridField label="Floors" value="meow" />
       </Grid>
       <Grid container justifyContent="flex-end">
-        <ThemedButton text="More" />
+        <ThemedButton text="More" onClick={() => setOpen(!open)} />
       </Grid>
     </Grid>
   );
