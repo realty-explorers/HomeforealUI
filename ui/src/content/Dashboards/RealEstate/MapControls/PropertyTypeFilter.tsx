@@ -23,19 +23,19 @@ const MenuProps = {
 };
 
 const propertyTypeToLabel = {
-  [PropertyType.SINGLE_FAMILY]: 'Single Family',
+  [PropertyType.SINGLE_FAMILY]: 'House',
   [PropertyType.MULTI_FAMILY]: 'Multi Family',
   [PropertyType.CONDO]: 'Condos',
   [PropertyType.TOWN_HOUSE]: 'Townhomes',
-  [PropertyType.MOBILE_HOUSE]: 'Mobile Homes'
+  [PropertyType.MOBILE_HOUSE]: 'Mobile'
 };
 
 const labelToProperty: { [label: string]: PropertyType } = {
-  'Single Family': PropertyType.SINGLE_FAMILY,
+  House: PropertyType.SINGLE_FAMILY,
   'Multi Family': PropertyType.MULTI_FAMILY,
   Condos: PropertyType.CONDO,
   Townhomes: PropertyType.TOWN_HOUSE,
-  'Mobile Homes': PropertyType.MOBILE_HOUSE
+  Mobile: PropertyType.MOBILE_HOUSE
 };
 
 const names = [
@@ -48,7 +48,7 @@ const names = [
 
 type PropertyTypeFilterProps = {
   propertyTypes: PropertyType[];
-  update: (name: string, value: any) => void;
+  updateTypes: (value: any) => void;
 };
 
 export default function PropertyTypeFilter(props: PropertyTypeFilterProps) {
@@ -74,21 +74,17 @@ export default function PropertyTypeFilter(props: PropertyTypeFilterProps) {
       typeof value === 'string'
         ? value.split(',').map((label) => labelToProperty[label])
         : value;
-    props.update('propertyTypes', properties);
+    props.updateTypes(properties);
   };
 
   const handleClicked = (event: React.MouseEvent<HTMLElement>) => {
     const name = event.currentTarget.innerText;
     if (props.propertyTypes.includes(labelToProperty[name])) {
-      props.update(
-        'propertyTypes',
+      props.updateTypes(
         props.propertyTypes.filter((type) => type !== labelToProperty[name])
       );
     } else {
-      props.update('propertyTypes', [
-        ...props.propertyTypes,
-        labelToProperty[name]
-      ]);
+      props.updateTypes([...props.propertyTypes, labelToProperty[name]]);
     }
   };
 

@@ -57,7 +57,7 @@ const AdvancedControls: React.FC<AdvancedControlsProps> = (
       </SliderField>
       <PropertyTypeFilter
         propertyTypes={props.searchData.propertyTypes}
-        update={props.update}
+        updateTypes={props.update}
       />
     </>
   );

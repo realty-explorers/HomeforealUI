@@ -17,9 +17,14 @@ import {
   setMaxBeds,
   setMaxListingPrice,
   setMinBaths,
-  setMinListingPrice
+  setMinListingPrice,
+  setMinSqft,
+  setMaxSqft,
+  setPropertyTypes
 } from '@/store/slices/filterSlice';
 import { useDispatch, useSelector } from 'react-redux';
+import PropertyTypes from './PropertyTypes';
+import PropertyTypeFilter from './PropertyTypeFilter';
 
 const GridDiv = styled('div')(({}) => ({
   display: 'flex',
@@ -50,11 +55,14 @@ const MainControls: React.FC<MainControlsProps> = (
     maxBeds,
     minBeds,
     maxListingPrice,
-    minListingPrice
+    minListingPrice,
+    minSqft,
+    maxSqft,
+    propertyTypes
   } = useSelector(selectFilter);
 
   return (
-    <>
+    <div>
       <SliderField fieldName="Listing Price">
         <SliderRangeInput
           inputProps={{
@@ -130,12 +138,28 @@ const MainControls: React.FC<MainControlsProps> = (
           updateMaxValue={(value) => dispatch(setMaxBeds(value))}
         />
       </SliderField>
-      {/* <PropertyTypeFilter
-        propertyTypes={props.searchData.propertyTypes}
-        update={props.update}
-      /> */}
+      <SliderField fieldName="Building Sqft">
+        <SliderRangeInput
+          inputProps={{
+            title: 'Building Sqft',
+            name: 'sqft',
+            min: 0,
+            max: 10000,
+            step: 50
+          }}
+          minValue={minSqft}
+          maxValue={maxSqft}
+          updateMinValue={(value) => dispatch(setMinSqft(value))}
+          updateMaxValue={(value) => dispatch(setMaxSqft(value))}
+          // scale={{ scale: priceScale, reverseScale: sqftScale }}
+        />
+      </SliderField>
+      <PropertyTypeFilter
+        propertyTypes={propertyTypes}
+        updateTypes={(value) => dispatch(setPropertyTypes(value))}
+      />
       {/* <PropertyTypes /> */}
-    </>
+    </div>
   );
 };
 

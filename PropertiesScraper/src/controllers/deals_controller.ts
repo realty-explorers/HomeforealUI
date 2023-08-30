@@ -24,7 +24,8 @@ export default class DealsController {
 			const type = req.query['type'] as string;
 			const soldPropertiesMaxAge = parseInt(req.query['soldPropertiesMaxAge'] as string);
 			const forSalePropertiesMaxAge = parseInt(req.query['forSalePropertiesMaxAge'] as string);
-			const userId = req.user!.name;
+			// const userId = req.user!.name;
+			const userId = '';
 			const response = await this.dealsService.findProperties(userId, display, type, city, state, soldPropertiesMaxAge, forSalePropertiesMaxAge);
 			res.json(response);
 		} catch (error: any) {
