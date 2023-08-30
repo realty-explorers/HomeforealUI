@@ -1,25 +1,27 @@
-import React, { useCallback, useState, memo, useEffect } from 'react';
-import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import Deal from '@/models/deal';
 import { locationApiEndpoints } from '@/store/services/locationApiService';
-import { propertiesApiEndpoints } from '@/store/services/propertiesApiService';
-import { useDispatch, useSelector } from 'react-redux';
-import MapControls from './MapControls/MapControls';
-import CardsPanel from './MapComponents/CardsPanel';
-import LocationBounds from './MapComponents/LocationBounds';
-import PropertiesMarkers from './MapComponents/PropertiesMarkers';
-import SoldPropertiesMarkers from './MapComponents/SoldPropertiesMarkers';
-import SelectedPropertyMarker from './MapComponents/SelectedPropertyMarker';
+import {
+  propertiesApiEndpoints,
+  useGetPropertiesQuery
+} from '@/store/services/propertiesApiService';
+import { selectFilter } from '@/store/slices/filterSlice';
+import { selectLocation } from '@/store/slices/locationSlice';
 import {
   selectProperties,
   setSelectedDeal
 } from '@/store/slices/propertiesSlice';
-import { useGetPropertiesQuery } from '@/store/services/propertiesApiService';
-import { selectLocation } from '@/store/slices/locationSlice';
+import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 import { skipToken } from '@reduxjs/toolkit/dist/query';
-import { selectFilter } from '@/store/slices/filterSlice';
+import React, { memo, useCallback, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import CardsPanel from './MapComponents/CardsPanel';
+import LocationBounds from './MapComponents/LocationBounds';
+import PropertiesMarkers from './MapComponents/PropertiesMarkers';
 import PropertyRadius from './MapComponents/PropertyRadius';
+import SelectedPropertyMarker from './MapComponents/SelectedPropertyMarker';
+import SoldPropertiesMarkers from './MapComponents/SoldPropertiesMarkers';
 import MapControlPanel from './MapControlPanel/MapControlPanel';
+import MapControls from './MapControls/MapControls';
 
 const containerStyle: React.CSSProperties = {
   position: 'relative',
@@ -49,7 +51,10 @@ const MapComponent: React.FC<MapComponentProps> = (
     maxBeds,
     minBeds,
     minListingPrice,
-    maxListingPrice
+    maxListingPrice,
+    minSqft,
+    maxSqft,
+    propertyTypes
   } = useSelector(selectFilter);
   const locationState =
     locationApiEndpoints.getLocationData.useQueryState(suggestion);
@@ -84,6 +89,12 @@ const MapComponent: React.FC<MapComponentProps> = (
         return false;
       }
       if (deal.profit < compsMargin) {
+        return false;
+      }
+      if (deal.property.area < minSqft || deal.property.area > maxSqft) {
+        return false;
+      }
+      if (!propertyTypes.includes(deal.property.type)) {
         return false;
       }
       return true;
