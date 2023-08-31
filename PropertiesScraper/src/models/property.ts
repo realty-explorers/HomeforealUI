@@ -30,6 +30,7 @@ interface RealProperty {
   address_number?: string;
   address_name?: string;
   address_suffix?: string;
+  city?: string;
   unit_number?: string;
   zipcode: string;
   county: string;
