@@ -240,9 +240,10 @@ export default class RealtorScraper implements PropertyScraper {
             address_number: undefined,
             address_name: "",
             address_suffix: "",
+            city: propertyResult.location.address.city?.toLowerCase(),
             unit_number: undefined,
             zipcode: propertyResult.location.address.postal_code,
-            county: propertyResult.location.county.name,
+            county: propertyResult.location.county?.name,
             sales_listing_price: propertyResult.list_price,
             sales_closing_price: propertyResult.sold_price,
             sales_date: propertyResult.sold_date,
@@ -295,9 +296,19 @@ export default class RealtorScraper implements PropertyScraper {
           //     listingDate: propertyResult.list_date,
           //     soldDate: propertyResult.description.sold_date,
           // }
-          // property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
           //console.log(property);
-          properties.push(property);
+          // property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
+          const id = constructPropertyId(
+            property.address,
+            property.city || "",
+            property.state || "",
+            `${property.zipcode}` || ""
+          );
+          const propertyData = {
+            ...property,
+            id,
+          };
+          properties.push(propertyData);
         } catch (error) {
           console.log({
             error: "Parsing Realtor property",
