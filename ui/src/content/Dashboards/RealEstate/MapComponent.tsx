@@ -144,6 +144,14 @@ const MapComponent: React.FC<MapComponentProps> = (
     updateMap(null);
   }, []);
 
+  const test = () => {
+    return (
+      <h1>
+        <p></p>
+      </h1>
+    );
+  };
+
   return isLoaded ? (
     <GoogleMap
       mapContainerStyle={containerStyle}

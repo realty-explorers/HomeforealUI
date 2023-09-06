@@ -30,6 +30,7 @@ export default class RealtorScraper implements PropertyScraper {
       query: {
         // "status": ["for_sale", "ready_to_build"],
         status: ["for_sale", "for_rent", "sold"],
+        // status: ["sold"],
         // type: [
         //   "condos",
         //   "condo_townhome_rowhome_coop",
@@ -245,7 +246,7 @@ export default class RealtorScraper implements PropertyScraper {
             zipcode: propertyResult.location.address.postal_code,
             county: propertyResult.location.county?.name,
             sales_listing_price: propertyResult.list_price,
-            sales_closing_price: propertyResult.sold_price,
+            sales_closing_price: propertyResult.description.sold_price,
             sales_date: propertyResult.sold_date,
             building_area: propertyResult.description.sqft,
             lot_size: propertyResult.description.lot_sqft,
@@ -256,7 +257,7 @@ export default class RealtorScraper implements PropertyScraper {
             address: propertyResult.location.address.line,
             floors: propertyResult.description.stories,
             pool: false,
-            garages: propertyResult.description.garages,
+            garages: propertyResult.description.garage,
             sales_days_on_market: propertyResult.list_date,
             source: "",
             rents_status: propertyResult.status,
@@ -296,13 +297,13 @@ export default class RealtorScraper implements PropertyScraper {
           //     listingDate: propertyResult.list_date,
           //     soldDate: propertyResult.description.sold_date,
           // }
-          //console.log(property);
+          console.log(property);
           // property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
           const id = constructPropertyId(
             property.address,
             property.city || "",
             property.state || "",
-            `${property.zipcode}` || ""
+            property.zipcode || ""
           );
           const propertyData = {
             ...property,
