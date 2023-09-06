@@ -5,6 +5,8 @@ import Image from '@/components/Photos/Image';
 import { Button, Grid, Typography } from '@mui/material';
 import styles from './BuyboxItem.module.scss';
 import clsx from 'clsx';
+import { useGetLeadsQuery } from '@/store/services/analysisApi';
+import { skipToken } from '@reduxjs/toolkit/dist/query';
 
 const columns: GridColDef[] = [
   {
@@ -118,65 +120,63 @@ const columns: GridColDef[] = [
   }
 ];
 
-const rows = [
-  {
-    id: '1',
-    image:
-      'https://photos.zillowstatic.com/fp/b312180f50220b7ae1c090b3c3126e81-cc_ft_768.webp',
-    address: '123 Main St',
-    opportunity: 'Fix & Flip',
-    askingPrice: '100000',
-    ARV: '200000',
-    NOI: '10000',
-    capRate: '10',
-    zipCode: '12345',
-    note: 'note'
-  },
-  {
-    id: '2',
-    image:
-      'https://photos.zillowstatic.com/fp/b312180f50220b7ae1c090b3c3126e81-cc_ft_768.webp',
-    address: '123 Main St',
-    opportunity: 'Fix & Flip',
-    askingPrice: '100000',
-    ARV: '200000',
-    NOI: '10000',
-    capRate: '10',
-    zipCode: '12345',
-    note: 'note'
-  }
-];
+type BuyboxItemProps = {
+  data: any;
+};
 
-const BuyboxItem = () => {
+const BuyboxItem = (props: BuyboxItemProps) => {
+  const { data, isFetching } = useGetLeadsQuery(
+    props.data?.buybox_id || skipToken
+  );
+
+  const rows =
+    data?.map((lead: Lead, index) => {
+      return {
+        id: index,
+        image:
+          'https://photos.zillowstatic.com/fp/b312180f50220b7ae1c090b3c3126e81-cc_ft_768.webp',
+        address: lead.address,
+        opportunity: lead.is_opp ? 'Fix & Flip' : '',
+        askingPrice: lead.listing_price,
+        ARV: lead.arv,
+        NOI: '',
+        capRate: lead.cap_rate,
+        zipCode: lead.zipcode,
+        note: ''
+      };
+    }) ?? [];
+
   return (
-    <DataGrid
-      sx={{
-        '*': {
-          '.MuiDataGrid-cell': {
-            outline: 'none',
-            '&:focus': {
-              outline: 'none'
-            },
-            '&:focus-within': {
-              outline: 'none'
+    <>
+      <DataGrid
+        sx={{
+          '*': {
+            '.MuiDataGrid-cell': {
+              outline: 'none',
+              '&:focus': {
+                outline: 'none'
+              },
+              '&:focus-within': {
+                outline: 'none'
+              }
             }
           }
-        }
-      }}
-      rows={rows}
-      columns={columns}
-      rowHeight={100}
-      initialState={{
-        pagination: {
-          paginationModel: {
-            pageSize: 5
+        }}
+        rows={rows}
+        columns={columns}
+        rowHeight={100}
+        initialState={{
+          pagination: {
+            paginationModel: {
+              pageSize: 5
+            }
           }
-        }
-      }}
-      pageSizeOptions={[5]}
-      checkboxSelection
-      disableRowSelectionOnClick
-    />
+        }}
+        pageSizeOptions={[5]}
+        checkboxSelection
+        disableRowSelectionOnClick
+      />
+    </>
   );
 };
 

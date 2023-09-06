@@ -14,6 +14,7 @@ import {
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import BuyboxItem from './BuyboxItem';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+import { useGetSummaryQuery } from '@/store/services/analysisApi';
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -48,7 +49,7 @@ const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
   borderTop: '1px solid rgba(0, 0, 0, .125)'
 }));
 
-const BuyboxItemWrapper = () => {
+const BuyboxItemWrapper = ({ data }) => {
   return (
     <StyledAccordion sx={{ width: '100%' }}>
       <StyledAccordionSummary
@@ -56,10 +57,10 @@ const BuyboxItemWrapper = () => {
         aria-controls="panel1a-content"
         id="panel1a-header"
       >
-        <Typography>Accordion Title</Typography>
+        <Typography>{data?.buybox_name}</Typography>
       </StyledAccordionSummary>
       <StyledAccordionDetails>
-        <BuyboxItem />
+        <BuyboxItem data={data} />
       </StyledAccordionDetails>
     </StyledAccordion>
   );
@@ -67,12 +68,14 @@ const BuyboxItemWrapper = () => {
 
 type BuyboxListProps = {};
 const BuyboxList = (props: BuyboxListProps) => {
+  // const { , isFetching } = useGetBuyBoxesIdsQuery(1);
+  const { data, isFetching } = useGetSummaryQuery(1);
   return (
     <Grid container>
       <Card sx={{ width: '100%' }}>
         <CardContent>
-          {Array.from(Array(5).keys()).map((i) => (
-            <BuyboxItemWrapper key={i} />
+          {[data, data].map((data, index) => (
+            <BuyboxItemWrapper key={index} data={data} />
           ))}
           <StyledAccordion sx={{ width: '100%' }}>
             <StyledAccordionSummary expandIcon={<AddCircleOutlineIcon />}>
