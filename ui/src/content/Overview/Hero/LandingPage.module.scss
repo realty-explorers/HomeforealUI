@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+@import url('https://fonts.googleapis.com/css?family=Playfair Display');
+.header_1 {
+  color: #1e1125;
+  font-family: Playfair Display;
+  font-size: 3.5rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: capitalize;
+}
+
+.header_2 {
+  color: #000;
+  font-family: Poppins;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 100;
+  line-height: 159.5%; /* 3.19rem */
+  text-transform: capitalize;
+  text-align: left;
+}
+
+.cardInfoLabel {
+  color: #000;
+  font-family: Poppins;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 159.5%; /* 1.595rem */
+  text-transform: capitalize;
+}
+
+.cardInfoValue {
+  color: #000;
+  font-family: Poppins;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 300;
+  line-height: 159.5%; /* 1.595rem */
+  text-transform: capitalize;
+}
+
+.cardInfoSpecialValue {
+  color: #0a6d0e;
+  font-family: Poppins;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 159.5%; /* 1.595rem */
+  text-transform: capitalize;
+}
+
+.searchSection {
+  height: 40rem;
+  background: #1e1125;
+  padding-top: 2rem;
+  .searchSectionTitle {
+    color: #fff;
+    text-align: center;
+    font-family: Playfair Display;
+    font-size: 3.25rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+    text-transform: capitalize;
+  }
+  .searchButton {
+    border-radius: 0.625rem;
+    background: #590d82;
+    box-shadow: 24px 24px 48px 0px rgba(0, 0, 0, 0.1);
+    height: 3rem;
+    color: white;
+    .searchButtonTitle {
+      color: #fff;
+      font-family: Poppins;
+      font-size: 1.25rem;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+    }
+  }
+}
+
+.howItWorksTitle {
+  color: #1e1125;
+  font-family: Poppins;
+  font-size: 3rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+}
+.howItWorksDescription {
+  color: rgba(0, 0, 0, 0.81);
+  text-align: center;
+  font-family: Poppins;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+
+.yellowCardTitle {
+  color: #000;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 2.25rem;
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.yellowCardDescription {
+  color: #000;
+  text-align: center;
+  font-family: Poppins;
+  font-size: 1.5rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
