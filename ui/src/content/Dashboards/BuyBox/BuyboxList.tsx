@@ -1,15 +1,15 @@
 import {
-  Grid,
   Accordion,
-  AccordionSummary,
-  Typography,
   AccordionDetails,
   AccordionProps,
-  styled,
+  AccordionSummary,
   AccordionSummaryProps,
   Card,
+  CardContent,
   CardHeader,
-  CardContent
+  Grid,
+  styled,
+  Typography
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import BuyboxItem from './BuyboxItem';
