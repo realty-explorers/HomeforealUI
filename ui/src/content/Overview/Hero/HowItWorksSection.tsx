@@ -2,6 +2,10 @@
 import { Typography } from "@mui/material";
 import styles from "./LandingPage.module.scss";
 
+const meow = () => {
+  const a = 3;
+};
+
 const markerIcon = (
   <svg
     width="69"

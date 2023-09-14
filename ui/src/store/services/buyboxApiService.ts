@@ -1,25 +1,46 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 // const baseUrl = process.env.NEXT_PUBLIC_BUYBOX_API_URL;
-const baseUrl = 'http://20.253.72.70:8001/buyboxes';
-const GENERAL_BUYBOX_ID = '3dbf8068-bfda-4422-af27-7597045dac6e';
+const baseUrl = "http://localhost:8000/buybox";
+const GENERAL_BUYBOX_ID = "3dbf8068-bfda-4422-af27-7597045dac6e";
 
 export const buyBoxApi = createApi({
-  reducerPath: 'buyboxApi',
-  baseQuery: fetchBaseQuery({ baseUrl }),
+  reducerPath: "buyboxApi",
+  baseQuery: fetchBaseQuery({
+    baseUrl,
+    prepareHeaders: async (headers, { getState }) => {
+      let token = (getState() as RootState).auth.token;
+
+      if (!token) {
+        try {
+          const request = await fetch("/api/protected");
+          token = (await request.json()).accessToken;
+        } catch (e) {
+          console.log(e);
+        }
+      }
+
+      // If we have a token set in state, let's assume that we should be passing it.
+      if (token) {
+        headers.set("authorization", `Bearer ${token}`);
+      }
+
+      return headers;
+    },
+  }),
   endpoints: (builder) => ({
-    getBuyBoxesIds: builder.query({
-      query: () => ({ url: 'all' }),
-      transformResponse: (response: any) => response
+    getBuyBoxes: builder.query({
+      query: () => ({ url: "all" }),
+      transformResponse: (response: any) => response,
     }),
 
     getLeads: builder.query({
       query: () => ({ url: `leads/${GENERAL_BUYBOX_ID}` }),
-      transformResponse: (response: any) => response
-    })
-  })
+      transformResponse: (response: any) => response,
+    }),
+  }),
 });
 
 export const buyBoxApiEndpoints = buyBoxApi.endpoints;
 
-export const { useLazyGetLeadsQuery, useGetBuyBoxesIdsQuery } = buyBoxApi;
+export const { useLazyGetLeadsQuery, useGetBuyBoxesQuery } = buyBoxApi;
