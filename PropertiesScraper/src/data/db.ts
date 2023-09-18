@@ -23,10 +23,10 @@ export default class PropertyRepository {
         password: process.env.ELASTIC_PASSWORD!,
         //apiKey: process.env.ELASTIC_API_KEY!,
       },
-      // tls: {
-      // 	ca: readFileSync(process.env.ELASTICSEARCH_CERTIFICATE_PATH!),
-      // 	rejectUnauthorized: false,
-      // }
+      tls: {
+        ca: readFileSync(process.env.ELASTICSEARCH_CA_PATH!),
+        rejectUnauthorized: false,
+      },
     };
   }
   public connect = async () => {
