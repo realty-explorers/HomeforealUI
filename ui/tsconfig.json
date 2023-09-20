@@ -3,7 +3,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
-      "@/public/*": ["./public/*"]
+      "@/public/*": ["./public/*"],
+      "@/static/*": ["./public/static/*"]
     },
     "allowJs": true,
     "allowSyntheticDefaultImports": true,
@@ -12,8 +13,6 @@
     "module": "esnext",
     "moduleResolution": "node",
     "noEmit": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "preserveConstEnums": true,
     "removeComments": false,
     "skipLibCheck": true,

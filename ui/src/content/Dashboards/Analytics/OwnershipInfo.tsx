@@ -1,11 +1,12 @@
-import Property from '@/models/property';
-import { Button, Grid, Typography } from '@mui/material';
-import GridField from '@/components/Grid/GridField';
-import analyticsStyles from './Analytics.module.scss';
-import ThemedButton from '@/components/Buttons/ThemedButton';
+import Property from "@/models/property";
+import { Button, Grid, Typography } from "@mui/material";
+import GridField from "@/components/Grid/GridField";
+import analyticsStyles from "./Analytics.module.scss";
+import ThemedButton from "@/components/Buttons/ThemedButton";
+import AnalyzedProperty from "@/models/analyzedProperty";
 
 type OwnershipInfoProps = {
-  property: Property;
+  property: AnalyzedProperty;
 };
 const OwnershipInfo = (props: OwnershipInfoProps) => {
   return (

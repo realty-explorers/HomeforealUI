@@ -1,4 +1,11 @@
-import { Box, Card, Container, styled, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  Card,
+  Container,
+  styled,
+  Typography,
+} from "@mui/material";
 import type { ReactElement } from "react";
 import BaseLayout from "src/layouts/BaseLayout";
 import Link from "src/components/Link";
@@ -31,16 +38,39 @@ function Overview() {
       <Head>
         <title>Homforeal App</title>
       </Head>
-
+      <HeaderWrapper>
+        <Container maxWidth="lg">
+          <Box display="flex" alignItems="center">
+            <Logo />
+            <Box
+              display="flex"
+              alignItems="center"
+              justifyContent="space-between"
+              flex={1}
+            >
+              <Box />
+              <Box>
+                <Button
+                  component={Link}
+                  href="/dashboards/real-estate"
+                  className="bg-[#590D82] text-white text-2xl font-poppins p-4 w-56 hover:bg-[#9747FF]"
+                >
+                  Get Started
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        </Container>
+      </HeaderWrapper>
       <Hero />
-      <Container maxWidth="lg" sx={{ mt: 8 }}>
-        <Typography textAlign="center" variant="subtitle1">
-          Crafted by{" "}
-          <Link href="#" target="_blank" rel="noopener noreferrer">
-            Sharon Fabin
-          </Link>
-        </Typography>
-      </Container>
+      {/* <Container maxWidth="lg" sx={{ mt: 8 }}> */}
+      {/*   <Typography textAlign="center" variant="subtitle1"> */}
+      {/*     Crafted by{" "} */}
+      {/*     <Link href="#" target="_blank" rel="noopener noreferrer"> */}
+      {/*       Sharon Fabin */}
+      {/*     </Link> */}
+      {/*   </Typography> */}
+      {/* </Container> */}
     </div>
   );
 }

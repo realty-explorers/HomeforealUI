@@ -95,9 +95,18 @@ function HeaderUserbox() {
   };
 
   useEffect(() => {
-    alert("rerendeer");
-    if (data) {
+    if (error) {
+      alert(error);
+      alert(error.code);
+    }
+    if (data?.accessToken) {
+      //TODO: move this to a requireAuth wrapper, and check state of authSlice to see if you need to login
+      //      and refetch and accessToken
       dispatch(setToken(data.accessToken));
+    } else if (data?.error) {
+      if (data.error === "ERR_EXPIRED_ACCESS_TOKEN") {
+        location.href = "/api/auth/logout";
+      }
     }
   }, [data]);
 
@@ -111,9 +120,6 @@ function HeaderUserbox() {
         />
         <Hidden mdDown>
           <UserBoxText>
-            {/* {token} */}
-            {/* {JSON.stringify(user)} */}
-            {isLoading ? "loading" : "finished"}
             <UserBoxLabel variant="body1">{user?.name}</UserBoxLabel>
             <UserBoxDescription variant="body2">
             </UserBoxDescription>

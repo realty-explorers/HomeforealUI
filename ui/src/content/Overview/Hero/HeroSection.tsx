@@ -7,7 +7,7 @@ import PropertiesExample from "./PropertiesExample";
 
 const HeroSection = () => {
   return (
-    <div className="max-w-[70%] mt-20">
+    <div className="max-w-[70%] ">
       <div className="flex wrap gap-8">
         <div className="flex flex-wrap w-[40%] ">
           <div className="flex w-full justify-between items-center gap-2">

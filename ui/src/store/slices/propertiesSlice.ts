@@ -4,34 +4,40 @@ import { HYDRATE } from "next-redux-wrapper";
 import Deal from "@/models/deal";
 import LocationSuggestion from "@/models/location_suggestions";
 import Location from "@/models/location_data";
-import Property, { PropertyType } from "@/models/property";
+import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
 
 // Type for our state
 export interface PropertiesState {
-    selectedDeal?: Deal;
+  selectedProperty?: AnalyzedProperty;
+  selectedComps: Property[];
 }
 
 // Initial state
 const initialState: PropertiesState = {
-    selectedDeal: undefined
+  selectedProperty: undefined,
+  selectedComps: [],
 };
 
 // Actual Slice
 export const propertiesSlice = createSlice({
-    name: "properties",
-    initialState,
-    reducers: {
-        // Action to set the authentication status
-        setSelectedDeal(state, action: PayloadAction<Deal>) {
-            state.selectedDeal = action.payload;
-        }
+  name: "properties",
+  initialState,
+  reducers: {
+    // Action to set the authentication status
+    setSelectedProperty(state, action: PayloadAction<AnalyzedProperty>) {
+      state.selectedProperty = action.payload;
     },
-
+    setSelectedComps(state, action: PayloadAction<Property[]>) {
+      state.selectedComps = action.payload;
+    },
+  },
 });
 
-
 export const propertiesReducer = propertiesSlice.reducer;
-export const { setSelectedDeal } = propertiesSlice.actions;
-export const selectProperties: (state: AppState) => PropertiesState = (state: AppState) => state.properties;
+export const { setSelectedProperty, setSelectedComps } =
+  propertiesSlice.actions;
+export const selectProperties: (state: AppState) => PropertiesState = (
+  state: AppState,
+) => state.properties;
 
 export default propertiesSlice;

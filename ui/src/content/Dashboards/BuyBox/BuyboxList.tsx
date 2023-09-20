@@ -7,7 +7,6 @@ import {
   Button,
   Card,
   CardContent,
-  CardHeader,
   Grid,
   styled,
   Typography,
@@ -20,7 +19,7 @@ import { useGetBuyBoxesQuery } from "@/store/services/buyboxApiService";
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
-))(({ theme }) => ({
+))(({}) => ({
   // border: `1px solid ${theme.palette.divider}`,
   "&:not(:last-child)": {
     borderBottom: 0,
@@ -68,8 +67,7 @@ const BuyboxItemWrapper = ({ data }) => {
   );
 };
 
-type BuyboxListProps = {};
-const BuyboxList = (props: BuyboxListProps) => {
+const BuyboxList = () => {
   // const {data , isFetching } = useGetBuyBoxesIdsQuery(1);
   const { data, isFetching } = useGetBuyBoxesQuery(1);
 

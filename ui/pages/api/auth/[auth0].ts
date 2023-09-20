@@ -1,5 +1,6 @@
 import { handleAuth, handleLogin, handleLogout } from "@auth0/nextjs-auth0";
 
+console.log(process.env.AUTH0_SECRET);
 // export default handleAuth();
 export default handleAuth({
   login: handleLogin({

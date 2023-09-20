@@ -1,13 +1,14 @@
-import Property from '@/models/property';
-import { Button, Grid, Typography } from '@mui/material';
-import GridField from '@/components/Grid/GridField';
-import analyticsStyles from './Analytics.module.scss';
-import ThemedButton from '@/components/Buttons/ThemedButton';
-import { useState } from 'react';
-import ModalComponent from '@/components/Modals/ModalComponent';
+import Property from "@/models/property";
+import { Button, Grid, Typography } from "@mui/material";
+import GridField from "@/components/Grid/GridField";
+import analyticsStyles from "./Analytics.module.scss";
+import ThemedButton from "@/components/Buttons/ThemedButton";
+import { useState } from "react";
+import ModalComponent from "@/components/Modals/ModalComponent";
+import AnalyzedProperty from "@/models/analyzedProperty";
 
 type PropertyFeaturesProps = {
-  property: Property;
+  property: AnalyzedProperty;
 };
 const PropertyFeatures = (props: PropertyFeaturesProps) => {
   const [open, setOpen] = useState<boolean>(false);

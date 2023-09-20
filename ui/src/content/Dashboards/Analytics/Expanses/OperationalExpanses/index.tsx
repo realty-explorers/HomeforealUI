@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import Property from '@/models/property';
+import { useState } from "react";
+import Property from "@/models/property";
 import {
   Button,
   Checkbox,
@@ -16,20 +16,21 @@ import {
   TableCell,
   TableContainer,
   TableHead,
-  TableRow
-} from '@mui/material';
-import GridField from '@/components/Grid/GridField';
-import ValueCard from '@/components/Cards/ValueCard';
-import styled from '@emotion/styled';
-import analyticsStyles from '../../Analytics.module.scss';
-import MonthlyExpanses from './MonthlyExpases';
+  TableRow,
+} from "@mui/material";
+import GridField from "@/components/Grid/GridField";
+import ValueCard from "@/components/Cards/ValueCard";
+import styled from "@emotion/styled";
+import analyticsStyles from "../../Analytics.module.scss";
+import MonthlyExpanses from "./MonthlyExpases";
+import AnalyzedProperty from "@/models/analyzedProperty";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: 'none'
+  borderBottom: "none",
 }));
 
 type OperationalExpansesProps = {
-  property: Property;
+  property: AnalyzedProperty;
 };
 const OperationalExpanses = (props: OperationalExpansesProps) => {
   return (

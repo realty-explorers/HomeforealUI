@@ -7,7 +7,7 @@ import { Box, Button, Container, Grid, Slide } from "@mui/material";
 import Footer from "@/components/Footer";
 import Map from "@/content/Dashboards/RealEstate/Map";
 import Deal from "@/models/deal";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import MoreDetailsModal from "@/content/Dashboards/RealEstate/DetailsPanel/MoreDetailsModal";
 import PropertyHeader from "@/content/Dashboards/Analytics/PropertyHeader";
 import PropertyFacts from "@/content/Dashboards/Analytics/PropertyFacts";
@@ -19,17 +19,26 @@ import CompsSection from "@/content/Dashboards/Analytics/CompsSection";
 import ExpansesCalculator from "@/content/Dashboards/Analytics/Expanses/ExpansesCalculator";
 import RentComparable from "@/content/Dashboards/Analytics/RentComparable";
 import OperationalExpanses from "@/content/Dashboards/Analytics/Expanses/OperationalExpanses";
-import Property from "@/models/property";
 import clsx from "clsx";
-import { selectProperties } from "@/store/slices/propertiesSlice";
+import {
+  selectProperties,
+  setSelectedComps,
+} from "@/store/slices/propertiesSlice";
+import { Property } from "@/models/analyzedProperty";
+
 // import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 
 const DashboardRealEstate = (props: any) => {
   // const { data, status }: any = useSession({
   //   required: true
   // });
-  const { selectedDeal } = useSelector(selectProperties);
-  const openMoreDetails = selectedDeal;
+  const dispatch = useDispatch();
+  const { selectedProperty, selectedComps } = useSelector(selectProperties);
+  const openMoreDetails = selectedProperty;
+
+  const handleSetSelectedComps = (compsProperties: Property[]) => {
+    dispatch(setSelectedComps(compsProperties));
+  };
 
   return (
     <>
@@ -45,17 +54,25 @@ const DashboardRealEstate = (props: any) => {
             openMoreDetails ? "left-0" : "-left-full",
           ])}
         >
-          <PropertyHeader deal={selectedDeal} />
-          <PropertyFacts property={{} as Property} />
-          <PropertyFeatures property={{} as Property} />
-          <EnvironmentalIndicators property={{} as Property} />
-          <OwnershipInfo property={{} as Property} />
-          <SaleComparable property={{} as Property} />
-          <CompsSection property={{} as Property} />
-          <ExpansesCalculator property={selectedDeal?.property} />
-          <RentComparable property={{} as Property} />
-          <CompsSection property={{} as Property} />
-          <OperationalExpanses property={{} as Property} />
+          {selectedProperty && (
+            <>
+              <PropertyHeader property={selectedProperty} />
+              <PropertyFacts property={selectedProperty} />
+              {/* <PropertyFeatures property={selectedProperty} /> */}
+              {/* <EnvironmentalIndicators property={selectedProperty} /> */}
+              {/* <OwnershipInfo property={selectedProperty} /> */}
+              <SaleComparable property={selectedProperty} />
+              <CompsSection
+                property={selectedProperty}
+                selectedComps={selectedComps}
+                setSelectedComps={(comps) => dispatch(setSelectedComps(comps))}
+              />
+              <ExpansesCalculator property={selectedProperty} />
+              {/* <RentComparable property={selectedProperty} /> */}
+              {/* <CompsSection property={selectedProperty} /> */}
+              {/* <OperationalExpanses property={selectedProperty} /> */}
+            </>
+          )}
         </div>
 
         <div
