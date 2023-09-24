@@ -67,12 +67,16 @@ const BuyboxItemWrapper = ({ data }) => {
   );
 };
 
-const BuyboxList = () => {
+type BuyboxListProps = {
+  setShowEditBuyBox: (show: boolean) => void;
+};
+
+const BuyboxList = (props: BuyboxListProps) => {
   // const {data , isFetching } = useGetBuyBoxesIdsQuery(1);
   const { data, isFetching } = useGetBuyBoxesQuery(1);
 
   const handleNewBuybox = () => {
-    alert("new buybox");
+    props.setShowEditBuyBox(true);
   };
 
   return (
