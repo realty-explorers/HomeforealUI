@@ -10,7 +10,12 @@ import {
   setSelectedComps,
   setSelectedProperty,
 } from "@/store/slices/propertiesSlice";
-import { GoogleMap, useJsApiLoader } from "@react-google-maps/api";
+import {
+  GoogleMap,
+  Marker,
+  MarkerClusterer,
+  useJsApiLoader,
+} from "@react-google-maps/api";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -146,6 +151,42 @@ const MapComponent: React.FC<MapComponentProps> = (
   }, []);
 
   useEffect(() => {
+    // const infoWindow = new google.maps.InfoWindow({});
+    //     const infoWindow = new google.maps.OverlayView();
+    //     if (map && propertiesState.data) {
+    //       const markers = propertiesState.data.map((property) => {
+    //         const name = property.property.bedrooms;
+    //         const [lat, lng] = [
+    //           property.property.latitude,
+    //           property.property.longitude,
+    //         ];
+    //         const marker = new google.maps.Marker({
+    //           position: {
+    //             lat,
+    //             lng,
+    //           },
+    //         });
+    //         marker.addListener("click", () => {
+    //           infoWindow.setPosition({ lat, lng });
+    //           infoWindow.setContent(`
+    // <div><h2>${name}</h2></div>
+    // `);
+    //           infoWindow.open({ map });
+    //         });
+    //         // const marker = (
+    //         //   <Marker
+    //         //     position={{
+    //         //       lat: property.property.latitude,
+    //         //       lng: property.property.longitude,
+    //         //     }}
+    //         //   />
+    //         // );
+    //         return marker;
+    //       });
+    //       const m = <Marker position={{ lat: 0, lng: 0 }} />;
+    //
+    //       new MarkerClusterer({ markers, map });
+    //     }
     // console.log(locationState.data?.center.latitude);
     if (selectedProperty && map) {
       // map.panTo({
@@ -169,6 +210,24 @@ const MapComponent: React.FC<MapComponentProps> = (
   const onUnmount = useCallback(function callback() {
     updateMap(null);
   }, []);
+
+  const clusterStyles = [
+    {
+      height: 50,
+      textColor: "#ffffff",
+      width: 50,
+      // url:
+      //   'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" height="50" width="100"%3E%3Ccircle cx="25" cy="25" r="20" stroke="black" stroke-width="3" fill="green" /%3E%3C/svg%3E',
+      url: "https://cdn-icons-png.flaticon.com/512/1632/1632646.png",
+    },
+    // {
+    //   height: 50,
+    //   textColor: "#ffffff",
+    //   width: 50,
+    //   // url:
+    //   //   'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" height="50" width="100"%3E%3Ccircle cx="25" cy="25" r="20" stroke="black" stroke-width="3" fill="red" /%3E%3C/svg%3E',
+    // },
+  ];
 
   return isLoaded
     ? (
@@ -217,10 +276,22 @@ const MapComponent: React.FC<MapComponentProps> = (
             </>
           )
           : (
-            <PropertiesMarkers
-              properties={propertiesState.data}
-              setSelectedProperty={handleSelectProperty}
-            />
+            <MarkerClusterer
+              options={{
+                averageCenter: true,
+                styles: clusterStyles,
+              }}
+            >
+              {(clusterer) => (
+                <>
+                  <PropertiesMarkers
+                    properties={propertiesState.data}
+                    setSelectedProperty={handleSelectProperty}
+                    clusterer={clusterer}
+                  />
+                </>
+              )}
+            </MarkerClusterer>
           )}
       </GoogleMap>
     )
