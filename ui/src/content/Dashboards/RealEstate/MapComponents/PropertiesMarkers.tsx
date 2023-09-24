@@ -7,6 +7,7 @@ import AnalyzedProperty from "@/models/analyzedProperty";
 type PropertiesMarkersProps = {
   properties: AnalyzedProperty[];
   setSelectedProperty: (property: AnalyzedProperty) => void;
+  clusterer: any;
 };
 const PropertiesMarkers = (props: PropertiesMarkersProps) => {
   const [hoveredProperty, setHoveredProperty] = useState<string>("");
@@ -35,6 +36,7 @@ const PropertiesMarkers = (props: PropertiesMarkersProps) => {
               lat: property.property.latitude,
               lng: property.property.longitude,
             }}
+            clusterer={props.clusterer}
             icon={{
               url: "/static/images/pins/homePin.png",
               scaledSize: new google.maps.Size(60, 60),
