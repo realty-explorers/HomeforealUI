@@ -1,16 +1,13 @@
 interface LocationSuggestion {
-    "display": string;
-    "resultType": string;
-    "metaData": {
-        "regionId": number;
-        "regionType": string;
-        "city": string;
-        "county": string;
-        "state": string;
-        "country": string;
-        "zipCode": number;
-        "lat": number;
-        "lng": number;
-    }
+  display: string;
+  type: string;
+  addressLine?: string;
+  street?: string;
+  neighborhood?: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
+  latitude?: number;
+  longitude?: number;
 }
 export default LocationSuggestion;

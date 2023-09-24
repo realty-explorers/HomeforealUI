@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   Button,
   Checkbox,
@@ -10,35 +10,39 @@ import {
   List,
   ListItem,
   ListItemText,
-  Typography
-} from '@mui/material';
-import { Delete } from '@mui/icons-material';
-import ExpansesRow from '../ExpansesRow';
-import styles from '../ExpansesCalculator.module.scss';
-import { TransitionGroup } from 'react-transition-group';
-import Property from '@/models/property';
+  Typography,
+} from "@mui/material";
+import { Delete } from "@mui/icons-material";
+import ExpansesRow from "../ExpansesRow";
+import styles from "../ExpansesCalculator.module.scss";
+import { TransitionGroup } from "react-transition-group";
+import Property from "@/models/property";
+import AnalyzedProperty from "@/models/analyzedProperty";
+import { priceFormatter } from "@/utils/converters";
 
 type InitialInvestmentProps = {
-  property: Property;
+  property: AnalyzedProperty;
   setExpanses: (value: number) => void;
+  active: boolean;
+  toggleActive: () => void;
 };
 const FinancingExpanses = (props: InitialInvestmentProps) => {
   const priceTypes = [
-    { label: 'ARV', value: props.property?.price },
-    { label: 'Listing Price', value: props.property?.price || 0 }
+    { label: "ARV", value: props.property?.arv },
+    { label: "Listing Price", value: props.property?.listing_price || 0 },
   ];
 
   const [expanses, setExpanses] = useState<{ label: string; value: number }[]>(
-    []
+    [],
   );
 
   useEffect(() => {
     setExpanses([
-      { label: 'Down Payment', value: 0 },
-      { label: 'Loan Amount', value: 0 },
-      { label: 'Origination Fee', value: 0 },
-      { label: 'Interest Rate', value: 0 },
-      { label: 'Points', value: 0 }
+      { label: "Down Payment", value: 0 },
+      { label: "Loan Amount", value: 0 },
+      { label: "Origination Fee", value: 0 },
+      { label: "Interest Rate", value: 0 },
+      { label: "Points", value: 0 },
     ]);
   }, []);
 
@@ -54,13 +58,13 @@ const FinancingExpanses = (props: InitialInvestmentProps) => {
   const handleAddExpanse = () => {
     setExpanses([
       ...expanses,
-      { label: `Expanse ${expanses.length + 1}`, value: 0 }
+      { label: `Expanse ${expanses.length + 1}`, value: 0 },
     ]);
   };
 
   const handleRemoveExpanse = (label: string) => {
     const updatedExpanses = expanses.filter(
-      (expanse) => expanse.label !== label
+      (expanse) => expanse.label !== label,
     );
     setExpanses(updatedExpanses);
     props.setExpanses(totalExpanses(updatedExpanses));
@@ -69,14 +73,18 @@ const FinancingExpanses = (props: InitialInvestmentProps) => {
   return (
     <Grid container>
       <Grid container justifyContent="center" alignItems="center" item xs={6}>
-        <Checkbox title="Select this property" />
+        <Checkbox
+          title="Select this property"
+          checked={props.active}
+          onChange={props.toggleActive}
+        />
         <Typography className={styles.checkboxLabel}>
           Financing Expanses
         </Typography>
       </Grid>
       <Grid item container xs={6} justifyContent="center">
         <Typography className={styles.totalExpansesLabel}>
-          ${totalExpanses(expanses)}
+          {priceFormatter(Math.round(totalExpanses(expanses)))}
         </Typography>
       </Grid>
       <List>
@@ -88,8 +96,7 @@ const FinancingExpanses = (props: InitialInvestmentProps) => {
                 expanse={expanse.value}
                 removeExpanse={handleRemoveExpanse}
                 setExpanse={(value) =>
-                  handleChangeExpanses(value, expanse.label)
-                }
+                  handleChangeExpanses(value, expanse.label)}
                 priceTypes={priceTypes}
               />
             </Collapse>

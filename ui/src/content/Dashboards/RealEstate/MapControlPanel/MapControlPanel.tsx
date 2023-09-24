@@ -1,13 +1,16 @@
-import AutocompleteInput from '@/layouts/SidebarLayout/Header/Buttons/Search/AutocompleteInput';
-import LocationSuggestion from '@/models/location_suggestions';
-import { selectLocation, setSuggestion } from '@/store/slices/locationSlice';
-import { useDispatch, useSelector } from 'react-redux';
-import MainControls from '../MapControls/MainControls';
-import { useLazyGetLocationDataQuery } from '@/store/services/locationApiService';
+import AutocompleteInput from "@/layouts/SidebarLayout/Header/Buttons/Search/AutocompleteInput";
+import LocationSuggestion from "@/models/location_suggestions";
+import { selectLocation, setSuggestion } from "@/store/slices/locationSlice";
+import { useDispatch, useSelector } from "react-redux";
+import MainControls from "../MapControls/MainControls";
+import { useLazyGetLocationDataQuery } from "@/store/services/locationApiService";
 import {
-  useLazyGetDealsQuery,
-  useLazyGetPropertiesQuery
-} from '@/store/services/propertiesApiService';
+  useLazyGetPropertiesQuery,
+} from "@/store/services/propertiesApiService";
+import { Button, Collapse } from "@mui/material";
+import TuneIcon from "@mui/icons-material/Tune";
+import clsx from "clsx";
+import { useState } from "react";
 
 type MapControlPanelProps = {};
 const MapControlPanel = (props: MapControlPanelProps) => {
@@ -15,7 +18,7 @@ const MapControlPanel = (props: MapControlPanelProps) => {
   const { suggestion } = useSelector(selectLocation);
   const [getLocationData, locationDataState] = useLazyGetLocationDataQuery();
   const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
-  const [getDealsData, dealsDataState] = useLazyGetDealsQuery();
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   const handleSearch = async () => {
     const locationDataRequest = getLocationData(suggestion, true);
@@ -27,24 +30,37 @@ const MapControlPanel = (props: MapControlPanelProps) => {
     // const response = await getDealsData(suggestion).unwrap();
     // console.log(`deals resonse: ${isError}, ${error}, ${status}`, response);
 
-    const response = await getDealsData(suggestion).unwrap();
-    console.log('response from auto: ', response);
+    // const response = await getDealsData(suggestion).unwrap();
+    // console.log('response from auto: ', response);
   };
   return (
     <div className="absolute left-0 top-0 flex p-4">
       <div className="flex flex-col">
-        <div className="w-80">
-          <AutocompleteInput
-            location={suggestion}
-            setLocation={(location: LocationSuggestion) =>
-              dispatch(setSuggestion(location))
-            }
-            search={handleSearch}
-          />
+        <div className="flex">
+          <div className="w-80">
+            <AutocompleteInput
+              location={suggestion}
+              setLocation={(location: LocationSuggestion) =>
+                dispatch(setSuggestion(location))}
+              search={handleSearch}
+            />
+          </div>
+          <div className="w-40 flex justify-center items-center">
+            <Button
+              onClick={() => setFiltersOpen(!filtersOpen)}
+              startIcon={<TuneIcon />}
+              className="text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl"
+            >
+              Filters
+            </Button>
+          </div>
         </div>
-        <div className="p-10 bg-white/[.8] rounded-md mt-4">
-          <MainControls />
-        </div>
+
+        <Collapse in={filtersOpen}>
+          <div className={clsx(["p-10 bg-white/[.8] rounded-md mt-4 w-80"])}>
+            <MainControls />
+          </div>
+        </Collapse>
       </div>
     </div>
   );

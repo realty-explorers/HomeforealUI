@@ -16,6 +16,9 @@ export interface Filter {
     maxBaths: number;
     minBeds: number;
     maxBeds: number;
+    minSqft: number;
+    maxSqft: number;
+    propertyTypes: PropertyType[];
 }
 
 // Initial state
@@ -28,6 +31,9 @@ const initialState: Filter = {
     maxBaths: 10,
     minBeds: 0,
     maxBeds: 10,
+    minSqft: 0,
+    maxSqft: 10000,
+    propertyTypes: [PropertyType.SINGLE_FAMILY, PropertyType.CONDO, PropertyType.MULTI_FAMILY]
 };
 
 // Actual Slice
@@ -60,13 +66,22 @@ export const filterSlice = createSlice({
         setMaxBeds(state, action: PayloadAction<number>) {
             state.maxBeds = action.payload;
         },
+        setMinSqft(state, action: PayloadAction<number>) {
+            state.minSqft = action.payload;
+        },
+        setMaxSqft(state, action: PayloadAction<number>) {
+            state.maxSqft = action.payload;
+        },
+        setPropertyTypes(state, action: PayloadAction<PropertyType[]>) {
+            state.propertyTypes = action.payload;
+        }
     },
 
 });
 
 
 export const filterReducer = filterSlice.reducer;
-export const { setMinListingPrice, setMaxListingPrice, setCompsMargin, setArvMargin, setMinBaths, setMaxBaths, setMinBeds, setMaxBeds } = filterSlice.actions;
+export const { setMinListingPrice, setMaxListingPrice, setCompsMargin, setArvMargin, setMinBaths, setMaxBaths, setMinBeds, setMaxBeds, setMinSqft, setMaxSqft, setPropertyTypes } = filterSlice.actions;
 export const selectFilter: (state: AppState) => Filter = (state: AppState) => state.filter;
 
 export default filterSlice;

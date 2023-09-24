@@ -1,9 +1,9 @@
-import Property from '@/models/property';
-import { Grid, Typography } from '@mui/material';
-import styles from './PropertyHeaderStyles.module.scss';
+import AnalyzedProperty from "@/models/analyzedProperty";
+import { Grid, Typography } from "@mui/material";
+import styles from "./PropertyHeaderStyles.module.scss";
 
 type PropertyDetailsProps = {
-  property: Property;
+  property: AnalyzedProperty;
 };
 const PropertyDetails = (props: PropertyDetailsProps) => {
   return (

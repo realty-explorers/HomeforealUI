@@ -63,8 +63,8 @@ export default class DealsFinder {
         }
 
         const foundProperties = await this.scrapingManager.scrapeProperties(regionProperties);
-        await this.propertyRepository.saveProperties(foundProperties, regionProperties.state);
-        await this.propertyRepository.updateRegionStatus(updatedRegionStatus);
+        // await this.propertyRepository.saveProperties(foundProperties, regionProperties.state);
+        // await this.propertyRepository.updateRegionStatus(updatedRegionStatus);
 
         properties.push(...foundProperties)
         return properties;

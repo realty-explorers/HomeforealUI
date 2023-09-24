@@ -7,11 +7,11 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
-  Typography
-} from '@mui/material';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import styles from './ExpansesCalculator.module.scss';
-import { useState } from 'react';
+  Typography,
+} from "@mui/material";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import styles from "./ExpansesCalculator.module.scss";
+import { useState } from "react";
 
 type ExpansesRowProps = {
   label: string;
@@ -22,7 +22,7 @@ type ExpansesRowProps = {
 };
 const ExpansesRow = (props: ExpansesRowProps) => {
   const [selectedType, setSelectedType] = useState<string>(
-    props.priceTypes?.[0].label
+    props.priceTypes?.[0].label,
   );
 
   const handleChangeType = (event) => {
@@ -37,14 +37,14 @@ const ExpansesRow = (props: ExpansesRowProps) => {
   const handleChangePercentage = (event) => {
     const value = event.target.value;
     const currentExpanse = props.priceTypes?.find(
-      (type) => type.label === selectedType
+      (type) => type.label === selectedType,
     )?.value;
     props.setExpanse((value * currentExpanse) / 100);
   };
 
   return (
     <Grid container alignItems="center" columns={17}>
-      <Grid item xs={4} padding={'0 1rem 0 1rem'}>
+      <Grid item xs={4} padding={"0 1rem 0 1rem"}>
         <Typography className={styles.label}>{props.label}</Typography>
       </Grid>
       <Grid item xs={4} paddingX={1}>
@@ -55,12 +55,10 @@ const ExpansesRow = (props: ExpansesRowProps) => {
             id="outlined-adornment-amount"
             endAdornment={<InputAdornment position="start">%</InputAdornment>}
             label="Amount"
-            value={
-              (props.expanse /
-                props.priceTypes?.find((type) => type.label === selectedType)
-                  ?.value) *
-              100
-            }
+            value={(props.expanse /
+              props.priceTypes?.find((type) => type.label === selectedType)
+                ?.value) *
+              100}
             onChange={handleChangePercentage}
           />
         </FormControl>
@@ -80,8 +78,10 @@ const ExpansesRow = (props: ExpansesRowProps) => {
                 {type.label}
               </MenuItem>
             ))}
-            {/* <MenuItem value="listingPrice">Listing Price</MenuItem>
-            <MenuItem value="arv">ARV</MenuItem> */}
+            {
+              /* <MenuItem value="listingPrice">Listing Price</MenuItem>
+            <MenuItem value="arv">ARV</MenuItem> */
+            }
           </Select>
         </FormControl>
       </Grid>

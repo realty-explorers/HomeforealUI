@@ -1,28 +1,43 @@
-import Property from '@/models/property';
-import { Box, Card, Grid, Typography } from '@mui/material';
-import GridTableField from '@/components/Grid/GridTableField';
+import { Box, Card, Grid, Typography } from "@mui/material";
+import GridTableField from "@/components/Grid/GridTableField";
 
-import analyticsStyles from '../Analytics.module.scss';
-import styles from './CompsSection.module.scss';
-import PropertyCard from './PropertyCard';
-import CompsCard from './CompsCard';
-import CompsProperty from '@/models/comps_property';
-import styled from '@emotion/styled';
-import { Height } from '@mui/icons-material';
+import analyticsStyles from "../Analytics.module.scss";
+import styles from "./CompsSection.module.scss";
+import PropertyCard from "./PropertyCard";
+import CompsCard from "./CompsCard";
+import CompsProperty from "@/models/comps_property";
+import styled from "@emotion/styled";
+import { Height } from "@mui/icons-material";
+import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
+import { setSelectedComps } from "@/store/slices/propertiesSlice";
 
 const Wrapper = styled(Box)(({ theme }) => ({
-  width: '10rem',
-  overflow: 'hidden'
+  width: "10rem",
+  overflow: "hidden",
 }));
 
 type CompsSectionProps = {
-  property: Property;
+  property: AnalyzedProperty;
+  selectedComps: Property[];
+  setSelectedComps: (compsProperties: Property[]) => void;
 };
 const CompsSection = (props: CompsSectionProps) => {
+  const handleToggle = (compsProperty: Property) => {
+    if (props.selectedComps.includes(compsProperty)) {
+      const filteredComps = props.selectedComps.filter((property) =>
+        property !== compsProperty
+      );
+      props.setSelectedComps(filteredComps);
+    } else {
+      const newComps = [...props.selectedComps, compsProperty];
+      props.setSelectedComps(newComps);
+    }
+  };
+
   return (
     <Grid className={`${analyticsStyles.sectionContainer}`}>
       <Typography className={styles.compsSectionInfo}>
-        We found 15 comps that match your search
+        We found {props.property.CompsData?.length} comps that match your search
       </Typography>
       <Typography className={styles.compsSectionEditText}>
         Edit comps filter
@@ -30,11 +45,20 @@ const CompsSection = (props: CompsSectionProps) => {
 
       <Wrapper className={styles.cardsWrapper}>
         <Grid item>
-          <PropertyCard property={{} as Property} />
+          <PropertyCard
+            property={props.property}
+            compsProperties={props.selectedComps}
+          />
         </Grid>
-        {Array.from(Array(10)).map((_, i) => (
-          <Grid item key={i}>
-            <CompsCard compsProperty={{} as CompsProperty} index={i + 1} />
+        {props.property.CompsData?.map((compsProperty, index) => (
+          <Grid item key={index}>
+            <CompsCard
+              compsProperty={compsProperty}
+              index={index}
+              selected={props.selectedComps.includes(compsProperty)}
+              toggle={() =>
+                handleToggle(compsProperty)}
+            />
           </Grid>
         ))}
       </Wrapper>

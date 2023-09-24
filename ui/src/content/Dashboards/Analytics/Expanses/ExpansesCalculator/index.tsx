@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
-import Property from '@/models/property';
+import { useEffect, useState } from "react";
+import Property from "@/models/property";
 import {
   Button,
   Checkbox,
@@ -17,41 +17,51 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
-} from '@mui/material';
-import GridField from '@/components/Grid/GridField';
-import ValueCard from '@/components/Cards/ValueCard';
-import styled from '@emotion/styled';
-import analyticsStyles from '../../Analytics.module.scss';
-import styles from './ExpansesCalculator.module.scss';
-import ExpansesRow from '../ExpansesRow';
-import InitialInvestment from './InitialInvestment';
-import FinancingExpanses from './FinancingExpanses';
-import { set } from 'nprogress';
+  Typography,
+} from "@mui/material";
+import GridField from "@/components/Grid/GridField";
+import ValueCard from "@/components/Cards/ValueCard";
+import styled from "@emotion/styled";
+import analyticsStyles from "../../Analytics.module.scss";
+import styles from "./ExpansesCalculator.module.scss";
+import ExpansesRow from "../ExpansesRow";
+import InitialInvestment from "./InitialInvestment";
+import FinancingExpanses from "./FinancingExpanses";
+import { set } from "nprogress";
+import AnalyzedProperty from "@/models/analyzedProperty";
+import { priceFormatter } from "@/utils/converters";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: 'none'
+  borderBottom: "none",
 }));
 
 type ExpansesCalculatorProps = {
-  property: Property;
+  property: AnalyzedProperty;
 };
 const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
-  const [initialInvestmentExpanses, setInitialInvestmentExpanses] =
-    useState<number>(0);
+  const [initialInvestmentExpanses, setInitialInvestmentExpanses] = useState<
+    number
+  >(0);
   const [financingExpanses, setFinancingExpanses] = useState<number>(0);
+  const [initialInvestmentActive, setInitialInvestmentActive] = useState(false);
+  const [finanicingExpansesActive, setFinancingExpansesActive] = useState(
+    false,
+  );
 
-  const totalExpanses = initialInvestmentExpanses + financingExpanses;
+  const totalExpanses =
+    (initialInvestmentActive ? initialInvestmentExpanses : 0) +
+    (finanicingExpansesActive ? financingExpanses : 0);
 
   useEffect(() => {
     setInitialInvestmentExpanses(0);
     setFinancingExpanses(0);
+    setInitialInvestmentActive(false);
+    setFinancingExpansesActive(false);
   }, [props.property]);
 
   return (
     <Grid
       className={`${analyticsStyles.blackBorderedSection} ${analyticsStyles.sectionContainer}`}
-      // sx={{ display: 'flex' }}
     >
       <Grid container justifyContent="center" rowGap={3}>
         <Grid item xs={6}>
@@ -60,16 +70,20 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
         <Grid item xs={6}>
           <ValueCard
             title="Estimated Expanses"
-            value={`$${totalExpanses.toFixed(0)}`}
+            value={priceFormatter(totalExpanses.toFixed())}
           />
         </Grid>
         <InitialInvestment
           property={props.property}
           setExpanses={setInitialInvestmentExpanses}
+          active={initialInvestmentActive}
+          toggleActive={() => setInitialInvestmentActive((prev) => !prev)}
         />
         <FinancingExpanses
           property={props.property}
           setExpanses={setFinancingExpanses}
+          active={finanicingExpansesActive}
+          toggleActive={() => setFinancingExpansesActive((prev) => !prev)}
         />
       </Grid>
     </Grid>

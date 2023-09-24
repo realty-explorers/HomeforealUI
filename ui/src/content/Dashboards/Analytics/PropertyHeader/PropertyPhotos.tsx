@@ -1,8 +1,10 @@
-import ThemedButton from '@/components/Buttons/ThemedButton';
-import Property from '@/models/property';
-import { Box, Grid } from '@mui/material';
+import ThemedButton from "@/components/Buttons/ThemedButton";
+import Property from "@/models/property";
+import { Box, Grid } from "@mui/material";
 
 const Image = (props: any) => {
+  const defaultImage =
+    "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
   return (
     <Box
       {...props}
@@ -11,22 +13,22 @@ const Image = (props: any) => {
       borderRadius="0.5rem"
       component="img"
       alt="The house from the offer."
-      src={props.src || 'https://via.placeholder.com/150'}
+      src={props.src || defaultImage}
     />
   );
 };
 
 const ViewMore = () => {
   return (
-    <div style={{ position: 'relative', height: '100%', width: '100%   ' }}>
-      <Image sx={{ opacity: '0.5' }} />
+    <div style={{ position: "relative", height: "100%", width: "100%   " }}>
+      <Image sx={{ opacity: "0.5" }} />
       <ThemedButton
         text="See More"
         sx={{
-          position: 'absolute',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)'
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
         }}
       />
     </div>

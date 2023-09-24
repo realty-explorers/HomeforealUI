@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+@import url('https://fonts.googleapis.com/css?family=Playfair Display');
+
 * {
   box-sizing: border-box;
 }
@@ -12,4 +15,20 @@ input:focus {
 img {
   max-width: 100%;
   height: auto;
+}
+
+.chipShadow {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.buttonText {
+  color: var(--text-color, #252b42);
+
+  /* h5 */
+  font-family: Poppins;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.5rem; /* 150% */
+  letter-spacing: 0.00625rem;
 }

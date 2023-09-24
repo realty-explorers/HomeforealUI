@@ -1,44 +1,49 @@
-import React, { useEffect, useState } from 'react';
-import { Grid, styled } from '@mui/material';
-import SliderRangeInput from '../FormFields/SliderRangeInput';
-import SliderInput from '../FormFields/SliderInput';
+import React, { useEffect, useState } from "react";
+import { Grid, styled } from "@mui/material";
+import SliderRangeInput from "../FormFields/SliderRangeInput";
+import SliderInput from "../FormFields/SliderInput";
 import {
   priceFormatter,
   priceReverseScale,
-  priceScale
-} from '@/utils/converters';
-import SliderField from './SliderField';
+  priceScale,
+} from "@/utils/converters";
+import SliderField from "./SliderField";
 import {
   selectFilter,
   setArvMargin,
   setCompsMargin,
   setMaxBaths,
-  setMinBeds,
   setMaxBeds,
   setMaxListingPrice,
+  setMaxSqft,
   setMinBaths,
-  setMinListingPrice
-} from '@/store/slices/filterSlice';
-import { useDispatch, useSelector } from 'react-redux';
+  setMinBeds,
+  setMinListingPrice,
+  setMinSqft,
+  setPropertyTypes,
+} from "@/store/slices/filterSlice";
+import { useDispatch, useSelector } from "react-redux";
+import PropertyTypes from "./PropertyTypes";
+import PropertyTypeFilter from "./PropertyTypeFilter";
 
-const GridDiv = styled('div')(({}) => ({
-  display: 'flex',
-  flexDirection: 'row',
-  width: '100%',
-  height: '2rem',
-  '> svg': {
-    marginBottom: '0.5em'
+const GridDiv = styled("div")(({}) => ({
+  display: "flex",
+  flexDirection: "row",
+  width: "100%",
+  height: "2rem",
+  "> svg": {
+    marginBottom: "0.5em",
   },
-  margin: '0 0.2em'
+  margin: "0 0.2em",
 }));
 
 const LabelContainer = styled(Grid)(({ theme }) => ({
-  display: 'flex'
+  display: "flex",
 }));
 
 type MainControlsProps = {};
 const MainControls: React.FC<MainControlsProps> = (
-  props: MainControlsProps
+  props: MainControlsProps,
 ) => {
   const dispatch = useDispatch();
 
@@ -50,20 +55,23 @@ const MainControls: React.FC<MainControlsProps> = (
     maxBeds,
     minBeds,
     maxListingPrice,
-    minListingPrice
+    minListingPrice,
+    minSqft,
+    maxSqft,
+    propertyTypes,
   } = useSelector(selectFilter);
 
   return (
-    <>
+    <div>
       <SliderField fieldName="Listing Price">
         <SliderRangeInput
           inputProps={{
-            title: 'Listing Price',
-            name: 'listingPrice',
+            title: "Listing Price",
+            name: "listingPrice",
             min: 0,
             max: 60,
             step: 1,
-            format: priceFormatter
+            format: priceFormatter,
           }}
           minValue={minListingPrice}
           maxValue={maxListingPrice}
@@ -73,41 +81,41 @@ const MainControls: React.FC<MainControlsProps> = (
         />
       </SliderField>
 
-      <SliderField fieldName="Comps Margin">
-        <SliderInput
-          inputProps={{
-            title: 'Comps Margin',
-            name: 'underComps',
-            min: 0,
-            max: 100,
-            step: 1
-          }}
-          value={compsMargin}
-          update={(value) => dispatch(setCompsMargin(value))}
-        />
-      </SliderField>
-      <SliderField fieldName="ARV Margin">
-        <SliderInput
-          inputProps={{
-            title: 'ARV Margin',
-            name: 'arvMargin',
-            min: 0,
-            max: 100,
-            step: 1
-          }}
-          value={arvMargin}
-          update={(value) => dispatch(setArvMargin(value))}
-        />
-      </SliderField>
+      {/* <SliderField fieldName="Comps Margin"> */}
+      {/*   <SliderInput */}
+      {/*     inputProps={{ */}
+      {/*       title: 'Comps Margin', */}
+      {/*       name: 'underComps', */}
+      {/*       min: 0, */}
+      {/*       max: 100, */}
+      {/*       step: 1 */}
+      {/*     }} */}
+      {/*     value={compsMargin} */}
+      {/*     update={(value) => dispatch(setCompsMargin(value))} */}
+      {/*   /> */}
+      {/* </SliderField> */}
+      {/* <SliderField fieldName="ARV Margin"> */}
+      {/*   <SliderInput */}
+      {/*     inputProps={{ */}
+      {/*       title: 'ARV Margin', */}
+      {/*       name: 'arvMargin', */}
+      {/*       min: 0, */}
+      {/*       max: 100, */}
+      {/*       step: 1 */}
+      {/*     }} */}
+      {/*     value={arvMargin} */}
+      {/*     update={(value) => dispatch(setArvMargin(value))} */}
+      {/*   /> */}
+      {/* </SliderField> */}
 
       <SliderField fieldName="Baths">
         <SliderRangeInput
           inputProps={{
-            title: 'Baths',
-            name: 'baths',
+            title: "Baths",
+            name: "baths",
             min: 1,
             max: 9,
-            step: 1
+            step: 1,
           }}
           minValue={minBaths}
           maxValue={maxBaths}
@@ -118,11 +126,11 @@ const MainControls: React.FC<MainControlsProps> = (
       <SliderField fieldName="Beds">
         <SliderRangeInput
           inputProps={{
-            title: 'Beds',
-            name: 'beds',
+            title: "Beds",
+            name: "beds",
             min: 1,
             max: 9,
-            step: 1
+            step: 1,
           }}
           minValue={minBeds}
           maxValue={maxBeds}
@@ -130,12 +138,28 @@ const MainControls: React.FC<MainControlsProps> = (
           updateMaxValue={(value) => dispatch(setMaxBeds(value))}
         />
       </SliderField>
-      {/* <PropertyTypeFilter
-        propertyTypes={props.searchData.propertyTypes}
-        update={props.update}
-      /> */}
+      <SliderField fieldName="Building Sqft">
+        <SliderRangeInput
+          inputProps={{
+            title: "Building Sqft",
+            name: "sqft",
+            min: 0,
+            max: 10000,
+            step: 50,
+          }}
+          minValue={minSqft}
+          maxValue={maxSqft}
+          updateMinValue={(value) => dispatch(setMinSqft(value))}
+          updateMaxValue={(value) => dispatch(setMaxSqft(value))}
+          // scale={{ scale: priceScale, reverseScale: sqftScale }}
+        />
+      </SliderField>
+      {/* <PropertyTypeFilter */}
+      {/*   propertyTypes={propertyTypes} */}
+      {/*   updateTypes={(value) => dispatch(setPropertyTypes(value))} */}
+      {/* /> */}
       {/* <PropertyTypes /> */}
-    </>
+    </div>
   );
 };
 

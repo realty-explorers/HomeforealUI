@@ -1,4 +1,4 @@
-import Property from '@/models/property';
+import Property from "@/models/property";
 import {
   Button,
   Grid,
@@ -9,20 +9,21 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
-} from '@mui/material';
-import GridField from '@/components/Grid/GridField';
-import ValueCard from '@/components/Cards/ValueCard';
-import styled from '@emotion/styled';
-import analyticsStyles from './Analytics.module.scss';
-import styles from './RentComparable.module.scss';
+  Typography,
+} from "@mui/material";
+import GridField from "@/components/Grid/GridField";
+import ValueCard from "@/components/Cards/ValueCard";
+import styled from "@emotion/styled";
+import analyticsStyles from "./Analytics.module.scss";
+import styles from "./RentComparable.module.scss";
+import AnalyzedProperty from "@/models/analyzedProperty";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: 'none'
+  borderBottom: "none",
 }));
 
 type RentComparableProps = {
-  property: Property;
+  property: AnalyzedProperty;
 };
 const RentComparable = (props: RentComparableProps) => {
   return (
@@ -35,7 +36,7 @@ const RentComparable = (props: RentComparableProps) => {
       <Grid item xs={6}>
         <h1 className={analyticsStyles.sectionHeader}>Rent Comparable</h1>
       </Grid>
-      <Grid item xs={6} sx={{ marginBottom: '1rem' }}>
+      <Grid item xs={6} sx={{ marginBottom: "1rem" }}>
         <ValueCard title="Estimated Rent" value="$2,000" />
       </Grid>
       <Grid className={styles.tableWrapper}>
