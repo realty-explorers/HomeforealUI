@@ -16,6 +16,7 @@ const CompsMarker = (props: {
   handleMouseOut: any;
   hovered: boolean;
   iconUrl: string;
+  text?: string;
 }) => {
   return (
     <Marker
@@ -23,17 +24,23 @@ const CompsMarker = (props: {
         lat: props.compsProperty.latitude,
         lng: props.compsProperty.longitude,
       }}
+      label={{
+        text: props.text ?? "",
+        className: "mb-2 font-poppins font-bold",
+      }}
       icon={{
         url: props.iconUrl,
-        scaledSize: new google.maps.Size(40, 40),
+        // url: 'https://cdn.imgbin.com/19/23/15/icon-font-map-yellow-circle-aYzBs1QL.jpg'
+        scaledSize: new google.maps.Size(60, 60),
         strokeWeight: 10,
         strokeColor: "white",
       }}
       onMouseOver={() => props.handleMouseHover(props.compsProperty.address)}
       onMouseOut={() => props.handleMouseOut()}
-      animation={props.hovered ? google.maps.Animation.BOUNCE : null}
+      // animation={props.hovered ? google.maps.Animation.BOUNCE : null}
       onClick={() => openGoogleSearch(props.compsProperty.address)}
     >
+      <span>hi</span>
       {props.hovered && (
         <OverlayView
           position={{
@@ -87,6 +94,8 @@ const SoldPropertiesMarkers = (props: SoldPropertiesMarkersProps) => {
           handleMouseHover={handleMouseHover}
           handleMouseOut={handleMouseOut}
           hovered={hoveredProperty === compsProperty.address}
+          text={`${index + 1}`}
+          // iconUrl="https://cdn3.iconfinder.com/data/icons/flat-actions-icons-9/792/Star_Gold_Dark-512.png"
           iconUrl={false
             ? "/static/images/pins/greenPin.png"
             : "/static/images/pins/yellowPin.png"}

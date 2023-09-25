@@ -188,11 +188,14 @@ const MapComponent: React.FC<MapComponentProps> = (
     //       new MarkerClusterer({ markers, map });
     //     }
     // console.log(locationState.data?.center.latitude);
-    if (selectedProperty && map) {
-      // map.panTo({
-      //   lat: selectedProperty.property.latitude,
-      //   lng: selectedProperty.property.longitude,
-      // });
+    if (
+      selectedProperty && map && selectedProperty.property?.latitude &&
+      selectedProperty.property?.longitude
+    ) {
+      map.panTo({
+        lat: selectedProperty.property.latitude,
+        lng: selectedProperty.property.longitude,
+      });
     } else {
       if (locationState.data && map) {
         map.panTo({

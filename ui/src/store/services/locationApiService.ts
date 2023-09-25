@@ -26,8 +26,23 @@ export const locationApi = createApi({
     }),
     getLocationData: builder.query({
       // query: ({ display, type, city, state }) => ({ url: "data", params: { display, type, city, state } }),
-      query: ({ display, type, city, state }) =>
-        `data?display=${display}&type=${type}&city=${city}&state=${state}`,
+      query: ({ type, state, city, zipCode, neighborhood }) => {
+        let queryUrl = "";
+        switch (type) {
+          case "city":
+            queryUrl = new URLSearchParams({ type, state, city }).toString();
+            break;
+          case "neighborhood":
+            queryUrl = new URLSearchParams({ type, state, city, neighborhood })
+              .toString();
+            break;
+          default:
+            queryUrl = new URLSearchParams({ type, state }).toString();
+            break;
+        }
+        return `data?${queryUrl}`;
+        // return `data?display=&type=${type}&city=${city}&state=${state}`;
+      },
       transformResponse: (response: any) => response,
     }),
   }),

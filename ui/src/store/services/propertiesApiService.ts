@@ -1,5 +1,6 @@
 import Deal from "@/models/deal";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import data from "./mockData.json";
 
 const baseUrl = process.env.NEXT_PUBLIC_PROPERTIES_API_URL;
 const GENERAL_BUYBOX_ID = "1fc03787-65ca-44b2-aec3-f9b707a2748f";
@@ -29,6 +30,15 @@ export const propertiesApi = createApi({
       },
       transformResponse: (response: any) => {
         try {
+          const set = [];
+          const a = data[0];
+          for (let i = 0; i < 50; i++) {
+            a.property.longitude = a.property.longitude + 0.00001 * i;
+            a.property.latitude = a.property.latitude + 0.00001 * i;
+            set.push(JSON.parse(JSON.stringify(a)));
+          }
+          console.log(set);
+          return set;
           return response.slice(0, 50);
         } catch (e) {
           console.log(e);
