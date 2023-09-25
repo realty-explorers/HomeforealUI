@@ -1,50 +1,60 @@
-import { Card, Grid, Typography } from "@mui/material";
+import { Card, Divider, Grid, Typography } from "@mui/material";
 import GridTableField from "@/components/Grid/GridTableField";
 import Image from "@/components/Photos/Image";
 import analyticsStyles from "../Analytics.module.scss";
 import styles from "./CompsSection.module.scss";
 import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
+import { priceFormatter } from "@/utils/converters";
 
 const gridRows = (property: Property) => [
   {
     label: "AskedPrice",
-    value: "sales_listing_price",
+    value: priceFormatter(property.sales_listing_price),
+    averageProperty: "sales_listing_price",
   },
   {
     label: "Bedrooms",
-    value: "bedrooms",
+    value: property["bedrooms"],
+    averageProperty: "bedrooms",
   },
   {
     label: "Bathrooms",
-    value: "full_bathrooms",
+    value: property["full_bathrooms"],
+    averageProperty: "full_bathrooms",
   },
   {
     label: "Lot Sqft",
-    value: "lot_size",
+    value: property["lot_size"],
+    averageProperty: "lot_size",
   },
   {
     label: "Building Sqft",
-    value: "building_area",
+    value: property["building_area"],
+    averageProperty: "building_area",
   },
   {
     label: "Floors",
-    value: "floors",
+    value: property["floors"],
+    averageProperty: "floors",
   },
   {
     label: "Garages",
-    value: "garages",
+    value: property["garages"],
+    averageProperty: "garages",
   },
   {
     label: "Year Built",
-    value: "year_built",
+    value: property["year_built"].slice(0, 4),
   },
-  {
-    label: "Neighborhood",
-    value: "neighborhood",
-  },
+  // {
+  //   label: "Neighborhood",
+  //   value: "neighborhood",
+  // },
   {
     label: "Price/Sqft",
-    value: "sales_listing_price",
+    value: `${
+      (property["sales_listing_price"] / property["building_area"]).toFixed()
+    }`,
   },
 ];
 
@@ -56,12 +66,25 @@ type PropertyCardProps = {
 const PropertyCard = (props: PropertyCardProps) => {
   const calcCompsAverage = (propertyName: string) => {
     if (props.compsProperties.length < 1) return "";
-    if (typeof (props.compsProperties[0][propertyName] !== "number")) {
-      return props.compsProperties[0][propertyName];
+    const propertyType = typeof props.compsProperties[0][propertyName];
+    if (propertyType === "number") {
+      return (props.compsProperties.reduce((acc, comps) => ({
+        [propertyName]: acc[propertyName] + comps[propertyName],
+      }))[propertyName] / props.compsProperties.length).toFixed();
     }
-    return props.compsProperties.reduce((acc, comps) => ({
-      [propertyName]: acc[propertyName] + comps[propertyName],
-    }))[propertyName] / props.compsProperties.length;
+    if (propertyName === "year_built") {
+      return props.compsProperties[0][propertyName].slice(0, 4);
+    }
+    return props.compsProperties[0][propertyName];
+    if (typeof (props.compsProperties[0][propertyName] !== "Number")) {
+      return "not number";
+      // return props.compsProperties[0][propertyName];
+    }
+    return "mew";
+    // return props.compsProperties.reduce((acc, comps) => ({
+    //   [propertyName]: acc[propertyName] + comps[propertyName],
+    // }))[propertyName] / props.compsProperties.length;
+    return 0;
   };
 
   return (
@@ -82,7 +105,10 @@ const PropertyCard = (props: PropertyCardProps) => {
         padding={"0.5rem 1rem"}
         marginBottom={"2rem"}
       >
-        <Image />
+        <img
+          src={props.property.images[0] || ""}
+          className="h-44 rounded-lg aspect-video"
+        />
       </Grid>
       <Grid container justifyContent="center" rowGap={2}>
         <GridTableField
@@ -104,11 +130,16 @@ const PropertyCard = (props: PropertyCardProps) => {
               { className: styles.propertyRowHeader, label: property.label },
               {
                 className: styles.propertyText,
-                label: `${props.property.property[property.value]}`,
+                label: `${property.value}`,
               },
               {
                 className: styles.propertyText,
-                label: `${calcCompsAverage(property.value)}`,
+                label: `${
+                  property.averageProperty
+                    ? calcCompsAverage(property.averageProperty)
+                    : ""
+                }`,
+                // label: "meow",
               },
             ]}
           />
