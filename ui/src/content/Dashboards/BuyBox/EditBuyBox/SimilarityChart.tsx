@@ -82,10 +82,10 @@ const SimilarityChart = (
     setValue(newValue);
   };
 
-  const greenValues = useWatch({ control, name: "green" });
-  const yellowValues = useWatch({ control, name: "yellow" });
-  const orangeValues = useWatch({ control, name: "orange" });
-  const redValues = useWatch({ control, name: "red" });
+  const greenValues = useWatch({ control, name: "similarity.green" });
+  const yellowValues = useWatch({ control, name: "similarity.yellow" });
+  const orangeValues = useWatch({ control, name: "similarity.orange" });
+  const redValues = useWatch({ control, name: "similarity.red" });
 
   const displayValue = (value: any) => {
     if (Array.isArray(value)) {

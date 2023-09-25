@@ -26,7 +26,7 @@ const InvestmentCriteria = (
       </Typography>
 
       <div className="flex w-full item-center col-span-2">
-        <Switch {...register("limitations")} />
+        <Switch {...register("opp.Limitations.0")} />
         <Typography className={styles.label}>Limitations</Typography>
       </div>
 
@@ -34,20 +34,20 @@ const InvestmentCriteria = (
         register={register}
         control={control}
         watch={watch}
-        fieldName={`arv`}
+        fieldName={`opp.Limitations.1.ARV`}
         title="ARV"
         labelClass="pl-12"
       />
 
       <div className="flex w-full item-center col-span-2">
-        <Switch {...register("fixAndFlip")} />
+        <Switch {...register("opp.Fix & Flip.0")} />
         <Typography className={styles.label}>Fix & Flip</Typography>
       </div>
       <RangeField
         register={register}
         control={control}
         watch={watch}
-        fieldName={`margin`}
+        fieldName={`opp.Fix & Flip.1.Margin`}
         title="Margin"
         labelClass="pl-12"
       />
@@ -55,13 +55,13 @@ const InvestmentCriteria = (
         register={register}
         control={control}
         watch={watch}
-        fieldName={`centsOnDollar`}
+        fieldName={`opp.Fix & Flip.1.Cents on $`}
         title="Cents on $"
         labelClass="pl-12"
       />
 
       <div className="flex w-full item-center col-span-2">
-        <Switch {...register("buyAndHold")} />
+        <Switch {...register("opp.Buy & Hold.0")} />
         <Typography className={styles.label}>Buy & Hold</Typography>
       </div>
 
@@ -69,7 +69,7 @@ const InvestmentCriteria = (
         register={register}
         control={control}
         watch={watch}
-        fieldName={`capRate`}
+        fieldName={`opp.Buy & Hold.1.Cap Rate`}
         title="Cap Rate"
         labelClass="pl-12"
       />
