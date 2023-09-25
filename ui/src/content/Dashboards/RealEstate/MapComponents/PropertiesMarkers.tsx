@@ -62,7 +62,7 @@ const PropertiesMarkers = (props: PropertiesMarkersProps) => {
                     onMouseEnter={() => handleMouseHover(property.market_id)}
                     onMouseLeave={() => handleMouseOut()}
                   >
-                    <PropertyMapCard property={property} />
+                    <PropertyMapCard property={property.property} />
                   </div>
                 </Fade>
               </OverlayView>
