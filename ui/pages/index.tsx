@@ -29,18 +29,9 @@ function Overview() {
   return (
     <div className="w-full">
       <Head>
-        <title>Homforeal App</title>
+        <title>HomeFoReal App</title>
       </Head>
-
       <Hero />
-      <Container maxWidth="lg" sx={{ mt: 8 }}>
-        <Typography textAlign="center" variant="subtitle1">
-          Crafted by{" "}
-          <Link href="#" target="_blank" rel="noopener noreferrer">
-            Sharon Fabin
-          </Link>
-        </Typography>
-      </Container>
     </div>
   );
 }

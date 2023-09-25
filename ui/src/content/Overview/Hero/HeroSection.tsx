@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-no-undef */
 import ThemedButton from "@/components/Buttons/ThemedButton";
-import { Typography } from "@mui/material";
+import { Link, Typography } from "@mui/material";
 import clsx from "clsx";
 import styles from "./LandingPage.module.scss";
 import PropertiesExample from "./PropertiesExample";
 
 const HeroSection = () => {
   return (
-    <div className="max-w-[70%] mt-20">
+    <div className="max-w-[85%] mt-10">
       <div className="flex wrap gap-8">
         <div className="flex flex-wrap w-[40%] ">
           <div className="flex w-full justify-between items-center gap-2">
@@ -39,23 +39,28 @@ const HeroSection = () => {
       </div>
 
       <div className="flex items-center mt-4">
-        <ThemedButton text="Chat With Us" />
-        <Typography className={clsx([styles.cardInfoValue, "ml-4 mr-4"])}>
-          Find Opportunities Now
-        </Typography>
-        <div>
-          <svg
-            width="34"
-            height="9"
-            viewBox="0 0 34 9"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M33.3536 4.85355C33.5488 4.65829 33.5488 4.34171 33.3536 4.14645L30.1716 0.964466C29.9763 0.769204 29.6597 0.769204 29.4645 0.964466C29.2692 1.15973 29.2692 1.47631 29.4645 1.67157L32.2929 4.5L29.4645 7.32843C29.2692 7.52369 29.2692 7.84027 29.4645 8.03553C29.6597 8.2308 29.9763 8.2308 30.1716 8.03553L33.3536 4.85355ZM0 5H33V4H0V5Z"
-              fill="black"
-            />
-          </svg>
+        <a href="#contactUs" ><ThemedButton text="Chat With Us" /></a>
+        <div className={`${styles.findOpportunitiesDiv}`}>
+          <div>
+            <Link className={clsx([styles.cardInfoValue, "ml-4 mr-4"])}>
+              Find Opportunities Now
+            </Link>
+          </div>
+          <div className="flex items-center">
+            <svg
+              width="34"
+              height="9"
+              viewBox="0 0 34 9"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M33.3536 4.85355C33.5488 4.65829 33.5488 4.34171 33.3536 4.14645L30.1716 0.964466C29.9763 0.769204 29.6597 0.769204 29.4645 0.964466C29.2692 1.15973 29.2692 1.47631 29.4645 1.67157L32.2929 4.5L29.4645 7.32843C29.2692 7.52369 29.2692 7.84027 29.4645 8.03553C29.6597 8.2308 29.9763 8.2308 30.1716 8.03553L33.3536 4.85355ZM0 5H33V4H0V5Z"
+                fill="black"
+              />
+            </svg>
+
+          </div>
         </div>
       </div>
     </div>

@@ -15,8 +15,8 @@ const redirects = {
 const config = {
   redirects,
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: true
   }
-}
+};
 
 module.exports = withImages(config);
