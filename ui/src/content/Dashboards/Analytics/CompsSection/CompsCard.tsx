@@ -1,4 +1,4 @@
-import { Card, Checkbox, Grid, Typography } from "@mui/material";
+import { Card, Checkbox, Divider, Grid, Typography } from "@mui/material";
 import GridTableField from "@/components/Grid/GridTableField";
 import Image from "@/components/Photos/Image";
 import analyticsStyles from "../Analytics.module.scss";
@@ -42,12 +42,12 @@ const gridRows = (property: Property) => [
   },
   {
     label: "Year Built",
-    value: property.year_built,
+    value: property.year_built.slice(0, 4),
   },
-  {
-    label: "Neighborhodd",
-    value: property.neighborhood,
-  },
+  // {
+  //   label: "Neighborhodd",
+  //   value: property.neighborhood,
+  // },
   {
     label: "Price/Sqft",
     value: priceFormatter(
@@ -79,7 +79,7 @@ const CompsCard = (props: CompsCardProps) => {
           onClick={props.toggle}
         />
         <Typography className={styles.propertyHeader}>
-          Comp {props.index}
+          Comp {props.index + 1}
         </Typography>
       </Grid>
       <Grid
@@ -88,7 +88,11 @@ const CompsCard = (props: CompsCardProps) => {
         padding={"0.5rem 1rem"}
         marginBottom={"2rem"}
       >
-        <Image />
+        <img
+          // src={props.compsProperty.images?.[0] || ""}
+          src="https://img.freepik.com/free-vector/house-icon_23-2147510119.jpg"
+          className="h-44 rounded-lg aspect-video"
+        />
       </Grid>
       <Grid container justifyContent="center" rowGap={2}>
         <GridTableField
@@ -111,6 +115,36 @@ const CompsCard = (props: CompsCardProps) => {
             ]}
           />
         ))}
+        <Divider variant="middle" className="bg-white w-full" />
+
+        <GridTableField
+          size={12}
+          fields={[
+            { className: styles.propertyTableHeader, label: "Distance" },
+            { className: styles.propertyTableHeader, label: `${0}` },
+          ]}
+        />
+
+        <GridTableField
+          size={12}
+          fields={[
+            { className: styles.propertyTableHeader, label: "Similarity" },
+            { className: styles.propertyTableHeader, label: `` },
+          ]}
+        />
+
+        <GridTableField
+          size={12}
+          fields={[
+            { className: styles.propertyTableHeader, label: "Closed Price" },
+            {
+              className: styles.propertyTableHeader,
+              label: `${
+                priceFormatter(props.compsProperty.sales_closing_price)
+              }`,
+            },
+          ]}
+        />
       </Grid>
     </Card>
   );

@@ -271,9 +271,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
               <IconListItem
                 icon={<BarChartIcon color="primary" />}
                 title={"Rent/Cap Rate"}
-                value={priceFormatter(
-                  numberStringUtil(props.property.cap_rate).toFixed(),
-                )}
+                value={numberStringUtil(props.property.cap_rate).toFixed(3)}
               />
             </List>
           </Grid>

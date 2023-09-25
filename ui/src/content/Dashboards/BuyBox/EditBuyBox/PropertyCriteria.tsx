@@ -25,7 +25,7 @@ const PropertyCriteria = (
         Property Criteria
       </Typography>
       <div className="flex w-full item-center ">
-        <Switch {...register("propertyType.active")} />
+        <Switch {...register("property.Property Type.0")} />
         <Typography className={styles.label}>Property Types</Typography>
       </div>
       <div></div>
@@ -34,7 +34,7 @@ const PropertyCriteria = (
         register={register}
         control={control}
         watch={watch}
-        fieldName={`bedrooms`}
+        fieldName={`property.Bedrooms`}
         title="Bedrooms"
       />
 
@@ -42,7 +42,7 @@ const PropertyCriteria = (
         register={register}
         control={control}
         watch={watch}
-        fieldName={`bathrooms`}
+        fieldName={`property.Bathrooms`}
         title="Bathrooms"
       />
 
@@ -50,15 +50,7 @@ const PropertyCriteria = (
         register={register}
         control={control}
         watch={watch}
-        fieldName={`yearBuilt`}
-        title="Bedrooms"
-      />
-
-      <RangeField
-        register={register}
-        control={control}
-        watch={watch}
-        fieldName={`buildingSqft`}
+        fieldName={`property.Building sqft`}
         title="Building Sqft"
       />
 
@@ -66,12 +58,19 @@ const PropertyCriteria = (
         register={register}
         control={control}
         watch={watch}
-        fieldName={`lotSqft`}
+        fieldName={`property.Lot sqft`}
         title="Lot Size"
+      />
+      <RangeField
+        register={register}
+        control={control}
+        watch={watch}
+        fieldName={`property.Year Built`}
+        title="Bedrooms"
       />
 
       <div className="flex w-full item-center col-span-2">
-        <Switch {...register("pool")} />
+        <Switch {...register("property.Pool.0")} />
         <Typography className={styles.label}>Pool</Typography>
       </div>
 
@@ -79,7 +78,7 @@ const PropertyCriteria = (
         register={register}
         control={control}
         watch={watch}
-        fieldName={`garages`}
+        fieldName={`property.Garages`}
         title="Garages"
       />
 
@@ -87,7 +86,7 @@ const PropertyCriteria = (
         register={register}
         control={control}
         watch={watch}
-        fieldName={`listingPrice`}
+        fieldName={`property.Listing Price`}
         title="Listing Price"
       />
     </>

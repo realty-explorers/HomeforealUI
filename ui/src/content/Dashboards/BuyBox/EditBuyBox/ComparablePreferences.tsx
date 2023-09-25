@@ -40,6 +40,18 @@ const TabPanel = (props: TabPanelProps) => {
 };
 
 const similarityTypes = ["green", "yellow", "orange", "red"];
+const similarityFields = [
+  { fieldName: "Same Property Type", type: "boolean" },
+  { fieldName: "Bedrooms", type: "range" },
+  { fieldName: "Bathrooms", type: "range" },
+  { fieldName: "Building Sqft", type: "range" },
+  { fieldName: "Year Built", type: "range" },
+  { fieldName: "Lot Size", type: "range" },
+  { fieldName: "Same Pool Status", type: "boolean" },
+  { fieldName: "Garages", type: "range" },
+  { fieldName: "Distance", type: "range" },
+  { fieldName: "Sale Date", type: "range" },
+];
 
 type ComparablePreferencesProps = {
   register: UseFormRegister<buyboxSchemaType>;
@@ -72,120 +84,160 @@ const ComparablePreferences = (
       </div>
       {similarityTypes.map((similartyType, index) => {
         return (
-          (
-            <React.Fragment key={index}>
-              <div
-                className={clsx([
-                  "flex w-full item-center col-span-2",
-                  index === value ? "" : "hidden",
-                ])}
-              >
-                <Switch {...register(`${similartyType}.samePropertyType`)} />
-                <Typography className={styles.label}>
-                  Same Property Type
-                </Typography>
-              </div>
-              <RangeField
-                register={register}
-                control={control}
-                watch={watch}
-                fieldName={`${similartyType}.bedrooms`}
-                title="Bedrooms"
-                labelClass={index === value ? "" : "hidden"}
-                sliderClass={index === value ? "" : "hidden"}
-              />
-              <RangeField
-                register={register}
-                control={control}
-                watch={watch}
-                fieldName={`${similartyType}.bathrooms`}
-                title="Bathrooms"
-                labelClass={index === value ? "" : "hidden"}
-                sliderClass={index === value ? "" : "hidden"}
-              />
-
-              <RangeField
-                register={register}
-                control={control}
-                watch={watch}
-                fieldName={`${similartyType}.yearBuilt`}
-                title="Year Built"
-                labelClass={index === value ? "" : "hidden"}
-                sliderClass={index === value ? "" : "hidden"}
-              />
-
-              <RangeField
-                register={register}
-                control={control}
-                watch={watch}
-                fieldName={`${similartyType}.buildingSqft`}
-                title="Building Sqft"
-                labelClass={index === value ? "" : "hidden"}
-                sliderClass={index === value ? "" : "hidden"}
-              />
-
-              <RangeField
-                register={register}
-                control={control}
-                watch={watch}
-                fieldName={`${similartyType}.lotSize`}
-                title="Lot Size"
-                labelClass={index === value ? "" : "hidden"}
-                sliderClass={index === value ? "" : "hidden"}
-              />
-
-              <div
-                className={clsx([
-                  "flex w-full item-center col-span-2",
-                  index === value ? "" : "hidden",
-                ])}
-              >
-                <Switch {...register(`${similartyType}.samePool`)} />
-                <Typography className={styles.label}>Same Pool</Typography>
-              </div>
-
-              <RangeField
-                register={register}
-                control={control}
-                watch={watch}
-                fieldName={`${similartyType}.garages`}
-                title="Garages"
-                labelClass={index === value ? "" : "hidden"}
-                sliderClass={index === value ? "" : "hidden"}
-              />
-
-              <RangeField
-                register={register}
-                control={control}
-                watch={watch}
-                fieldName={`${similartyType}.distance`}
-                title="Distance"
-                labelClass={index === value ? "" : "hidden"}
-                sliderClass={index === value ? "" : "hidden"}
-              />
-
-              <RangeField
-                register={register}
-                control={control}
-                watch={watch}
-                fieldName={`${similartyType}.saleDate`}
-                title="Sale Date"
-                labelClass={index === value ? "" : "hidden"}
-                sliderClass={index === value ? "" : "hidden"}
-              />
-              <RangeField
-                register={register}
-                control={control}
-                watch={watch}
-                fieldName={`${similartyType}.weight`}
-                title="Weight"
-                labelClass={index === value ? "" : "hidden"}
-                sliderClass={index === value ? "" : "hidden"}
-              />
-            </React.Fragment>
-          )
+          <React.Fragment key={index}>
+            {similarityFields.map((similarityField, idx) => {
+              return (
+                similarityField.type === "boolean"
+                  ? (
+                    <div
+                      className={clsx([
+                        "flex w-full item-center col-span-2",
+                        index === value ? "" : "hidden",
+                      ])}
+                    >
+                      <Switch
+                        {...register(
+                          `similarity.${similartyType}.${similarityField.fieldName}`,
+                        )}
+                      />{" "}
+                      <Typography className={styles.label}>
+                        Same Pool
+                      </Typography>
+                      {" "}
+                    </div>
+                  )
+                  : (
+                    <RangeField
+                      register={register}
+                      control={control}
+                      watch={watch}
+                      fieldName={`similarity.${similartyType}.${similarityField.fieldName}`}
+                      title={similarityField.fieldName}
+                      labelClass={index === value ? "" : "hidden"}
+                      sliderClass={index === value ? "" : "hidden"}
+                    />
+                  )
+              );
+            })}
+          </React.Fragment>
         );
       })}
+      {/* {similarityTypes.map((similartyType, index) => { */}
+      {/*   return ( */}
+      {/*     ( */}
+      {/*       <React.Fragment key={index}> */}
+      {/*         <div */}
+      {/*           className={clsx([ */}
+      {/*             "flex w-full item-center col-span-2", */}
+      {/*             index === value ? "" : "hidden", */}
+      {/*           ])} */}
+      {/*         > */}
+      {/*           <Switch {...register(`${similartyType}.samePropertyType`)} /> */}
+      {/*           <Typography className={styles.label}> */}
+      {/*             Same Property Type */}
+      {/*           </Typography> */}
+      {/*         </div> */}
+      {/*         <RangeField */}
+      {/*           register={register} */}
+      {/*           control={control} */}
+      {/*           watch={watch} */}
+      {/*           fieldName={`${similartyType}.bedrooms`} */}
+      {/*           title="Bedrooms" */}
+      {/*           labelClass={index === value ? "" : "hidden"} */}
+      {/*           sliderClass={index === value ? "" : "hidden"} */}
+      {/*         /> */}
+      {/*         <RangeField */}
+      {/*           register={register} */}
+      {/*           control={control} */}
+      {/*           watch={watch} */}
+      {/*           fieldName={`${similartyType}.bathrooms`} */}
+      {/*           title="Bathrooms" */}
+      {/*           labelClass={index === value ? "" : "hidden"} */}
+      {/*           sliderClass={index === value ? "" : "hidden"} */}
+      {/*         /> */}
+      {/**/}
+      {/*         <RangeField */}
+      {/*           register={register} */}
+      {/*           control={control} */}
+      {/*           watch={watch} */}
+      {/*           fieldName={`${similartyType}.yearBuilt`} */}
+      {/*           title="Year Built" */}
+      {/*           labelClass={index === value ? "" : "hidden"} */}
+      {/*           sliderClass={index === value ? "" : "hidden"} */}
+      {/*         /> */}
+      {/**/}
+      {/*         <RangeField */}
+      {/*           register={register} */}
+      {/*           control={control} */}
+      {/*           watch={watch} */}
+      {/*           fieldName={`${similartyType}.buildingSqft`} */}
+      {/*           title="Building Sqft" */}
+      {/*           labelClass={index === value ? "" : "hidden"} */}
+      {/*           sliderClass={index === value ? "" : "hidden"} */}
+      {/*         /> */}
+      {/**/}
+      {/*         <RangeField */}
+      {/*           register={register} */}
+      {/*           control={control} */}
+      {/*           watch={watch} */}
+      {/*           fieldName={`${similartyType}.lotSize`} */}
+      {/*           title="Lot Size" */}
+      {/*           labelClass={index === value ? "" : "hidden"} */}
+      {/*           sliderClass={index === value ? "" : "hidden"} */}
+      {/*         /> */}
+      {/**/}
+      {/*         <div */}
+      {/*           className={clsx([ */}
+      {/*             "flex w-full item-center col-span-2", */}
+      {/*             index === value ? "" : "hidden", */}
+      {/*           ])} */}
+      {/*         > */}
+      {/*           <Switch {...register(`${similartyType}.samePool`)} /> */}
+      {/*           <Typography className={styles.label}>Same Pool</Typography> */}
+      {/*         </div> */}
+      {/**/}
+      {/*         <RangeField */}
+      {/*           register={register} */}
+      {/*           control={control} */}
+      {/*           watch={watch} */}
+      {/*           fieldName={`${similartyType}.garages`} */}
+      {/*           title="Garages" */}
+      {/*           labelClass={index === value ? "" : "hidden"} */}
+      {/*           sliderClass={index === value ? "" : "hidden"} */}
+      {/*         /> */}
+      {/**/}
+      {/*         <RangeField */}
+      {/*           register={register} */}
+      {/*           control={control} */}
+      {/*           watch={watch} */}
+      {/*           fieldName={`${similartyType}.distance`} */}
+      {/*           title="Distance" */}
+      {/*           labelClass={index === value ? "" : "hidden"} */}
+      {/*           sliderClass={index === value ? "" : "hidden"} */}
+      {/*         /> */}
+      {/**/}
+      {/*         <RangeField */}
+      {/*           register={register} */}
+      {/*           control={control} */}
+      {/*           watch={watch} */}
+      {/*           fieldName={`${similartyType}.saleDate`} */}
+      {/*           title="Sale Date" */}
+      {/*           labelClass={index === value ? "" : "hidden"} */}
+      {/*           sliderClass={index === value ? "" : "hidden"} */}
+      {/*         /> */}
+      {/*         <RangeField */}
+      {/*           register={register} */}
+      {/*           control={control} */}
+      {/*           watch={watch} */}
+      {/*           fieldName={`${similartyType}.weight`} */}
+      {/*           title="Weight" */}
+      {/*           labelClass={index === value ? "" : "hidden"} */}
+      {/*           sliderClass={index === value ? "" : "hidden"} */}
+      {/*         /> */}
+      {/*       </React.Fragment> */}
+      {/*     ) */}
+      {/*   ); */}
+      {/* })} */}
     </>
   );
 };

@@ -1,5 +1,4 @@
 import Deal from "@/models/deal";
-import Property from "@/models/property";
 import {
   distanceFormatter,
   percentFormatter,
@@ -25,7 +24,7 @@ import { TransitionGroup } from "react-transition-group";
 import PropertyCard from "./PropertyCard";
 import CompsProperty from "@/models/comps_property";
 import { openGoogleSearch } from "@/utils/windowFunctions";
-import AnalyzedProperty from "@/models/analyzedProperty";
+import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
 
 const AddressLink = styled("h3")(({ theme }) => ({
   padding: 0,
@@ -39,12 +38,14 @@ const AddressLink = styled("h3")(({ theme }) => ({
 }));
 
 type PropertyMapCardProps = {
-  property: AnalyzedProperty;
+  property: Property;
 };
 const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   props: PropertyMapCardProps,
 ) => {
-  const [cardImage, setCardImage] = useState(props.property.images?.[0] || "");
+  const [cardImage, setCardImage] = useState(
+    "https://img.freepik.com/free-vector/house-icon_23-2147510119.jpg",
+  );
 
   const showDistance = () => {
     try {
@@ -61,7 +62,8 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
       <Card sx={{ width: 200 }}>
         <CardMedia
           component="img"
-          height="100"
+          height="8rem"
+          className="aspect-video"
           image={cardImage}
           alt={props.property.address}
           onError={() =>
@@ -94,9 +96,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 <Box>
                   <Typography align="right" noWrap>
                     {priceFormatter(
-                      props.property.forSale
-                        ? props.property.price
-                        : props.property.soldPrice,
+                      props.property.sales_listing_price,
                     )}
                   </Typography>
                 </Box>
@@ -113,7 +113,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 />
                 <Box>
                   <Typography align="right" noWrap>
-                    {props.property.area}
+                    {props.property.building_area}
                   </Typography>
                 </Box>
               </ListItem>
@@ -128,7 +128,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 />
                 <Box>
                   <Typography align="right" noWrap>
-                    {props.property.beds}
+                    {props.property.bedrooms}
                   </Typography>
                 </Box>
               </ListItem>
@@ -143,26 +143,26 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 />
                 <Box>
                   <Typography align="right" noWrap>
-                    {props.property.baths}
+                    {props.property.full_bathrooms}
                   </Typography>
                 </Box>
               </ListItem>
 
-              <ListItem disableGutters sx={{ padding: 0 }}>
-                <ListItemText
-                  primary="Distance"
-                  primaryTypographyProps={{ variant: "h5", noWrap: true }}
-                  secondaryTypographyProps={{
-                    variant: "subtitle2",
-                    noWrap: true,
-                  }}
-                />
-                <Box>
-                  <Typography align="right" noWrap>
-                    {showDistance()}
-                  </Typography>
-                </Box>
-              </ListItem>
+              {/* <ListItem disableGutters sx={{ padding: 0 }}> */}
+              {/*   <ListItemText */}
+              {/*     primary="Distance" */}
+              {/*     primaryTypographyProps={{ variant: "h5", noWrap: true }} */}
+              {/*     secondaryTypographyProps={{ */}
+              {/*       variant: "subtitle2", */}
+              {/*       noWrap: true, */}
+              {/*     }} */}
+              {/*   /> */}
+              {/*   <Box> */}
+              {/*     <Typography align="right" noWrap> */}
+              {/*       {showDistance()} */}
+              {/*     </Typography> */}
+              {/*   </Box> */}
+              {/* </ListItem> */}
             </List>
           </Grid>
         </CardContent>

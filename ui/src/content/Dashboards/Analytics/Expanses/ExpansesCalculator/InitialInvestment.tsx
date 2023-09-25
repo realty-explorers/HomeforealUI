@@ -30,39 +30,45 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
     { label: "Listing Price", value: props.property?.listing_price || 0 },
   ];
 
-  const [expanses, setExpanses] = useState<{ label: string; value: number }[]>(
+  const [expanses, setExpanses] = useState<
+    { id: string; label: string; value: number }[]
+  >(
     [],
   );
 
   useEffect(() => {
     setExpanses([
-      { label: "Down Payment", value: 0 },
-      { label: "Loan Amount", value: 0 },
-      { label: "Origination Fee", value: 0 },
-      { label: "Interest Rate", value: 0 },
-      { label: "Points", value: 0 },
+      { id: crypto.randomUUID(), label: "Down Payment", value: 0 },
+      { id: crypto.randomUUID(), label: "Loan Amount", value: 0 },
+      { id: crypto.randomUUID(), label: "Origination Fee", value: 0 },
+      { id: crypto.randomUUID(), label: "Interest Rate", value: 0 },
+      { id: crypto.randomUUID(), label: "Points", value: 0 },
     ]);
   }, [props.property]);
 
-  const handleChangeExpanses = (value: number, expanseType: string) => {
-    expanses.find((e) => e.label === expanseType).value = value;
+  const handleChangeExpanses = (value: number, id: string) => {
+    expanses.find((e) => e.id === id).value = value;
     setExpanses([...expanses]);
     props.setExpanses(totalExpanses(expanses));
   };
 
   const totalExpanses = (expanses) =>
-    expanses.reduce((acc, expanse) => acc + expanse.value, 0);
+    expanses.reduce((acc, expanse) => acc + Math.round(expanse.value), 0);
 
   const handleAddExpanse = () => {
     setExpanses([
       ...expanses,
-      { label: `Expanse ${expanses.length + 1}`, value: 0 },
+      {
+        id: crypto.randomUUID(),
+        label: `New Expanse`,
+        value: 0,
+      },
     ]);
   };
 
-  const handleRemoveExpanse = (label: string) => {
+  const handleRemoveExpanse = (id: string) => {
     const updatedExpanses = expanses.filter(
-      (expanse) => expanse.label !== label,
+      (expanse) => expanse.id !== id,
     );
     setExpanses(updatedExpanses);
     props.setExpanses(totalExpanses(updatedExpanses));
@@ -88,13 +94,13 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
       <List>
         <TransitionGroup>
           {expanses.map((expanse, index) => (
-            <Collapse key={expanse.label}>
+            <Collapse key={expanse.id}>
               <ExpansesRow
+                id={expanse.id}
                 label={expanse.label}
                 expanse={expanse.value}
                 removeExpanse={handleRemoveExpanse}
-                setExpanse={(value) =>
-                  handleChangeExpanses(value, expanse.label)}
+                setExpanse={(value) => handleChangeExpanses(value, expanse.id)}
                 priceTypes={priceTypes}
               />
             </Collapse>

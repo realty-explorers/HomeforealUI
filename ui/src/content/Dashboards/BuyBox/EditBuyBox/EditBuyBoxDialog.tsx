@@ -50,6 +50,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   };
 
   useEffect(() => {
+    console.log(JSON.stringify(getValues()));
     // reset({ name: "meow" });
   }, []);
 
@@ -72,7 +73,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         <TextField
           label="Outlined"
           variant="outlined"
-          {...register("name")}
+          {...register("buybox_name")}
         />
         <Typography className={styles.mainLabel}>Description:</Typography>
         <TextField
@@ -118,6 +119,14 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
 
         {/* {<p>{watch("bedrooms.active") ? "active" : "disabled"}</p>} */}
         {/* {<p>{watch("bedrooms.values")}</p>} */}
+
+        <Button
+          variant="outlined"
+          className="mt-12"
+          onClick={() => console.log(getValues())}
+        >
+          Submit
+        </Button>
 
         <Button type="submit" variant="outlined" className="mt-12">
           Submit

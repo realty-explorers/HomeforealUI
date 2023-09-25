@@ -43,7 +43,7 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
     number
   >(0);
   const [financingExpanses, setFinancingExpanses] = useState<number>(0);
-  const [initialInvestmentActive, setInitialInvestmentActive] = useState(false);
+  const [initialInvestmentActive, setInitialInvestmentActive] = useState(true);
   const [finanicingExpansesActive, setFinancingExpansesActive] = useState(
     false,
   );
@@ -55,7 +55,7 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
   useEffect(() => {
     setInitialInvestmentExpanses(0);
     setFinancingExpanses(0);
-    setInitialInvestmentActive(false);
+    setInitialInvestmentActive(true);
     setFinancingExpansesActive(false);
   }, [props.property]);
 
@@ -67,7 +67,7 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
         <Grid item xs={6}>
           <h1 className={analyticsStyles.sectionHeader}>Expanses Calculator</h1>
         </Grid>
-        <Grid item xs={6}>
+        <Grid item xs={6} className="sticky top-0 z-[2]">
           <ValueCard
             title="Estimated Expanses"
             value={priceFormatter(totalExpanses.toFixed())}

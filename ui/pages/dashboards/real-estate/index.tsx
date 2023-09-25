@@ -23,6 +23,7 @@ import clsx from "clsx";
 import {
   selectProperties,
   setSelectedComps,
+  setSelectedProperty,
 } from "@/store/slices/propertiesSlice";
 import { Property } from "@/models/analyzedProperty";
 
@@ -77,8 +78,9 @@ const DashboardRealEstate = (props: any) => {
 
         <div
           className={clsx([
-            "h-[calc(100%-60px)] transition-all duration-500 absolute w-full left-0",
+            "h-[calc(100%-60px)]  absolute w-full left-0",
             openMoreDetails ? "md:w-1/2 md:left-1/2" : "w-full left-0",
+            // openMoreDetails ? "w-1/2 left-1/2" : "w-1/2 left-1/2",
           ])}
         >
           <Map />

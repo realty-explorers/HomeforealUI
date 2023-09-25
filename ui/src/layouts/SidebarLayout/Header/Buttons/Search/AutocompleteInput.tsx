@@ -84,6 +84,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
             searchTerm,
             true,
           ).unwrap();
+          setOptions([]);
           setOptions(response);
         } catch (error) {
           if (
