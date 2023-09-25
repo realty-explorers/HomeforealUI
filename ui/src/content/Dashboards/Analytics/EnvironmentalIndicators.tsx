@@ -1,12 +1,13 @@
-import Property from '@/models/property';
-import { Card, CardContent, Grid, Typography } from '@mui/material';
-import analyticsStyles from './Analytics.module.scss';
-import styles from './EnvironmentalIndicators.module.scss';
+import AnalyzedProperty from "@/models/analyzedProperty";
+import Property from "@/models/property";
+import { Card, CardContent, Grid, Typography } from "@mui/material";
+import analyticsStyles from "./Analytics.module.scss";
+import styles from "./EnvironmentalIndicators.module.scss";
 
 const IndicatorCard = (props: { title: string; content: string }) => {
   return (
     <Card className={styles.indicatorCard}>
-      <Grid container direction="column" sx={{ height: '100%' }}>
+      <Grid container direction="column" sx={{ height: "100%" }}>
         <Grid item xs={4} container justifyContent="center" alignItems="center">
           <Typography className={styles.indicatorHeader}>
             {props.title}
@@ -39,7 +40,7 @@ const IndicatorCard = (props: { title: string; content: string }) => {
 };
 
 type EnvironmentalIndicatorsProps = {
-  property: Property;
+  property: AnalyzedProperty;
 };
 const EnvironmentalIndicators = (props: EnvironmentalIndicatorsProps) => {
   return (

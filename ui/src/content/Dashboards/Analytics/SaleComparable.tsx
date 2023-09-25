@@ -1,4 +1,3 @@
-import Property from '@/models/property';
 import {
   Button,
   Grid,
@@ -9,23 +8,31 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography
-} from '@mui/material';
-import GridField from '@/components/Grid/GridField';
-import ValueCard from '@/components/Cards/ValueCard';
-import styled from '@emotion/styled';
-import analyticsStyles from './Analytics.module.scss';
-import styles from './SaleComparable.module.scss';
-import ThemedButton from '@/components/Buttons/ThemedButton';
+  Typography,
+} from "@mui/material";
+import GridField from "@/components/Grid/GridField";
+import ValueCard from "@/components/Cards/ValueCard";
+import styled from "@emotion/styled";
+import analyticsStyles from "./Analytics.module.scss";
+import styles from "./SaleComparable.module.scss";
+import ThemedButton from "@/components/Buttons/ThemedButton";
+import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
+import { numberStringUtil, priceFormatter } from "@/utils/converters";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: 'none'
+  borderBottom: "none",
 }));
 
 type SaleComparableProps = {
-  property: Property;
+  property: AnalyzedProperty;
 };
 const SaleComparable = (props: SaleComparableProps) => {
+  const area = props.property.property.building_area;
+  const priceToSqft = area && area > 0
+    ? props.property.listing_price / area
+    : 0;
+  const compsPriceToSqft = 0;
+
   return (
     <Grid
       container
@@ -36,8 +43,11 @@ const SaleComparable = (props: SaleComparableProps) => {
       <Grid item xs={6}>
         <h1 className={analyticsStyles.sectionHeader}>Sale Comparable</h1>
       </Grid>
-      <Grid item xs={6} sx={{ marginBottom: '1rem' }}>
-        <ValueCard title="Estimated ARV" value="$270,000" />
+      <Grid item xs={6} sx={{ marginBottom: "1rem" }}>
+        <ValueCard
+          title="Estimated ARV"
+          value={priceFormatter(numberStringUtil(props.property.arv).toFixed())}
+        />
       </Grid>
       <Grid className={styles.tableWrapper}>
         <TableContainer>
@@ -67,10 +77,14 @@ const SaleComparable = (props: SaleComparableProps) => {
                   ------------------------------------------------
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>$191</Typography>
+                  <Typography className={styles.cellText}>
+                    {priceFormatter(priceToSqft?.toFixed())}
+                  </Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>0</Typography>
+                  <Typography className={styles.cellText}>
+                    {compsPriceToSqft}
+                  </Typography>
                 </StyledTableCell>
               </TableRow>
 
@@ -84,10 +98,10 @@ const SaleComparable = (props: SaleComparableProps) => {
                   ------------------------------------------------
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>15</Typography>
+                  <Typography className={styles.cellText}>{0}</Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>17</Typography>
+                  <Typography className={styles.cellText}>{0}</Typography>
                 </StyledTableCell>
               </TableRow>
 
@@ -104,7 +118,9 @@ const SaleComparable = (props: SaleComparableProps) => {
                   <Typography className={styles.cellText}>-</Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>15</Typography>
+                  <Typography className={styles.cellText}>
+                    {props.property.CompsData?.length}
+                  </Typography>
                 </StyledTableCell>
               </TableRow>
             </TableBody>

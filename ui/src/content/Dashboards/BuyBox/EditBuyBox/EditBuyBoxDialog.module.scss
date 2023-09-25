@@ -1,0 +1,11 @@
+.label {
+  @apply font-poppins font-semibold flex items-center;
+}
+
+.mainLabel {
+  @apply font-poppins font-bold text-lg flex items-center;
+}
+
+.sectionLabel {
+  @apply font-poppins font-bold text-2xl col-span-2 mt-6 mb-4;
+}

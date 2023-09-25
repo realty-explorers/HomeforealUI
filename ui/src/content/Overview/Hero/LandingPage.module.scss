@@ -4,8 +4,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
 
 .header_1 {
+  @apply font-playfair;
   color: #1e1125;
-  font-family: Playfair Display;
+  // font-family: Playfair Display;
   font-size: 3.5rem;
   font-style: normal;
   font-weight: 700;
@@ -15,7 +16,7 @@
 
 .header_2 {
   color: #000;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 2rem;
   font-style: normal;
   font-weight: 100;
@@ -26,7 +27,7 @@
 
 .cardInfoLabel {
   color: #000;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 600;
@@ -36,7 +37,7 @@
 
 .cardInfoValue {
   color: #000;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 300;
@@ -86,7 +87,7 @@
 }
 .cardInfoSpecialValue {
   color: #0a6d0e;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 700;
@@ -116,7 +117,7 @@
     color: white;
     .searchButtonTitle {
       color: #fff;
-      font-family: Poppins;
+      @apply font-poppins;
       font-size: 1.25rem;
       font-style: normal;
       font-weight: 700;
@@ -137,7 +138,7 @@
 .howItWorksDescription {
   color: rgba(0, 0, 0, 0.81);
   text-align: center;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 2rem;
   font-style: normal;
   font-weight: 400;
@@ -147,7 +148,7 @@
 .yellowCardTitle {
   color: #000;
   text-align: center;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 2.25rem;
   font-style: normal;
   font-weight: 500;
@@ -158,7 +159,7 @@
 .yellowCardDescription {
   color: #000;
   text-align: center;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 400;

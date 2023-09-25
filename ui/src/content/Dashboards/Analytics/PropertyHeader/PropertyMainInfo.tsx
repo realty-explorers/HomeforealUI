@@ -1,9 +1,10 @@
-import Property from '@/models/property';
-import { Chip, Grid, Typography } from '@mui/material';
-import styles from './PropertyHeaderStyles.module.scss';
+import AnalyzedProperty from "@/models/analyzedProperty";
+import { priceFormatter } from "@/utils/converters";
+import { Chip, Grid, Typography } from "@mui/material";
+import styles from "./PropertyHeaderStyles.module.scss";
 
 type PropertyMainInfoProps = {
-  property: Property;
+  property: AnalyzedProperty;
 };
 const PropertyMainInfo = (props: PropertyMainInfoProps) => {
   return (
@@ -12,12 +13,12 @@ const PropertyMainInfo = (props: PropertyMainInfoProps) => {
         <Grid container item xs={12}>
           <Typography
             className={styles.infoHeader}
-            sx={{ marginRight: '2rem' }}
+            sx={{ marginRight: "2rem" }}
           >
             Listing Price
           </Typography>
           <Typography className={styles.infoHeader}>
-            {props.property.price}$
+            {priceFormatter(props.property.listing_price)}
           </Typography>
         </Grid>
         <Grid item xs={12}>

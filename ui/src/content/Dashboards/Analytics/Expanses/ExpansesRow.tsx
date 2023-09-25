@@ -7,13 +7,14 @@ import {
   MenuItem,
   OutlinedInput,
   Select,
-  Typography
-} from '@mui/material';
-import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
-import styles from './ExpansesCalculator.module.scss';
-import { useState } from 'react';
+  Typography,
+} from "@mui/material";
+import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
+import styles from "./ExpansesCalculator.module.scss";
+import { useState } from "react";
 
 type ExpansesRowProps = {
+  id: string;
   label: string;
   expanse: number;
   setExpanse: (newValue: number) => void;
@@ -22,7 +23,7 @@ type ExpansesRowProps = {
 };
 const ExpansesRow = (props: ExpansesRowProps) => {
   const [selectedType, setSelectedType] = useState<string>(
-    props.priceTypes?.[0].label
+    props.priceTypes?.[0].label,
   );
 
   const handleChangeType = (event) => {
@@ -37,37 +38,20 @@ const ExpansesRow = (props: ExpansesRowProps) => {
   const handleChangePercentage = (event) => {
     const value = event.target.value;
     const currentExpanse = props.priceTypes?.find(
-      (type) => type.label === selectedType
+      (type) => type.label === selectedType,
     )?.value;
     props.setExpanse((value * currentExpanse) / 100);
   };
 
   return (
     <Grid container alignItems="center" columns={17}>
-      <Grid item xs={4} padding={'0 1rem 0 1rem'}>
+      <Grid item xs={4} padding={"0 1rem 0 1rem"}>
         <Typography className={styles.label}>{props.label}</Typography>
-      </Grid>
-      <Grid item xs={4} paddingX={1}>
-        <FormControl>
-          <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
-          <OutlinedInput
-            type="number"
-            id="outlined-adornment-amount"
-            endAdornment={<InputAdornment position="start">%</InputAdornment>}
-            label="Amount"
-            value={
-              (props.expanse /
-                props.priceTypes?.find((type) => type.label === selectedType)
-                  ?.value) *
-              100
-            }
-            onChange={handleChangePercentage}
-          />
-        </FormControl>
+        {/* <span contentEditable className={styles.label}>{props.label}</span> */}
       </Grid>
       <Grid item xs={4} paddingX={1}>
         <FormControl fullWidth>
-          <InputLabel id="demo-simple-select-label">Type</InputLabel>
+          <InputLabel id="demo-simple-select-label">Source</InputLabel>
           <Select
             labelId="demo-simple-select-label"
             id="demo-simple-select"
@@ -80,11 +64,34 @@ const ExpansesRow = (props: ExpansesRowProps) => {
                 {type.label}
               </MenuItem>
             ))}
-            {/* <MenuItem value="listingPrice">Listing Price</MenuItem>
-            <MenuItem value="arv">ARV</MenuItem> */}
+            {
+              /* <MenuItem value="listingPrice">Listing Price</MenuItem>
+            <MenuItem value="arv">ARV</MenuItem> */
+            }
           </Select>
         </FormControl>
       </Grid>
+      <Grid item xs={4} paddingX={1}>
+        <FormControl>
+          <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
+          <OutlinedInput
+            type="number"
+            id="outlined-adornment-amount"
+            endAdornment={<InputAdornment position="start">%</InputAdornment>}
+            label="Amount"
+            inputProps={{ min: 0, step: 1 }}
+            itemScope
+            value={Math.round(
+              (props.expanse /
+                props.priceTypes?.find((type) => type.label === selectedType)
+                  ?.value) *
+                100,
+            )}
+            onChange={handleChangePercentage}
+          />
+        </FormControl>
+      </Grid>
+
       <Grid item xs={4} paddingX={1}>
         <FormControl fullWidth sx={{ m: 1 }}>
           <InputLabel htmlFor="outlined-adornment-amount">Amount</InputLabel>
@@ -93,7 +100,7 @@ const ExpansesRow = (props: ExpansesRowProps) => {
             startAdornment={<InputAdornment position="start">$</InputAdornment>}
             label="Amount"
             type="number"
-            value={props.expanse}
+            value={Math.round(props.expanse)}
             onChange={handleChangeAmount}
           />
         </FormControl>
@@ -102,7 +109,7 @@ const ExpansesRow = (props: ExpansesRowProps) => {
         <Grid container justifyContent="center">
           <IconButton
             onClick={() => {
-              props.removeExpanse(props.label);
+              props.removeExpanse(props.id);
             }}
           >
             <RemoveCircleOutlineIcon />

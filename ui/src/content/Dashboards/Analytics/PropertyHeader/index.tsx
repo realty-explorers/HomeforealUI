@@ -1,31 +1,36 @@
-import Property from '@/models/property';
-import PropertyPhotos from './PropertyPhotos';
-import { Card, CardContent, Grid } from '@mui/material';
-import PropertyMainInfo from './PropertyMainInfo';
-import PropertyDetails from './PropertyDetails';
-import analyticsStyles from '../Analytics.module.scss';
-import Deal from '@/models/deal';
-import clsx from 'clsx';
+import Property from "@/models/property";
+import PropertyPhotos from "./PropertyPhotos";
+import { Card, CardContent, Grid } from "@mui/material";
+import PropertyMainInfo from "./PropertyMainInfo";
+import PropertyDetails from "./PropertyDetails";
+import analyticsStyles from "../Analytics.module.scss";
+import Deal from "@/models/deal";
+import clsx from "clsx";
+import AnalyzedProperty from "@/models/analyzedProperty";
 
 type PropertyHeaderProps = {
-  deal: Deal;
+  property: AnalyzedProperty;
 };
 const PropertyHeader = (props: PropertyHeaderProps) => {
   return (
     <div
       className={clsx([
         analyticsStyles.sectionContainer,
-        'flex flex-col w-full h-auto'
+        "flex flex-col w-full h-auto",
       ])}
     >
       <div className="flex">
-        <PropertyPhotos photos={props.deal?.property.images || []} />
+        <PropertyPhotos photos={props.property?.images || []} />
       </div>
       <div className="flex">
-        <PropertyMainInfo property={props.deal?.property || ({} as Property)} />
+        <PropertyMainInfo
+          property={props.property || ({} as AnalyzedProperty)}
+        />
       </div>
       <div className="flex">
-        <PropertyDetails property={props.deal?.property || ({} as Property)} />
+        {/* <PropertyDetails */}
+        {/*   property={props.property || ({} as AnalyzedProperty)} */}
+        {/* /> */}
       </div>
     </div>
   );

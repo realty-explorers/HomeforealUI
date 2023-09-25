@@ -1,15 +1,16 @@
-import { useState } from 'react';
-import Deal from '@/models/deal';
-import { InfoWindow, Marker, OverlayView } from '@react-google-maps/api';
-import PropertyMapCard from './PropertyMapCard';
-import { Fade } from '@mui/material';
+import { useState } from "react";
+import { InfoWindow, Marker, OverlayView } from "@react-google-maps/api";
+import PropertyMapCard from "./PropertyMapCard";
+import { Fade } from "@mui/material";
+import AnalyzedProperty from "@/models/analyzedProperty";
 
 type PropertiesMarkersProps = {
-  deals: Deal[];
-  setSelectedDeal: (deal: Deal) => void;
+  properties: AnalyzedProperty[];
+  setSelectedProperty: (property: AnalyzedProperty) => void;
+  clusterer: any;
 };
 const PropertiesMarkers = (props: PropertiesMarkersProps) => {
-  const [hoveredProperty, setHoveredProperty] = useState<string>('');
+  const [hoveredProperty, setHoveredProperty] = useState<string>("");
   const [showOverlayTimeout, setShowOverlayTimeout] = useState<any>();
 
   const handleMouseHover = (houseId: string) => {
@@ -17,50 +18,51 @@ const PropertiesMarkers = (props: PropertiesMarkersProps) => {
     clearTimeout(showOverlayTimeout);
   };
   const handleMouseOut = () => {
-    const showTimeout = setTimeout(() => setHoveredProperty(''), 100);
+    const showTimeout = setTimeout(() => setHoveredProperty(""), 100);
     setShowOverlayTimeout(showTimeout);
   };
 
   const divStyle = {
-    cursor: 'default'
+    cursor: "default",
   };
 
   return (
     <>
-      {props.deals &&
-        props.deals.map((deal: Deal, index: number) => (
+      {props.properties &&
+        props.properties.map((property: AnalyzedProperty, index: number) => (
           <Marker
             key={index}
             position={{
-              lat: deal.property.latitude,
-              lng: deal.property.longitude
+              lat: property.property.latitude,
+              lng: property.property.longitude,
             }}
+            clusterer={props.clusterer}
             icon={{
-              url: '/static/images/pins/homePin.png',
-              scaledSize: new google.maps.Size(60, 60)
+              url: "/static/images/pins/homePin.png",
+              scaledSize: new google.maps.Size(60, 60),
             }}
-            onMouseOver={() => handleMouseHover(deal.property.id)}
+            onMouseOver={() => handleMouseHover(property.market_id)}
             onMouseOut={() => handleMouseOut()}
             onClick={() => {
-              props.setSelectedDeal(deal);
-              setHoveredProperty('');
+              props.setSelectedProperty(property);
+              setHoveredProperty("");
             }}
           >
-            {hoveredProperty === deal.property.id && (
+            {hoveredProperty === property.market_id && (
               <OverlayView
                 position={{
-                  lat: deal.property.latitude,
-                  lng: deal.property.longitude
+                  lat: property.property.latitude,
+                  lng: property.property.longitude,
                 }}
                 mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
               >
-                <Fade in={hoveredProperty === deal.property.id} timeout={500}>
+                <Fade in={hoveredProperty === property.market_id} timeout={500}>
                   <div
                     style={divStyle}
-                    onMouseEnter={() => handleMouseHover(deal.property.id)}
+                    onMouseEnter={() => handleMouseHover(property.market_id)}
                     onMouseLeave={() => handleMouseOut()}
                   >
-                    <PropertyMapCard property={deal.property} />
+                    <PropertyMapCard property={property.property} />
                   </div>
                 </Fade>
               </OverlayView>

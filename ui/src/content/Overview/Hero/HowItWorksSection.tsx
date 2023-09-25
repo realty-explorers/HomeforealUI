@@ -9,6 +9,10 @@ import dailyDealsArrow from '@/public/static/images/icons/dailyDealsArrow.svg'
 import defineCriteriaArrow from '@/public/static/images/icons/defineCriteriaArrow.svg'
 import ThemedButtonLg from "@/components/Buttons/ThemedButtonLg";
 
+const meow = () => {
+  const a = 3;
+};
+
 const markerIcon = (
   <svg
     width="69"
@@ -70,10 +74,10 @@ const HowItWorksSection = () => {
       </div>
       <img style={{
         position: 'absolute',
-        top: '117rem',
+        top: '136em',
         height: '8rem',
-        width: '46rem',
-        left: '30rem'
+        width: '45rem',
+        left: '29rem'
       }} src={defineCriteriaArrow} />
       <div className="mt-20 pt-12 flex justify-end">
         <img src="/static/images/placeholders/covers/buyboxPage.png" className="w-[37rem] h-[22rem]" />
@@ -95,10 +99,10 @@ const HowItWorksSection = () => {
       </div>
       <img style={{
         position: 'absolute',
-        top: '140rem',
-        height: '8rem',
-        width: '40rem',
-        left: '31rem'
+        top: '170em',
+        height: '18%',
+        width: '42%',
+        left: '31%'
       }} src={dailyDealsArrow} />
       <div className="mt-28 m-4 p-8 w-[25rem] h-[32rem] rounded bg-[#F8F0D399] flex flex-col justify-center items-center">
         <img
@@ -114,13 +118,11 @@ const HowItWorksSection = () => {
         </Typography>
       </div>
       <img style={{
-        display: 'flex',
-        flexGrow: '1',
         position: 'absolute',
-        top: '191rem',
-        height: '9rem',
-        width: '32rem',
-        left: '30rem'
+        top: '223em',
+        height: '20%',
+        width: '33%',
+        left: '34%'
       }} src={closeMoreDealsArrow} />
       <div className="mt-20">
         <img className={styles.comp} src="/static/images/placeholders/covers/compPhoto2.png" width='320rem' />

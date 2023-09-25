@@ -1,5 +1,5 @@
-'use client';
-import React, { useState, useMemo, useContext, useEffect } from 'react';
+"use client";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   Box,
   CircularProgress,
@@ -9,18 +9,18 @@ import {
   InputAdornment,
   styled,
   TextField,
-  Typography
-} from '@mui/material';
-import Autocomplete from '@mui/material/Autocomplete';
-import LocationSuggestion from '@/models/location_suggestions';
-import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
-import LocationOnIcon from '@mui/icons-material/LocationOn';
-import { signOut, useSession } from 'next-auth/react';
-import { useDebounce } from '@/hooks/useDebounce';
+  Typography,
+} from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
+import LocationSuggestion from "@/models/location_suggestions";
+import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { signOut, useSession } from "next-auth/react";
+import { useDebounce } from "@/hooks/useDebounce";
 import {
   useGetLocationSuggestionQuery,
-  useLazyGetLocationSuggestionQuery
-} from '@/store/services/locationApiService';
+  useLazyGetLocationSuggestionQuery,
+} from "@/store/services/locationApiService";
 
 const SearchInputWrapper = styled(TextField)(
   ({ theme }) => `
@@ -51,7 +51,7 @@ box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     .MuiInputBase-input {
         // font-size: ${theme.typography.pxToRem(17)};
     }
-`
+`,
 );
 
 type AutocompleteInputProps = {
@@ -61,9 +61,9 @@ type AutocompleteInputProps = {
   search?: () => Promise<void>;
 };
 const AutocompleteInput: React.FC<AutocompleteInputProps> = (
-  props: AutocompleteInputProps
+  props: AutocompleteInputProps,
 ) => {
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 500);
   // const { data } = useGetLocationSuggestionQuery(debouncedSearchTerm);
   const [getLocationSuggestions, state] = useLazyGetLocationSuggestionQuery();
@@ -82,8 +82,9 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
         try {
           const response = await getLocationSuggestions(
             searchTerm,
-            true
+            true,
           ).unwrap();
+          setOptions([]);
           setOptions(response);
         } catch (error) {
           if (
@@ -91,12 +92,12 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
             error.response.status &&
             (error.response.status === 400 || error.response.status === 401)
           ) {
-            alert('Unauthorized');
+            alert("Unauthorized");
             signOut();
           } else alert(error);
         }
       }, 400),
-    []
+    [],
   );
 
   const handleInputChange = (event, newInput) => {
@@ -115,7 +116,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
         props.setLocation(newValue);
       }}
       options={options ?? []}
-      getOptionLabel={(option?: LocationSuggestion) => option.display ?? ''}
+      getOptionLabel={(option?: LocationSuggestion) => option.display ?? ""}
       onInputChange={handleInputChange}
       renderInput={(params) => (
         <SearchInputWrapper
@@ -125,30 +126,30 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
             endAdornment: (
               <InputAdornment position="start">
                 <IconButton onClick={handleSearch} disabled={searching}>
-                  {searching ? (
-                    <CircularProgress
-                      size={24}
-                      sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        marginTop: '-12px',
-                        marginLeft: '-12px'
-                      }}
-                    />
-                  ) : (
-                    <SearchTwoToneIcon htmlColor="#70757a" />
-                  )}
+                  {state.isFetching
+                    ? (
+                      <CircularProgress
+                        size={24}
+                        sx={{
+                          position: "absolute",
+                          top: "50%",
+                          left: "50%",
+                          marginTop: "-12px",
+                          marginLeft: "-12px",
+                        }}
+                      />
+                    )
+                    : <SearchTwoToneIcon htmlColor="#70757a" />}
                 </IconButton>
               </InputAdornment>
             ),
             style: {
-              paddingRight: '0.5rem'
-            }
+              paddingRight: "0.5rem",
+            },
           }}
           InputLabelProps={{
             ...params.InputLabelProps,
-            variant: 'outlined'
+            variant: "outlined",
             // shrink: false
           }}
           label="Search Properties"
@@ -162,12 +163,12 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
         return (
           <li {...props}>
             <Grid container alignItems="center">
-              <Grid item sx={{ display: 'flex', width: 44 }}>
-                <LocationOnIcon sx={{ color: 'text.secondary' }} />
+              <Grid item sx={{ display: "flex", width: 44 }}>
+                <LocationOnIcon sx={{ color: "text.secondary" }} />
               </Grid>
               <Grid
                 item
-                sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}
+                sx={{ width: "calc(100% - 44px)", wordWrap: "break-word" }}
               >
                 <Typography variant="body2" color="text.secondary">
                   {option?.display}

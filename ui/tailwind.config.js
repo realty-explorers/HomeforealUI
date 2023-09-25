@@ -16,6 +16,10 @@ module.exports = {
       ...defaultTheme.screens
     },
     extend: {
+      fontFamily: {
+        poppins: ['Poppins', 'sans-serif'],
+        playfair: ['Playfair Display', 'sans-serif']
+      },
       colors: {
         primary: '#1E1E1E',
         secondary: '#9B51E0'

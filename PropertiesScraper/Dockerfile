@@ -23,6 +23,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 RUN npm ci --only=production
 COPY --from=0 /usr/src/app/build ./build
+ENV __DEV__=true
 
 
 CMD [ "node", "./build/src/main.js" ]
