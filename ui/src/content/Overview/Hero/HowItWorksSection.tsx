@@ -1,6 +1,13 @@
 /* eslint-disable react/no-unknown-property */
 import { Typography } from "@mui/material";
 import styles from "./LandingPage.module.scss";
+import dataProtectionImg from '@/public/static/images/placeholders/covers/Secure-data-protection.svg'
+import whyUsPhoto from '@/public/static/images/placeholders/covers/whyUsPhoto.svg'
+import whyUsRectangle from '@/public/static/images/placeholders/covers/whyUsRectangle.svg'
+import closeMoreDealsArrow from '@/public/static/images/icons/closeMoreDealsArrow.svg'
+import dailyDealsArrow from '@/public/static/images/icons/dailyDealsArrow.svg'
+import defineCriteriaArrow from '@/public/static/images/icons/defineCriteriaArrow.svg'
+import ThemedButtonLg from "@/components/Buttons/ThemedButtonLg";
 
 const meow = () => {
   const a = 3;
@@ -40,7 +47,7 @@ const markerIcon = (
 
 const HowItWorksSection = () => {
   return (
-    <div className="mx-40 h-80 mt-20 grid grid-cols-[1.5fr_1fr] gap-8">
+    <div className="ml-20 mr-10  mt-20 grid grid-cols-[1.5fr_1fr] gap-14">
       <div className=" col-start-2 flex justify-center items-center flex-col">
         <Typography className={styles.howItWorksTitle}>
           How it works.
@@ -50,37 +57,115 @@ const HowItWorksSection = () => {
           <span className="text-purple-500">up to 10x</span>
         </Typography>
       </div>
-      <div className="">
-        <img src="/static/images/placeholders/covers/searchPage.png" />
+      <div className="mt-10">
+        <img src="/static/images/placeholders/covers/searchPage.png" className="w-[42rem] h-[28rem]" />
       </div>
-      <div className=" m-20 rounded bg-[#F8F0D3] flex flex-col justify-around items-center p-8">
+      <div className="ml-10 mb-16 p-8 w-[25rem] h-[30rem] rounded bg-[#F8F0D399] flex flex-col justify-center items-center">
         {markerIcon}
-        <Typography className={styles.yellowCardTitle}>
-          Define Criteria
-        </Typography>
-        <Typography className={styles.yellowCardDescription}>
-          Find investments that match your client's criteria with our advanced
-          patented screener.
-        </Typography>
+        <div className="mt-10">
+          <Typography className={styles.yellowCardTitle}>
+            Define Criteria
+          </Typography>
+          <Typography className={styles.yellowCardDescription}>
+            Find investments that match your client's criteria with our advanced
+            patented screener.
+          </Typography>
+        </div>
       </div>
-      <div className="">
-        <img src="/static/images/placeholders/covers/buyboxPage.png" />
+      <img style={{
+        position: 'absolute',
+        top: '136em',
+        height: '8rem',
+        width: '45rem',
+        left: '29rem'
+      }} src={defineCriteriaArrow} />
+      <div className="mt-20 pt-12 flex justify-end">
+        <img src="/static/images/placeholders/covers/buyboxPage.png" className="w-[37rem] h-[22rem]" />
       </div>
-      <div className=" m-20 rounded bg-[#F8F0D3] flex flex-col justify-around items-center p-8">
+      <div className="ml-10 mb-10 p-8 w-[25rem] h-[30rem] rounded bg-[#F8F0D399] flex flex-col items-center justify-center">
         <img
           src="/static/images/placeholders/illustrations/phoneApp.png"
+          width="130rem"
+          height="130rem"
+        />
+        <div className="mt-10">
+          <Typography className={styles.yellowCardTitle}>
+            Get daily Deals
+          </Typography>
+          <Typography className={styles.yellowCardDescription}>
+            Our system monitors the market 24/7 to match the right investments to your clients.
+          </Typography>
+        </div>
+      </div>
+      <img style={{
+        position: 'absolute',
+        top: '170em',
+        height: '18%',
+        width: '42%',
+        left: '31%'
+      }} src={dailyDealsArrow} />
+      <div className="mt-28 m-4 p-8 w-[25rem] h-[32rem] rounded bg-[#F8F0D399] flex flex-col justify-center items-center">
+        <img
+          src={dataProtectionImg}
           width="150rem"
           height="150rem"
         />
         <Typography className={styles.yellowCardTitle}>
-          Define Criteria
+          Close more deals
         </Typography>
         <Typography className={styles.yellowCardDescription}>
-          Find investments that match your client's criteria with our advanced
-          patented screener.
+          Amazing analysis that close more deals than ever before - increase your customer base and   deal closing rate.
         </Typography>
       </div>
+      <img style={{
+        position: 'absolute',
+        top: '223em',
+        height: '20%',
+        width: '33%',
+        left: '34%'
+      }} src={closeMoreDealsArrow} />
+      <div className="mt-20">
+        <img className={styles.comp} src="/static/images/placeholders/covers/compPhoto2.png" width='320rem' />
+        <img src="/static/images/placeholders/covers/compPhoto.png" />
+      </div>
+      <div className="my-12">
+        <img src={whyUsPhoto} className="w-100 h-100" />
+      </div>
+      <div className=" flex flex-col my-12">
+        <div className=" flex flex-row justify-end mr-10 h-[10%]">
+          <img
+            className="w-12 h-12"
+            src="/static/images/placeholders/illustrations/ball.png"
+          />
+        </div>
+        <div className="mt-8 h-[6%]">
+          <img src={whyUsRectangle} />
+        </div>
+        <div className={`${styles.howItWorksTitle} h-[10%] mb-2`}>
+          Why Us.
+        </div>
+        <div className="w-[85%] h-[55%]">
+          <div className={styles.whyUsParagraphs}>
+            <span className={styles.whyUsPoints}>Expert insights </span>
+            - Our experienced team provides guidance you can trust.
+          </div>
+          <div className={styles.whyUsParagraphs}>
+            <span className={styles.whyUsPoints}>Advanced technology </span>
+            - Our patented platform finds the best investments 24/7.
+          </div>
+          <div className={styles.whyUsParagraphs}>
+            <span className={styles.whyUsPoints}>Proven results </span>
+            - We help increase deal flow and customer acquisition.
+          </div>
+        </div>
+        <div className=" mb-2 h-[10%] flex items-end">
+          <a href="#contactUs">
+            <ThemedButtonLg text="Chat With Us" />
+          </a>
+        </div>
+      </div>
     </div>
+
   );
 };
 
