@@ -1,6 +1,13 @@
 import ThemedButton from "@/components/Buttons/ThemedButton";
 import Property from "@/models/property";
-import { Box, Grid } from "@mui/material";
+import { Box, Button, Dialog, Grid, Typography } from "@mui/material";
+import Modal from "@mui/joy/Modal";
+import ModalClose from "@mui/joy/ModalClose";
+import ModalDialog from "@mui/joy/ModalDialog";
+import { useState } from "react";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
+import clsx from "clsx";
 
 const Image = (props: any) => {
   const defaultImage =
@@ -18,42 +25,84 @@ const Image = (props: any) => {
   );
 };
 
-const ViewMore = () => {
-  return (
-    <div style={{ position: "relative", height: "100%", width: "100%   " }}>
-      <Image sx={{ opacity: "0.5" }} />
-      <ThemedButton
-        text="See More"
-        sx={{
-          position: "absolute",
-          top: "50%",
-          left: "50%",
-          transform: "translate(-50%, -50%)",
-        }}
-      />
-    </div>
-  );
-};
+const images = [
+  {
+    src:
+      "https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg",
+  },
+  {
+    src:
+      "https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png",
+  },
+  {
+    src:
+      "https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg",
+  },
+];
 
 type PropertyPhotosProps = {
   photos: string[];
 };
 const PropertyPhotos = (props: PropertyPhotosProps) => {
+  const [open, setOpen] = useState(false);
+  const slides = props.photos?.map((image) => {
+    return {
+      src: image,
+    };
+  });
+
   return (
     <>
-      <div className="flex w-full h-80">
-        <div className="flex w-full lg:w-3/5 m-4">
-          <Image src={props.photos[0]} />
+      <div
+        className={clsx([
+          "grid grid-cols-[1.5fr_1fr] grid-rows-2 w-full h-80 gap-4 p-4",
+          props.photos.length == 0 ? "hidden" : "",
+        ])}
+      >
+        <div
+          className={clsx([
+            "row-span-2 flex items-center justify-center",
+            props.photos.length == 1 ? "col-span-2" : "",
+          ])}
+        >
+          <img src={props.photos[0]} className="w-full h-full rounded" />
+          {/* <Image src={props.photos[0]} /> */}
         </div>
-        <div className="lg:flex flex-col hidden w-2/5 m-4">
-          <div className="flex h-1/2 pb-2">
-            <Image src={props.photos[1]} />
-          </div>
-          <div className="flex h-1/2 pt-2">
-            <ViewMore />
-          </div>
+        <div
+          className={clsx([
+            "flex h-full justify-center items-center ",
+            props.photos.length < 2 ? "hidden" : "",
+            props.photos.length == 2 ? "row-span-2" : "",
+          ])}
+        >
+          <img src={props.photos[0]} className="w-full h-full rounded" />
+          {/* <Image src={props.photos[1]} /> */}
+        </div>
+        <div
+          className={clsx([
+            "flex h-full justify-center items-center relative",
+            props.photos.length < 3 ? "hidden" : "",
+          ])}
+        >
+          <img src={props.photos[0]} className="w-full h-full rounded" />
+          <ThemedButton
+            onClick={() => setOpen(!open)}
+            text="See More"
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+            }}
+          />
         </div>
       </div>
+
+      <Lightbox
+        open={open}
+        close={() => setOpen(false)}
+        slides={slides}
+      />
     </>
   );
 };
