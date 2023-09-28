@@ -5,12 +5,14 @@ import analyticsStyles from "../Analytics.module.scss";
 import styles from "./CompsSection.module.scss";
 import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
 import { priceFormatter } from "@/utils/converters";
+import clsx from "clsx";
 
 const gridRows = (property: Property) => [
   {
     label: "AskedPrice",
     value: priceFormatter(property.sales_listing_price),
     averageProperty: "sales_listing_price",
+    averageFormatter: priceFormatter,
   },
   {
     label: "Bedrooms",
@@ -50,6 +52,10 @@ const gridRows = (property: Property) => [
   //   label: "Neighborhood",
   //   value: "neighborhood",
   // },
+  {
+    label: "Location",
+    value: `${property["neighborhood"]}`,
+  },
   {
     label: "Price/Sqft",
     value: `${
@@ -110,41 +116,92 @@ const PropertyCard = (props: PropertyCardProps) => {
           className="h-44 rounded-lg aspect-video"
         />
       </Grid>
-      <Grid container justifyContent="center" rowGap={2}>
-        <GridTableField
-          size={12}
-          fields={[
-            { className: styles.propertyTableHeader, label: "Feature" },
-            { className: styles.propertyTableHeader, label: "Subject" },
-            {
-              className: styles.propertyTableHeader,
-              label: "Comps AVG.",
-            },
-          ]}
-        />
-        {gridRows(props.property.property).map((property, index) => (
-          <GridTableField
-            key={index}
-            size={12}
-            fields={[
-              { className: styles.propertyRowHeader, label: property.label },
-              {
-                className: styles.propertyText,
-                label: `${property.value}`,
-              },
-              {
-                className: styles.propertyText,
-                label: `${
-                  property.averageProperty
-                    ? calcCompsAverage(property.averageProperty)
-                    : ""
-                }`,
-                // label: "meow",
-              },
-            ]}
-          />
-        ))}
-      </Grid>
+      <div className="grid grid-cols-3 gap-y-4">
+        <div>
+          <Typography className={styles.propertyTableHeader}>
+            Feature
+          </Typography>
+        </div>
+        <div>
+          <Typography className={styles.propertyTableHeader}>
+            Subject
+          </Typography>
+        </div>
+        <div>
+          <Typography className={styles.propertyTableHeader}>
+            Comps AVG.
+          </Typography>
+        </div>
+        {gridRows(props.property.property).map((property, index) => {
+          const averageLabel = property.averageProperty
+            ? property.averageFormatter
+              ? property.averageFormatter(
+                calcCompsAverage(property.averageProperty),
+              )
+              : calcCompsAverage(property.averageProperty)
+            : "";
+          return (
+            <>
+              <div>
+                <Typography className={styles.propertyRowHeader}>
+                  {property.label}
+                </Typography>
+              </div>
+
+              <div>
+                <Typography className={clsx([styles.propertyText, "truncate"])}>
+                  {property.value}
+                </Typography>
+              </div>
+
+              <div>
+                <Typography className={styles.propertyText}>
+                  {averageLabel}
+                </Typography>
+              </div>
+            </>
+          );
+        })}
+      </div>
+      {/* <Grid container justifyContent="center" rowGap={2}> */}
+      {/*     size={12} */}
+      {/*     fields={[ */}
+      {/*       { className: styles.propertyTableHeader, label: "Feature" }, */}
+      {/*       { className: styles.propertyTableHeader, label: "Subject" }, */}
+      {/*       { */}
+      {/*         className: styles.propertyTableHeader, */}
+      {/*         label: "Comps AVG.", */}
+      {/*       }, */}
+      {/*     ]} */}
+      {/*   /> */}
+      {/*   {gridRows(props.property.property).map((property, index) => { */}
+      {/*     const averageLabel = property.averageProperty */}
+      {/*       ? property.averageFormatter */}
+      {/*         ? property.averageFormatter( */}
+      {/*           calcCompsAverage(property.averageProperty), */}
+      {/*         ) */}
+      {/*         : calcCompsAverage(property.averageProperty) */}
+      {/*       : ""; */}
+      {/*     return ( */}
+      {/*       <GridTableField */}
+      {/*         key={index} */}
+      {/*         size={12} */}
+      {/*         fields={[ */}
+      {/*           { className: styles.propertyRowHeader, label: property.label }, */}
+      {/*           { */}
+      {/*             className: styles.propertyText, */}
+      {/*             label: `${property.value}`, */}
+      {/*           }, */}
+      {/*           { */}
+      {/*             className: styles.propertyText, */}
+      {/*             label: `${averageLabel}`, */}
+      {/*             // label: "meow", */}
+      {/*           }, */}
+      {/*         ]} */}
+      {/*       /> */}
+      {/*     ); */}
+      {/*   })} */}
+      {/* </Grid> */}
     </Card>
   );
 };

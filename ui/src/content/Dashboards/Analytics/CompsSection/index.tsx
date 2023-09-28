@@ -44,14 +44,14 @@ const CompsSection = (props: CompsSectionProps) => {
       </Typography>
 
       <Wrapper className={styles.cardsWrapper}>
-        <Grid item className="my-8">
+        <Grid item className="my-8 sticky left-0 z-[1]">
           <PropertyCard
             property={props.property}
             compsProperties={props.selectedComps}
           />
         </Grid>
         {props.property.CompsData?.map((compsProperty, index) => (
-          <Grid item key={index} className="my-8">
+          <Grid item key={index} className="my-8 left-0">
             <CompsCard
               compsProperty={compsProperty}
               index={index}

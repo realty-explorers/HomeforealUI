@@ -6,6 +6,7 @@ import styles from "./CompsSection.module.scss";
 import { Property } from "@/models/analyzedProperty";
 import styled from "@emotion/styled";
 import { priceFormatter } from "@/utils/converters";
+import clsx from "clsx";
 
 const CheckBoxWhite = styled(Checkbox)(({ theme }) => ({
   color: "white",
@@ -44,10 +45,10 @@ const gridRows = (property: Property) => [
     label: "Year Built",
     value: property.year_built.slice(0, 4),
   },
-  // {
-  //   label: "Neighborhodd",
-  //   value: property.neighborhood,
-  // },
+  {
+    label: "Hood",
+    value: property.neighborhood,
+  },
   {
     label: "Price/Sqft",
     value: priceFormatter(
@@ -94,58 +95,83 @@ const CompsCard = (props: CompsCardProps) => {
           className="h-44 rounded-lg aspect-video"
         />
       </Grid>
-      <Grid container justifyContent="center" rowGap={2}>
-        <GridTableField
-          size={12}
-          fields={[
-            { className: styles.propertyTableHeader, label: "Feature" },
-            { className: styles.propertyTableHeader, label: "Comps" },
-          ]}
-        />
-        {gridRows(props.compsProperty).map((gridValues, index) => (
-          <GridTableField
-            key={index}
-            size={12}
-            fields={[
-              { className: styles.propertyRowHeader, label: gridValues.label },
-              {
-                className: styles.propertyText,
-                label: `${gridValues.value}`,
-              },
-            ]}
-          />
-        ))}
-        <Divider variant="middle" className="bg-white w-full" />
+      <div className="grid grid-cols-2 gap-y-4">
+        <div>
+          <Typography className={styles.propertyTableHeader}>
+            Feature
+          </Typography>
+        </div>
+        <div>
+          <Typography className={styles.propertyTableHeader}>
+            Subject
+          </Typography>
+        </div>
+        {gridRows(props.compsProperty).map((property, index) => {
+          return (
+            <>
+              <div>
+                <Typography className={styles.propertyRowHeader}>
+                  {property.label}
+                </Typography>
+              </div>
 
-        <GridTableField
-          size={12}
-          fields={[
-            { className: styles.propertyTableHeader, label: "Distance" },
-            { className: styles.propertyTableHeader, label: `${0}` },
-          ]}
-        />
+              <div>
+                <Typography className={clsx([styles.propertyText, "truncate"])}>
+                  {property.value}
+                </Typography>
+              </div>
+            </>
+          );
+        })}
 
-        <GridTableField
-          size={12}
-          fields={[
-            { className: styles.propertyTableHeader, label: "Similarity" },
-            { className: styles.propertyTableHeader, label: `` },
-          ]}
-        />
+        <div className="col-span-2">
+          <Divider variant="middle" className="bg-white w-full m-0" />
+        </div>
+        <>
+          <div>
+            <Typography
+              className={clsx([styles.propertyRowHeader, "truncate"])}
+            >
+              Distance
+            </Typography>
+          </div>
+          <div>
+            <Typography className={clsx([styles.propertyText, "truncate"])}>
+              0
+            </Typography>
+          </div>
+        </>
 
-        <GridTableField
-          size={12}
-          fields={[
-            { className: styles.propertyTableHeader, label: "Closed Price" },
-            {
-              className: styles.propertyTableHeader,
-              label: `${
-                priceFormatter(props.compsProperty.sales_closing_price)
-              }`,
-            },
-          ]}
-        />
-      </Grid>
+        <>
+          <div>
+            <Typography
+              className={clsx([styles.propertyRowHeader, "truncate"])}
+            >
+              Similarity
+            </Typography>
+          </div>
+          <div>
+            <Typography className={clsx([styles.propertyText, "truncate"])}>
+              0
+            </Typography>
+          </div>
+        </>
+
+        <>
+          <div>
+            <Typography
+              className={clsx([styles.propertyRowHeader, "truncate"])}
+            >
+              Closed Price
+            </Typography>
+          </div>
+          <div>
+            <Typography className={clsx([styles.propertyText, "truncate"])}>
+              {priceFormatter(props.compsProperty.sales_listing_price)}
+            </Typography>
+          </div>
+        </>
+      </div>
     </Card>
   );
 };
