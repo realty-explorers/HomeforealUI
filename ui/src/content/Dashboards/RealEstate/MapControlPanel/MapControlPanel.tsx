@@ -18,7 +18,7 @@ const MapControlPanel = (props: MapControlPanelProps) => {
   const { suggestion } = useSelector(selectLocation);
   const [getLocationData, locationDataState] = useLazyGetLocationDataQuery();
   const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(true);
 
   const handleSearch = async () => {
     const locationDataRequest = getLocationData(suggestion, true);
@@ -34,9 +34,9 @@ const MapControlPanel = (props: MapControlPanelProps) => {
     // console.log('response from auto: ', response);
   };
   return (
-    <div className="absolute left-0 top-0 flex p-4">
+    <div className="absolute left-0 top-0 flex p-4 pointer-events-none">
       <div className="flex flex-col">
-        <div className="flex">
+        <div className="flex pointer-events-auto">
           <div className="w-80">
             <AutocompleteInput
               location={suggestion}
@@ -49,7 +49,7 @@ const MapControlPanel = (props: MapControlPanelProps) => {
             <Button
               onClick={() => setFiltersOpen(!filtersOpen)}
               startIcon={<TuneIcon />}
-              className="text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl"
+              className="text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl px-4"
             >
               Filters
             </Button>
@@ -57,7 +57,11 @@ const MapControlPanel = (props: MapControlPanelProps) => {
         </div>
 
         <Collapse in={filtersOpen}>
-          <div className={clsx(["p-10 bg-white/[.8] rounded-md mt-4 w-80"])}>
+          <div
+            className={clsx([
+              "p-10 bg-white/[.8] rounded-md mt-4 w-80 relative pointer-events-auto",
+            ])}
+          >
             <MainControls />
           </div>
         </Collapse>

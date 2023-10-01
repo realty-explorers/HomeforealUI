@@ -6,7 +6,11 @@ import ModalClose from "@mui/joy/ModalClose";
 import ModalDialog from "@mui/joy/ModalDialog";
 import { useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
+import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
+import Fullscreen from "yet-another-react-lightbox/plugins/fullscreen";
+import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import "yet-another-react-lightbox/styles.css";
+import "yet-another-react-lightbox/plugins/thumbnails.css";
 import clsx from "clsx";
 
 const Image = (props: any) => {
@@ -55,36 +59,47 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
     <>
       <div
         className={clsx([
-          "grid grid-cols-[1.5fr_1fr] grid-rows-2 w-full h-80 gap-4 p-4",
+          "grid grid-cols-[2fr_1fr] grid-rows-2 w-full h-80 gap-4 p-4",
           props.photos.length == 0 ? "hidden" : "",
         ])}
       >
         <div
           className={clsx([
-            "row-span-2 flex items-center justify-center",
+            "row-span-2 col-span-2 xl:col-span-1 flex items-center justify-center cursor-pointer",
             props.photos.length == 1 ? "col-span-2" : "",
           ])}
         >
-          <img src={props.photos[0]} className="w-full h-full rounded" />
+          <img
+            src={props.photos[0] || ""}
+            className="w-full h-full rounded object-cover"
+            onClick={() => setOpen(!open)}
+          />
           {/* <Image src={props.photos[0]} /> */}
         </div>
         <div
           className={clsx([
-            "flex h-full justify-center items-center ",
+            "hidden xl:flex h-full justify-center items-center cursor-pointer ",
             props.photos.length < 2 ? "hidden" : "",
             props.photos.length == 2 ? "row-span-2" : "",
           ])}
         >
-          <img src={props.photos[0]} className="w-full h-full rounded" />
+          <img
+            src={props.photos[1] || ""}
+            className="w-full h-full rounded object-cover"
+            onClick={() => setOpen(!open)}
+          />
           {/* <Image src={props.photos[1]} /> */}
         </div>
         <div
           className={clsx([
-            "flex h-full justify-center items-center relative",
+            "hidden xl:flex h-full justify-center items-center relative",
             props.photos.length < 3 ? "hidden" : "",
           ])}
         >
-          <img src={props.photos[0]} className="w-full h-full rounded" />
+          <img
+            src={props.photos[2]}
+            className="w-full h-full rounded object-cover"
+          />
           <ThemedButton
             onClick={() => setOpen(!open)}
             text="See More"
@@ -99,9 +114,11 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
       </div>
 
       <Lightbox
+        styles={{ container: { backgroundColor: "rgba(0, 0, 0, .8)" } }}
         open={open}
         close={() => setOpen(false)}
         slides={slides}
+        plugins={[Fullscreen, Slideshow, Thumbnails]}
       />
     </>
   );

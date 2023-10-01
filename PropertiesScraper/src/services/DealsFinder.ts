@@ -19,7 +19,7 @@ export default class DealsFinder {
   private dataFetcher: AxiosDataFetcher;
   private dealsFinder: DealsEngine;
   private propertyScrapers: PropertyScraper[];
-  private propertyRepository: PropertyRepository;
+  // private propertyRepository: PropertyRepository;
   private scrapingManager: ScrapingManager;
 
   constructor() {
@@ -28,14 +28,14 @@ export default class DealsFinder {
     const zillowScraper = new ZillowScraper();
     const realtorScraper = new RealtorScraper();
     this.propertyScrapers = [zillowScraper, realtorScraper];
-    this.propertyRepository = new PropertyRepository();
+    // this.propertyRepository = new PropertyRepository();
     this.init();
     this.scrapingManager = new ScrapingManager();
   }
 
   private init = async () => {
-    await this.propertyRepository.connect();
-    await this.propertyRepository.setupDB();
+    // await this.propertyRepository.connect();
+    // await this.propertyRepository.setupDB();
   };
 
   private calcDateDifference = (dateString: string) => {
@@ -72,10 +72,10 @@ export default class DealsFinder {
     const foundProperties = await this.scrapingManager.scrapeProperties(
       regionProperties,
     );
-    await this.propertyRepository.saveProperties(
-      foundProperties,
-      regionProperties.state,
-    );
+    // await this.propertyRepository.saveProperties(
+    //   foundProperties,
+    //   regionProperties.state,
+    // );
     // await this.propertyRepository.updateRegionStatus(updatedRegionStatus);
 
     properties.push(...foundProperties);

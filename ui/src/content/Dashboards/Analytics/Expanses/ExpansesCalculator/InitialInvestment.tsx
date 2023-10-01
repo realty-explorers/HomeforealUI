@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import {
   Button,
   Checkbox,
@@ -38,11 +39,11 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
 
   useEffect(() => {
     setExpanses([
-      { id: crypto.randomUUID(), label: "Down Payment", value: 0 },
-      { id: crypto.randomUUID(), label: "Loan Amount", value: 0 },
-      { id: crypto.randomUUID(), label: "Origination Fee", value: 0 },
-      { id: crypto.randomUUID(), label: "Interest Rate", value: 0 },
-      { id: crypto.randomUUID(), label: "Points", value: 0 },
+      { id: uuidv4(), label: "Down Payment", value: 0 },
+      { id: uuidv4(), label: "Loan Amount", value: 0 },
+      { id: uuidv4(), label: "Origination Fee", value: 0 },
+      { id: uuidv4(), label: "Interest Rate", value: 0 },
+      { id: uuidv4(), label: "Points", value: 0 },
     ]);
   }, [props.property]);
 
@@ -59,7 +60,7 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
     setExpanses([
       ...expanses,
       {
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         label: `New Expanse`,
         value: 0,
       },

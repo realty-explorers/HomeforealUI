@@ -30,15 +30,15 @@ export const propertiesApi = createApi({
       },
       transformResponse: (response: any) => {
         try {
-          const set = [];
-          const a = data[0];
-          for (let i = 0; i < 50; i++) {
-            a.property.longitude = a.property.longitude + 0.00001 * i;
-            a.property.latitude = a.property.latitude + 0.00001 * i;
-            set.push(JSON.parse(JSON.stringify(a)));
-          }
-          console.log(set);
-          return set;
+          // const set = [];
+          // const a = data[0];
+          // for (let i = 0; i < 50; i++) {
+          //   a.property.longitude = a.property.longitude + 0.00001 * i;
+          //   a.property.latitude = a.property.latitude + 0.00001 * i;
+          //   set.push(JSON.parse(JSON.stringify(a)));
+          // }
+          // console.log(set);
+          // return set;
           return response.slice(0, 50);
         } catch (e) {
           console.log(e);

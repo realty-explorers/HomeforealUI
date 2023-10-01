@@ -15,6 +15,10 @@
   text-transform: capitalize;
 }
 
+.cellHeader {
+  width: 10rem;
+}
+
 .cellText {
   color: #000;
   font-family: Poppins;
@@ -23,4 +27,26 @@
   font-weight: 300;
   line-height: 159.5%; /* 1.79438rem */
   text-transform: capitalize;
+}
+
+.header {
+  @apply font-poppins;
+  color: #000;
+  font-size: 2rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: capitalize;
+}
+
+.indicator {
+  @apply font-poppins;
+  color: #000;
+  font-size: 1.75rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 159.5%; /* 2.79125rem */
+  text-transform: capitalize;
+  padding: 0.2rem 2rem;
+  border-radius: 0.5rem;
 }

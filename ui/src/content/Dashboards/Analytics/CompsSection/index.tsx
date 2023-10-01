@@ -1,4 +1,4 @@
-import { Box, Card, Grid, Typography } from "@mui/material";
+import { Box, Button, Card, Grid, Typography } from "@mui/material";
 import GridTableField from "@/components/Grid/GridTableField";
 
 import analyticsStyles from "../Analytics.module.scss";
@@ -7,9 +7,11 @@ import PropertyCard from "./PropertyCard";
 import CompsCard from "./CompsCard";
 import CompsProperty from "@/models/comps_property";
 import styled from "@emotion/styled";
+import TuneIcon from "@mui/icons-material/Tune";
 import { Height } from "@mui/icons-material";
 import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
-import { setSelectedComps } from "@/store/slices/propertiesSlice";
+import { useState } from "react";
+import CompsFilter from "./CompsFilter";
 
 const Wrapper = styled(Box)(({ theme }) => ({
   width: "10rem",
@@ -22,6 +24,8 @@ type CompsSectionProps = {
   setSelectedComps: (compsProperties: Property[]) => void;
 };
 const CompsSection = (props: CompsSectionProps) => {
+  const [filterOpen, setFilterOpen] = useState(false);
+
   const handleToggle = (compsProperty: Property) => {
     if (props.selectedComps.includes(compsProperty)) {
       const filteredComps = props.selectedComps.filter((property) =>
@@ -39,23 +43,33 @@ const CompsSection = (props: CompsSectionProps) => {
       <Typography className={styles.compsSectionInfo}>
         We found {props.property.CompsData?.length} comps that match your search
       </Typography>
-      <Typography className={styles.compsSectionEditText}>
-        Edit comps filter
-      </Typography>
+      <Button
+        onClick={() => setFilterOpen(!filterOpen)}
+        startIcon={<TuneIcon />}
+        className="text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl mt-2 px-4"
+      >
+        Filter Comps
+      </Button>
+      <CompsFilter
+        open={filterOpen}
+        setOpen={setFilterOpen}
+        compsProperties={props.property.CompsData}
+        setSelectedComps={props.setSelectedComps}
+      />
 
       <Wrapper className={styles.cardsWrapper}>
-        <Grid item className="my-8 sticky left-0 z-[1]">
+        <Grid item className="mb-8 sticky left-0 z-[1]">
           <PropertyCard
             property={props.property}
             compsProperties={props.selectedComps}
           />
         </Grid>
         {props.property.CompsData?.map((compsProperty, index) => (
-          <Grid item key={index} className="my-8 left-0">
+          <Grid item key={index} className="mb-8 left-0">
             <CompsCard
               compsProperty={compsProperty}
               index={index}
-              selected={props.selectedComps.includes(compsProperty)}
+              selected={props.selectedComps?.includes(compsProperty)}
               toggle={() =>
                 handleToggle(compsProperty)}
             />

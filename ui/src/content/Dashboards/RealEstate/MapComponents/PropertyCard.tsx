@@ -137,7 +137,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
   const handlepropertySelected = async () => {
     if (
       props.selectedProperty &&
-      props.selectedProperty.market_id === props.property.market_id
+      props.selectedProperty.source_id === props.property.source_id
     ) {
       dispatch(setSelectedProperty(null));
       props.setSelectedProperty(null);
@@ -174,7 +174,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
   return (
     <StyledCard
       selected={props.selectedProperty &&
-        props.selectedProperty.market_id === props.property.market_id}
+        props.selectedProperty.source_id === props.property.source_id}
       className={props.className}
     >
       <CardActionArea onClick={handlepropertySelected}>
@@ -200,7 +200,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           <Grid className={styles.cardDiscountChip} container>
             <Grid item xs={12}>
               <Typography className={styles.cardDiscountValue}>
-                {profit}%
+                {props.property.arv_percentage.toFixed()}%
               </Typography>
             </Grid>
             <Grid item xs={12}>

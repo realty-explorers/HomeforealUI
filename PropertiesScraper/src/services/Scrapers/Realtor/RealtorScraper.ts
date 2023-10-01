@@ -1,5 +1,5 @@
 import * as puppeteer from "puppeteer";
-import { ZillowFilter, ZillowQuery, MapBounds } from "../../../models/zillow";
+import { MapBounds, ZillowFilter, ZillowQuery } from "../../../models/zillow";
 import queryParser from "query-string";
 import {
   calcDaysDifferenceToISO,
@@ -63,25 +63,25 @@ export default class RealtorScraper implements PropertyScraper {
 
   public scrapeMetadata = async (
     regionProperties: RegionProperties,
-    dataFetcher: DataFetcher
+    dataFetcher: DataFetcher,
   ) => {
     const initRequestParameters = this.getRequestParameters(regionProperties);
     const maxTries = 25;
     const responseData = await dataFetcher.tryFetch(
       initRequestParameters,
       this.validateData,
-      maxTries
+      maxTries,
     );
     const scrapingInfo = this.extractScrapingInfo(
       responseData,
-      regionProperties
+      regionProperties,
     );
     return scrapingInfo;
   };
 
   private extractScrapingInfo = (
     scrapingData: any,
-    regionProperties: RegionProperties
+    regionProperties: RegionProperties,
   ) => {
     if (!scrapingData) throw Error("No data found");
     const totalProperties = scrapingData["data"]["home_search"]["total"];
@@ -101,7 +101,7 @@ export default class RealtorScraper implements PropertyScraper {
 
   public scrapeProperties = async (
     scrapeInfo: ScrapeMetadata,
-    dataFetcher: DataFetcher
+    dataFetcher: DataFetcher,
   ) => {
     const maxTries = 25;
     const requestsParameters = this.getFullRequestParameters(scrapeInfo);
@@ -110,14 +110,14 @@ export default class RealtorScraper implements PropertyScraper {
       const request = dataFetcher.tryFetch(
         requestParameters,
         this.validateData,
-        maxTries
+        maxTries,
       );
       requests.push(request);
     }
     const propertiesResults = await Promise.all(requests);
     const properties = await this.parseProperties(
       [...propertiesResults],
-      scrapeInfo.regionProperties
+      scrapeInfo.regionProperties,
     );
     return properties as any;
   };
@@ -154,12 +154,12 @@ export default class RealtorScraper implements PropertyScraper {
         min: calcDaysDifferenceToISO(regionProperties.forSalePropertiesMaxAge),
       };
     }
-    requestQuery.variables.query.search_location.location =
-      this.regionToAddress(
+    requestQuery.variables.query.search_location.location = this
+      .regionToAddress(
         regionProperties.display,
         regionProperties.type,
         regionProperties.city,
-        regionProperties.state
+        regionProperties.state,
       );
     return requestQuery;
   };
@@ -168,7 +168,7 @@ export default class RealtorScraper implements PropertyScraper {
     display: string,
     type: string,
     city: string,
-    state: string
+    state: string,
   ) => {
     if (type === "neighborhood") {
       const neighborhoodName = display.substring(0, display.indexOf(","));
@@ -199,11 +199,11 @@ export default class RealtorScraper implements PropertyScraper {
     let currentCount = 0;
     while (currentCount < totalPages * perPage) {
       const defaultRequestParameters = this.getRequestParameters(
-        scrapeInfo.regionProperties
+        scrapeInfo.regionProperties,
       );
       const requestParameters = this.paginate(
         defaultRequestParameters,
-        currentCount
+        currentCount,
       );
       fullRequestParameters.push(JSON.parse(JSON.stringify(requestParameters)));
       currentCount += perPage;
@@ -213,7 +213,7 @@ export default class RealtorScraper implements PropertyScraper {
 
   private paginate = (
     requestParameters: RequestParameters,
-    startFrom: number
+    startFrom: number,
   ) => {
     requestParameters.body["variables"]["offset"] = startFrom;
     return requestParameters;
@@ -221,7 +221,7 @@ export default class RealtorScraper implements PropertyScraper {
 
   private parseProperties = async (
     propertiesResults: any,
-    regionProperties: RegionProperties
+    regionProperties: RegionProperties,
   ) => {
     const properties: RealProperty[] = [];
     for (const propertiesResult of propertiesResults) {
@@ -232,10 +232,9 @@ export default class RealtorScraper implements PropertyScraper {
           const property: RealProperty = {
             source_id: propertyResult.property_id,
             primaryImage: this.getImageUrl(propertyResult.primary_photo?.href),
-            images:
-              propertyResult.photos?.map((photo: any) =>
-                this.getImageUrl(photo?.href)
-              ) || [],
+            images: propertyResult.photos?.map((photo: any) =>
+              this.getImageUrl(photo?.href)
+            ) || [],
             property_type: propertyResult.description.type,
             sales_status: propertyResult.status,
             address_number: undefined,
@@ -297,13 +296,13 @@ export default class RealtorScraper implements PropertyScraper {
           //     listingDate: propertyResult.list_date,
           //     soldDate: propertyResult.description.sold_date,
           // }
-          console.log(property);
+          // console.log(property);
           // property['id'] = constructPropertyId(property.address, property.city, property.state, property.zipCode);
           const id = constructPropertyId(
             property.address,
             property.city || "",
             property.state || "",
-            property.zipcode || ""
+            property.zipcode || "",
           );
           const propertyData = {
             ...property,

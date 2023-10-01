@@ -60,33 +60,37 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
   }, [props.property]);
 
   return (
-    <Grid
-      className={`${analyticsStyles.blackBorderedSection} ${analyticsStyles.sectionContainer}`}
-    >
-      <Grid container justifyContent="center" rowGap={3}>
-        <Grid item xs={6}>
-          <h1 className={analyticsStyles.sectionHeader}>Expanses Calculator</h1>
-        </Grid>
-        <Grid item xs={6} className="sticky top-0 z-[2]">
-          <ValueCard
-            title="Estimated Expanses"
-            value={priceFormatter(totalExpanses.toFixed())}
+    <div className="p-4">
+      <Grid
+        className={`${analyticsStyles.blackBorderedSection} ${analyticsStyles.sectionContainer}`}
+      >
+        <Grid container justifyContent="center" rowGap={3}>
+          <Grid item xs={6}>
+            <h1 className={analyticsStyles.sectionHeader}>
+              Expanses Calculator
+            </h1>
+          </Grid>
+          <Grid item xs={6} className="sticky top-0 z-[2]">
+            <ValueCard
+              title="Estimated Expanses"
+              value={priceFormatter(totalExpanses.toFixed())}
+            />
+          </Grid>
+          <InitialInvestment
+            property={props.property}
+            setExpanses={setInitialInvestmentExpanses}
+            active={initialInvestmentActive}
+            toggleActive={() => setInitialInvestmentActive((prev) => !prev)}
+          />
+          <FinancingExpanses
+            property={props.property}
+            setExpanses={setFinancingExpanses}
+            active={finanicingExpansesActive}
+            toggleActive={() => setFinancingExpansesActive((prev) => !prev)}
           />
         </Grid>
-        <InitialInvestment
-          property={props.property}
-          setExpanses={setInitialInvestmentExpanses}
-          active={initialInvestmentActive}
-          toggleActive={() => setInitialInvestmentActive((prev) => !prev)}
-        />
-        <FinancingExpanses
-          property={props.property}
-          setExpanses={setFinancingExpanses}
-          active={finanicingExpansesActive}
-          toggleActive={() => setFinancingExpansesActive((prev) => !prev)}
-        />
       </Grid>
-    </Grid>
+    </div>
   );
 };
 

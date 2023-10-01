@@ -20,9 +20,7 @@ import InvestmentCriteria from "./InvestmentCriteria";
 import PropertyCriteria from "./PropertyCriteria";
 import ComparablePreferences from "./ComparablePreferences";
 import SimilarityChart from "./SimilarityChart";
-
-const data =
-  '{"target_location": {"locations": [{"type": "zipcode", "name": "32218", "identifier": "properties_florida"}, {"type": "zipcode", "name": "32256", "identifier": "properties_florida"}, {"type": "zipcode", "name": "32244", "identifier": "properties_florida"}], "area": {"Flood": true}}, "property": {"Property Type": [true, "Single-Family"], "Bedrooms": [true, [0, 10]], "Bathrooms": [true, [0.5, 10]], "Building sqft": [true, [700, 6000]], "Lot sqft": [false, [0, 43560]], "Year Built": [false, [1980, 2023]], "Pool": [false, "With"], "Garages": [false, [1, 4]], "Listing Price": [true, [0, 1000000]]}, "opp": {"Limitations": [false, {"ARV": [false, [50000, 1000000]]}], "Fix & Flip": [true, {"Margin": [true, [0, 150000]], "Cents on $": [true, [0, 0.98]]}], "Buy & Hold": [true, {"Cap Rate": [true, [0, 15]]}]}, "similarity": {"red": {"Same Property Type": false, "Bedrooms": [false, [-3, 3]], "Bathrooms": [false, [-3, 3]], "Building sqft": [false, [-100, 100]], "Year Built": [false, [-50, 50]], "Lot sqft": [false, [-100, 100]], "Same Pool Status": false, "Garages": [false, [-2, 2]], "Distance": [false, 1.5], "Sale Date": [false, 0]}, "orange": {"Same Property Type": true, "Bedrooms": [true, [-2, 2]], "Bathrooms": [true, [-2.5, 2.5]], "Year Built": [false, [-30, 30]], "Building sqft": [true, [-20, 20]], "Lot sqft": [false, [-30, 30]], "Same Pool Status": false, "Garages": [false, [-2, 2]], "Distance": [true, 1], "Sale Date": [true, 9]}, "yellow": {"Same Property Type": true, "Bedrooms": [true, [-1, 1]], "Bathrooms": [true, [-1.5, 1.5]], "Year Built": [false, [-15, 15]], "Building sqft": [true, [-15, 15]], "Lot sqft": [false, [-20, 20]], "Same Pool Status": false, "Garages": [false, [-2, 2]], "Distance": [true, 0.5], "Sale Date": [true, 6]}, "green": {"Same Property Type": true, "Bedrooms": [true, [0, 0]], "Bathrooms": [true, [-0.5, 0.5]], "Year Built": [false, [-10, 10]], "Building sqft": [true, [-7.5, 7.5]], "Lot sqft": [false, [-15, 15]], "Same Pool Status": false, "Garages": [false, [-2, 2]], "Distance": [true, 0.25], "Sale Date": [true, 3]}}, "similarity_weights": {"red": 0.1, "orange": 0.3, "yellow": 0.8, "green": 1}, "buybox_id": "3dbf8068-bfda-4422-af27-7597045dac6e", "description": "", "buybox_name": "Florida Main"}';
+import data from "./mockData.json";
 
 type editBuyBoxDialogProps = {
   showEditBuybox: boolean;
@@ -50,7 +48,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   };
 
   useEffect(() => {
-    console.log(JSON.stringify(getValues()));
+    reset(data);
+    console.log(data);
     // reset({ name: "meow" });
   }, []);
 
@@ -71,7 +70,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         <Typography className={styles.mainLabel}>Name:</Typography>
 
         <TextField
-          label="Outlined"
+          label="Name"
           variant="outlined"
           {...register("buybox_name")}
         />
@@ -123,7 +122,9 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         <Button
           variant="outlined"
           className="mt-12"
-          onClick={() => console.log(getValues())}
+          onClick={() => {
+            reset(data);
+          }}
         >
           Submit
         </Button>

@@ -6,6 +6,7 @@ import styles from "./CompsSection.module.scss";
 import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
 import { priceFormatter } from "@/utils/converters";
 import clsx from "clsx";
+import React from "react";
 
 const gridRows = (property: Property) => [
   {
@@ -55,6 +56,7 @@ const gridRows = (property: Property) => [
   {
     label: "Location",
     value: `${property["neighborhood"]}`,
+    className: "truncate col-span-2",
   },
   {
     label: "Price/Sqft",
@@ -71,8 +73,9 @@ type PropertyCardProps = {
 
 const PropertyCard = (props: PropertyCardProps) => {
   const calcCompsAverage = (propertyName: string) => {
-    if (props.compsProperties.length < 1) return "";
-    const propertyType = typeof props.compsProperties[0][propertyName];
+    if (!props.compsProperties || props.compsProperties.length < 1) return "";
+    const propertyType = typeof props.compsProperties[0]?.[propertyName];
+    if (!propertyType) return "";
     if (propertyType === "number") {
       return (props.compsProperties.reduce((acc, comps) => ({
         [propertyName]: acc[propertyName] + comps[propertyName],
@@ -112,8 +115,9 @@ const PropertyCard = (props: PropertyCardProps) => {
         marginBottom={"2rem"}
       >
         <img
-          src={props.property.images[0] || ""}
-          className="h-44 rounded-lg aspect-video"
+          src={props.property.images[0] ||
+            "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q="}
+          className="h-44 rounded-lg aspect-video object-cover"
         />
       </Grid>
       <div className="grid grid-cols-3 gap-y-4">
@@ -141,7 +145,7 @@ const PropertyCard = (props: PropertyCardProps) => {
               : calcCompsAverage(property.averageProperty)
             : "";
           return (
-            <>
+            <React.Fragment key={index}>
               <div>
                 <Typography className={styles.propertyRowHeader}>
                   {property.label}
@@ -149,7 +153,9 @@ const PropertyCard = (props: PropertyCardProps) => {
               </div>
 
               <div>
-                <Typography className={clsx([styles.propertyText, "truncate"])}>
+                <Typography
+                  className={clsx([styles.propertyText, property.className])}
+                >
                   {property.value}
                 </Typography>
               </div>
@@ -159,7 +165,7 @@ const PropertyCard = (props: PropertyCardProps) => {
                   {averageLabel}
                 </Typography>
               </div>
-            </>
+            </React.Fragment>
           );
         })}
       </div>

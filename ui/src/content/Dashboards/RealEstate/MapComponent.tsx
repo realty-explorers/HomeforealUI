@@ -28,6 +28,7 @@ import SoldPropertiesMarkers from "./MapComponents/SoldPropertiesMarkers";
 import MapControlPanel from "./MapControlPanel/MapControlPanel";
 import MapControls from "./MapControls/MapControls";
 import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
+import { PropertyType } from "@/models/property";
 
 const containerStyle: React.CSSProperties = {
   position: "relative",
@@ -108,6 +109,9 @@ const MapComponent: React.FC<MapComponentProps> = (
       ) {
         return false;
       }
+      if (property.arv_percentage < arvMargin) {
+        return false;
+      }
       // if (property.margin_percentage < arvMargin) {
       //   return false;
       // }
@@ -120,9 +124,11 @@ const MapComponent: React.FC<MapComponentProps> = (
       ) {
         return false;
       }
-      // if (!propertyTypes.includes(property.property.type)) {
-      //   return false;
-      // }
+      if (
+        !propertyTypes.includes(property.property.property_type as PropertyType)
+      ) {
+        return false;
+      }
       return true;
     });
     return filteredProperties;
@@ -196,12 +202,14 @@ const MapComponent: React.FC<MapComponentProps> = (
         lat: selectedProperty.property.latitude,
         lng: selectedProperty.property.longitude,
       });
+      map.setZoom(15);
     } else {
       if (locationState.data && map) {
         map.panTo({
           lat: locationState.data.center.latitude,
           lng: locationState.data.center.longitude,
         });
+        map.setZoom(12);
       }
     }
   }, [
@@ -288,7 +296,7 @@ const MapComponent: React.FC<MapComponentProps> = (
               {(clusterer) => (
                 <>
                   <PropertiesMarkers
-                    properties={propertiesState.data}
+                    properties={filterProperties(propertiesState.data)}
                     setSelectedProperty={handleSelectProperty}
                     clusterer={clusterer}
                   />

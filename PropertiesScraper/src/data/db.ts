@@ -31,6 +31,7 @@ export default class PropertyRepository {
   }
   public connect = async () => {
     this.client = new Client(this.clientOptions);
+    console.log("Logged in to elastic cloud");
   };
 
   public closeConnection = async () => {
@@ -78,6 +79,8 @@ export default class PropertyRepository {
       index: this.REGION_STATUS_INDEX,
     });
     if (!indexExists) await this.createRegionStatusIndex();
+    const results = await this.testData("", "");
+    console.log(results);
 
     // indexExists = await this.client!.indices.exists({ index: this.BUYBOX_INDEX });
     // if (!indexExists) await this.createBuyBoxIndex();
@@ -172,6 +175,29 @@ export default class PropertyRepository {
         id: constructRegionId(city, state),
       });
       return results._source;
+    } catch (error) {
+      console.log();
+    }
+  };
+
+  public testData = async (city: string, state: string) => {
+    try {
+      // const results = await this.client?.cat.indices({ format: "json" });
+
+      const propertiesSearchQuery = {
+        "query": {
+          "match_all": {},
+        },
+      };
+      const index = this.getIndexByState(state);
+      const results = await this.client!.search(propertiesSearchQuery);
+      // const results = await this.getAllResults(
+      //   "properties_florida",
+      //   propertiesSearchQuery,
+      // );
+      return results;
+
+      return results;
     } catch (error) {
       console.log();
     }

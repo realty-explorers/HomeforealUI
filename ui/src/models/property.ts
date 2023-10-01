@@ -21,13 +21,12 @@ interface Property {
 }
 
 enum PropertyType {
-  OTHER = 'other',
-  CONDO = 'condo',
-  TOWN_HOUSE = 'town_house',
-  SINGLE_FAMILY = 'single_family',
-  MULTI_FAMILY = 'multi_family',
-  MOBILE_HOUSE = 'mobile_house'
+  OTHER = "other",
+  CONDO = "condo",
+  TOWN_HOUSE = "town_house",
+  SINGLE_FAMILY = "Single-Family",
+  MULTI_FAMILY = "multi_family",
+  MOBILE_HOUSE = "mobile_house",
 }
 export default Property;
 export { PropertyType };
-export type { RealProperty };

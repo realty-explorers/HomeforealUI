@@ -19,6 +19,7 @@ import CompsSection from "@/content/Dashboards/Analytics/CompsSection";
 import ExpansesCalculator from "@/content/Dashboards/Analytics/Expanses/ExpansesCalculator";
 import RentComparable from "@/content/Dashboards/Analytics/RentComparable";
 import OperationalExpanses from "@/content/Dashboards/Analytics/Expanses/OperationalExpanses";
+import SplitPane from "react-split-pane";
 import clsx from "clsx";
 import {
   selectProperties,
@@ -26,8 +27,39 @@ import {
   setSelectedProperty,
 } from "@/store/slices/propertiesSlice";
 import { Property } from "@/models/analyzedProperty";
+import styles from "./RealEstate.module.scss";
+import SaleComparableIndicators from "@/content/Dashboards/Analytics/SaleComparableIndicators";
 
 // import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
+
+const MoreDetailsSection = (
+  { selectedProperty, selectedComps, setSelectedComps },
+) => {
+  return selectedProperty
+    ? (
+      <>
+        <PropertyHeader property={selectedProperty} />
+        <PropertyFacts property={selectedProperty} />
+        {/* <PropertyFeatures property={selectedProperty} /> */}
+        {/* <EnvironmentalIndicators property={selectedProperty} /> */}
+        {/* <OwnershipInfo property={selectedProperty} /> */}
+        <div className="mt-8">
+          <SaleComparableIndicators />
+          <SaleComparable property={selectedProperty} />
+          <CompsSection
+            property={selectedProperty}
+            selectedComps={selectedComps}
+            setSelectedComps={setSelectedComps}
+          />
+        </div>
+        <ExpansesCalculator property={selectedProperty} />
+        {/* <RentComparable property={selectedProperty} /> */}
+        {/* <CompsSection property={selectedProperty} /> */}
+        {/* <OperationalExpanses property={selectedProperty} /> */}
+      </>
+    )
+    : <></>;
+};
 
 const DashboardRealEstate = (props: any) => {
   // const { data, status }: any = useSession({
@@ -37,9 +69,15 @@ const DashboardRealEstate = (props: any) => {
   const { selectedProperty, selectedComps } = useSelector(selectProperties);
   const openMoreDetails = selectedProperty;
 
+  // const setSelectedComps = (comps) => {
+  //   dispatch(setSelectedComps(comps));
+  // };
+
   const handleSetSelectedComps = (compsProperties: Property[]) => {
     dispatch(setSelectedComps(compsProperties));
   };
+  const [showFirstPanel, setShowFirstPanel] = useState(true);
+  const [showLastPanel, setShowLastPanel] = useState(true);
 
   return (
     <>
@@ -55,26 +93,22 @@ const DashboardRealEstate = (props: any) => {
             openMoreDetails ? "left-0" : "-left-full",
           ])}
         >
-          {selectedProperty && (
-            <>
-              <PropertyHeader property={selectedProperty} />
-              <PropertyFacts property={selectedProperty} />
-              {/* <PropertyFeatures property={selectedProperty} /> */}
-              {/* <EnvironmentalIndicators property={selectedProperty} /> */}
-              {/* <OwnershipInfo property={selectedProperty} /> */}
-              <SaleComparable property={selectedProperty} />
-              <CompsSection
-                property={selectedProperty}
-                selectedComps={selectedComps}
-                setSelectedComps={(comps) => dispatch(setSelectedComps(comps))}
-              />
-              <ExpansesCalculator property={selectedProperty} />
-              {/* <RentComparable property={selectedProperty} /> */}
-              {/* <CompsSection property={selectedProperty} /> */}
-              {/* <OperationalExpanses property={selectedProperty} /> */}
-            </>
-          )}
+          <MoreDetailsSection
+            selectedProperty={selectedProperty}
+            selectedComps={selectedComps}
+            setSelectedComps={handleSetSelectedComps}
+          />
         </div>
+        {/* <SplitPane split="vertical"> */}
+        {/*   <MoreDetailsSection */}
+        {/*     selectedProperty={selectedProperty} */}
+        {/*     selectedComps={selectedComps} */}
+        {/*     setSelectedComps={setSelectedComps} */}
+        {/*   /> */}
+        {/**/}
+        {/*   <Map /> */}
+        {/* </SplitPane> */}
+        {/* </div> */}
 
         <div
           className={clsx([

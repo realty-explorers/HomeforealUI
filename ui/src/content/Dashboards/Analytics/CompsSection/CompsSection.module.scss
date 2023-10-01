@@ -103,3 +103,16 @@
   line-height: 159.5%; /* 1.39563rem */
   text-transform: capitalize;
 }
+
+.filterLabel {
+  display: flex;
+  align-items: center;
+  color: #000;
+  text-align: center;
+  font-family: Inter;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1rem; /* 88.889% */
+  text-transform: capitalize;
+}

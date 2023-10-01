@@ -30,7 +30,7 @@ const PropertyFacts = (props: PropertyFactsProps) => {
         <GridField label="Bedrooms" value={props.property.property.bedrooms} />
         <GridField
           label="YearBuilt"
-          value={props.property.property.year_built}
+          value={props.property.property.year_built?.slice(0, 4)}
         />
         <GridField
           label="Half Bathrooms"

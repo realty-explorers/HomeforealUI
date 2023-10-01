@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   Box,
+  Button,
   IconButton,
   Paper,
   Stack,
@@ -15,6 +16,8 @@ import PropertyCard from "./PropertyCard";
 import { useDraggable } from "react-use-draggable-scroll";
 import { grey } from "@mui/material/colors";
 import { Global } from "@emotion/react";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import clsx from "clsx";
 
 const Panel = styled(Stack)(({ theme }) => ({
   // pointerEvents: 'auto',
@@ -83,6 +86,7 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
   const ref = useRef(); // We will use React useRef hook to reference the wrapping div:
   const { window } = props;
   const [open, setOpen] = React.useState(false);
+  const [cardsOpen, setCardsOpen] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
 
   const toggleDrawer = (newOpen: boolean) => () => {
@@ -126,9 +130,21 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
   return (
     <>
       <div
-        className="absolute sm:flex hidden bottom-0 left-1/2 -translate-x-1/2 "
+        className={clsx([
+          "absolute  hidden bottom-0 left-1/2 -translate-x-1/2 ",
+          props.properties?.length > 0 ? "sm:flex" : "hidden",
+        ])}
         style={{ maxWidth: "calc(100% - 10rem)" }}
       >
+        <IconButton
+          className="absolute top-0 left-1/2 -translate-y-full -translate-x-1/2 bg-white w-12 h-4 border border-black"
+          style={{ border: "1px dashed black" }}
+          onClick={() => setCardsOpen(!cardsOpen)}
+        >
+          <ExpandMoreIcon
+            className={clsx(["transition-all", cardsOpen ? "" : "rotate-180"])}
+          />
+        </IconButton>
         <IconButton onClick={scrollLeft}>
           <ArrowCircleLeftSharpIcon />
         </IconButton>
@@ -136,7 +152,10 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
         <div
           {...events}
           ref={ref}
-          className="flex max-w-[calc(100%-10rem)]] overflow-x-scroll p-2"
+          className={clsx([
+            "flex max-w-[calc(100%-10rem)]] overflow-x-scroll p-2 transition-all duration-300",
+            !cardsOpen && "-mb-[100%]",
+          ])}
           // style={{ maxWidth: 'calc(100% - 10rem)' }}
         >
           <Wrapper>
@@ -160,69 +179,69 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
           <ArrowCircleRightSharpIcon />
         </IconButton>
       </div>
-      <div className="">
-        <Global
-          styles={{
-            ".MuiDrawer-root > .MuiPaper-root": {
-              height: `calc(50% - ${drawerBleeding}px)`,
-              overflow: "visible",
-            },
-            ".MuiBackdrop-root": {
-              backgroundColor: "transparent !important",
-              // display: 'none !important'
-            },
-          }}
-        />
-        <SwipeableDrawer
-          className="h-[calc(50%-56)] overflow-visible sm:hidden"
-          container={container}
-          anchor="bottom"
-          open={open}
-          onClose={toggleDrawer(false)}
-          onOpen={toggleDrawer(true)}
-          swipeAreaWidth={drawerBleeding}
-          disableSwipeToOpen={false}
-          ModalProps={{
-            keepMounted: true,
-          }}
-        >
-          <StyledBox
-            sx={{
-              position: "absolute",
-              top: -drawerBleeding,
-              borderTopLeftRadius: 8,
-              borderTopRightRadius: 8,
-              visibility: "visible",
-              right: 0,
-              left: 0,
-            }}
-          >
-            <Puller />
-            <Typography sx={{ p: 2, color: "text.secondary" }}>
-              {props.properties?.length ?? "No"} results
-            </Typography>
-          </StyledBox>
-          <div className="border border-green-400 h-full w-full flex flex-wrap overflow-auto">
-            {props.properties?.map(
-              (property: AnalyzedProperty, index: number) => {
-                return (
-                  <div
-                    className="w-full xs:w-1/2 flex justify-center p-4"
-                    key={index}
-                  >
-                    <PropertyCard
-                      property={property}
-                      selectedProperty={props.selectedProperty}
-                      setSelectedProperty={props.setSelectedProperty}
-                      setOpenMoreDetails={() => {}}
-                    />
-                  </div>
-                );
-              },
-            )}
-          </div>
-        </SwipeableDrawer>
-      </div>
+      {/* <div className=""> */}
+      {/*   <Global */}
+      {/*     styles={{ */}
+      {/*       ".MuiDrawer-root > .MuiPaper-root": { */}
+      {/*         height: `calc(50% - ${drawerBleeding}px)`, */}
+      {/*         overflow: "visible", */}
+      {/*       }, */}
+      {/*       ".MuiBackdrop-root": { */}
+      {/*         backgroundColor: "transparent !important", */}
+      {/*         // display: 'none !important' */}
+      {/*       }, */}
+      {/*     }} */}
+      {/*   /> */}
+      {/*   <SwipeableDrawer */}
+      {/*     className="h-[calc(50%-56)] overflow-visible sm:hidden" */}
+      {/*     container={container} */}
+      {/*     anchor="bottom" */}
+      {/*     open={open} */}
+      {/*     onClose={toggleDrawer(false)} */}
+      {/*     onOpen={toggleDrawer(true)} */}
+      {/*     swipeAreaWidth={drawerBleeding} */}
+      {/*     disableSwipeToOpen={false} */}
+      {/*     ModalProps={{ */}
+      {/*       keepMounted: true, */}
+      {/*     }} */}
+      {/*   > */}
+      {/*     <StyledBox */}
+      {/*       sx={{ */}
+      {/*         position: "absolute", */}
+      {/*         top: -drawerBleeding, */}
+      {/*         borderTopLeftRadius: 8, */}
+      {/*         borderTopRightRadius: 8, */}
+      {/*         visibility: "visible", */}
+      {/*         right: 0, */}
+      {/*         left: 0, */}
+      {/*       }} */}
+      {/*     > */}
+      {/*       <Puller /> */}
+      {/*       <Typography sx={{ p: 2, color: "text.secondary" }}> */}
+      {/*         {props.properties?.length ?? "No"} results */}
+      {/*       </Typography> */}
+      {/*     </StyledBox> */}
+      {/*     <div className="border border-green-400 h-full w-full flex flex-wrap overflow-auto"> */}
+      {/*       {props.properties?.map( */}
+      {/*         (property: AnalyzedProperty, index: number) => { */}
+      {/*           return ( */}
+      {/*             <div */}
+      {/*               className="w-full xs:w-1/2 flex justify-center p-4" */}
+      {/*               key={index} */}
+      {/*             > */}
+      {/*               <PropertyCard */}
+      {/*                 property={property} */}
+      {/*                 selectedProperty={props.selectedProperty} */}
+      {/*                 setSelectedProperty={props.setSelectedProperty} */}
+      {/*                 setOpenMoreDetails={() => {}} */}
+      {/*               /> */}
+      {/*             </div> */}
+      {/*           ); */}
+      {/*         }, */}
+      {/*       )} */}
+      {/*     </div> */}
+      {/*   </SwipeableDrawer> */}
+      {/* </div> */}
     </>
   );
 };

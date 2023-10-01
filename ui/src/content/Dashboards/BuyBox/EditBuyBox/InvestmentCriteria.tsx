@@ -26,7 +26,16 @@ const InvestmentCriteria = (
       </Typography>
 
       <div className="flex w-full item-center col-span-2">
-        <Switch {...register("opp.Limitations.0")} />
+        <Controller
+          name={`opp.Limitations.0`}
+          control={control}
+          render={({ field: { value, ...field } }) => (
+            <Switch
+              {...field}
+              checked={!!value}
+            />
+          )}
+        />
         <Typography className={styles.label}>Limitations</Typography>
       </div>
 
@@ -40,7 +49,16 @@ const InvestmentCriteria = (
       />
 
       <div className="flex w-full item-center col-span-2">
-        <Switch {...register("opp.Fix & Flip.0")} />
+        <Controller
+          name={`opp.Fix & Flip.0`}
+          control={control}
+          render={({ field: { value, ...field } }) => (
+            <Switch
+              {...field}
+              checked={!!value}
+            />
+          )}
+        />
         <Typography className={styles.label}>Fix & Flip</Typography>
       </div>
       <RangeField
@@ -61,7 +79,16 @@ const InvestmentCriteria = (
       />
 
       <div className="flex w-full item-center col-span-2">
-        <Switch {...register("opp.Buy & Hold.0")} />
+        <Controller
+          name={`opp.Buy & Hold.0`}
+          control={control}
+          render={({ field: { value, ...field } }) => (
+            <Switch
+              {...field}
+              checked={!!value}
+            />
+          )}
+        />
         <Typography className={styles.label}>Buy & Hold</Typography>
       </div>
 

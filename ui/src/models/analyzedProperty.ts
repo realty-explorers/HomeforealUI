@@ -2,6 +2,7 @@ interface AnalyzedProperty {
   property: Property;
   CompsData: Property[];
   market_id: string;
+  source_id: string;
   buybox_id: string;
   update_date: string;
   listing_price: number;
@@ -27,6 +28,7 @@ interface AnalyzedProperty {
   zipcode: string;
   state: string;
   neighborhood: string;
+  arv_percentage: number;
 }
 
 interface Property {

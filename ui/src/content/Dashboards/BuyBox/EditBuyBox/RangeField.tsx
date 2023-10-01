@@ -26,7 +26,16 @@ export const RangeField = (
           labelClass,
         ])}
       >
-        <Switch {...register(`${fieldName}.0`)} />
+        <Controller
+          name={`${fieldName}.0`}
+          control={control}
+          render={({ field: { value, ...field } }) => (
+            <Switch
+              {...field}
+              checked={!!value}
+            />
+          )}
+        />
         <Typography className={styles.label}>{title}</Typography>
       </div>
       <div className={clsx(["flex", sliderClass])}>

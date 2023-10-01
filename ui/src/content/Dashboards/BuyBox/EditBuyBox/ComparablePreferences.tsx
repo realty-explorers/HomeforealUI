@@ -82,7 +82,7 @@ const ComparablePreferences = (
           <Tab label="Red" />
         </Tabs>
       </div>
-      {similarityTypes.map((similartyType, index) => {
+      {similarityTypes.map((similarityType, index) => {
         return (
           <React.Fragment key={index}>
             {similarityFields.map((similarityField, idx) => {
@@ -90,28 +90,35 @@ const ComparablePreferences = (
                 similarityField.type === "boolean"
                   ? (
                     <div
+                      key={idx}
                       className={clsx([
                         "flex w-full item-center col-span-2",
                         index === value ? "" : "hidden",
                       ])}
                     >
-                      <Switch
-                        {...register(
-                          `similarity.${similartyType}.${similarityField.fieldName}`,
+                      <Controller
+                        name={`similarity.${similarityType}.${similarityField.fieldName}`}
+                        control={control}
+                        render={({ field: { value, ...field } }) => (
+                          <Switch
+                            {...field}
+                            checked={!!value}
+                          />
                         )}
-                      />{" "}
+                      />
                       <Typography className={styles.label}>
-                        Same Pool
+                        {similarityField.fieldName}
                       </Typography>
                       {" "}
                     </div>
                   )
                   : (
                     <RangeField
+                      key={idx}
                       register={register}
                       control={control}
                       watch={watch}
-                      fieldName={`similarity.${similartyType}.${similarityField.fieldName}`}
+                      fieldName={`similarity.${similarityType}.${similarityField.fieldName}`}
                       title={similarityField.fieldName}
                       labelClass={index === value ? "" : "hidden"}
                       sliderClass={index === value ? "" : "hidden"}

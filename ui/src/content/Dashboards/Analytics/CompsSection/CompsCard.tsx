@@ -7,6 +7,7 @@ import { Property } from "@/models/analyzedProperty";
 import styled from "@emotion/styled";
 import { priceFormatter } from "@/utils/converters";
 import clsx from "clsx";
+import React from "react";
 
 const CheckBoxWhite = styled(Checkbox)(({ theme }) => ({
   color: "white",
@@ -91,8 +92,8 @@ const CompsCard = (props: CompsCardProps) => {
       >
         <img
           // src={props.compsProperty.images?.[0] || ""}
-          src="https://img.freepik.com/free-vector/house-icon_23-2147510119.jpg"
-          className="h-44 rounded-lg aspect-video"
+          src="https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q="
+          className="h-44 rounded-lg aspect-video object-cover"
         />
       </Grid>
       <div className="grid grid-cols-2 gap-y-4">
@@ -108,7 +109,7 @@ const CompsCard = (props: CompsCardProps) => {
         </div>
         {gridRows(props.compsProperty).map((property, index) => {
           return (
-            <>
+            <React.Fragment key={index}>
               <div>
                 <Typography className={styles.propertyRowHeader}>
                   {property.label}
@@ -120,7 +121,7 @@ const CompsCard = (props: CompsCardProps) => {
                   {property.value}
                 </Typography>
               </div>
-            </>
+            </React.Fragment>
           );
         })}
 
