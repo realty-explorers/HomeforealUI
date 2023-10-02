@@ -1,70 +1,127 @@
 import { useEffect, useState } from "react";
+import { v4 as uuidv4 } from "uuid";
 import {
   Button,
   Checkbox,
   Collapse,
   Fade,
+  FormControl,
   Grid,
   Grow,
   IconButton,
+  InputAdornment,
+  InputLabel,
   List,
   ListItem,
   ListItemText,
+  OutlinedInput,
   Typography,
 } from "@mui/material";
-import { Delete } from "@mui/icons-material";
-import ExpansesRow from "../ExpansesRow";
+import ExpansesRow, { Expanse } from "../ExpansesRow";
 import styles from "../ExpansesCalculator.module.scss";
 import { TransitionGroup } from "react-transition-group";
-import Property from "@/models/property";
 import AnalyzedProperty from "@/models/analyzedProperty";
 import { priceFormatter } from "@/utils/converters";
+import clsx from "clsx";
 
-type InitialInvestmentProps = {
+type FinancingExpansesProps = {
   property: AnalyzedProperty;
   setExpanses: (value: number) => void;
   active: boolean;
   toggleActive: () => void;
 };
-const FinancingExpanses = (props: InitialInvestmentProps) => {
+const FinancingExpanses = (props: FinancingExpansesProps) => {
   const priceTypes = [
     { label: "ARV", value: props.property?.arv },
     { label: "Listing Price", value: props.property?.listing_price || 0 },
   ];
 
-  const [expanses, setExpanses] = useState<{ label: string; value: number }[]>(
-    [],
-  );
+  const [downPayment, setDownPayment] = useState<Expanse>({
+    id: uuidv4(),
+    label: "Down Payment",
+    value: 0,
+    priceType: priceTypes[0],
+  });
+  const [loanAmount, setLoanAmount] = useState<Expanse>({
+    id: uuidv4(),
+    label: "Loan Amount",
+    value: 0,
+    priceType: priceTypes[0],
+  });
+  const [originationFee, setOriginationFee] = useState<Expanse>({
+    id: uuidv4(),
+    label: "Origination Fee",
+    value: 0,
+    priceType: priceTypes[0],
+  });
+  const [expanses, setExpanses] = useState<Expanse[]>([]);
+  const [months, setMonths] = useState<number>(0);
+  const [interestRate, setInterestRate] = useState<number>(0);
 
   useEffect(() => {
     setExpanses([
-      { label: "Down Payment", value: 0 },
-      { label: "Loan Amount", value: 0 },
-      { label: "Origination Fee", value: 0 },
-      { label: "Interest Rate", value: 0 },
-      { label: "Points", value: 0 },
+      {
+        id: uuidv4(),
+        label: "Origination Fee",
+        value: 0,
+        priceType: priceTypes[0],
+      },
     ]);
-  }, []);
+  }, [props.property]);
 
-  const handleChangeExpanses = (value: number, expanseType: string) => {
-    expanses.find((e) => e.label === expanseType).value = value;
+  const handleChangeExpanses = (changedExpanse: Expanse) => {
+    const expanseIndex = expanses.findIndex(
+      (expanse) => expanse.id === changedExpanse.id,
+    );
+    if (expanseIndex === -1) return;
+    expanses[expanseIndex] = changedExpanse;
     setExpanses([...expanses]);
     props.setExpanses(totalExpanses(expanses));
   };
 
-  const totalExpanses = (expanses) =>
-    expanses.reduce((acc, expanse) => acc + expanse.value, 0);
+  const handleChangeDownPayment = (changedExpanse: Expanse) => {
+    setDownPayment(changedExpanse);
+    setLoanAmount({
+      ...loanAmount,
+      priceType: changedExpanse.priceType,
+      value: changedExpanse.priceType.value - changedExpanse.value,
+    });
+  };
+
+  const handleChangeLoanAmount = (changedExpanse: Expanse) => {
+    setLoanAmount(changedExpanse);
+    setDownPayment({
+      ...downPayment,
+      priceType: changedExpanse.priceType,
+      value: changedExpanse.priceType.value - changedExpanse.value,
+    });
+  };
+
+  const totalExpanses = (expanses) => {
+    const expansesSum = expanses.reduce(
+      (acc, expanse) => acc + Math.round(expanse.value),
+      0,
+    );
+    const loanExpanse = (loanAmount.value) *
+      interestRate / 100 * months / 12;
+    return expansesSum + loanExpanse;
+  };
 
   const handleAddExpanse = () => {
     setExpanses([
       ...expanses,
-      { label: `Expanse ${expanses.length + 1}`, value: 0 },
+      {
+        id: uuidv4(),
+        label: `New Expanse`,
+        value: 0,
+        priceType: priceTypes[0],
+      },
     ]);
   };
 
-  const handleRemoveExpanse = (label: string) => {
+  const handleRemoveExpanse = (id) => {
     const updatedExpanses = expanses.filter(
-      (expanse) => expanse.label !== label,
+      (expanse) => expanse.id !== id,
     );
     setExpanses(updatedExpanses);
     props.setExpanses(totalExpanses(updatedExpanses));
@@ -88,20 +145,72 @@ const FinancingExpanses = (props: InitialInvestmentProps) => {
         </Typography>
       </Grid>
       <List>
-        <TransitionGroup>
-          {expanses.map((expanse, index) => (
-            <Collapse key={expanse.label}>
-              <ExpansesRow
-                label={expanse.label}
-                expanse={expanse.value}
-                removeExpanse={handleRemoveExpanse}
-                setExpanse={(value) =>
-                  handleChangeExpanses(value, expanse.label)}
-                priceTypes={priceTypes}
-              />
-            </Collapse>
-          ))}
-        </TransitionGroup>
+        <ExpansesRow
+          expanse={downPayment}
+          setExpanse={(expanse) => handleChangeDownPayment(expanse)}
+          priceTypes={priceTypes}
+        />
+
+        <ExpansesRow
+          expanse={loanAmount}
+          setExpanse={(expanse) => handleChangeLoanAmount(expanse)}
+          priceTypes={priceTypes}
+        />
+
+        <ExpansesRow
+          expanse={expanses[0]}
+          setExpanse={(expanse) => handleChangeExpanses(expanse)}
+          priceTypes={priceTypes}
+        />
+        <div className="flex py-2">
+          <Typography
+            className={clsx([styles.label, "w-1/4 px-4 flex items-center"])}
+          >
+            Interest Rate
+          </Typography>
+          <FormControl>
+            <InputLabel htmlFor="outlined-adornment-amount">
+              Interest Rate
+            </InputLabel>
+            <OutlinedInput
+              type="number"
+              id="outlined-adornment-amount"
+              className="w-40"
+              endAdornment={<InputAdornment position="start">%</InputAdornment>}
+              label="Amount"
+              inputProps={{ min: 0, step: 1 }}
+              itemScope
+              value={interestRate}
+              onChange={(e) => setInterestRate(parseInt(e.target.value))}
+            />
+          </FormControl>
+        </div>
+
+        <div className="flex pt-2">
+          <Typography
+            className={clsx([styles.label, "w-1/4 px-4 flex items-center"])}
+          >
+            Loan Duration
+          </Typography>
+          <FormControl>
+            <InputLabel htmlFor="outlined-adornment-amount">
+              Months
+            </InputLabel>
+            <OutlinedInput
+              type="number"
+              id="outlined-adornment-amount"
+              className="w-40"
+              endAdornment={
+                <InputAdornment position="start">Months</InputAdornment>
+              }
+              label="Amount"
+              inputProps={{ min: 0, step: 1 }}
+              itemScope
+              value={months}
+              onChange={(e) => setMonths(parseInt(e.target.value))}
+            />
+          </FormControl>
+        </div>
       </List>
 
       <Grid item xs={12} justifyContent="flex-start">

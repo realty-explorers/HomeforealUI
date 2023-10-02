@@ -13,7 +13,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import ExpansesRow from "../ExpansesRow";
+import ExpansesRow, { Expanse } from "../ExpansesRow";
 import styles from "../ExpansesCalculator.module.scss";
 import { TransitionGroup } from "react-transition-group";
 import AnalyzedProperty from "@/models/analyzedProperty";
@@ -31,24 +31,44 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
     { label: "Listing Price", value: props.property?.listing_price || 0 },
   ];
 
-  const [expanses, setExpanses] = useState<
-    { id: string; label: string; value: number }[]
-  >(
-    [],
-  );
+  const [expanses, setExpanses] = useState<Expanse[]>([]);
 
   useEffect(() => {
     setExpanses([
-      { id: uuidv4(), label: "Down Payment", value: 0 },
-      { id: uuidv4(), label: "Loan Amount", value: 0 },
-      { id: uuidv4(), label: "Origination Fee", value: 0 },
-      { id: uuidv4(), label: "Interest Rate", value: 0 },
-      { id: uuidv4(), label: "Points", value: 0 },
+      {
+        id: uuidv4(),
+        label: "Down Payment",
+        value: 0,
+        priceType: priceTypes[0],
+      },
+      {
+        id: uuidv4(),
+        label: "Loan Amount",
+        value: 0,
+        priceType: priceTypes[0],
+      },
+      {
+        id: uuidv4(),
+        label: "Origination Fee",
+        value: 0,
+        priceType: priceTypes[0],
+      },
+      {
+        id: uuidv4(),
+        label: "Interest Rate",
+        value: 0,
+        priceType: priceTypes[0],
+      },
+      { id: uuidv4(), label: "Points", value: 0, priceType: priceTypes[0] },
     ]);
   }, [props.property]);
 
-  const handleChangeExpanses = (value: number, id: string) => {
-    expanses.find((e) => e.id === id).value = value;
+  const handleChangeExpanses = (changedExpanse: Expanse) => {
+    const expanseIndex = expanses.findIndex(
+      (expanse) => expanse.id === changedExpanse.id,
+    );
+    if (expanseIndex === -1) return;
+    expanses[expanseIndex] = changedExpanse;
     setExpanses([...expanses]);
     props.setExpanses(totalExpanses(expanses));
   };
@@ -63,11 +83,12 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
         id: uuidv4(),
         label: `New Expanse`,
         value: 0,
+        priceType: priceTypes[0],
       },
     ]);
   };
 
-  const handleRemoveExpanse = (id: string) => {
+  const handleRemoveExpanse = (id) => {
     const updatedExpanses = expanses.filter(
       (expanse) => expanse.id !== id,
     );
@@ -97,11 +118,9 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
           {expanses.map((expanse, index) => (
             <Collapse key={expanse.id}>
               <ExpansesRow
-                id={expanse.id}
-                label={expanse.label}
-                expanse={expanse.value}
+                expanse={expanse}
                 removeExpanse={handleRemoveExpanse}
-                setExpanse={(value) => handleChangeExpanses(value, expanse.id)}
+                setExpanse={(expanse) => handleChangeExpanses(expanse)}
                 priceTypes={priceTypes}
               />
             </Collapse>

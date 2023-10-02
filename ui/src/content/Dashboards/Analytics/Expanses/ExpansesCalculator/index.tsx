@@ -44,13 +44,13 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
   >(0);
   const [financingExpanses, setFinancingExpanses] = useState<number>(0);
   const [initialInvestmentActive, setInitialInvestmentActive] = useState(true);
-  const [finanicingExpansesActive, setFinancingExpansesActive] = useState(
+  const [financingExpansesActive, setFinancingExpansesActive] = useState(
     false,
   );
 
   const totalExpanses =
     (initialInvestmentActive ? initialInvestmentExpanses : 0) +
-    (finanicingExpansesActive ? financingExpanses : 0);
+    (financingExpansesActive ? financingExpanses : 0);
 
   useEffect(() => {
     setInitialInvestmentExpanses(0);
@@ -85,7 +85,7 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
           <FinancingExpanses
             property={props.property}
             setExpanses={setFinancingExpanses}
-            active={finanicingExpansesActive}
+            active={financingExpansesActive}
             toggleActive={() => setFinancingExpansesActive((prev) => !prev)}
           />
         </Grid>
