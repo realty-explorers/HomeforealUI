@@ -175,7 +175,7 @@ const MapComponent: React.FC<MapComponentProps> = (
       map.setZoom(13);
       await sleep(200);
       map.setZoom(12);
-      await sleep(200);
+      // await sleep(200);
     }
     map.panTo({
       lat: selectedProperty.property.latitude,
