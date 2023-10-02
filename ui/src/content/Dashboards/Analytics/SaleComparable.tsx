@@ -141,9 +141,9 @@ const SaleComparable = (props: SaleComparableProps) => {
           </Table>
         </TableContainer>
 
-        <Grid container justifyContent="flex-end">
-          <ThemedButton text="Market Facts" />
-        </Grid>
+        {/* <Grid container justifyContent="flex-end"> */}
+        {/*   <ThemedButton text="Market Facts" /> */}
+        {/* </Grid> */}
       </Grid>
     </div>
   );
