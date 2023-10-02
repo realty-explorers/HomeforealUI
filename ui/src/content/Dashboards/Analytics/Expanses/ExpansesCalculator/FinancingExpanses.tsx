@@ -67,6 +67,18 @@ const FinancingExpanses = (props: FinancingExpansesProps) => {
         priceType: priceTypes[0],
       },
     ]);
+    setMonths(0);
+    setInterestRate(0);
+    setDownPayment({
+      ...downPayment,
+      priceType: priceTypes[0],
+      value: 0,
+    });
+    setLoanAmount({
+      ...loanAmount,
+      priceType: priceTypes[0],
+      value: 0,
+    });
   }, [props.property]);
 
   const handleChangeExpanses = (changedExpanse: Expanse) => {
@@ -81,29 +93,51 @@ const FinancingExpanses = (props: FinancingExpansesProps) => {
 
   const handleChangeDownPayment = (changedExpanse: Expanse) => {
     setDownPayment(changedExpanse);
+    const loanAmountValue = changedExpanse.priceType.value -
+      changedExpanse.value;
     setLoanAmount({
       ...loanAmount,
       priceType: changedExpanse.priceType,
-      value: changedExpanse.priceType.value - changedExpanse.value,
+      value: loanAmountValue,
     });
+    props.setExpanses(totalExpanses(expanses, loanAmountValue));
   };
 
   const handleChangeLoanAmount = (changedExpanse: Expanse) => {
     setLoanAmount(changedExpanse);
+    const loanAmountValue = changedExpanse.priceType.value -
+      changedExpanse.value;
     setDownPayment({
       ...downPayment,
       priceType: changedExpanse.priceType,
-      value: changedExpanse.priceType.value - changedExpanse.value,
+      value: loanAmountValue,
     });
+    props.setExpanses(totalExpanses(expanses, changedExpanse.value));
   };
 
-  const totalExpanses = (expanses) => {
+  const handleChangeInterestRate = (value: number) => {
+    setInterestRate(value);
+    props.setExpanses(totalExpanses(expanses, undefined, value));
+  };
+
+  const handleChangeMonths = (value: number) => {
+    setMonths(value);
+    props.setExpanses(totalExpanses(expanses, undefined, undefined, value));
+  };
+
+  const totalExpanses = (
+    expanses: Expanse[],
+    totalLoan?: number,
+    interest?: number,
+    duration?: number,
+  ) => {
     const expansesSum = expanses.reduce(
       (acc, expanse) => acc + Math.round(expanse.value),
       0,
     );
-    const loanExpanse = (loanAmount.value) *
-      interestRate / 100 * months / 12;
+    const loanExpanse = (totalLoan ?? loanAmount.value) *
+      (interest ?? interestRate) / 100 *
+      (duration ?? months) / 12;
     return expansesSum + loanExpanse;
   };
 
@@ -141,7 +175,9 @@ const FinancingExpanses = (props: FinancingExpansesProps) => {
       </Grid>
       <Grid item container xs={6} justifyContent="center">
         <Typography className={styles.totalExpansesLabel}>
-          {priceFormatter(Math.round(totalExpanses(expanses)))}
+          {priceFormatter(
+            Math.round(totalExpanses(expanses)),
+          )}
         </Typography>
       </Grid>
       <List>
@@ -181,7 +217,8 @@ const FinancingExpanses = (props: FinancingExpansesProps) => {
               inputProps={{ min: 0, step: 1 }}
               itemScope
               value={interestRate}
-              onChange={(e) => setInterestRate(parseInt(e.target.value))}
+              onChange={(e) =>
+                handleChangeInterestRate(parseInt(e.target.value))}
             />
           </FormControl>
         </div>
@@ -207,7 +244,7 @@ const FinancingExpanses = (props: FinancingExpansesProps) => {
               inputProps={{ min: 0, step: 1 }}
               itemScope
               value={months}
-              onChange={(e) => setMonths(parseInt(e.target.value))}
+              onChange={(e) => handleChangeMonths(parseInt(e.target.value))}
             />
           </FormControl>
         </div>
