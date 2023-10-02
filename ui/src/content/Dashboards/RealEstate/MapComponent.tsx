@@ -168,8 +168,15 @@ const MapComponent: React.FC<MapComponentProps> = (
   };
 
   const panToProperty = async () => {
-    map.setZoom(12);
-    await sleep(300);
+    const mapWasCentered =
+      map.getCenter().lat() == locationState.data.center.latitude &&
+      map.getCenter().lng() == locationState.data.center.longitude;
+    if (!mapWasCentered) {
+      map.setZoom(13);
+      await sleep(200);
+      map.setZoom(12);
+      await sleep(200);
+    }
     map.panTo({
       lat: selectedProperty.property.latitude,
       lng: selectedProperty.property.longitude,
