@@ -156,62 +156,46 @@ const MapComponent: React.FC<MapComponentProps> = (
     map.controls[google.maps.ControlPosition.TOP_LEFT].clear();
   }, []);
 
-  useEffect(() => {
-    // const infoWindow = new google.maps.InfoWindow({});
-    //     const infoWindow = new google.maps.OverlayView();
-    //     if (map && propertiesState.data) {
-    //       const markers = propertiesState.data.map((property) => {
-    //         const name = property.property.bedrooms;
-    //         const [lat, lng] = [
-    //           property.property.latitude,
-    //           property.property.longitude,
-    //         ];
-    //         const marker = new google.maps.Marker({
-    //           position: {
-    //             lat,
-    //             lng,
-    //           },
-    //         });
-    //         marker.addListener("click", () => {
-    //           infoWindow.setPosition({ lat, lng });
-    //           infoWindow.setContent(`
-    // <div><h2>${name}</h2></div>
-    // `);
-    //           infoWindow.open({ map });
-    //         });
-    //         // const marker = (
-    //         //   <Marker
-    //         //     position={{
-    //         //       lat: property.property.latitude,
-    //         //       lng: property.property.longitude,
-    //         //     }}
-    //         //   />
-    //         // );
-    //         return marker;
-    //       });
-    //       const m = <Marker position={{ lat: 0, lng: 0 }} />;
-    //
-    //       new MarkerClusterer({ markers, map });
-    //     }
-    // console.log(locationState.data?.center.latitude);
-    if (
-      selectedProperty && map && selectedProperty.property?.latitude &&
-      selectedProperty.property?.longitude
-    ) {
+  const centerMap = async () => {
+    if (locationState.data && map) {
+      map.setZoom(12);
+      await sleep(300);
       map.panTo({
-        lat: selectedProperty.property.latitude,
-        lng: selectedProperty.property.longitude,
+        lat: locationState.data.center.latitude,
+        lng: locationState.data.center.longitude,
       });
-      map.setZoom(15);
-    } else {
-      if (locationState.data && map) {
-        map.panTo({
-          lat: locationState.data.center.latitude,
-          lng: locationState.data.center.longitude,
-        });
-        map.setZoom(12);
-      }
     }
+  };
+
+  const panToProperty = async () => {
+    map.setZoom(12);
+    await sleep(300);
+    map.panTo({
+      lat: selectedProperty.property.latitude,
+      lng: selectedProperty.property.longitude,
+    });
+    await sleep(300);
+    map.setZoom(13);
+    await sleep(300);
+    map.setZoom(14);
+  };
+
+  function sleep(ms) {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  useEffect(() => {
+    const animateMap = async () => {
+      const propertySelected = selectedProperty && map &&
+        selectedProperty.property?.latitude &&
+        selectedProperty.property?.longitude;
+      if (propertySelected) {
+        panToProperty();
+      } else {
+        centerMap();
+      }
+    };
+    animateMap();
   }, [
     selectedProperty,
     locationState.currentData,
