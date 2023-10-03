@@ -156,10 +156,20 @@ const MapComponent: React.FC<MapComponentProps> = (
     map.controls[google.maps.ControlPosition.TOP_LEFT].clear();
   }, []);
 
-  const centerMap = async () => {
+  const centerMap = async (signal: AbortSignal) => {
     if (locationState.data && map) {
-      map.setZoom(12);
-      await sleep(300);
+      // map.setZoom(12);
+      // await sleep(300);
+
+      while (!signal.aborted && !propertyInBounds(locationState.data.center)) {
+        const currentZoom = map.getZoom();
+        if (currentZoom === 13) {
+          map.setZoom(12);
+        } else {
+          map.setZoom(map.getZoom() - 2);
+        }
+        await sleep(200);
+      }
       map.panTo({
         lat: locationState.data.center.latitude,
         lng: locationState.data.center.longitude,
@@ -167,24 +177,36 @@ const MapComponent: React.FC<MapComponentProps> = (
     }
   };
 
-  const panToProperty = async () => {
-    const mapWasCentered =
-      map.getCenter().lat() == locationState.data.center.latitude &&
-      map.getCenter().lng() == locationState.data.center.longitude;
-    if (!mapWasCentered) {
-      map.setZoom(13);
+  const propertyInBounds = (property: Property) =>
+    map.getBounds().contains({
+      lat: property.latitude,
+      lng: property.longitude,
+    });
+
+  const panToProperty = async (signal: AbortSignal) => {
+    // const mapWasCentered =
+    //   map.getCenter().lat() == locationState.data.center.latitude &&
+    //   map.getCenter().lng() == locationState.data.center.longitude;
+    // if (!mapWasCentered) {
+    //   map.setZoom(13);
+    //   await sleep(200);
+    //   map.setZoom(12);
+    //   // await sleep(200);
+    // }
+    while (!signal.aborted && !propertyInBounds(selectedProperty.property)) {
+      map.setZoom(map.getZoom() - 2);
       await sleep(200);
-      map.setZoom(12);
-      // await sleep(200);
     }
     map.panTo({
       lat: selectedProperty.property.latitude,
       lng: selectedProperty.property.longitude,
     });
-    await sleep(300);
-    map.setZoom(13);
-    await sleep(300);
-    map.setZoom(14);
+    while (!signal.aborted && map.getZoom() !== 14) {
+      map.setZoom(map.getZoom() + 1);
+      await sleep(200);
+    }
+    // await sleep(300);
+    // map.setZoom(14);
   };
 
   function sleep(ms) {
@@ -192,17 +214,21 @@ const MapComponent: React.FC<MapComponentProps> = (
   }
 
   useEffect(() => {
-    const animateMap = async () => {
+    const controller = new AbortController();
+    const signal = controller.signal;
+    const animateMap = async (signal: AbortSignal) => {
+      console.log("zoom: ", map?.getZoom());
       const propertySelected = selectedProperty && map &&
         selectedProperty.property?.latitude &&
         selectedProperty.property?.longitude;
       if (propertySelected) {
-        panToProperty();
+        panToProperty(signal);
       } else {
-        centerMap();
+        centerMap(signal);
       }
     };
-    animateMap();
+    animateMap(signal);
+    return () => controller.abort();
   }, [
     selectedProperty,
     locationState.currentData,
