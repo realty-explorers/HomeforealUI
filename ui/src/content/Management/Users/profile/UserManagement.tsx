@@ -1,0 +1,63 @@
+import { Typography } from "@mui/material";
+import { useState } from "react";
+import clsx from "clsx";
+import AccordionSection from "./AccordionSection";
+
+const UserManagement = () => {
+  const [expanded, setExpanded] = useState<string | false>(false);
+  const handleChange =
+    (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+      setExpanded(isExpanded ? panel : false);
+    };
+  return (
+    <div className="flex flex-col p-8">
+      <Typography className="font-poppins text-4xl text-black font-semibold">
+        User Management
+      </Typography>
+      <div className="mt-4">
+        <AccordionSection
+          name="profile"
+          title="Profile"
+          description="Name, Surname, Email address"
+          expanded={expanded}
+          handleChange={handleChange}
+        >
+          <Typography>meow</Typography>
+        </AccordionSection>
+        <hr className="border-t border-black mx-4 my-2" />
+        <AccordionSection
+          name="password"
+          title="Password"
+          description={`Your email address is ${"test@test.com"}`}
+          expanded={expanded}
+          handleChange={handleChange}
+        >
+          <Typography>meow</Typography>
+        </AccordionSection>
+        <hr className="border-t border-black mx-4 my-2" />
+
+        <AccordionSection
+          name="notifications"
+          title="Notifications"
+          description="Rateit will send you notifications"
+          expanded={expanded}
+          handleChange={handleChange}
+        >
+          <Typography>meow</Typography>
+        </AccordionSection>
+        <hr className="border-t border-black mx-4 my-2" />
+        <AccordionSection
+          name="deactivate"
+          title="Deactivate Account"
+          description="If you no longer want to receive* emails"
+          expanded={expanded}
+          handleChange={handleChange}
+        >
+          <Typography>meow</Typography>
+        </AccordionSection>
+      </div>
+    </div>
+  );
+};
+
+export default UserManagement;
