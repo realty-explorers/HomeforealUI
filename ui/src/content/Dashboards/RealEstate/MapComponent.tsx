@@ -161,14 +161,18 @@ const MapComponent: React.FC<MapComponentProps> = (
       // map.setZoom(12);
       // await sleep(300);
 
-      while (!signal.aborted && !propertyInBounds(locationState.data.center)) {
-        const currentZoom = map.getZoom();
+      let currentZoom = map.getZoom();
+      while (
+        !signal.aborted && currentZoom >= 12 &&
+        !propertyInBounds(locationState.data.center)
+      ) {
         if (currentZoom === 13) {
           map.setZoom(12);
         } else {
           map.setZoom(map.getZoom() - 2);
         }
         await sleep(200);
+        currentZoom = map.getZoom();
       }
       map.panTo({
         lat: locationState.data.center.latitude,
