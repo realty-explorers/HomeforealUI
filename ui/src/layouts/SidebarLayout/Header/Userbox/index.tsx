@@ -132,6 +132,7 @@ function HeaderUserbox() {
         anchorEl={ref.current}
         onClose={handleClose}
         open={isOpen}
+        onClick={handleClose}
         anchorOrigin={{
           vertical: "top",
           horizontal: "right",
