@@ -58,17 +58,13 @@ const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
 }));
 
 type BuyboxListProps = {
-  setShowEditBuyBox: (show: boolean) => void;
+  editBuyBox: (buybox: BuyBox) => void;
 };
 
 const BuyboxList = (props: BuyboxListProps) => {
   // const {data , isFetching } = useGetBuyBoxesIdsQuery(1);
   const [getBuyBoxes, state] = useLazyGetBuyBoxesQuery();
   const { enqueueSnackbar } = useSnackbar();
-
-  const handleNewBuybox = () => {
-    props.setShowEditBuyBox(true);
-  };
 
   useEffect(() => {
     const getBuyBoxesData = async () => {
@@ -102,11 +98,15 @@ const BuyboxList = (props: BuyboxListProps) => {
             : (
               <>
                 {(state.data as BuyBox[])?.map((buybox, index) => (
-                  <BuyboxItem key={index} buybox={buybox} />
+                  <BuyboxItem
+                    key={index}
+                    buybox={buybox}
+                    editBuyBox={props.editBuyBox}
+                  />
                 ))}
                 <StyledAccordion sx={{ width: "100%" }}>
                   <StyledAccordionSummary expandIcon={<AddCircleOutlineIcon />}>
-                    <Button onClick={handleNewBuybox}>
+                    <Button onClick={() => props.editBuyBox({} as BuyBox)}>
                       <Typography>New Buybox</Typography>
                     </Button>
                   </StyledAccordionSummary>

@@ -7,15 +7,23 @@ import { useState } from "react";
 
 const Buybox = () => {
   const [showEditBuyBox, setShowEditBuyBox] = useState(false);
+  const [selectedBuyBox, setSelectedBuyBox] = useState(null);
+
+  const editBuyBox = (buybox) => {
+    setSelectedBuyBox(buybox);
+    setShowEditBuyBox(true);
+  };
+
   return (
     <div className="flex flex-col w-full items-stretch">
       <div className="">
         <BuyboxStatus />
       </div>
       <div className="h-full overflow-y-auto">
-        <BuyboxList setShowEditBuyBox={setShowEditBuyBox} />
+        <BuyboxList editBuyBox={editBuyBox} />
       </div>
       <EditBuyBoxDialog
+        buybox={selectedBuyBox}
         showEditBuybox={showEditBuyBox}
         setShowEditBuybox={setShowEditBuyBox}
       />

@@ -19,14 +19,15 @@ import InvestmentCriteria from "./InvestmentCriteria";
 import PropertyCriteria from "./PropertyCriteria";
 import ComparablePreferences from "./ComparablePreferences";
 import SimilarityChart from "./SimilarityChart";
-import data from "./mockData.json";
 import {
   buyboxSchema,
   buyboxSchemaType,
   getDefaults,
 } from "@/schemas/BuyBoxSchemas";
+import BuyBox from "@/models/buybox";
 
 type editBuyBoxDialogProps = {
+  buybox: BuyBox;
   showEditBuybox: boolean;
   setShowEditBuybox: (show: boolean) => void;
 };
@@ -52,10 +53,11 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   };
 
   useEffect(() => {
-    reset(data);
-    console.log(data);
+    if (props.buybox) {
+      reset(props.buybox.data);
+    }
     // reset({ name: "meow" });
-  }, []);
+  }, [props.buybox]);
 
   return (
     <Dialog

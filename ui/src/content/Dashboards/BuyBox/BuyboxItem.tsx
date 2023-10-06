@@ -19,6 +19,7 @@ import { useGetLeadsQuery } from "@/store/services/analysisApi";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import BuyBox from "@/models/buybox";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 
 const columns: GridColDef[] = [
   {
@@ -159,12 +160,20 @@ const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
 
 type BuyboxItemProps = {
   buybox: BuyBox;
+  editBuyBox: (buybox: BuyBox) => void;
 };
 
 const BuyboxItem = (props: BuyboxItemProps) => {
   // const { data, isFetching } = useGetLeadsQuery(
   //   props.data?.buybox_id || skipToken,
   // );
+
+  const handleEditBuyBox = (e) => {
+    e.stopPropagation();
+    props.editBuyBox(props.buybox);
+  };
+
+  const allowedToEdit = props.buybox.permissions.includes("edit");
 
   const rows = []?.map((lead: Lead, index) => {
     return {
@@ -190,8 +199,18 @@ const BuyboxItem = (props: BuyboxItemProps) => {
           className="flex-row-reverse"
         >
           <div className="flex justify-between w-full">
-            <Typography>{props.buybox.data.buybox_name}</Typography>
-            {/* <button>hi</button> */}
+            <Typography className="flex items-center">
+              {props.buybox.data.buybox_name}
+            </Typography>
+            <Button
+              startIcon={allowedToEdit
+                ? <SettingsOutlinedIcon className="className" />
+                : null}
+              className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-lg p-2 font-poppins font-semibold  "
+              onClick={handleEditBuyBox}
+            >
+              {allowedToEdit ? "Edit" : "View"} BuyBox
+            </Button>
           </div>
         </StyledAccordionSummary>
         <AccordionDetails>
