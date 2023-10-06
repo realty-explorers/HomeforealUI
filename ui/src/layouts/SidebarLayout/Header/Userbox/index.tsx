@@ -72,7 +72,6 @@ function HeaderUserbox() {
   //   useAuth0();
   const { user, isLoading } = useUser();
   const avatar = "/static/images/avatars/1.jpg";
-  const role = "User";
 
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -143,10 +142,16 @@ function HeaderUserbox() {
         }}
       >
         <MenuUserBox sx={{ minWidth: 210 }} display="flex">
-          <Avatar variant="rounded" alt={user?.name} src={avatar} />
+          <Avatar
+            variant="rounded"
+            alt={user?.name}
+            src={user?.picture || avatar}
+          />
           <UserBoxText>
             <UserBoxLabel variant="body1">{user?.name}</UserBoxLabel>
-            <UserBoxDescription variant="body2">{role}</UserBoxDescription>
+            <UserBoxDescription variant="body2">
+              {user?.user_roles}
+            </UserBoxDescription>
           </UserBoxText>
         </MenuUserBox>
         <Divider sx={{ mb: 0 }} />
@@ -157,18 +162,13 @@ function HeaderUserbox() {
               <ListItemText primary="My Profile" />
             </ListItem>
           </NextLink>
-          <NextLink href="/applications/messenger" passHref>
-            <ListItem button>
-              <InboxTwoToneIcon fontSize="small" />
-              <ListItemText primary="Messenger" />
-            </ListItem>
-          </NextLink>
-          <NextLink href="/management/profile/settings" passHref>
-            <ListItem button>
-              <AccountTreeTwoToneIcon fontSize="small" />
-              <ListItemText primary="Account Settings" />
-            </ListItem>
-          </NextLink>
+
+          {/* <NextLink href="/management/profile/settings" passHref> */}
+          {/*   <ListItem button> */}
+          {/*     <AccountTreeTwoToneIcon fontSize="small" /> */}
+          {/*     <ListItemText primary="Account Settings" /> */}
+          {/*   </ListItem> */}
+          {/* </NextLink> */}
         </List>
         <Divider />
         <Box sx={{ m: 1 }}>

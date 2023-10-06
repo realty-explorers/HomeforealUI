@@ -2,9 +2,11 @@ import { Typography } from "@mui/material";
 import { useState } from "react";
 import clsx from "clsx";
 import AccordionSection from "./AccordionSection";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 const UserManagement = () => {
   const [expanded, setExpanded] = useState<string | false>(false);
+  const { user } = useUser();
   const handleChange =
     (panel: string) => (event: React.SyntheticEvent, isExpanded: boolean) => {
       setExpanded(isExpanded ? panel : false);
@@ -22,7 +24,9 @@ const UserManagement = () => {
           expanded={expanded}
           handleChange={handleChange}
         >
-          <Typography>meow</Typography>
+          <Typography>Name: {user?.name}</Typography>
+          <Typography>Email: {user?.email}</Typography>
+          <Typography>Roles: {user?.user_roles}</Typography>
         </AccordionSection>
         <hr className="border-t border-black mx-4 my-2" />
         <AccordionSection
