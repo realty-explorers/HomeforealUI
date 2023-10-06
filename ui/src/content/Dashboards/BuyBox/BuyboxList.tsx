@@ -15,7 +15,15 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import BuyboxItem from "./BuyboxItem";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 // import { useGetSummaryQuery } from "@/store/services/analysisApi";
-import { useGetBuyBoxesQuery } from "@/store/services/buyboxApiService";
+import {
+  useGetBuyBoxesQuery,
+  useLazyGetBuyBoxesQuery,
+} from "@/store/services/buyboxApiService";
+import BuyBox from "@/models/buybox";
+import { useEffect } from "react";
+import { skipToken } from "@reduxjs/toolkit/dist/query";
+import Image from "next/image";
+import { useSnackbar, VariantType } from "notistack";
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -44,28 +52,10 @@ const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
     marginLeft: theme.spacing(1),
   },
 }));
-
 const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
   padding: theme.spacing(2),
   borderTop: "1px solid rgba(0, 0, 0, .125)",
 }));
-
-const BuyboxItemWrapper = ({ data }) => {
-  return (
-    <StyledAccordion sx={{ width: "100%" }}>
-      <StyledAccordionSummary
-        expandIcon={<ExpandMoreIcon />}
-        aria-controls="panel1a-content"
-        id="panel1a-header"
-      >
-        <Typography>{data?.buybox_name}</Typography>
-      </StyledAccordionSummary>
-      <StyledAccordionDetails>
-        <BuyboxItem data={data} />
-      </StyledAccordionDetails>
-    </StyledAccordion>
-  );
-};
 
 type BuyboxListProps = {
   setShowEditBuyBox: (show: boolean) => void;
@@ -73,27 +63,56 @@ type BuyboxListProps = {
 
 const BuyboxList = (props: BuyboxListProps) => {
   // const {data , isFetching } = useGetBuyBoxesIdsQuery(1);
-  const { data, isFetching } = useGetBuyBoxesQuery(1);
+  const [getBuyBoxes, state] = useLazyGetBuyBoxesQuery();
+  const { enqueueSnackbar } = useSnackbar();
 
   const handleNewBuybox = () => {
     props.setShowEditBuyBox(true);
   };
 
+  useEffect(() => {
+    const getBuyBoxesData = async () => {
+      try {
+        const data = await getBuyBoxes("1").unwrap();
+      } catch (error) {
+        enqueueSnackbar(`${error.error}`, {
+          variant: "error",
+        });
+      }
+    };
+    getBuyBoxesData();
+  }, [state.data]);
+
   return (
     <Grid container>
       <Card sx={{ width: "100%" }}>
         <CardContent>
-          {JSON.stringify(data)}
-          {/* {[data, data].map((data, index) => ( */}
-          {/*   <BuyboxItemWrapper key={index} data={data} /> */}
-          {/* ))} */}
-          <StyledAccordion sx={{ width: "100%" }}>
-            <StyledAccordionSummary expandIcon={<AddCircleOutlineIcon />}>
-              <Button onClick={handleNewBuybox}>
-                <Typography>New Buybox</Typography>
-              </Button>
-            </StyledAccordionSummary>
-          </StyledAccordion>
+          {state.isFetching
+            ? (
+              <div className="w-full flex justify-center">
+                <Image
+                  src={"/static/images/placeholders/searchingAnimation.gif"}
+                  alt="loading"
+                  width="150"
+                  height="150"
+                  className=""
+                />
+              </div>
+            )
+            : (
+              <>
+                {(state.data as BuyBox[])?.map((buybox, index) => (
+                  <BuyboxItem key={index} buybox={buybox} />
+                ))}
+                <StyledAccordion sx={{ width: "100%" }}>
+                  <StyledAccordionSummary expandIcon={<AddCircleOutlineIcon />}>
+                    <Button onClick={handleNewBuybox}>
+                      <Typography>New Buybox</Typography>
+                    </Button>
+                  </StyledAccordionSummary>
+                </StyledAccordion>
+              </>
+            )}
         </CardContent>
       </Card>
     </Grid>

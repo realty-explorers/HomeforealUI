@@ -17,6 +17,7 @@ import { SessionProvider } from "next-auth/react";
 import store, { wrapper } from "@/store/store";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { Provider } from "react-redux";
+import { SnackbarProvider } from "notistack";
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -51,8 +52,10 @@ function HomeforealApp(props: HomeforealAppProps) {
           <SidebarProvider>
             <ThemeProvider>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
-                <CssBaseline />
-                {getLayout(<Component {...pageProps} />)}
+                <SnackbarProvider>
+                  <CssBaseline />
+                  {getLayout(<Component {...pageProps} />)}
+                </SnackbarProvider>
               </LocalizationProvider>
             </ThemeProvider>
           </SidebarProvider>

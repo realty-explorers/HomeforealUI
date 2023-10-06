@@ -46,6 +46,7 @@
     "next-auth": "^4.20.1",
     "next-images": "1.8.4",
     "next-redux-wrapper": "^8.1.0",
+    "notistack": "^3.0.1",
     "nprogress": "0.2.0",
     "numeral": "2.0.6",
     "postcss": "^8.4.28",

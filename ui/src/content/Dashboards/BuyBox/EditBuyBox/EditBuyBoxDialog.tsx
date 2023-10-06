@@ -14,13 +14,17 @@ import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { buyboxSchema, buyboxSchemaType, getDefaults } from "./Schemas";
 import styles from "./EditBuyBoxDialog.module.scss";
 import InvestmentCriteria from "./InvestmentCriteria";
 import PropertyCriteria from "./PropertyCriteria";
 import ComparablePreferences from "./ComparablePreferences";
 import SimilarityChart from "./SimilarityChart";
 import data from "./mockData.json";
+import {
+  buyboxSchema,
+  buyboxSchemaType,
+  getDefaults,
+} from "@/schemas/BuyBoxSchemas";
 
 type editBuyBoxDialogProps = {
   showEditBuybox: boolean;
