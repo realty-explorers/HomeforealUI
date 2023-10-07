@@ -3,6 +3,7 @@ import { useState } from "react";
 import clsx from "clsx";
 import AccordionSection from "./AccordionSection";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import styles from "./Settings.module.scss";
 
 const UserManagement = () => {
   const [expanded, setExpanded] = useState<string | false>(false);
@@ -13,7 +14,7 @@ const UserManagement = () => {
     };
   return (
     <div className="flex flex-col p-8">
-      <Typography className="font-poppins text-4xl text-black font-semibold">
+      <Typography className={styles.section_header}>
         User Management
       </Typography>
       <div className="mt-4">
@@ -32,7 +33,7 @@ const UserManagement = () => {
         <AccordionSection
           name="password"
           title="Password"
-          description={`Your email address is ${"test@test.com"}`}
+          description={`Your email address is ${user?.email}`}
           expanded={expanded}
           handleChange={handleChange}
         >
