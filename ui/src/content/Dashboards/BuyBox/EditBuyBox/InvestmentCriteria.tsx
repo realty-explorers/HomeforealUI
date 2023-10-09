@@ -9,7 +9,56 @@ import {
 } from "react-hook-form";
 import styles from "./EditBuyBoxDialog.module.scss";
 import { RangeField } from "./RangeField";
-import { buyboxSchemaType } from "./Schemas";
+import defaults from "@/schemas/defaults";
+import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
+import React from "react";
+import SwitchField from "@/components/Form/SwitchField";
+import SliderField from "@/components/Form/SliderField";
+import clsx from "clsx";
+
+const groups = [
+  {
+    group: "Limitations",
+    fieldName: "opp.Limitations.0",
+    fields: [
+      {
+        title: "ARV",
+        fieldName: "opp.Limitations.1.ARV",
+        type: "range",
+        min: defaults.arv.min,
+        max: defaults.arv.max,
+        step: defaults.arv.step,
+      },
+    ],
+  },
+  {
+    group: "Fix & Flip",
+    fieldName: "opp.Fix & Flip.0",
+    fields: [
+      {
+        title: "Margin",
+        fieldName: "opp.Fix & Flip.1.Margin",
+        type: "range",
+      },
+      {
+        title: "Cents on $",
+        fieldName: "opp.Fix & Flip.1.Cents on $",
+        type: "range",
+      },
+    ],
+  },
+  {
+    group: "Buy & Hold",
+    fieldName: "opp.Buy & Hold.0",
+    fields: [
+      {
+        title: "Cap Rate",
+        fieldName: "opp.Buy & Hold.1.Cap Rate",
+        type: "range",
+      },
+    ],
+  },
+];
 
 type InvestmentCriteriaProps = {
   register: UseFormRegister<buyboxSchemaType>;
@@ -21,85 +70,61 @@ const InvestmentCriteria = (
 ) => {
   return (
     <>
-      <Typography className={styles.sectionLabel}>
-        Investment Criteria
-      </Typography>
-
-      <div className="flex w-full item-center col-span-2">
-        <Controller
-          name={`opp.Limitations.0`}
-          control={control}
-          render={({ field: { value, ...field } }) => (
-            <Switch
-              {...field}
-              checked={!!value}
-            />
-          )}
-        />
-        <Typography className={styles.label}>Limitations</Typography>
-      </div>
-
-      <RangeField
-        register={register}
-        control={control}
-        watch={watch}
-        fieldName={`opp.Limitations.1.ARV`}
-        title="ARV"
-        labelClass="pl-12"
-      />
-
-      <div className="flex w-full item-center col-span-2">
-        <Controller
-          name={`opp.Fix & Flip.0`}
-          control={control}
-          render={({ field: { value, ...field } }) => (
-            <Switch
-              {...field}
-              checked={!!value}
-            />
-          )}
-        />
-        <Typography className={styles.label}>Fix & Flip</Typography>
-      </div>
-      <RangeField
-        register={register}
-        control={control}
-        watch={watch}
-        fieldName={`opp.Fix & Flip.1.Margin`}
-        title="Margin"
-        labelClass="pl-12"
-      />
-      <RangeField
-        register={register}
-        control={control}
-        watch={watch}
-        fieldName={`opp.Fix & Flip.1.Cents on $`}
-        title="Cents on $"
-        labelClass="pl-12"
-      />
-
-      <div className="flex w-full item-center col-span-2">
-        <Controller
-          name={`opp.Buy & Hold.0`}
-          control={control}
-          render={({ field: { value, ...field } }) => (
-            <Switch
-              {...field}
-              checked={!!value}
-            />
-          )}
-        />
-        <Typography className={styles.label}>Buy & Hold</Typography>
-      </div>
-
-      <RangeField
-        register={register}
-        control={control}
-        watch={watch}
-        fieldName={`opp.Buy & Hold.1.Cap Rate`}
-        title="Cap Rate"
-        labelClass="pl-12"
-      />
+      {groups.map((group, index) => {
+        return (
+          <React.Fragment key={index}>
+            <div className="flex w-full item-center col-span-2">
+              <Controller
+                name={group.fieldName}
+                control={control}
+                render={({ field: { value, ...field } }) => (
+                  <Switch
+                    {...field}
+                    checked={!!value}
+                  />
+                )}
+              />
+              <Typography className={styles.label}>{group.group}</Typography>
+            </div>
+            {group.fields.map((field, index) => {
+              if (field.type === "boolean") {
+                return <p key={index}>hi</p>;
+              } else if (field.type === "range") {
+                return (
+                  <>
+                    <div
+                      className={clsx([
+                        "flex w-full item-center pl-12",
+                      ])}
+                    >
+                      <SwitchField
+                        fieldName={`${field.fieldName}.0`}
+                        control={control}
+                        disabled={!watch(`${group.fieldName}`)}
+                      />
+                      <Typography className={styles.label}>
+                        {field.title}
+                      </Typography>
+                    </div>
+                    <div className={clsx(["flex"])}>
+                      <SliderField
+                        min={field.min}
+                        max={field.max}
+                        step={field.step}
+                        fieldName={`${field.fieldName}.1`}
+                        control={control}
+                        // disabled={!watch(`${field.fieldName}.0`)}
+                        disabled={!watch(`${group.fieldName}`) ||
+                          !watch(`${field.fieldName}.0`)}
+                      />
+                    </div>
+                  </>
+                );
+              }
+            })}
+          </React.Fragment>
+        );
+      })}
     </>
   );
 };

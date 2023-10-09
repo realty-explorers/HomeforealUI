@@ -6,11 +6,12 @@ import { Controller } from "react-hook-form";
 type RangeFieldProps = {
   control: any;
   fieldName: string;
+  disabled?: boolean;
   className?: string;
 };
 
 const SwitchField = (
-  { control, fieldName, className }: RangeFieldProps,
+  { control, fieldName, disabled, className }: RangeFieldProps,
 ) => {
   return (
     <Controller
@@ -20,6 +21,7 @@ const SwitchField = (
         <Switch
           {...field}
           checked={!!value}
+          disabled={disabled}
           className={className}
         />
       )}

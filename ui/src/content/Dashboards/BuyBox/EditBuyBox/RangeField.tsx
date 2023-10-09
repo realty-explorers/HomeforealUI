@@ -1,4 +1,6 @@
-import { Slider, Switch, Typography } from "@mui/material";
+import SliderField from "@/components/Form/SliderField";
+import SwitchField from "@/components/Form/SwitchField";
+import { Slider, SliderProps, Switch, Typography } from "@mui/material";
 import clsx from "clsx";
 import React from "react";
 import { Controller } from "react-hook-form";
@@ -12,11 +14,19 @@ type RangeFieldProps = {
   title: string;
   labelClass?: string;
   sliderClass?: string;
-};
+} & SliderProps;
 
 export const RangeField = (
-  { register, control, watch, fieldName, title, labelClass, sliderClass }:
-    RangeFieldProps,
+  {
+    register,
+    control,
+    watch,
+    fieldName,
+    title,
+    labelClass,
+    sliderClass,
+    ...props
+  }: RangeFieldProps,
 ) => {
   return (
     <>
@@ -26,29 +36,15 @@ export const RangeField = (
           labelClass,
         ])}
       >
-        <Controller
-          name={`${fieldName}.0`}
-          control={control}
-          render={({ field: { value, ...field } }) => (
-            <Switch
-              {...field}
-              checked={!!value}
-            />
-          )}
-        />
+        <SwitchField fieldName={`${fieldName}.0`} control={control} />
         <Typography className={styles.label}>{title}</Typography>
       </div>
       <div className={clsx(["flex", sliderClass])}>
-        <Controller
-          name={`${fieldName}.1`}
+        <SliderField
+          {...props}
+          fieldName={`${fieldName}.1`}
           control={control}
-          render={({ field }) => (
-            <Slider
-              {...field}
-              disabled={!watch(`${fieldName}.0`)}
-              className="w-1/2"
-            />
-          )}
+          disabled={!watch(`${fieldName}.0`)}
         />
       </div>
     </>
