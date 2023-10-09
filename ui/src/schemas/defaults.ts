@@ -99,4 +99,71 @@ const defaults = {
   },
 };
 
-export default defaults;
+const defaultSimilarityFields = {
+  samePropertyType: {
+    name: "Same Property Type",
+    type: "boolean",
+  },
+  bedrooms: {
+    name: "Bedrooms",
+    type: "range",
+    min: -3,
+    max: 3,
+    step: 1,
+  },
+  bathrooms: {
+    name: "Bathrooms",
+    type: "range",
+    min: -3,
+    max: 3,
+    step: 1,
+  },
+  yearBuilt: {
+    name: "Year Built",
+    type: "range",
+    min: -50,
+    max: 50,
+    step: 1,
+  },
+  area: {
+    name: "Building sqft",
+    type: "range",
+    min: -100,
+    max: 100,
+    step: 1,
+  },
+  lotSize: {
+    name: "Lot sqft",
+    type: "range",
+    min: -100,
+    max: 100,
+    step: 1,
+  },
+  samePoolStatus: {
+    name: "Same Pool Status",
+    type: "boolean",
+  },
+  garages: {
+    name: "Garages",
+    type: "range",
+    min: -2,
+    max: 2,
+    step: 1,
+  },
+  distance: {
+    name: "Distance",
+    type: "range",
+    min: 0,
+    max: 1.5,
+    step: 0.1,
+  },
+  saleDate: {
+    name: "Sale Date",
+    type: "range",
+    min: 0,
+    max: 12,
+    step: 1,
+  },
+};
+
+export { defaults, defaultSimilarityFields };

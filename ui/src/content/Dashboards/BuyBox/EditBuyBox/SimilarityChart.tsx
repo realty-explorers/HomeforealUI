@@ -15,37 +15,7 @@ import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
 import CheckIcon from "@mui/icons-material/Check";
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 import styles from "./EditBuyBoxDialog.module.scss";
-import { buyboxSchemaType } from "./Schemas";
-
-const similarityTypes = ["green", "yellow", "orange", "red"];
-
-const columns: GridColDef[] = [
-  {
-    field: "bedrooms",
-    headerName: "Bedrooms",
-    renderCell: (params: GridValueGetterParams) =>
-      `${params.value?.values?.[0]} - ${params.value?.values?.[1]}`,
-  },
-  {
-    field: "bathrooms",
-    headerName: "Bathrooms",
-    renderCell: (params: GridValueGetterParams) =>
-      `${params.value?.values?.[0]} - ${params.value?.values?.[1]}`,
-  },
-  {
-    field: "yearBuilt",
-    headerName: "Year Built",
-    renderCell: (params: GridValueGetterParams) =>
-      `${params.value?.values?.[0]} - ${params.value?.values?.[1]}`,
-  },
-  {
-    field: "buildingSqft",
-    headerName: "Building Sqft",
-    renderCell: (params: GridValueGetterParams) =>
-      `${params.value?.values?.[0]} - ${params.value?.values?.[1]}`,
-  },
-  // { field: "bathrooms", headerName: "Bathrooms" },
-];
+import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
 
 const FieldValue = ({ index, value, className }: any) => {
   return (

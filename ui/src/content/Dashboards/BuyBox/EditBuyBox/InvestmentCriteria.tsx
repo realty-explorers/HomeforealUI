@@ -9,7 +9,7 @@ import {
 } from "react-hook-form";
 import styles from "./EditBuyBoxDialog.module.scss";
 import { RangeField } from "./RangeField";
-import defaults from "@/schemas/defaults";
+import { defaults } from "@/schemas/defaults";
 import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
 import React from "react";
 import SwitchField from "@/components/Form/SwitchField";

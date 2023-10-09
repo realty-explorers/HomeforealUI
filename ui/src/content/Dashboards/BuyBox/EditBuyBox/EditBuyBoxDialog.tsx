@@ -10,6 +10,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -25,15 +26,21 @@ import {
   getDefaults,
 } from "@/schemas/BuyBoxSchemas";
 import BuyBox from "@/models/buybox";
+import {
+  useCreateBuyBoxMutation,
+  useUpdateBuyBoxMutation,
+} from "@/store/services/buyboxApiService";
 
 type editBuyBoxDialogProps = {
-  buybox: BuyBox;
+  buybox?: BuyBox;
   showEditBuybox: boolean;
   setShowEditBuybox: (show: boolean) => void;
 };
 
 const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const handleClose = () => props.setShowEditBuybox(false);
+  const [createBuyBox, createResult] = useCreateBuyBoxMutation();
+  const [updateBuyBox, updateResult] = useUpdateBuyBoxMutation();
   const {
     register,
     handleSubmit,
@@ -49,14 +56,20 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   });
 
   const onSubmit = async (data: any) => {
-    alert(JSON.stringify(data));
+    if (props.buybox) {
+      await updateBuyBox({ id: props.buybox.id, data });
+    } else {
+      await createBuyBox(data);
+    }
+    handleClose();
   };
 
   useEffect(() => {
     if (props.buybox) {
       reset(props.buybox.data);
+    } else {
+      reset(getDefaults(buyboxSchema));
     }
-    // reset({ name: "meow" });
   }, [props.buybox]);
 
   return (
@@ -125,25 +138,49 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         {/* {<p>{watch("bedrooms.active") ? "active" : "disabled"}</p>} */}
         {/* {<p>{watch("bedrooms.values")}</p>} */}
 
-        <Button
-          variant="outlined"
-          className="mt-12"
-          onClick={() => {
-            reset(data);
-          }}
-        >
-          Submit
-        </Button>
+        <div className=" col-span-2 flex flex-row-reverse justify-between">
+          {(props.buybox && props.buybox.permissions.includes("edit")) ||
+              !props.buybox
+            ? (
+              <div className="flex gap-x-4">
+                <Button
+                  variant="outlined"
+                  className="mt-12  w-40"
+                  onClick={() => {
+                    reset(props.buybox?.data || getDefaults(buyboxSchema));
+                  }}
+                >
+                  Reset
+                </Button>
 
-        <Button type="submit" variant="outlined" className="mt-12">
-          Submit
-        </Button>
+                <LoadingButton
+                  type="submit"
+                  variant="outlined"
+                  className="mt-12  w-40"
+                  loading={isSubmitting}
+                >
+                  {props.buybox ? "Save" : "Create"}
+                </LoadingButton>
+              </div>
+            )
+            : <></>}
+
+          {props.buybox?.permissions.includes("edit") && (
+            <Button
+              variant="outlined"
+              color="error"
+              className="mt-12  w-20"
+              onClick={() => {
+                reset(props.buybox?.data || getDefaults(buyboxSchema));
+              }}
+            >
+              Delete
+            </Button>
+          )}
+        </div>
       </form>
     </Dialog>
   );
-  // return (
-
-  // );
 };
 
 export default EditBuyBoxDialog;

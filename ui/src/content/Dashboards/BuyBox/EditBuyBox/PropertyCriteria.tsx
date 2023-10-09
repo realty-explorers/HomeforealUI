@@ -1,5 +1,5 @@
 import SwitchField from "@/components/Form/SwitchField";
-import defaults from "@/schemas/defaults";
+import { defaults } from "@/schemas/defaults";
 import { Slider, Switch, Typography } from "@mui/material";
 import {
   Control,

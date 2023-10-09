@@ -5,7 +5,7 @@ import { RangeField } from "./RangeField";
 import styles from "./CompsSection.module.scss";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import defaults from "@/schemas/defaults";
+import { defaults } from "@/schemas/defaults";
 import SwitchField from "@/components/Form/SwitchField";
 import React from "react";
 import { Property } from "@/models/analyzedProperty";

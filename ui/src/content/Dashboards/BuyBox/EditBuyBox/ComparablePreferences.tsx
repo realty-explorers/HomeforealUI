@@ -12,7 +12,8 @@ import {
 } from "react-hook-form";
 import styles from "./EditBuyBoxDialog.module.scss";
 import { RangeField } from "./RangeField";
-import { buyboxSchemaType } from "./Schemas";
+import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
+import { defaultSimilarityFields } from "@/schemas/defaults";
 
 type TabPanelProps = {
   children?: React.ReactNode;
@@ -42,15 +43,63 @@ const TabPanel = (props: TabPanelProps) => {
 const similarityTypes = ["green", "yellow", "orange", "red"];
 const similarityFields = [
   { fieldName: "Same Property Type", type: "boolean" },
-  { fieldName: "Bedrooms", type: "range" },
-  { fieldName: "Bathrooms", type: "range" },
-  { fieldName: "Building Sqft", type: "range" },
-  { fieldName: "Year Built", type: "range" },
-  { fieldName: "Lot Size", type: "range" },
+  {
+    fieldName: "Bedrooms",
+    type: "range",
+    min: defaultSimilarityFields.bedrooms.min,
+    max: defaultSimilarityFields.bedrooms.max,
+    step: defaultSimilarityFields.bedrooms.step,
+  },
+  {
+    fieldName: "Bathrooms",
+    type: "range",
+    min: defaultSimilarityFields.bathrooms.min,
+    max: defaultSimilarityFields.bathrooms.max,
+    step: defaultSimilarityFields.bathrooms.step,
+  },
+  {
+    fieldName: "Building sqft",
+    type: "range",
+    min: defaultSimilarityFields.area.min,
+    max: defaultSimilarityFields.area.max,
+    step: defaultSimilarityFields.area.step,
+  },
+  {
+    fieldName: "Year Built",
+    type: "range",
+    min: defaultSimilarityFields.yearBuilt.min,
+    max: defaultSimilarityFields.yearBuilt.max,
+    step: defaultSimilarityFields.yearBuilt.step,
+  },
+  {
+    fieldName: "Lot sqft",
+    type: "range",
+    min: defaultSimilarityFields.lotSize.min,
+    max: defaultSimilarityFields.lotSize.max,
+    step: defaultSimilarityFields.lotSize.step,
+  },
   { fieldName: "Same Pool Status", type: "boolean" },
-  { fieldName: "Garages", type: "range" },
-  { fieldName: "Distance", type: "range" },
-  { fieldName: "Sale Date", type: "range" },
+  {
+    fieldName: "Garages",
+    type: "range",
+    min: defaultSimilarityFields.garages.min,
+    max: defaultSimilarityFields.garages.max,
+    step: defaultSimilarityFields.garages.step,
+  },
+  {
+    fieldName: "Distance",
+    type: "range",
+    min: defaultSimilarityFields.distance.min,
+    max: defaultSimilarityFields.distance.max,
+    step: defaultSimilarityFields.distance.step,
+  },
+  {
+    fieldName: "Sale Date",
+    type: "range",
+    min: defaultSimilarityFields.saleDate.min,
+    max: defaultSimilarityFields.saleDate.max,
+    step: defaultSimilarityFields.saleDate.step,
+  },
 ];
 
 type ComparablePreferencesProps = {
@@ -122,6 +171,9 @@ const ComparablePreferences = (
                       title={similarityField.fieldName}
                       labelClass={index === value ? "" : "hidden"}
                       sliderClass={index === value ? "" : "hidden"}
+                      min={similarityField.min}
+                      max={similarityField.max}
+                      step={similarityField.step}
                     />
                   )
               );

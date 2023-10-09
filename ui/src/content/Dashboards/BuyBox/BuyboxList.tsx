@@ -57,8 +57,15 @@ const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({
   borderTop: "1px solid rgba(0, 0, 0, .125)",
 }));
 
+const defaultBuyBox = {
+  id: "",
+  name: "",
+  data: {},
+  permissions: ["view", "edit"],
+};
+
 type BuyboxListProps = {
-  editBuyBox: (buybox: BuyBox) => void;
+  editBuyBox: (buybox?: BuyBox) => void;
 };
 
 const BuyboxList = (props: BuyboxListProps) => {
@@ -106,7 +113,9 @@ const BuyboxList = (props: BuyboxListProps) => {
                 ))}
                 <StyledAccordion sx={{ width: "100%" }}>
                   <StyledAccordionSummary expandIcon={<AddCircleOutlineIcon />}>
-                    <Button onClick={() => props.editBuyBox({} as BuyBox)}>
+                    <Button
+                      onClick={() => props.editBuyBox()}
+                    >
                       <Typography>New Buybox</Typography>
                     </Button>
                   </StyledAccordionSummary>

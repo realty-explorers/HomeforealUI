@@ -55,6 +55,29 @@ export const buyBoxApi = createApi({
       query: () => ({ url: "all" }),
       transformResponse: (response: any) => response,
     }),
+    createBuyBox: builder.mutation({
+      query: (body) => ({
+        url: "",
+        method: "POST",
+        body: { "json_params": body },
+      }),
+      transformResponse: (response: any) => response,
+    }),
+    updateBuyBox: builder.mutation({
+      query: (body) => ({
+        url: ``,
+        method: "PUT",
+        body: { "json_params": body.data, "buybox_id": body.id },
+      }),
+      transformResponse: (response: any) => response,
+    }),
+    deleteBuyBox: builder.mutation({
+      query: (id) => ({
+        url: `${id}`,
+        method: "DELETE",
+      }),
+      transformResponse: (response: any) => response,
+    }),
 
     getLeads: builder.query({
       query: () => ({ url: `leads/${GENERAL_BUYBOX_ID}` }),
@@ -69,4 +92,7 @@ export const {
   useLazyGetLeadsQuery,
   useGetBuyBoxesQuery,
   useLazyGetBuyBoxesQuery,
+  useCreateBuyBoxMutation,
+  useUpdateBuyBoxMutation,
+  useDeleteBuyBoxMutation,
 } = buyBoxApi;
