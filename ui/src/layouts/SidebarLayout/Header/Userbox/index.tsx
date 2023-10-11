@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useRef, useState } from "react";
 
 import NextLink from "next/link";
@@ -24,8 +26,6 @@ import AccountBoxTwoToneIcon from "@mui/icons-material/AccountBoxTwoTone";
 import LockOpenTwoToneIcon from "@mui/icons-material/LockOpenTwoTone";
 import AccountTreeTwoToneIcon from "@mui/icons-material/AccountTreeTwoTone";
 import { useUser } from "@auth0/nextjs-auth0/client";
-import { getAccessToken } from "@auth0/nextjs-auth0";
-import { useAuth0 } from "@auth0/auth0-react";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAuth, setToken } from "@/store/slices/authSlice";
 

@@ -5,7 +5,7 @@ import styles from "./LandingPage.module.scss";
 const PropertiesExample = () => {
   return (
     <div className="grid grid-cols-2 grid-rows-2 gap-2 w-full h-full">
-      <div className="row-span-2 relative flex justify-center">
+      <div className="col-span-2 xl:col-span-1 row-span-2 relative flex justify-center">
         <img
           src="/static/images/placeholders/covers/homepageCard1.png"
           className="w-full h-full"
@@ -23,7 +23,7 @@ const PropertiesExample = () => {
           </Typography>
         </div>
       </div>
-      <div className=" relative flex justify-center">
+      <div className="hidden xl:flex relative justify-center">
         <img
           src="/static/images/placeholders/covers/homepageCard2.png"
           className="w-full h-full"
@@ -41,7 +41,7 @@ const PropertiesExample = () => {
           </Typography>
         </div>
       </div>
-      <div className=" relative flex justify-center">
+      <div className="hidden xl:flex relative justify-center">
         <img
           src="/static/images/placeholders/covers/homepageCard3.png"
           className="w-full h-full"

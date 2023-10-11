@@ -270,6 +270,7 @@ const MapComponent: React.FC<MapComponentProps> = (
         onUnmount={onUnmount}
         onClick={handleMapClicked}
         options={{
+          disableDefaultUI: true,
           gestureHandling: "greedy",
           styles: [
             {

@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Accordion,
   AccordionDetails,
@@ -24,6 +26,7 @@ import { useEffect } from "react";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import Image from "next/image";
 import { useSnackbar, VariantType } from "notistack";
+import { motion, Variants } from "framer-motion";
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />

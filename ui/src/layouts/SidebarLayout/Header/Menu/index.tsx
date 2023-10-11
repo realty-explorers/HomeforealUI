@@ -8,10 +8,13 @@ import {
   styled,
 } from "@mui/material";
 import { useRef, useState } from "react";
-import Link from "src/components/Link";
+// import Link from "src/components/Link";
+import Link from "next/link";
 
 import ExpandMoreTwoToneIcon from "@mui/icons-material/ExpandMoreTwoTone";
 import Logo from "@/components/Logo";
+import { usePathname } from "next/navigation";
+import clsx from "clsx";
 
 const ListWrapper = styled(Box)(
   ({ theme }) => `
@@ -67,6 +70,7 @@ const ListWrapper = styled(Box)(
 function HeaderMenu() {
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
+  const pathname = usePathname();
 
   const handleOpen = (): void => {
     setOpen(true);
@@ -90,6 +94,9 @@ function HeaderMenu() {
           <Logo />
           <ListItem
             classes={{ root: "MuiListItem-indicators" }}
+            className={clsx([
+              pathname === "/dashboards/real-estate" && "active",
+            ])}
             component={Link}
             button
             href="/dashboards/real-estate"
@@ -101,6 +108,7 @@ function HeaderMenu() {
           </ListItem>
           <ListItem
             classes={{ root: "MuiListItem-indicators" }}
+            className={clsx([pathname === "/dashboards/buybox" && "active"])}
             component={Link}
             button
             href="/dashboards/buybox"

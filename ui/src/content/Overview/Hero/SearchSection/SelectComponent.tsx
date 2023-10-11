@@ -4,35 +4,35 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import { useEffect, useState } from "react";
-import { makeStyles } from "@mui/styles";
+import { styled } from "@mui/system";
+import { StyledSlider } from "@/content/Dashboards/RealEstate/FormFields/StyledSlider";
 
-const useStyles = makeStyles(() => ({
-  inputLabel: {
-    fontSize: "1rem",
-    fontWeight: "bolder",
-    color: "#000",
-    "&.Mui-focused": {
-      color: "#590d82",
-      fontSize: "1.2rem",
-    },
+const StyledInputLabel = styled(InputLabel)({
+  fontSize: "1rem",
+  fontWeight: "bolder",
+  color: "#000",
+  "&.Mui-focused": {
+    color: "#590d82",
+    fontSize: "1.2rem",
   },
-  select: {
-    color: "#000",
-    "&:before": {
-      borderColor: "#000",
-    },
-    "&:after": {
-      borderColor: "#590d82",
-    },
-    "& .MuiSvgIcon-root": {
-      fontSize: "2rem",
-      color: "#590d82",
-    },
-    "&:hover:not(.Mui-disabled):before": {
-      borderColor: "#590d82",
-    },
+});
+
+const StyledSelect = styled(Select)({
+  color: "#000",
+  "&:before": {
+    borderColor: "#000",
   },
-}));
+  "&:after": {
+    borderColor: "#590d82",
+  },
+  "& .MuiSvgIcon-root": {
+    fontSize: "2rem",
+    color: "#590d82",
+  },
+  "&:hover:not(.Mui-disabled):before": {
+    borderColor: "#590d82",
+  },
+});
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -126,7 +126,6 @@ export default function SelectComponent(
   { value, selectLabel, setLocation, setInvestmentType, setMaxPrice }:
     SelectComponentProps,
 ) {
-  const classes = useStyles();
   const [isClient, setIsClient] = useState(false); // nextJs solution to avoid className mismatch between client & server
 
   useEffect(() => {
@@ -166,22 +165,21 @@ export default function SelectComponent(
       {isClient &&
         (
           <FormControl variant="standard" sx={{ m: 1, minWidth: 160 }}>
-            <InputLabel className={classes.inputLabel}>
+            <StyledInputLabel>
               {selectLabel}
-            </InputLabel>
-            <Select
-              className={classes.select}
+            </StyledInputLabel>
+            <StyledSelect
               IconComponent={KeyboardArrowDownIcon}
               autoWidth
               value={value}
-              onChange={(e) => handleChange(e.target.value)}
+              onChange={(e) => handleChange(e.target.value as string)}
               MenuProps={MenuProps}
             >
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
               {menuItem()}
-            </Select>
+            </StyledSelect>
           </FormControl>
         )}
     </>

@@ -15,7 +15,6 @@ import Autocomplete from "@mui/material/Autocomplete";
 import LocationSuggestion from "@/models/location_suggestions";
 import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { signOut, useSession } from "next-auth/react";
 import { useDebounce } from "@/hooks/useDebounce";
 import {
   useGetLocationSuggestionQuery,

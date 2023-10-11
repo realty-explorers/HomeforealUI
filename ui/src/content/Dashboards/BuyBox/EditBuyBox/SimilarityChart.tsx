@@ -82,7 +82,7 @@ const SimilarityChart = (
               Group
             </div>
           </div>
-          {Object.keys(greenValues).map((key, index) => {
+          {Object.keys(greenValues ?? {}).map((key, index) => {
             return <FieldValue key={index} index={index} value={key} />;
           })}
         </section>
@@ -97,7 +97,7 @@ const SimilarityChart = (
             </div>
           </div>
 
-          {Object.keys(greenValues).map((key, index) => {
+          {Object.keys(greenValues ?? {}).map((key, index) => {
             return (
               <FieldValue
                 key={index}
@@ -118,7 +118,7 @@ const SimilarityChart = (
               Yellow
             </div>
           </div>
-          {Object.keys(yellowValues).map((key, index) => {
+          {Object.keys(yellowValues ?? {}).map((key, index) => {
             return (
               <FieldValue
                 key={index}
@@ -139,7 +139,7 @@ const SimilarityChart = (
               Orange
             </div>
           </div>
-          {Object.keys(orangeValues).map((key, index) => {
+          {Object.keys(orangeValues ?? {}).map((key, index) => {
             return (
               <FieldValue
                 key={index}
@@ -159,7 +159,7 @@ const SimilarityChart = (
               Red
             </div>
           </div>
-          {Object.keys(redValues).map((key, index) => {
+          {Object.keys(redValues ?? {}).map((key, index) => {
             return (
               <FieldValue
                 key={index}

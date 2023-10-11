@@ -30,6 +30,7 @@ import {
   useCreateBuyBoxMutation,
   useUpdateBuyBoxMutation,
 } from "@/store/services/buyboxApiService";
+import { useSnackbar } from "notistack";
 
 type editBuyBoxDialogProps = {
   buybox?: BuyBox;
@@ -55,11 +56,31 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     defaultValues: getDefaults(buyboxSchema),
   });
 
+  const { enqueueSnackbar } = useSnackbar();
+
   const onSubmit = async (data: any) => {
-    if (props.buybox) {
-      await updateBuyBox({ id: props.buybox.id, data });
-    } else {
-      await createBuyBox(data);
+    try {
+      if (props.buybox) {
+        await updateBuyBox({ id: props.buybox.id, data }).unwrap();
+        enqueueSnackbar(`BuyBox Saved`, {
+          variant: "success",
+        });
+      } else {
+        await createBuyBox(data).unwrap();
+        enqueueSnackbar(`BuyBox Created`, {
+          variant: "success",
+        });
+      }
+    } catch (error) {
+      if (error.status === "FETCH_ERROR") {
+        enqueueSnackbar(`Connection error - please try again later`, {
+          variant: "error",
+        });
+      } else {
+        enqueueSnackbar(`Error: ${error.data?.message || error.error}`, {
+          variant: "error",
+        });
+      }
     }
     handleClose();
   };

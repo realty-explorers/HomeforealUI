@@ -50,10 +50,12 @@ const baseQueryWithReauth = async (
 export const buyBoxApi = createApi({
   reducerPath: "buyboxApi",
   baseQuery: baseQueryWithReauth,
+  tagTypes: ["BuyBox"],
   endpoints: (builder) => ({
     getBuyBoxes: builder.query({
       query: () => ({ url: "all" }),
       transformResponse: (response: any) => response,
+      providesTags: ["BuyBox"],
     }),
     createBuyBox: builder.mutation({
       query: (body) => ({
@@ -62,6 +64,7 @@ export const buyBoxApi = createApi({
         body: { "json_params": body },
       }),
       transformResponse: (response: any) => response,
+      invalidatesTags: ["BuyBox"],
     }),
     updateBuyBox: builder.mutation({
       query: (body) => ({
@@ -70,6 +73,35 @@ export const buyBoxApi = createApi({
         body: { "json_params": body.data, "buybox_id": body.id },
       }),
       transformResponse: (response: any) => response,
+      // async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
+      //   const patchResult = dispatch(
+      //     buyBoxApi.util.updateQueryData(
+      //       "getBuyBoxes",
+      //       "1",
+      //       (draftBuyBoxes) => {
+      //         const draft = draftBuyBoxes.find((buyBox) => buyBox.id === id);
+      //         if (draft) {
+      //           Object.assign(draft, {
+      //             ...patch,
+      //           });
+      //         }
+      //       },
+      //     ),
+      //   );
+      //
+      //   try {
+      //     await queryFulfilled;
+      //   } catch {
+      //     patchResult.undo();
+      //   }
+      //   // queryFulfilled.catch(patchResult.undo);
+      // },
+      invalidatesTags: (
+        result,
+        error,
+        arg,
+      ) => [{ type: "BuyBox", id: arg.id }],
+      // invalidatesTags: ["BuyBox"],
     }),
     deleteBuyBox: builder.mutation({
       query: (id) => ({
@@ -77,6 +109,7 @@ export const buyBoxApi = createApi({
         method: "DELETE",
       }),
       transformResponse: (response: any) => response,
+      invalidatesTags: (result, error, arg) => [{ type: "BuyBox", id: arg.id }],
     }),
 
     getLeads: builder.query({

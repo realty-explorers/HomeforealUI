@@ -1,30 +1,32 @@
-import { FC, ReactNode, useState } from 'react';
-import { Box, alpha, lighten, styled, useTheme } from '@mui/material';
-import PropTypes from 'prop-types';
+"use client";
 
-import Sidebar from './Sidebar';
-import Header from './Header';
+import { FC, ReactNode, useState } from "react";
+import { alpha, Box, lighten, styled, useTheme } from "@mui/material";
+import PropTypes from "prop-types";
+
+import Sidebar from "./Sidebar";
+import Header from "./Header";
 
 const drawerWidth = 240;
 
 const MainWrapper = styled(Box, {
-  shouldForwardProp: (prop) => prop !== 'open'
+  shouldForwardProp: (prop) => prop !== "open",
 })<any>(({ theme, open }) => ({
-  display: 'flex',
-  flexDirection: 'column',
-  width: '100%',
-  height: '100vh',
+  display: "flex",
+  flexDirection: "column",
+  width: "100%",
+  height: "100vh",
   // paddingLeft: `calc(${theme.spacing(7)} + 1px)`,
-  transition: theme.transitions.create(['width', 'padding'], {
+  transition: theme.transitions.create(["width", "padding"], {
     easing: theme.transitions.easing.sharp,
-    duration: theme.transitions.duration.enteringScreen
+    duration: theme.transitions.duration.enteringScreen,
   }),
   ...(open &&
     {
       // marginLeft: drawerWidth,
       // width: `calc(100% - ${drawerWidth}px)`,
       // paddingLeft: drawerWidth
-    })
+    }),
 }));
 
 interface SidebarLayoutProps {
@@ -42,18 +44,21 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
         <Header open={open} setOpen={setOpen} />
         <Box
           sx={{
-            display: 'flex',
+            display: "flex",
             flexGrow: 1,
-            overflow: 'hidden',
-            width: '100%',
-            height: '100%'
+            overflow: "hidden",
+            width: "100%",
+            height: "100%",
           }}
         >
           {children}
         </Box>
-        {/* <Header open={open} setOpen={setOpen} />
-        <Sidebar open={open} setOpen={setOpen} /> */}
-        {/* <Box
+        {
+          /* <Header open={open} setOpen={setOpen} />
+        <Sidebar open={open} setOpen={setOpen} /> */
+        }
+        {
+          /* <Box
           sx={{
             position: 'relative',
             zIndex: 5,
@@ -70,14 +75,15 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
           <Box display="block" sx={{ height: '100%' }}>
             {children}
           </Box>
-        </Box> */}
+        </Box> */
+        }
       </MainWrapper>
     </>
   );
 };
 
 SidebarLayout.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 export default SidebarLayout;

@@ -1,19 +1,12 @@
-import { Box, ListItem, ListItemText, styled, Tooltip } from '@mui/material';
-import Link from 'src/components/Link';
-
-const LogoWrapper = styled(Link)(
-  ({ theme }) => `
-        color: ${theme.palette.text.primary};
-        padding: ${theme.spacing(0, 1, 0, 0)};
-        display: flex;
-        text-decoration: none;
-        font-weight: ${theme.typography.fontWeightBold};
-
-        &:hover {
-          text-decoration: none;
-        }
-`
-);
+import {
+  Box,
+  ListItem,
+  ListItemText,
+  styled,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import Link from "next/link";
 
 const LogoSignWrapper = styled(Box)(
   () => `
@@ -21,7 +14,7 @@ const LogoSignWrapper = styled(Box)(
         height: 38px;
         margin-top: 4px;
         transform: scale(.8);
-`
+`,
 );
 
 const LogoSign = styled(Box)(
@@ -58,7 +51,7 @@ const LogoSign = styled(Box)(
         &:after {
             background: ${theme.palette.secondary.main};
         }
-`
+`,
 );
 
 const LogoSignInner = styled(Box)(
@@ -71,13 +64,13 @@ const LogoSignInner = styled(Box)(
         z-index: 5;
         border-radius: ${theme.general.borderRadiusSm};
         background: ${theme.header.background};
-`
+`,
 );
 
 const LogoTextWrapper = styled(Box)(
   ({ theme }) => `
         padding-left: ${theme.spacing(1)};
-`
+`,
 );
 
 const VersionBadge = styled(Box)(
@@ -90,30 +83,27 @@ const VersionBadge = styled(Box)(
         display: inline-block;
         line-height: 1;
         font-size: ${theme.typography.pxToRem(11)};
-`
+`,
 );
 
 const LogoText = styled(Box)(
   ({ theme }) => `
-`
+`,
 );
 
 function Logo() {
+  // return <></>;
   return (
-    <LogoWrapper href="/">
-      <div className="flex items-center justify-center w-8">
-        <img src="/favicon.ico" alt="logo" />
+    <Link href="/">
+      <div className="flex items-center h-full">
+        <div className="flex items-center justify-center w-8">
+          <img src="/favicon.ico" alt="logo" />
+        </div>
+        <Typography>
+          Homeforeal
+        </Typography>
       </div>
-      <Box
-        component="span"
-        sx={{
-          display: { xs: 'none', sm: 'inline-block' }
-        }}
-        className="flex items-center ml-1"
-      >
-        <span>Homeforeal</span>
-      </Box>
-    </LogoWrapper>
+    </Link>
   );
 }
 

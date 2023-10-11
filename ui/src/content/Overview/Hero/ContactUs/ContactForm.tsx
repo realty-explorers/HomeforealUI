@@ -2,9 +2,9 @@ import TextField from "@mui/material/TextField";
 import ThemedButtonLg from "@/components/Buttons/ThemedButtonLg";
 import { useEffect, useState } from "react";
 import MessageSentComponent from "./MessageSentComponent";
-import { makeStyles } from "@mui/styles";
+import { styled } from "@mui/system";
 
-const useStyles = makeStyles(() => ({
+const StyledTextField = styled(TextField)({
   label: {
     "& label.Mui-focused": {
       fontSize: "0.9rem",
@@ -22,11 +22,9 @@ const useStyles = makeStyles(() => ({
       },
     },
   },
-}));
+});
 
 export default function ContactForm() {
-  const classes = useStyles();
-
   const [isClient, setIsClient] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
@@ -86,12 +84,12 @@ export default function ContactForm() {
                 ? (
                   <>
                     <div className="h-[80%]">
-                      <TextField
+                      <StyledTextField
                         error={submitted && nameValidator()}
                         helperText={submitted && nameValidator()
                           ? "Please enter Name"
                           : ""}
-                        className={`${classes.label} m-2 `}
+                        className="m-2"
                         size="medium"
                         fullWidth
                         required
@@ -100,12 +98,12 @@ export default function ContactForm() {
                         value={formData.name}
                         onChange={handleChange}
                       />
-                      <TextField
+                      <StyledTextField
                         error={submitted && !emailValidator()}
                         helperText={submitted && !emailValidator()
                           ? "Please enter Email"
                           : ""}
-                        className={`${classes.label} m-2`}
+                        className={`m-2`}
                         size="medium"
                         fullWidth
                         required
@@ -114,8 +112,8 @@ export default function ContactForm() {
                         value={formData.email}
                         onChange={handleChange}
                       />
-                      <TextField
-                        className={`${classes.label} m-2`}
+                      <StyledTextField
+                        className={`m-2`}
                         size="medium"
                         fullWidth
                         name="message"
