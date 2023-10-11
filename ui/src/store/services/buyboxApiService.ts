@@ -96,16 +96,16 @@ export const buyBoxApi = createApi({
       //   }
       //   // queryFulfilled.catch(patchResult.undo);
       // },
-      invalidatesTags: (
-        result,
-        error,
-        arg,
-      ) => [{ type: "BuyBox", id: arg.id }],
-      // invalidatesTags: ["BuyBox"],
+      // invalidatesTags: (
+      //   result,
+      //   error,
+      //   arg,
+      // ) => [{ type: "BuyBox", id: arg.id }],
+      invalidatesTags: ["BuyBox"],
     }),
     deleteBuyBox: builder.mutation({
       query: (id) => ({
-        url: `${id}`,
+        url: `?buybox_id=${id}`,
         method: "DELETE",
       }),
       transformResponse: (response: any) => response,

@@ -10,6 +10,7 @@ import {
   Toolbar,
   Typography,
 } from "@mui/material";
+
 import LoadingButton from "@mui/lab/LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
@@ -28,6 +29,7 @@ import {
 import BuyBox from "@/models/buybox";
 import {
   useCreateBuyBoxMutation,
+  useDeleteBuyBoxMutation,
   useUpdateBuyBoxMutation,
 } from "@/store/services/buyboxApiService";
 import { useSnackbar } from "notistack";
@@ -39,9 +41,9 @@ type editBuyBoxDialogProps = {
 };
 
 const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
-  const handleClose = () => props.setShowEditBuybox(false);
   const [createBuyBox, createResult] = useCreateBuyBoxMutation();
   const [updateBuyBox, updateResult] = useUpdateBuyBoxMutation();
+  const [deleteBuyBox, deleteResult] = useDeleteBuyBoxMutation();
   const {
     register,
     handleSubmit,
@@ -58,6 +60,15 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
 
   const { enqueueSnackbar } = useSnackbar();
 
+  const handleClose = () => {
+    const viewOnlyBuyBox = props.buybox?.permissions.length === 1 &&
+      props.buybox?.permissions[0] === "view";
+    if (viewOnlyBuyBox) {
+      reset(props.buybox.data);
+    }
+    props.setShowEditBuybox(false);
+  };
+
   const onSubmit = async (data: any) => {
     try {
       if (props.buybox) {
@@ -71,6 +82,26 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           variant: "success",
         });
       }
+    } catch (error) {
+      if (error.status === "FETCH_ERROR") {
+        enqueueSnackbar(`Connection error - please try again later`, {
+          variant: "error",
+        });
+      } else {
+        enqueueSnackbar(`Error: ${error.data?.message || error.error}`, {
+          variant: "error",
+        });
+      }
+    }
+    handleClose();
+  };
+
+  const handleDelete = async () => {
+    try {
+      await deleteBuyBox(props.buybox.id).unwrap();
+      enqueueSnackbar(`BuyBox Deleted`, {
+        variant: "success",
+      });
     } catch (error) {
       if (error.status === "FETCH_ERROR") {
         enqueueSnackbar(`Connection error - please try again later`, {
@@ -187,16 +218,15 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
             : <></>}
 
           {props.buybox?.permissions.includes("edit") && (
-            <Button
-              variant="outlined"
+            <LoadingButton
+              variant="contained"
               color="error"
-              className="mt-12  w-20"
-              onClick={() => {
-                reset(props.buybox?.data || getDefaults(buyboxSchema));
-              }}
+              className="mt-12  w-20 bg-red-500"
+              loading={deleteResult.isLoading}
+              onClick={handleDelete}
             >
               Delete
-            </Button>
+            </LoadingButton>
           )}
         </div>
       </form>

@@ -32,6 +32,7 @@ const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
 ))(({}) => ({
   // border: `1px solid ${theme.palette.divider}`,
+  borderRadius: 0,
   "&:not(:last-child)": {
     borderBottom: 0,
   },
@@ -46,6 +47,7 @@ const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
     {...props}
   />
 ))(({ theme }) => ({
+  borderRadius: 0,
   backgroundColor: theme.palette.mode === "dark" ? "#2d3748" : "#f5f5f5",
   flexDirection: "row-reverse",
   "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
@@ -65,6 +67,29 @@ const defaultBuyBox = {
   name: "",
   data: {},
   permissions: ["view", "edit"],
+};
+
+const itemVariants: Variants = {
+  open: {
+    opacity: 1,
+    y: 0,
+    transition: { type: "spring", stiffness: 300, damping: 24 },
+  },
+  closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
+};
+
+const LoadingImage = () => {
+  return (
+    <div className="absolute left-1/2 top-0 -translate-x-1/2">
+      <Image
+        src={"/static/images/placeholders/searchingAnimation.gif"}
+        alt="loading"
+        width={150}
+        height={150}
+        className="object-cover object-center"
+      />
+    </div>
+  );
 };
 
 type BuyboxListProps = {
@@ -90,44 +115,66 @@ const BuyboxList = (props: BuyboxListProps) => {
   }, [state.data]);
 
   return (
-    <Grid container>
-      <Card sx={{ width: "100%" }}>
-        <CardContent>
-          {state.isFetching
-            ? (
-              <div className="w-full flex justify-center">
-                <Image
-                  src={"/static/images/placeholders/searchingAnimation.gif"}
-                  alt="loading"
-                  width="150"
-                  height="150"
-                  className=""
+    <div className="flex w-full h-full">
+      <div className="relative w-full bg-white m-4 rounded-lg">
+        {state.isFetching && <LoadingImage />}
+        <motion.div
+          initial={"open"}
+          animate={!state.isFetching ? "open" : "closed"}
+          className="w-full"
+        >
+          <motion.div
+            variants={{
+              open: {
+                display: "block",
+                transition: {
+                  type: "spring",
+                  bounce: 0,
+                  duration: 0.7,
+                  delayChildren: 0.3,
+                  staggerChildren: 0.05,
+                },
+              },
+              closed: {
+                display: "none",
+                transition: {
+                  type: "spring",
+                  bounce: 0,
+                  duration: 0.3,
+                },
+              },
+            }}
+          >
+            {(state.data as BuyBox[])?.map((buybox, index) => (
+              <motion.div
+                key={index}
+                variants={itemVariants}
+              >
+                <BuyboxItem
+                  key={index}
+                  buybox={buybox}
+                  editBuyBox={props.editBuyBox}
                 />
-              </div>
-            )
-            : (
-              <>
-                {(state.data as BuyBox[])?.map((buybox, index) => (
-                  <BuyboxItem
-                    key={index}
-                    buybox={buybox}
-                    editBuyBox={props.editBuyBox}
-                  />
-                ))}
-                <StyledAccordion sx={{ width: "100%" }}>
-                  <StyledAccordionSummary expandIcon={<AddCircleOutlineIcon />}>
-                    <Button
-                      onClick={() => props.editBuyBox()}
-                    >
-                      <Typography>New Buybox</Typography>
-                    </Button>
-                  </StyledAccordionSummary>
-                </StyledAccordion>
-              </>
-            )}
-        </CardContent>
-      </Card>
-    </Grid>
+              </motion.div>
+            ))}
+
+            <motion.div variants={itemVariants}>
+              <StyledAccordion sx={{ width: "100%" }}>
+                <StyledAccordionSummary
+                  expandIcon={<AddCircleOutlineIcon />}
+                >
+                  <Button
+                    onClick={() => props.editBuyBox()}
+                  >
+                    <Typography>New Buybox</Typography>
+                  </Button>
+                </StyledAccordionSummary>
+              </StyledAccordion>
+            </motion.div>
+          </motion.div>
+        </motion.div>
+      </div>
+    </div>
   );
 };
 

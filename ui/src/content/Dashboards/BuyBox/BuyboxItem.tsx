@@ -104,15 +104,7 @@ const columns: GridColDef[] = [
     minWidth: 120,
     renderCell: (cellValues) => {
       return (
-        <Box // sx={{
-         //   display: 'flex',
-        //   justifyItems: 'center',
-        //   alignItems: 'center',
-        //   height: '100%',
-        //   width: '100%',
-        //   borderLeft: '1px solid rgba(224, 224, 224, 1)'
-        // }}
-        className="w-full h-full flex items-center justify-center m-2">
+        <div className="w-full h-full flex items-center justify-center m-2">
           <Button
             variant="contained"
             className={clsx([
@@ -124,7 +116,7 @@ const columns: GridColDef[] = [
               Analysis
             </Typography>
           </Button>
-        </Box>
+        </div>
       );
     },
   },
@@ -134,6 +126,7 @@ const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
 ))(({}) => ({
   // border: `1px solid ${theme.palette.divider}`,
+  borderRadius: 0,
   "&:not(:last-child)": {
     borderBottom: 0,
   },
@@ -148,6 +141,7 @@ const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
     {...props}
   />
 ))(({ theme }) => ({
+  borderRadius: 0,
   backgroundColor: theme.palette.mode === "dark" ? "#2d3748" : "#f5f5f5",
   flexDirection: "row-reverse",
   "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
