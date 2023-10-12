@@ -108,7 +108,10 @@ const MainControls: React.FC<MainControlsProps> = (
       {/*     update={(value) => dispatch(setCompsMargin(value))} */}
       {/*   /> */}
       {/* </SliderField> */}
-      <SliderField fieldName="ARV Margin">
+      <SliderField
+        fieldName="ARV Margin"
+        tooltip="Percentage under estimated market ARV"
+      >
         <SliderInput
           inputProps={{
             title: "ARV Margin",

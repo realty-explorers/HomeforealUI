@@ -5,6 +5,13 @@ const StyledSlider = styled(Slider)(({ theme }) => ({
   color: theme.colors.primary.main,
   height: 3,
   padding: "13px 0",
+
+  "& .MuiSlider-valueLabel": {
+    borderRadius: "2rem",
+    backgroundColor: "#223354",
+    fontFamily: "var(--font-poppins)",
+    fontWeight: 600,
+  },
   "& .MuiSlider-thumb": {
     height: 20,
     width: 20,

@@ -1,7 +1,17 @@
 import { Slider, SliderProps, Switch, Typography } from "@mui/material";
+import { styled } from "@mui/system";
 import clsx from "clsx";
 import React from "react";
 import { Controller } from "react-hook-form";
+
+const StyledSlider = styled(Slider)({
+  "& .MuiSlider-valueLabel": {
+    borderRadius: "2rem",
+    backgroundColor: "#223354",
+    fontFamily: "var(--font-poppins)",
+    fontWeight: 600,
+  },
+});
 
 type RangeFieldProps = {
   control: any;
@@ -24,7 +34,7 @@ const SliderField = (
       name={fieldName}
       control={control}
       render={({ field }) => (
-        <Slider
+        <StyledSlider
           {...field}
           {...props}
           valueLabelDisplay="auto"

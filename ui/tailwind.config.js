@@ -18,7 +18,7 @@ module.exports = {
     extend: {
       fontFamily: {
         poppins: ["var(--font-poppins)", "sans-serif"],
-        playfair: ["var(--font-playfair)", "sans-serif"],
+        playfair: ["var(--font-playfair)"],
         oleo: ["var(--font-oleo)", "sans-serif"],
         nunito: ["var(--font-nunito)", "sans-serif"],
       },

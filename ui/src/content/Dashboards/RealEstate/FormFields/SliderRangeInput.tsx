@@ -3,8 +3,8 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useState
-} from 'react';
+  useState,
+} from "react";
 import {
   alpha,
   Autocomplete,
@@ -14,38 +14,44 @@ import {
   SliderThumb,
   styled,
   TextField,
-  Typography
-} from '@mui/material';
-import { InputProps } from '@/components/Form/formTypes';
+  Typography,
+} from "@mui/material";
+import { InputProps } from "@/components/Form/formTypes";
 
 const StyledSlider = styled(Slider)(({ theme }) => ({
   color: theme.colors.primary.main,
   height: 3,
-  padding: '13px 0',
-  '& .MuiSlider-thumb': {
+  padding: "13px 0",
+  "& .MuiSlider-valueLabel": {
+    borderRadius: "2rem",
+    backgroundColor: "#223354",
+    fontFamily: "var(--font-poppins)",
+    fontWeight: 600,
+  },
+  "& .MuiSlider-thumb": {
     height: 20,
     width: 20,
-    backgroundColor: '#fff',
-    border: '1px solid currentColor',
-    '&:hover': {
-      boxShadow: '0 0 0 8px rgba(58, 133, 137, 0.16)'
+    backgroundColor: "#fff",
+    border: "1px solid currentColor",
+    "&:hover": {
+      boxShadow: "0 0 0 8px rgba(58, 133, 137, 0.16)",
     },
-    '& .airbnb-bar': {
+    "& .airbnb-bar": {
       height: 7,
       width: 1,
-      backgroundColor: 'currentColor',
+      backgroundColor: "currentColor",
       marginLeft: 1,
-      marginRight: 1
-    }
+      marginRight: 1,
+    },
   },
-  '& .MuiSlider-track': {
-    height: 3
+  "& .MuiSlider-track": {
+    height: 3,
   },
-  '& .MuiSlider-rail': {
-    color: theme.palette.mode === 'dark' ? '#bfbfbf' : '#d8d8d8',
-    opacity: theme.palette.mode === 'dark' ? undefined : 1,
-    height: 3
-  }
+  "& .MuiSlider-rail": {
+    color: theme.palette.mode === "dark" ? "#bfbfbf" : "#d8d8d8",
+    opacity: theme.palette.mode === "dark" ? undefined : 1,
+    height: 3,
+  },
   // '& .MuiSlider-valueLabel': {
   //   lineHeight: 1.2,
   //   fontSize: 12,
@@ -93,14 +99,14 @@ type SliderRangeInputProps = {
   };
 };
 const SliderRangeInput: React.FC<SliderRangeInputProps> = (
-  props: SliderRangeInputProps
+  props: SliderRangeInputProps,
 ) => {
   const handleChange = (event: Event, newValue: [number, number]) => {
     props.updateMinValue(
-      props.scale ? props.scale.scale(newValue[0]) : newValue[0]
+      props.scale ? props.scale.scale(newValue[0]) : newValue[0],
     );
     props.updateMaxValue(
-      props.scale ? props.scale.scale(newValue[1]) : newValue[1]
+      props.scale ? props.scale.scale(newValue[1]) : newValue[1],
     );
   };
 
@@ -111,7 +117,7 @@ const SliderRangeInput: React.FC<SliderRangeInputProps> = (
       // slots={{ thumb: AirbnbThumbComponent }}
       value={[
         props.scale ? props.scale.reverseScale(props.minValue) : props.minValue,
-        props.scale ? props.scale.reverseScale(props.maxValue) : props.maxValue
+        props.scale ? props.scale.reverseScale(props.maxValue) : props.maxValue,
       ]}
       scale={props.scale?.scale}
       getAriaValueText={props.inputProps.format}
