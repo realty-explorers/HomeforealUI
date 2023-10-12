@@ -102,7 +102,7 @@ function HeaderMenu() {
             href="/dashboards/real-estate"
           >
             <ListItemText
-              primaryTypographyProps={{ noWrap: true }}
+              primaryTypographyProps={{ noWrap: true, fontFamily: "Poppins" }}
               primary="Search"
             />
           </ListItem>
@@ -114,7 +114,7 @@ function HeaderMenu() {
             href="/dashboards/buybox"
           >
             <ListItemText
-              primaryTypographyProps={{ noWrap: true }}
+              primaryTypographyProps={{ noWrap: true, fontFamily: "Poppins" }}
               primary="BuyBox"
             />
           </ListItem>

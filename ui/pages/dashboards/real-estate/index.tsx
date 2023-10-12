@@ -112,7 +112,7 @@ const DashboardRealEstate = (props: any) => {
 
         <div
           className={clsx([
-            "h-[calc(100%-60px)]  absolute w-full left-0",
+            "h-[calc(100%-60px)]  absolute w-full left-0 bg-white",
             openMoreDetails ? "md:w-1/2 md:left-1/2" : "w-full left-0",
             // openMoreDetails ? "w-1/2 left-1/2" : "w-1/2 left-1/2",
           ])}

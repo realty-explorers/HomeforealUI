@@ -1,0 +1,12 @@
+.suggestionsContainer {
+  @apply bg-white mt-2 rounded shadow shadow-black;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.suggestion {
+  @apply font-poppins;
+}

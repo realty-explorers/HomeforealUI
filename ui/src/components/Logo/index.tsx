@@ -7,6 +7,8 @@ import {
   Typography,
 } from "@mui/material";
 import Link from "next/link";
+import Image from "next/image";
+import styles from "./Logo.module.scss";
 
 const LogoSignWrapper = styled(Box)(
   () => `
@@ -96,10 +98,10 @@ function Logo() {
   return (
     <Link href="/">
       <div className="flex items-center h-full">
-        <div className="flex items-center justify-center w-8">
-          <img src="/favicon.ico" alt="logo" />
+        <div className="flex items-center justify-center w-8 ml-2 mr-1">
+          <Image src="/favicon.ico" alt="logo" width={50} height={50} />
         </div>
-        <Typography>
+        <Typography className={styles.logoText}>
           Homeforeal
         </Typography>
       </div>

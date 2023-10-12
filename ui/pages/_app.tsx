@@ -13,7 +13,7 @@ import createEmotionCache from "src/createEmotionCache";
 import { SidebarProvider } from "src/contexts/SidebarContext";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import store, { wrapper } from "@/store/store";
+import store from "@/store/store";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { Provider } from "react-redux";
 import { SnackbarProvider } from "notistack";

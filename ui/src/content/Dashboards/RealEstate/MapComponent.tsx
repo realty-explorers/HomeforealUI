@@ -29,12 +29,10 @@ import MapControlPanel from "./MapControlPanel/MapControlPanel";
 import MapControls from "./MapControls/MapControls";
 import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
 import { PropertyType } from "@/models/property";
-
-const containerStyle: React.CSSProperties = {
-  position: "relative",
-  width: "100%",
-  height: "100%",
-};
+import Lottie from "lottie-react";
+import creatingAnimation from "@/static/animations/loading/creatingAnimation.json";
+import mapAnimation from "@/static/animations/loading/mapAnimation.json";
+import clsx from "clsx";
 
 const center = {
   lat: 33.429565,
@@ -78,6 +76,7 @@ const MapComponent: React.FC<MapComponentProps> = (
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
   });
+  const [tilesLoaded, setTilesLoaded] = useState(false);
   const [map, updateMap] = useState<google.maps.Map>();
 
   const handleSelectProperty = (property: AnalyzedProperty) => {
@@ -261,12 +260,20 @@ const MapComponent: React.FC<MapComponentProps> = (
     // },
   ];
 
+  const containerStyle: React.CSSProperties = {
+    position: "relative",
+    height: "100%",
+    width: "100%",
+    // display: clsx([tilesLoaded ? "block" : "hidden"]),
+  };
+
   return isLoaded
     ? (
       <GoogleMap
         mapContainerStyle={containerStyle}
         zoom={12}
         onLoad={onLoad}
+        onTilesLoaded={() => setTilesLoaded(true)}
         onUnmount={onUnmount}
         onClick={handleMapClicked}
         options={{
@@ -328,7 +335,11 @@ const MapComponent: React.FC<MapComponentProps> = (
           )}
       </GoogleMap>
     )
-    : <></>;
+    : (
+      <div className="flex justify-center items-center w-screen h-screen">
+        <Lottie animationData={mapAnimation} className="h-2/3" loop={false} />
+      </div>
+    );
 };
 
 export default memo(MapComponent);

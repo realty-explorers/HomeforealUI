@@ -27,6 +27,8 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 import Image from "next/image";
 import { useSnackbar, VariantType } from "notistack";
 import { motion, Variants } from "framer-motion";
+import Lottie from "lottie-react";
+import searchingDocumentsAnimation from "@/static/animations/loading/searchingDocumentsAnimation.json";
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -78,16 +80,38 @@ const itemVariants: Variants = {
   closed: { opacity: 0, y: 20, transition: { duration: 0.2 } },
 };
 
+const containerVariants: Variants = {
+  open: {
+    display: "block",
+    transition: {
+      type: "spring",
+      bounce: 0,
+      duration: 0.7,
+      delayChildren: 0.3,
+      staggerChildren: 0.05,
+    },
+  },
+  closed: {
+    display: "none",
+    transition: {
+      type: "spring",
+      bounce: 0,
+      duration: 0.3,
+    },
+  },
+};
+
 const LoadingImage = () => {
   return (
     <div className="absolute left-1/2 top-0 -translate-x-1/2">
-      <Image
-        src={"/static/images/placeholders/searchingAnimation.gif"}
-        alt="loading"
-        width={150}
-        height={150}
-        className="object-cover object-center"
-      />
+      <Lottie animationData={searchingDocumentsAnimation} className="w-80" />
+      {/* <Image */}
+      {/*   src={"/static/images/placeholders/searchingAnimation.gif"} */}
+      {/*   alt="loading" */}
+      {/*   width={150} */}
+      {/*   height={107} */}
+      {/*   className="object-cover object-center" */}
+      {/* /> */}
     </div>
   );
 };
@@ -119,31 +143,12 @@ const BuyboxList = (props: BuyboxListProps) => {
       <div className="relative w-full bg-white m-4 rounded-lg">
         {state.isFetching && <LoadingImage />}
         <motion.div
-          initial={"open"}
+          initial={false}
           animate={!state.isFetching ? "open" : "closed"}
           className="w-full"
         >
           <motion.div
-            variants={{
-              open: {
-                display: "block",
-                transition: {
-                  type: "spring",
-                  bounce: 0,
-                  duration: 0.7,
-                  delayChildren: 0.3,
-                  staggerChildren: 0.05,
-                },
-              },
-              closed: {
-                display: "none",
-                transition: {
-                  type: "spring",
-                  bounce: 0,
-                  duration: 0.3,
-                },
-              },
-            }}
+            variants={containerVariants}
           >
             {(state.data as BuyBox[])?.map((buybox, index) => (
               <motion.div

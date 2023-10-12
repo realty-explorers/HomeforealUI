@@ -48,6 +48,9 @@ const PropertiesMarkers = (props: PropertiesMarkersProps) => {
               setHoveredProperty("");
             }}
           >
+            <div>
+              meow
+            </div>
             {hoveredProperty === property.source_id && (
               <OverlayView
                 position={{

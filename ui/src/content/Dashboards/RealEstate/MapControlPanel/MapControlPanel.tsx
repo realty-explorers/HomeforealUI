@@ -10,7 +10,7 @@ import {
 import { Button, Collapse } from "@mui/material";
 import TuneIcon from "@mui/icons-material/Tune";
 import clsx from "clsx";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 type MapControlPanelProps = {};
 const MapControlPanel = (props: MapControlPanelProps) => {
@@ -18,7 +18,11 @@ const MapControlPanel = (props: MapControlPanelProps) => {
   const { suggestion } = useSelector(selectLocation);
   const [getLocationData, locationDataState] = useLazyGetLocationDataQuery();
   const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
-  const [filtersOpen, setFiltersOpen] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
+
+  useEffect(() => {
+    setFiltersOpen(true);
+  }, []);
 
   const handleSearch = async () => {
     const locationDataRequest = getLocationData(suggestion, true);

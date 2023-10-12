@@ -7,7 +7,7 @@ import {
   Grid,
   IconButton,
   InputAdornment,
-  styled,
+  InputBase,
   TextField,
   Typography,
 } from "@mui/material";
@@ -20,38 +20,50 @@ import {
   useGetLocationSuggestionQuery,
   useLazyGetLocationSuggestionQuery,
 } from "@/store/services/locationApiService";
+import { borderRadius, styled } from "@mui/system";
+import styles from "./AutoComplete.module.scss";
 
-const SearchInputWrapper = styled(TextField)(
-  ({ theme }) => `
-      label.Mui-focused: {
-    color: rgb(0,0,0)
-  },
-   .MuiInput-underline:after: {
-    borderBottomColor: rgb(0,0,0)
-  },
-   .MuiFilledInput-underline:after: {
-    borderBottomColor: rgb(0,0,0)
-  },
-   .MuiOutlinedInput-root: {
-    &.Mui-focused fieldset: {
-      borderColor: rgb(0,0,0)
-    }
-  }
+const SuggestionsContainer = (props) => {
+  return (
+    <div
+      {...props}
+      className={styles.suggestionsContainer}
+    >
+    </div>
+  );
+};
 
-    .MuiInputBase-root{
-        background: ${theme.colors.alpha.white[100]};
-        border-radius: 2rem;
-box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-    }
-    .MuiFocused{
-      border: none;
-    }
-
-    .MuiInputBase-input {
-        // font-size: ${theme.typography.pxToRem(17)};
-    }
-`,
-);
+function StyledInput({ handleSearch, searching, params, value }) {
+  return (
+    <form className="flex items-center bg-white rounded-3xl px-4 py-0  font-poppins shadow-xl border-2 border-transparent focus-within:border-[rgba(155,81,224,0.5)] hover:border-[rgba(155,81,224,0.5)] transition-all">
+      <InputBase
+        {...params.InputProps}
+        {...params.InputLabelProps}
+        {...params}
+        value={value}
+        endAdornment={
+          <div className="absolute -right-4">
+            <InputAdornment position="start">
+              <IconButton onClick={handleSearch} disabled={searching}>
+                {searching
+                  ? (
+                    <CircularProgress
+                      size={24}
+                    />
+                  )
+                  : <SearchTwoToneIcon htmlColor="#70757a" />}
+              </IconButton>
+            </InputAdornment>
+          </div>
+        }
+        // }}
+        placeholder="Search Properties"
+        style={{ padding: "0.2rem 0rem" }}
+        className="font-poppins text-lg"
+      />
+    </form>
+  );
+}
 
 type AutocompleteInputProps = {
   // setValue: UseFormSetValue<any>;
@@ -109,6 +121,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
     <Autocomplete
       freeSolo
       value={props.location || null}
+      clearOnBlur
       filterOptions={(x) => x}
       onChange={(event: any, newValue: LocationSuggestion | null) => {
         setOptions(newValue ? [newValue, ...options] : options);
@@ -117,44 +130,12 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
       options={options ?? []}
       getOptionLabel={(option?: LocationSuggestion) => option.display ?? ""}
       onInputChange={handleInputChange}
+      PaperComponent={(props) => <SuggestionsContainer {...props} />}
       renderInput={(params) => (
-        <SearchInputWrapper
-          {...params}
-          InputProps={{
-            ...params.InputProps,
-            endAdornment: (
-              <InputAdornment position="start">
-                <IconButton onClick={handleSearch} disabled={searching}>
-                  {state.isFetching
-                    ? (
-                      <CircularProgress
-                        size={24}
-                        sx={{
-                          position: "absolute",
-                          top: "50%",
-                          left: "50%",
-                          marginTop: "-12px",
-                          marginLeft: "-12px",
-                        }}
-                      />
-                    )
-                    : <SearchTwoToneIcon htmlColor="#70757a" />}
-                </IconButton>
-              </InputAdornment>
-            ),
-            style: {
-              paddingRight: "0.5rem",
-            },
-          }}
-          InputLabelProps={{
-            ...params.InputLabelProps,
-            variant: "outlined",
-            // shrink: false
-          }}
-          label="Search Properties"
-          hiddenLabel
-          // autoFocus
-          // fullWidth
+        <StyledInput
+          params={params}
+          handleSearch={handleSearch}
+          searching={searching || state.isFetching}
           value={props.location?.display}
         />
       )}
@@ -169,7 +150,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
                 item
                 sx={{ width: "calc(100% - 44px)", wordWrap: "break-word" }}
               >
-                <Typography variant="body2" color="text.secondary">
+                <Typography className={styles.suggestion}>
                   {option?.display}
                 </Typography>
               </Grid>
