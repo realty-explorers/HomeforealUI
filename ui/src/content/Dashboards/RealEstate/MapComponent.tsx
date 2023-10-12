@@ -33,6 +33,7 @@ import Lottie from "lottie-react";
 import creatingAnimation from "@/static/animations/loading/creatingAnimation.json";
 import mapAnimation from "@/static/animations/loading/mapAnimation.json";
 import clsx from "clsx";
+import { info } from "console";
 
 const center = {
   lat: 33.429565,
@@ -78,6 +79,7 @@ const MapComponent: React.FC<MapComponentProps> = (
   });
   const [tilesLoaded, setTilesLoaded] = useState(false);
   const [map, updateMap] = useState<google.maps.Map>();
+  let infoWindow: google.maps.InfoWindow;
 
   const handleSelectProperty = (property: AnalyzedProperty) => {
     dispatch(setSelectedProperty(property));
@@ -153,6 +155,8 @@ const MapComponent: React.FC<MapComponentProps> = (
     });
     // map.controls[google.maps.ControlPosition.TOP_RIGHT].push(rootElement);
     map.controls[google.maps.ControlPosition.TOP_LEFT].clear();
+
+    infoWindow = new google.maps.InfoWindow();
   }, []);
 
   const centerMap = async (signal: AbortSignal) => {
@@ -244,12 +248,16 @@ const MapComponent: React.FC<MapComponentProps> = (
 
   const clusterStyles = [
     {
+      // url: "https://cdn-icons-png.flaticon.com/512/1632/1632646.png",
+      url: "",
       height: 50,
       textColor: "#ffffff",
+      // textColor: "#000",
+      textSize: 14,
       width: 50,
+      fontFamily: "var(--font-poppins)",
       // url:
       //   'data:image/svg+xml;charset=UTF-8,%3Csvg xmlns="http://www.w3.org/2000/svg" height="50" width="100"%3E%3Ccircle cx="25" cy="25" r="20" stroke="black" stroke-width="3" fill="green" /%3E%3C/svg%3E',
-      url: "https://cdn-icons-png.flaticon.com/512/1632/1632646.png",
     },
     // {
     //   height: 50,
@@ -266,6 +274,24 @@ const MapComponent: React.FC<MapComponentProps> = (
     width: "100%",
     // display: clsx([tilesLoaded ? "block" : "hidden"]),
   };
+  const handleOpenInfoWindow = useCallback((cluster) => {
+    if (infoWindow) {
+      infoWindow.setContent(`View ${cluster.markers.length} more properties`);
+      infoWindow.setPosition(cluster.center);
+      infoWindow.setOptions({
+        pixelOffset: new google.maps.Size(0, -25),
+        disableAutoPan: true,
+      });
+
+      infoWindow.open(cluster.map);
+    }
+  }, []);
+
+  const handleCloseInfoWindow = useCallback((cluster) => {
+    if (infoWindow) {
+      infoWindow.close();
+    }
+  }, []);
 
   return isLoaded
     ? (
@@ -321,6 +347,9 @@ const MapComponent: React.FC<MapComponentProps> = (
                 averageCenter: true,
                 styles: clusterStyles,
               }}
+              onMouseOver={handleOpenInfoWindow}
+              onMouseOut={handleCloseInfoWindow}
+              onClick={handleCloseInfoWindow}
             >
               {(clusterer) => (
                 <>

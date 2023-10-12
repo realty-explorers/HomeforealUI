@@ -2,17 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-/* @import url('https://fonts.googleapis.com/css?family=Poppins'); */
-/* @import url('https://fonts.googleapis.com/css?family=Playfair Display'); */
-/* @font-face { */
-/*   font-family: 'Playfair Display'; */
-/*   src: url('https://fonts.googleapis.com/css?family=Playfair Display'); */
-/* } */
-/**/
-/* @font-face { */
-/*   font-family: 'Poppins'; */
-/*   src: url('https://fonts.googleapis.com/css?family=Poppins'); */
-/* } */
+/* Map styles */
+.cluster {
+  background-color: rgba(0, 0, 0, 0.65);
+  border-radius: 50%;
+}
+.cluster img {
+  display: none;
+}
+.gm-style-iw button {
+  display: none !important;
+}
+.gm-style-iw-t > div {
+  padding: 0 !important;
+}
+.gm-style-iw-d {
+  overflow: hidden !important;
+  font-family: var(--font-poppins);
+  padding: 0.5rem 1rem !important;
+}
+/***************/
 
 * {
   box-sizing: border-box;
