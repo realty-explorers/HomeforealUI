@@ -7,7 +7,7 @@
 
 .columnTitle {
   color: #a0855d;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
@@ -17,7 +17,7 @@
 
 .cellText {
   color: #000;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.375rem;
   font-style: normal;
   font-weight: 300;

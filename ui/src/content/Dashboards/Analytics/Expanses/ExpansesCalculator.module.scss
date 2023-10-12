@@ -1,7 +1,7 @@
 .label {
   color: #000;
   text-align: left;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
@@ -21,7 +21,7 @@
 
 .totalExpansesLabel {
   color: #000;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.5rem;
   font-style: normal;
   font-weight: 600;

@@ -8,7 +8,7 @@
 .indicatorHeader {
   color: #000;
   text-align: center;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 700;
@@ -19,7 +19,7 @@
 .indicatorContent {
   color: #000;
   text-align: center;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
@@ -30,7 +30,7 @@
 .indicatorLink {
   color: #4c49f0;
   text-align: center;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;

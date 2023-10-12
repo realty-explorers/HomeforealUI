@@ -3,8 +3,8 @@
 }
 
 .sectionHeader {
+  @apply font-poppins;
   color: #000;
-  font-family: Poppins;
   font-size: 1.875rem;
   font-style: normal;
   font-weight: 700;
@@ -37,7 +37,7 @@
 
 .buttonText {
   color: #000;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 700;
@@ -47,7 +47,7 @@
 
 .text {
   color: #000;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 300;

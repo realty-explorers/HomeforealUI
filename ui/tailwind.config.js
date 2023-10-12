@@ -17,8 +17,10 @@ module.exports = {
     },
     extend: {
       fontFamily: {
-        poppins: ["Poppins", "sans-serif"],
-        playfair: ["Playfair Display", "sans-serif"],
+        poppins: ["var(--font-poppins)", "sans-serif"],
+        playfair: ["var(--font-playfair)", "sans-serif"],
+        oleo: ["var(--font-oleo)", "sans-serif"],
+        nunito: ["var(--font-nunito)", "sans-serif"],
       },
       colors: {
         primary: "#590D82",

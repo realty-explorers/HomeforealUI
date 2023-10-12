@@ -1,6 +1,6 @@
 .compsSectionInfo {
   color: #000;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
@@ -9,7 +9,7 @@
 }
 .compsSectionEditText {
   color: #0e0aec;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 600;
@@ -44,7 +44,7 @@
 }
 .propertyHeader {
   color: #fff;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.375rem;
   font-style: normal;
   font-weight: 700;
@@ -55,7 +55,7 @@
 .propertyTableHeaderCentered {
   text-align: center;
   color: #fff;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 700;
@@ -65,7 +65,7 @@
 
 .propertyTableHeader {
   color: #fff;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 700;
@@ -75,7 +75,7 @@
 
 .propertyRowHeader {
   color: #fff;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 600;
@@ -85,7 +85,7 @@
 
 .propertyText {
   color: #fff;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;
@@ -96,7 +96,7 @@
 .propertyTextCentered {
   text-align: center;
   color: #fff;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
   font-weight: 400;

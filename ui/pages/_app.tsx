@@ -17,6 +17,36 @@ import store from "@/store/store";
 import { UserProvider } from "@auth0/nextjs-auth0/client";
 import { Provider } from "react-redux";
 import { SnackbarProvider } from "notistack";
+import {
+  Nunito,
+  Oleo_Script,
+  Playfair_Display,
+  Poppins,
+} from "next/font/google";
+import clsx from "clsx";
+
+const poppins = Poppins({
+  subsets: ["latin"],
+  weight: ["400", "600"],
+  variable: "--font-poppins",
+});
+
+const playfairDisplay = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+});
+
+const oleoScript = Oleo_Script({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-oleo",
+});
+
+const nunito = Nunito({
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  variable: "--font-nunito",
+});
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -53,7 +83,16 @@ function HomeforealApp(props: HomeforealAppProps) {
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <SnackbarProvider>
                   <CssBaseline />
-                  {getLayout(<Component {...pageProps} />)}
+                  <div
+                    className={clsx([
+                      poppins.variable,
+                      playfairDisplay.variable,
+                      oleoScript.variable,
+                      nunito.variable,
+                    ])}
+                  >
+                    {getLayout(<Component {...pageProps} />)}
+                  </div>
                 </SnackbarProvider>
               </LocalizationProvider>
             </ThemeProvider>

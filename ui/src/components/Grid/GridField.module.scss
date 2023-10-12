@@ -1,6 +1,6 @@
 .label {
   color: #0e0d0d;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 275;
@@ -9,7 +9,7 @@
 }
 .value {
   color: #000;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.125rem;
   font-style: normal;
   font-weight: 700;
