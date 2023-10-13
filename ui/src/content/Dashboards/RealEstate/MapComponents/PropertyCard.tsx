@@ -176,6 +176,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
       selected={props.selectedProperty &&
         props.selectedProperty.source_id === props.property.source_id}
       className={props.className}
+      id={props.property.source_id}
     >
       <CardActionArea onClick={handlepropertySelected}>
         <CardMedia

@@ -88,6 +88,7 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
   const [open, setOpen] = React.useState(false);
   const [cardsOpen, setCardsOpen] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
+  const [index, setIndex] = useState(0);
 
   const toggleDrawer = (newOpen: boolean) => () => {
     setOpen(newOpen);
@@ -113,6 +114,16 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
   };
   useEffect(() => {
     const el: any = ref.current;
+    // if (props.setSelectedProperty) {
+    //   const card = document.getElementById(props.selectedProperty.source_id);
+    //   const el: any = ref.current;
+    //   if (el) {
+    //     el.scrollTo({
+    //       left: index * card.scrollWidth,
+    //       behavior: "smooth",
+    //     });
+    //   }
+    // }
     if (el) {
       const onWheel = (e) => {
         if (e.deltaY == 0) return;
@@ -126,7 +137,19 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
       el.addEventListener("wheel", onWheel);
       return () => el.removeEventListener("wheel", onWheel);
     }
-  }, []);
+  }, [props.selectedProperty]);
+
+  const handleSelectProperty = (property: AnalyzedProperty, index: number) => {
+    props.setSelectedProperty(property);
+    // const card = document.getElementById(property.source_id);
+    // const el: any = ref.current;
+    // if (el) {
+    //   el.scrollTo({
+    //     left: index * card.scrollWidth,
+    //     behavior: "smooth",
+    //   });
+    // }
+  };
   return (
     <>
       <div
@@ -166,7 +189,8 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
                     key={index}
                     property={property}
                     selectedProperty={props.selectedProperty}
-                    setSelectedProperty={props.setSelectedProperty}
+                    setSelectedProperty={(property) =>
+                      handleSelectProperty(property, index)}
                     setOpenMoreDetails={() => {}}
                   />
                 );

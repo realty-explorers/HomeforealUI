@@ -25,6 +25,7 @@ const MapControlPanel = (props: MapControlPanelProps) => {
   }, []);
 
   const handleSearch = async () => {
+    alert("searching");
     const locationDataRequest = getLocationData(suggestion, true);
     const propertiesDataRequest = getPropertiesData(suggestion);
 

@@ -37,6 +37,7 @@ export const propertiesApi = createApi({
           for (let i = 0; i < 50; i++) {
             a.property.longitude = a.property.longitude + 0.00001 * i;
             a.property.latitude = a.property.latitude + 0.00001 * i;
+            a.source_id = a.source_id + i;
             set.push(JSON.parse(JSON.stringify(a)));
           }
           console.log(set);

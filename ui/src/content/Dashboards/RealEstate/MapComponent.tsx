@@ -33,7 +33,6 @@ import Lottie from "lottie-react";
 import creatingAnimation from "@/static/animations/loading/creatingAnimation.json";
 import mapAnimation from "@/static/animations/loading/mapAnimation.json";
 import clsx from "clsx";
-import { info } from "console";
 
 const center = {
   lat: 33.429565,
@@ -70,8 +69,8 @@ const MapComponent: React.FC<MapComponentProps> = (
   );
 
   //Resubscribe to redux cache so the data wont be lost when the component unmounts
-  locationApiEndpoints.getLocationData.useQuerySubscription(suggestion);
-  propertiesApiEndpoints.getProperties.useQuerySubscription(suggestion);
+  // locationApiEndpoints.getLocationData.useQuerySubscription(suggestion);
+  // propertiesApiEndpoints.getProperties.useQuerySubscription(suggestion);
 
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
@@ -140,9 +139,29 @@ const MapComponent: React.FC<MapComponentProps> = (
     dispatch(setSelectedComps([]));
   };
 
+  const handleZoomChanged = () => {
+    handleCloseInfoWindow();
+  };
+
   const onLoad = useCallback(function callback(map: google.maps.Map) {
     updateMap(map);
-    map.setCenter(center);
+    const propertySelected = selectedProperty && map &&
+      selectedProperty.property?.latitude &&
+      selectedProperty.property?.longitude;
+    if (suggestion && suggestion.latitude && suggestion.longitude) {
+      map.panTo({
+        lat: suggestion.latitude,
+        lng: suggestion.longitude,
+      });
+    } else if (propertySelected) {
+      map.panTo({
+        lat: selectedProperty.property.latitude,
+        lng: selectedProperty.property.longitude,
+      });
+    } else {
+      map.setCenter(center);
+    }
+    map.setZoom(12);
     map.setOptions({
       streetViewControlOptions: {
         position: google.maps.ControlPosition.LEFT_BOTTOM,
@@ -160,7 +179,7 @@ const MapComponent: React.FC<MapComponentProps> = (
   }, []);
 
   const centerMap = async (signal: AbortSignal) => {
-    if (locationState.data && map) {
+    if (locationState?.data && map) {
       // map.setZoom(12);
       // await sleep(300);
 
@@ -224,7 +243,6 @@ const MapComponent: React.FC<MapComponentProps> = (
     const controller = new AbortController();
     const signal = controller.signal;
     const animateMap = async (signal: AbortSignal) => {
-      console.log("zoom: ", map?.getZoom());
       const propertySelected = selectedProperty && map &&
         selectedProperty.property?.latitude &&
         selectedProperty.property?.longitude;
@@ -238,8 +256,8 @@ const MapComponent: React.FC<MapComponentProps> = (
     return () => controller.abort();
   }, [
     selectedProperty,
-    locationState.currentData,
-    propertiesState.currentData,
+    locationState?.currentData,
+    propertiesState?.currentData,
   ]);
 
   const onUnmount = useCallback(function callback() {
@@ -287,9 +305,19 @@ const MapComponent: React.FC<MapComponentProps> = (
     }
   }, []);
 
-  const handleCloseInfoWindow = useCallback((cluster) => {
+  const handleCloseInfoWindow = useCallback(() => {
     if (infoWindow) {
       infoWindow.close();
+    }
+  }, []);
+
+  const handleClusterClicked = useCallback((cluster) => {
+    handleCloseInfoWindow();
+    try {
+      const map = cluster.getMap();
+      map.panTo(cluster.center);
+      map.setZoom(map.getZoom() + 1);
+    } catch (e) {
     }
   }, []);
 
@@ -297,11 +325,12 @@ const MapComponent: React.FC<MapComponentProps> = (
     ? (
       <GoogleMap
         mapContainerStyle={containerStyle}
-        zoom={12}
+        // zoom={zoom}
         onLoad={onLoad}
         onTilesLoaded={() => setTilesLoaded(true)}
         onUnmount={onUnmount}
         onClick={handleMapClicked}
+        onZoomChanged={handleZoomChanged}
         options={{
           disableDefaultUI: true,
           gestureHandling: "greedy",
@@ -321,13 +350,13 @@ const MapComponent: React.FC<MapComponentProps> = (
       >
         <CardsPanel
           // deals={filterDeals(propertiesState.data)}
-          properties={filterProperties(propertiesState.data)}
+          properties={filterProperties(propertiesState?.data)}
           selectedProperty={selectedProperty}
           setSelectedProperty={handleSelectProperty}
         />
         {/* <MapControls /> */}
         <MapControlPanel />
-        <LocationBounds locationData={locationState.data} />
+        <LocationBounds locationData={locationState?.data} />
         {selectedProperty
           ? (
             <>
@@ -349,12 +378,14 @@ const MapComponent: React.FC<MapComponentProps> = (
               }}
               onMouseOver={handleOpenInfoWindow}
               onMouseOut={handleCloseInfoWindow}
-              onClick={handleCloseInfoWindow}
+              onClick={handleClusterClicked}
+              zoomOnClick={false}
+              // TODO: onClusteringEnd - save state of clusters and when clicked update zoom
             >
               {(clusterer) => (
                 <>
                   <PropertiesMarkers
-                    properties={filterProperties(propertiesState.data)}
+                    properties={filterProperties(propertiesState?.data)}
                     setSelectedProperty={handleSelectProperty}
                     clusterer={clusterer}
                   />

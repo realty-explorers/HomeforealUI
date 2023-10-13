@@ -38,7 +38,6 @@ function StyledInput({ handleSearch, searching, params, value }) {
     <form className="flex items-center bg-white rounded-3xl px-4 py-0  font-poppins shadow-xl border-2 border-transparent focus-within:border-[rgba(155,81,224,0.5)] hover:border-[rgba(155,81,224,0.5)] transition-all">
       <InputBase
         {...params.InputProps}
-        {...params.InputLabelProps}
         {...params}
         value={value}
         endAdornment={
