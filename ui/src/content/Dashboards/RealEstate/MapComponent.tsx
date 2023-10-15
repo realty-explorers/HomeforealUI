@@ -1,8 +1,5 @@
 import { locationApiEndpoints } from "@/store/services/locationApiService";
-import {
-  propertiesApiEndpoints,
-  useGetPropertiesQuery,
-} from "@/store/services/propertiesApiService";
+import { propertiesApiEndpoints } from "@/store/services/propertiesApiService";
 import { selectFilter } from "@/store/slices/filterSlice";
 import { selectLocation } from "@/store/slices/locationSlice";
 import {
@@ -12,27 +9,23 @@ import {
 } from "@/store/slices/propertiesSlice";
 import {
   GoogleMap,
-  Marker,
   MarkerClusterer,
   useJsApiLoader,
 } from "@react-google-maps/api";
-import { skipToken } from "@reduxjs/toolkit/dist/query";
 import React, { memo, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CardsPanel from "./MapComponents/CardsPanel";
 import LocationBounds from "./MapComponents/LocationBounds";
 import PropertiesMarkers from "./MapComponents/PropertiesMarkers";
-import PropertyRadius from "./MapComponents/PropertyRadius";
 import SelectedPropertyMarker from "./MapComponents/SelectedPropertyMarker";
 import SoldPropertiesMarkers from "./MapComponents/SoldPropertiesMarkers";
 import MapControlPanel from "./MapControlPanel/MapControlPanel";
-import MapControls from "./MapControls/MapControls";
-import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
+import AnalyzedProperty from "@/models/analyzedProperty";
 import { PropertyType } from "@/models/property";
 import Lottie from "lottie-react";
-import creatingAnimation from "@/static/animations/loading/creatingAnimation.json";
 import mapAnimation from "@/static/animations/loading/mapAnimation.json";
-import clsx from "clsx";
+import * as TWEEN from "@tweenjs/tween.js";
+import { EasingFunction } from "framer-motion";
 
 const center = {
   lat: 33.429565,
@@ -75,14 +68,14 @@ const MapComponent: React.FC<MapComponentProps> = (
   const { isLoaded } = useJsApiLoader({
     id: "google-map-script",
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_API_KEY,
+    // mapIds: ["46cdcdbdfb4f416b"],
   });
-  const [tilesLoaded, setTilesLoaded] = useState(false);
   const [map, updateMap] = useState<google.maps.Map>();
   let infoWindow: google.maps.InfoWindow;
 
   const handleSelectProperty = (property: AnalyzedProperty) => {
     dispatch(setSelectedProperty(property));
-    dispatch(setSelectedComps(property?.CompsData));
+    dispatch(setSelectedComps(property?.sales_comps?.data));
   };
 
   const filterProperties: (
@@ -92,14 +85,14 @@ const MapComponent: React.FC<MapComponentProps> = (
   ) => {
     const filteredProperties = properties?.filter((property) => {
       if (
-        property.property.bedrooms < minBeds ||
-        property.property.bedrooms > maxBeds
+        property.bedrooms < minBeds ||
+        property.bedrooms > maxBeds
       ) {
         return false;
       }
       if (
-        property.property.full_bathrooms < minBaths ||
-        property.property.full_bathrooms > maxBaths
+        property.full_bathrooms < minBaths ||
+        property.full_bathrooms > maxBaths
       ) {
         return false;
       }
@@ -119,13 +112,13 @@ const MapComponent: React.FC<MapComponentProps> = (
       //   return false;
       // }
       if (
-        property.property.building_area < minSqft ||
-        property.property.building_area > maxSqft
+        property.building_area < minSqft ||
+        property.building_area > maxSqft
       ) {
         return false;
       }
       if (
-        !propertyTypes.includes(property.property.property_type as PropertyType)
+        !propertyTypes.includes(property.property_type as PropertyType)
       ) {
         return false;
       }
@@ -146,8 +139,8 @@ const MapComponent: React.FC<MapComponentProps> = (
   const onLoad = useCallback(function callback(map: google.maps.Map) {
     updateMap(map);
     const propertySelected = selectedProperty && map &&
-      selectedProperty.property?.latitude &&
-      selectedProperty.property?.longitude;
+      selectedProperty?.latitude &&
+      selectedProperty?.longitude;
     if (suggestion && suggestion.latitude && suggestion.longitude) {
       map.panTo({
         lat: suggestion.latitude,
@@ -155,8 +148,8 @@ const MapComponent: React.FC<MapComponentProps> = (
       });
     } else if (propertySelected) {
       map.panTo({
-        lat: selectedProperty.property.latitude,
-        lng: selectedProperty.property.longitude,
+        lat: selectedProperty.latitude,
+        lng: selectedProperty.longitude,
       });
     } else {
       map.setCenter(center);
@@ -167,6 +160,7 @@ const MapComponent: React.FC<MapComponentProps> = (
         position: google.maps.ControlPosition.LEFT_BOTTOM,
       },
       streetViewControl: false,
+      rotateControl: true,
       mapTypeControlOptions: {
         position: google.maps.ControlPosition.LEFT_BOTTOM,
       },
@@ -180,79 +174,146 @@ const MapComponent: React.FC<MapComponentProps> = (
 
   const centerMap = async (signal: AbortSignal) => {
     if (locationState?.data && map) {
-      // map.setZoom(12);
-      // await sleep(300);
+      const firstTarget = {
+        duration: 1000,
+        center: {
+          latitude: locationState.data.center.latitude,
+          longitude: locationState.data.center.longitude,
+        },
+        zoom: 11,
+      };
 
-      let currentZoom = map.getZoom();
-      while (
-        !signal.aborted && currentZoom >= 12 &&
-        !propertyInBounds(locationState.data.center)
-      ) {
-        if (currentZoom === 13) {
-          map.setZoom(12);
-        } else {
-          map.setZoom(map.getZoom() - 2);
-        }
-        await sleep(200);
-        currentZoom = map.getZoom();
-      }
-      map.panTo({
-        lat: locationState.data.center.latitude,
-        lng: locationState.data.center.longitude,
-      });
+      animateMap([firstTarget]);
     }
   };
 
-  const propertyInBounds = (property: Property) =>
+  const propertyInBounds = (property: AnalyzedProperty) =>
     map.getBounds().contains({
       lat: property.latitude,
       lng: property.longitude,
     });
 
   const panToProperty = async (signal: AbortSignal) => {
-    // const mapWasCentered =
-    //   map.getCenter().lat() == locationState.data.center.latitude &&
-    //   map.getCenter().lng() == locationState.data.center.longitude;
-    // if (!mapWasCentered) {
-    //   map.setZoom(13);
-    //   await sleep(200);
-    //   map.setZoom(12);
-    //   // await sleep(200);
-    // }
-    while (!signal.aborted && !propertyInBounds(selectedProperty.property)) {
-      map.setZoom(map.getZoom() - 2);
-      await sleep(200);
-    }
-    map.panTo({
-      lat: selectedProperty.property.latitude,
-      lng: selectedProperty.property.longitude,
-    });
-    while (!signal.aborted && map.getZoom() !== 14) {
-      map.setZoom(map.getZoom() + 1);
-      await sleep(200);
-    }
-    // await sleep(300);
-    // map.setZoom(14);
+    const firstTarget = {
+      duration: 1000,
+      center: {
+        latitude: selectedProperty.latitude,
+        longitude: selectedProperty.longitude,
+      },
+      zoom: 13,
+    };
+
+    const secondTarget = {
+      duration: 1000,
+      zoom: 14,
+      center: {
+        latitude: selectedProperty.latitude,
+        longitude: selectedProperty.longitude,
+      },
+      easing: TWEEN.Easing.Quartic.Out,
+    };
+    animateMap([firstTarget, secondTarget]);
   };
 
   function sleep(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
+  const createTween = (
+    mapCameraOptions: {
+      zoom?: number;
+      lat?: number;
+      lng?: number;
+    },
+    duration: number,
+    center?: { latitude: number; longitude: number },
+    zoom?: number,
+    easing: EasingFunction = TWEEN.Easing.Quadratic.Out,
+  ) => {
+    const targetOptions = {};
+    if (center) {
+      targetOptions["lat"] = center.latitude;
+      targetOptions["lng"] = center.longitude;
+    }
+    if (zoom) {
+      targetOptions["zoom"] = zoom;
+    }
+    const newTween = new TWEEN.Tween(mapCameraOptions)
+      .to(targetOptions, duration)
+      .onUpdate(() => {
+        map.moveCamera({
+          zoom: mapCameraOptions.zoom,
+          center: {
+            lat: mapCameraOptions.lat,
+            lng: mapCameraOptions.lng,
+          },
+        });
+      })
+      .easing(easing);
+    return newTween;
+  };
+
+  const animateMap = (
+    targets: {
+      duration: number;
+      center?: { latitude: number; longitude: number };
+      zoom?: number;
+    }[],
+  ) => {
+    const tweens = TWEEN.getAll();
+    for (const tween of tweens) {
+      tween.stop();
+    }
+
+    function animate(time) {
+      requestAnimationFrame(animate);
+      TWEEN.update(time);
+    }
+    requestAnimationFrame(animate);
+    if (targets) {
+      const cameraOptions = {
+        zoom: map.getZoom(),
+        lat: map.getCenter().lat(),
+        lng: map.getCenter().lng(),
+      };
+      const tween = createTween(
+        cameraOptions,
+        targets[0].duration,
+        targets[0].center,
+        targets[0].zoom,
+      );
+      TWEEN.add(tween);
+      let lastTween = tween;
+      for (let i = 1; i < targets.length; i++) {
+        const newTween = createTween(
+          cameraOptions,
+          targets[i].duration,
+          targets[i].center,
+          targets[i].zoom,
+        );
+        lastTween.chain(newTween);
+        lastTween = newTween;
+        TWEEN.add(newTween);
+      }
+      tween.start();
+    }
+  };
+
   useEffect(() => {
     const controller = new AbortController();
+    console.log("properties state", propertiesState?.data?.length);
     const signal = controller.signal;
-    const animateMap = async (signal: AbortSignal) => {
+    const mapAnimation = async (signal: AbortSignal) => {
       const propertySelected = selectedProperty && map &&
-        selectedProperty.property?.latitude &&
-        selectedProperty.property?.longitude;
+        selectedProperty?.latitude &&
+        selectedProperty?.longitude;
       if (propertySelected) {
         panToProperty(signal);
       } else {
         centerMap(signal);
       }
     };
-    animateMap(signal);
+    mapAnimation(signal);
     return () => controller.abort();
   }, [
     selectedProperty,
@@ -315,11 +376,39 @@ const MapComponent: React.FC<MapComponentProps> = (
     handleCloseInfoWindow();
     try {
       const map = cluster.getMap();
-      map.panTo(cluster.center);
-      map.setZoom(map.getZoom() + 1);
+      const newZoom = map.getZoom() + 2;
+      const cameraOptions = {
+        center: cluster.center,
+        zoom: map.getZoom(),
+      };
+      function animate(time) {
+        requestAnimationFrame(animate);
+        TWEEN.update(time);
+      }
+
+      requestAnimationFrame(animate);
+      new TWEEN.Tween(cameraOptions)
+        .to({ zoom: map.getZoom() + 2 }, 350)
+        .easing(
+          TWEEN.Easing.Quadratic.InOut,
+        )
+        .onUpdate(() => {
+          map.moveCamera(cameraOptions);
+        })
+        .start();
+      // map.panTo(cluster.center);
+      // map.setZoom(map.getZoom() + 2);
     } catch (e) {
+      console.log(e);
     }
   }, []);
+
+  const US_BOUNDS = {
+    north: 49.3457868,
+    south: 24.396308,
+    west: -125.000000,
+    east: -66.934570,
+  };
 
   return isLoaded
     ? (
@@ -327,12 +416,15 @@ const MapComponent: React.FC<MapComponentProps> = (
         mapContainerStyle={containerStyle}
         // zoom={zoom}
         onLoad={onLoad}
-        onTilesLoaded={() => setTilesLoaded(true)}
         onUnmount={onUnmount}
         onClick={handleMapClicked}
         onZoomChanged={handleZoomChanged}
         options={{
-          disableDefaultUI: true,
+          // mapId: "46cdcdbdfb4f416b",
+          // disableDefaultUI: true,
+          restriction: {
+            latLngBounds: US_BOUNDS,
+          },
           gestureHandling: "greedy",
           styles: [
             {
@@ -379,6 +471,7 @@ const MapComponent: React.FC<MapComponentProps> = (
               onMouseOver={handleOpenInfoWindow}
               onMouseOut={handleCloseInfoWindow}
               onClick={handleClusterClicked}
+              minimumClusterSize={5}
               zoomOnClick={false}
               // TODO: onClusteringEnd - save state of clusters and when clicked update zoom
             >

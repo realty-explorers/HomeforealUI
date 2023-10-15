@@ -1,15 +1,11 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "../store";
-import { HYDRATE } from "next-redux-wrapper";
-import Deal from "@/models/deal";
-import LocationSuggestion from "@/models/location_suggestions";
-import Location from "@/models/location_data";
-import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
+import AnalyzedProperty, { CompData } from "@/models/analyzedProperty";
 
 // Type for our state
 export interface PropertiesState {
   selectedProperty?: AnalyzedProperty;
-  selectedComps: Property[];
+  selectedComps: CompData[];
 }
 
 // Initial state
@@ -27,7 +23,7 @@ export const propertiesSlice = createSlice({
     setSelectedProperty(state, action: PayloadAction<AnalyzedProperty>) {
       state.selectedProperty = action.payload;
     },
-    setSelectedComps(state, action: PayloadAction<Property[]>) {
+    setSelectedComps(state, action: PayloadAction<CompData[]>) {
       state.selectedComps = action.payload;
     },
   },

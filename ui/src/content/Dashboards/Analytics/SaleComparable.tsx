@@ -39,14 +39,14 @@ type SaleComparableProps = {
 };
 const SaleComparable = (props: SaleComparableProps) => {
   const { selectedComps } = useSelector(selectProperties);
-  const area = props.property.property.building_area;
+  const area = props.property.building_area;
   const priceToSqft = area && area > 0
     ? props.property.listing_price / area
     : 0;
   const compsPriceToSqft = selectedComps?.reduce((acc, comp) => {
     const compArea = comp.building_area;
     const compPriceToSqft = compArea && compArea > 0
-      ? comp.sales_listing_price / compArea
+      ? numberStringUtil(comp.sales_closing_price) / compArea
       : 0;
     return acc + compPriceToSqft;
   }, 0) / selectedComps?.length;
@@ -109,7 +109,7 @@ const SaleComparable = (props: SaleComparableProps) => {
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <Typography className={styles.cellText}>
-                    {props.property.property.sales_date}
+                    {props.property.sales_date}
                   </Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">
@@ -133,7 +133,7 @@ const SaleComparable = (props: SaleComparableProps) => {
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <Typography className={styles.cellText}>
-                    {props.property.CompsData?.length}
+                    {props.property.sales_comps.data?.length}
                   </Typography>
                 </StyledTableCell>
               </TableRow>

@@ -1,74 +1,121 @@
-interface AnalyzedProperty {
-  property: Property;
-  CompsData: Property[];
-  market_id: string;
+interface CompData {
+  source: string;
   source_id: string;
-  buybox_id: string;
-  update_date: string;
-  listing_price: number;
-  is_opp: boolean;
-  opp_name: string;
-  sales_comps: number;
-  arv_ids: string[];
-  arv: number;
-  n_sales: number;
-  expenses_total: number;
-  margin: number;
-  margin_percentage: number;
-  cents_on_dollar: number;
-  ltv: number;
-  n_rents: number;
-  operational_expenses_total: number;
-  cap_rate: number;
+  distance: number;
+  similarity_color: string;
+  similarity_score: number;
+  primary_image?: string;
   images: string[];
-  listing_status: string;
-  source: string;
-  address: string;
-  city: string;
-  zipcode: string;
-  state: string;
-  neighborhood: string;
-  arv_percentage: number;
-}
-
-interface Property {
-  source: string;
-  insert_date: string;
+  sales_status: string;
+  sales_listing_price: number | string;
+  sales_closing_price: number | string;
+  sales_days_on_market: number | string;
+  sales_date: string | "N/A";
+  tax: string | "N/A";
+  rents_status: string;
+  rents_listing_price: number | string;
+  rents_closing_price: number | string;
+  rents_days_on_market: number | string;
+  rents_date: string | "N/A";
+  floors: number;
+  pool: boolean;
+  garages: number;
   latitude: number;
   longitude: number;
-  address_number: string;
-  address_name: string;
-  address_suffix: string;
-  unit_number: string;
   address: string;
-  city: string;
+  neighborhood: string;
   zipcode: string;
+  city: string;
   county: string;
   state: string;
   flood_zone: string;
-  neighborhood: string;
   property_type: string;
+  building_area: number;
+  lot_size: number;
+  year_built: string;
   bedrooms: number;
   full_bathrooms: number;
   half_bathrooms: number;
   total_bathrooms: number;
-  lot_size: number;
-  building_area: number;
-  year_built: string;
+}
+
+interface ExpensesData {
+  expense_type: string;
+  expense_ref: string;
+  expense_percentage: string | number;
+  expense_amount: number;
+}
+
+interface LoanData {
+  amount: ExpensesData;
+  down_payment: ExpensesData;
+  closing_cost: ExpensesData;
+  interest_rate: number;
+  duration: number;
+  total_payment: number;
+}
+
+interface AnalyzedProperty {
+  buybox_id: string;
+  source: string;
+  source_id: string;
+  address: string;
+  state: string;
+  city: string;
+  zipcode: string;
+  neighborhood: string;
+  listing_price: number;
+  analyzed_date: string;
+  sales_comps: { data: CompData[] };
+  rents_comps: { data: CompData[] };
+  expenses: {
+    fixed_fee: ExpensesData;
+    closing_fee: ExpensesData;
+    selling_fee: ExpensesData;
+    rehab: ExpensesData;
+  };
+  loan: LoanData;
+  sales_comps_price: number;
+  arv_price: number;
+  arv_ids: string[];
+  margin: number;
+  margin_percentage: number;
+  cents_on_dollar: number;
+  arv_percentage: number;
+  sales_comps_percentage: number;
+  rental_comps_price: string | "N/A";
+  cap_rate: number | "N/A";
+  noi: string | "N/A";
+  opportunities: any[]; // You may specify a more specific type for 'opportunities'.
+  primary_image: any;
+  images: string[];
+  sales_status: string;
+  sales_closing_price: string | "N/A";
+  sales_days_on_market: number;
+  sales_date: string | "N/A";
+  tax: string | "N/A";
+  rents_status: string;
+  rents_listing_price: string | "N/A";
+  rents_closing_price: string | "N/A";
+  rents_days_on_market: string | "N/A";
+  rents_date: string | "N/A";
   floors: number;
   pool: boolean;
   garages: number;
-  sales_status: string;
-  sales_date: string;
-  sales_listing_price: number;
-  sales_closing_price: string;
-  sales_days_on_market: number;
-  rents_status: string;
-  rents_date: string;
-  rents_listing_price: string;
-  rents_closing_price: string;
-  rents_days_on_market: string;
+  latitude: number;
+  longitude: number;
+  county: string;
+  flood_zone: string;
+  property_type: string;
+  building_area: number;
+  lot_size: number;
+  year_built: string;
+  bedrooms: number;
+  full_bathrooms: number;
+  half_bathrooms: number;
+  total_bathrooms: number;
+  operational_expenses: Record<string, any>; // You may specify a more specific type.
 }
 
 export default AnalyzedProperty;
-export type { Property };
+export type { CompData, ExpensesData, LoanData };

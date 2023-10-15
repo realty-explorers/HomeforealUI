@@ -1,10 +1,10 @@
-import { Grid, Typography } from '@mui/material';
-import styles from './GridField.module.scss';
+import { Grid, Typography } from "@mui/material";
+import styles from "./GridField.module.scss";
 
 type GridFieldProps = {
   size?: number;
   label: string;
-  value: string;
+  value: string | number;
 };
 const GridField = (props: GridFieldProps) => {
   return (

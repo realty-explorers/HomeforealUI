@@ -6,7 +6,9 @@ import styles from "./PropertyHeaderStyles.module.scss";
 
 const MarginInfo = () => {
   const { selectedProperty, selectedComps } = useSelector(selectProperties);
-  const compsValues = selectedComps?.map((comp) => comp.sales_listing_price)
+  const compsValues = selectedComps?.map((comp) =>
+    comp.sales_closing_price as number
+  )
     .sort();
   const top25arv =
     compsValues?.slice(0, Math.floor(compsValues.length * 0.25)) || [];
@@ -29,6 +31,7 @@ const MarginInfo = () => {
         <Typography className={styles.marginCardValue}>$ 289,000</Typography>
         <Typography className={styles.marginCardPercentage}>
           {/* {avg} Margin */}
+          {typeof selectedComps?.[0]?.sales_closing_price}
           14% Margin
         </Typography>
       </div>

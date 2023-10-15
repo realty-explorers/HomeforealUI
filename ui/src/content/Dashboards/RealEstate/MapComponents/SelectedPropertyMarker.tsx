@@ -11,8 +11,8 @@ const SelectedPropertyMarker = (props: SelectedPropertyMarkerProps) => {
     ? (
       <Marker
         position={{
-          lat: props.selectedProperty!.property.latitude,
-          lng: props.selectedProperty!.property.longitude,
+          lat: props.selectedProperty!.latitude,
+          lng: props.selectedProperty!.longitude,
         }}
         icon={{
           url: "/static/images/pins/star-pin.png",
@@ -20,7 +20,7 @@ const SelectedPropertyMarker = (props: SelectedPropertyMarkerProps) => {
           scaledSize: new google.maps.Size(60, 60),
         }}
         onClick={() => {
-          props.setSelectedDeal(null);
+          props.setSelectedProperty(null);
           //   setHoveredHouse('');
         }}
         // icon={props.selectedDeal!.house.imgSrc}

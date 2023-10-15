@@ -33,8 +33,8 @@ const PropertiesMarkers = (props: PropertiesMarkersProps) => {
           <Marker
             key={index}
             position={{
-              lat: property.property.latitude,
-              lng: property.property.longitude,
+              lat: property.latitude,
+              lng: property.longitude,
             }}
             clusterer={props.clusterer}
             icon={{
@@ -54,8 +54,8 @@ const PropertiesMarkers = (props: PropertiesMarkersProps) => {
             {hoveredProperty === property.source_id && (
               <OverlayView
                 position={{
-                  lat: property.property.latitude,
-                  lng: property.property.longitude,
+                  lat: property.latitude,
+                  lng: property.longitude,
                 }}
                 mapPaneName={OverlayView.OVERLAY_MOUSE_TARGET}
               >
@@ -65,7 +65,7 @@ const PropertiesMarkers = (props: PropertiesMarkersProps) => {
                     onMouseEnter={() => handleMouseHover(property.source_id)}
                     onMouseLeave={() => handleMouseOut()}
                   >
-                    <PropertyMapCard property={property.property} />
+                    <PropertyMapCard property={property} />
                   </div>
                 </Fade>
               </OverlayView>

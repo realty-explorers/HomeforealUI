@@ -131,7 +131,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
 ) => {
   const dispatch = useDispatch();
   const [cardImage, setCardImage] = useState(
-    // props.property.property.primaryImage,
+    // props.property.primaryImage,
     props.property.images[0] || "",
   );
   const handlepropertySelected = async () => {
@@ -149,7 +149,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
 
   const handleOpenDetails = () => {
     // props.setSelectedproperty(props.deal);
-    // dispatch(setSearchAnalyzedProperty(props.property.property));
+    // dispatch(setSearchAnalyzedProperty(props.property));
     // props.setOpenMoreDetails(true);
   };
 
@@ -169,7 +169,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     return () => {};
   }, [props.property]);
 
-  const profit = numberStringUtil(props.property.margin_percentage).toFixed(2);
+  const profit = numberStringUtil(props.property.arv_percentage).toFixed(2);
 
   return (
     <StyledCard
@@ -190,18 +190,18 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           }}
           image={cardImage}
           // image={props.property.house.imgSrc}
-          alt={props.property.property.address}
-          title={props.property.property.address}
+          alt={props.property.address}
+          title={props.property.address}
           onError={() =>
             setCardImage(
               "/static/images/placeholders/illustrations/unknown-house.png",
             )}
         />
-        {profit >= 0 && (
+        {numberStringUtil(profit) >= 0 && (
           <Grid className={styles.cardDiscountChip} container>
             <Grid item xs={12}>
               <Typography className={styles.cardDiscountValue}>
-                {props.property.arv_percentage.toFixed()}%
+                {numberStringUtil(props.property.arv_percentage).toFixed()}%
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -226,21 +226,21 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           <FavoriteOutlinedIcon sx={{ color: "white" }} />
         </IconButton>
         <CardContent sx={{ paddingBottom: 0, paddingTop: "0em" }}>
-          {/* <AddressLink>{props.property.property.address}</AddressLink> */}
+          {/* <AddressLink>{props.property.address}</AddressLink> */}
           <Grid
             container
             justifyContent={"center"}
             sx={{ margin: "0.5rem 0 0.2rem 0" }}
           >
             <Chip
-              label={props.property.property.address}
+              label={props.property.address}
               clickable
               size="small"
-              onClick={() => openGoogleSearch(props.property.property.address)}
+              onClick={() => openGoogleSearch(props.property.address)}
             />
           </Grid>
           <Grid xs={12} sm={12} item display="flex" alignItems="center">
-            {/* <h4>{props.property.property.address}</h4> */}
+            {/* <h4>{props.property.address}</h4> */}
             <List
               disablePadding
               sx={{
@@ -257,7 +257,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
                 icon={<PriceChangeIcon color="success" />}
                 title="Comps Sold"
                 value={priceFormatter(
-                  numberStringUtil(props.property.sales_comps).toFixed(),
+                  numberStringUtil(props.property.sales_comps_price).toFixed(),
                 )}
               />
 
@@ -265,7 +265,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
                 icon={<InsightsIcon color="inherit" />}
                 title={"ARV"}
                 value={priceFormatter(
-                  numberStringUtil(props.property.arv).toFixed(),
+                  numberStringUtil(props.property.arv_price).toFixed(),
                 )}
               />
 
@@ -273,7 +273,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
                 icon={<BarChartIcon color="primary" />}
                 title={"Cap Rate"}
                 value={`${
-                  numberStringUtil(props.property.cap_rate * 100).toFixed(2)
+                  (numberStringUtil(props.property.cap_rate) * 100).toFixed(2)
                 } %`}
               />
             </List>

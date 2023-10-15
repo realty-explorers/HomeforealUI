@@ -27,7 +27,7 @@ type InitialInvestmentProps = {
 };
 const InitialInvestment = (props: InitialInvestmentProps) => {
   const priceTypes = [
-    { label: "ARV", value: props.property?.arv },
+    { label: "ARV", value: props.property?.arv_price },
     { label: "Listing Price", value: props.property?.listing_price || 0 },
   ];
 
@@ -37,29 +37,36 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
     setExpanses([
       {
         id: uuidv4(),
-        label: "Down Payment",
-        value: 0,
-        priceType: priceTypes[0],
+        label: "Fixed Fee",
+        value: props.property?.expenses?.fixed_fee?.expense_amount || 0,
+        priceType: props.property.expenses?.fixed_fee?.expense_ref === "arv"
+          ? priceTypes[0]
+          : priceTypes[1],
       },
       {
         id: uuidv4(),
-        label: "Loan Amount",
-        value: 0,
-        priceType: priceTypes[0],
+        label: "Closing Free",
+        value: props.property?.expenses?.closing_fee?.expense_amount || 0,
+        priceType: props.property.expenses?.closing_fee?.expense_ref === "arv"
+          ? priceTypes[0]
+          : priceTypes[1],
       },
       {
         id: uuidv4(),
-        label: "Origination Fee",
-        value: 0,
-        priceType: priceTypes[0],
+        label: "Selling Fee",
+        value: props.property?.expenses?.selling_fee?.expense_amount || 0,
+        priceType: props.property.expenses?.selling_fee?.expense_ref === "arv"
+          ? priceTypes[0]
+          : priceTypes[1],
       },
       {
         id: uuidv4(),
-        label: "Interest Rate",
-        value: 0,
-        priceType: priceTypes[0],
+        label: "Rehab",
+        value: props.property?.expenses?.rehab?.expense_amount || 0,
+        priceType: props.property.expenses?.rehab?.expense_ref === "arv"
+          ? priceTypes[0]
+          : priceTypes[1],
       },
-      { id: uuidv4(), label: "Points", value: 0, priceType: priceTypes[0] },
     ]);
   }, [props.property]);
 

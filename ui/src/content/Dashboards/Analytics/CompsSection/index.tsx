@@ -9,7 +9,7 @@ import CompsProperty from "@/models/comps_property";
 import styled from "@emotion/styled";
 import TuneIcon from "@mui/icons-material/Tune";
 import { Height } from "@mui/icons-material";
-import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
+import AnalyzedProperty, { CompData } from "@/models/analyzedProperty";
 import { useState } from "react";
 import CompsFilter from "./CompsFilter";
 
@@ -20,13 +20,13 @@ const Wrapper = styled(Box)(({ theme }) => ({
 
 type CompsSectionProps = {
   property: AnalyzedProperty;
-  selectedComps: Property[];
-  setSelectedComps: (compsProperties: Property[]) => void;
+  selectedComps: CompData[];
+  setSelectedComps: (compsProperties: CompData[]) => void;
 };
 const CompsSection = (props: CompsSectionProps) => {
   const [filterOpen, setFilterOpen] = useState(false);
 
-  const handleToggle = (compsProperty: Property) => {
+  const handleToggle = (compsProperty: CompData) => {
     if (props.selectedComps.includes(compsProperty)) {
       const filteredComps = props.selectedComps.filter((property) =>
         property !== compsProperty
@@ -41,7 +41,8 @@ const CompsSection = (props: CompsSectionProps) => {
   return (
     <Grid className={`${analyticsStyles.sectionContainer}`}>
       <Typography className={styles.compsSectionInfo}>
-        We found {props.property.CompsData?.length} comps that match your search
+        We found {props.property.sales_comps?.data?.length}{" "}
+        comps that match your search
       </Typography>
       <Button
         onClick={() => setFilterOpen(!filterOpen)}
@@ -53,7 +54,7 @@ const CompsSection = (props: CompsSectionProps) => {
       <CompsFilter
         open={filterOpen}
         setOpen={setFilterOpen}
-        compsProperties={props.property.CompsData}
+        compsProperties={props.property.sales_comps?.data}
         setSelectedComps={props.setSelectedComps}
       />
 
@@ -64,7 +65,7 @@ const CompsSection = (props: CompsSectionProps) => {
             compsProperties={props.selectedComps}
           />
         </Grid>
-        {props.property.CompsData?.map((compsProperty, index) => (
+        {props.property.sales_comps?.data?.map((compsProperty, index) => (
           <Grid item key={index} className="mb-8 left-0">
             <CompsCard
               compsProperty={compsProperty}

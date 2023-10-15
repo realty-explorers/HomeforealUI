@@ -24,7 +24,7 @@ import { TransitionGroup } from "react-transition-group";
 import PropertyCard from "./PropertyCard";
 import CompsProperty from "@/models/comps_property";
 import { openGoogleSearch } from "@/utils/windowFunctions";
-import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
+import AnalyzedProperty from "@/models/analyzedProperty";
 
 const AddressLink = styled("h3")(({ theme }) => ({
   padding: 0,
@@ -38,7 +38,7 @@ const AddressLink = styled("h3")(({ theme }) => ({
 }));
 
 type PropertyMapCardProps = {
-  property: Property;
+  property: AnalyzedProperty;
 };
 const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   props: PropertyMapCardProps,
@@ -96,7 +96,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
                 <Box>
                   <Typography align="right" noWrap>
                     {priceFormatter(
-                      props.property.sales_listing_price,
+                      props.property.listing_price,
                     )}
                   </Typography>
                 </Box>

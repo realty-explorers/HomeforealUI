@@ -26,9 +26,10 @@ import {
   setSelectedComps,
   setSelectedProperty,
 } from "@/store/slices/propertiesSlice";
-import { Property } from "@/models/analyzedProperty";
+// import { Property } from "@/models/analyzedProperty";
 import styles from "./RealEstate.module.scss";
 import SaleComparableIndicators from "@/content/Dashboards/Analytics/SaleComparableIndicators";
+import { CompData } from "@/models/analyzedProperty";
 
 // import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
 
@@ -73,7 +74,7 @@ const DashboardRealEstate = (props: any) => {
   //   dispatch(setSelectedComps(comps));
   // };
 
-  const handleSetSelectedComps = (compsProperties: Property[]) => {
+  const handleSetSelectedComps = (compsProperties: CompData[]) => {
     dispatch(setSelectedComps(compsProperties));
   };
   const [showFirstPanel, setShowFirstPanel] = useState(true);

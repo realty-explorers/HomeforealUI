@@ -21,29 +21,29 @@ const PropertyFacts = (props: PropertyFactsProps) => {
       <Grid container justifyContent="center" rowGap={3}>
         <GridField
           label="PropertyType"
-          value={props.property.property.property_type}
+          value={props.property.property_type}
         />
         <GridField
           label="Bathrooms"
-          value={props.property.property.full_bathrooms}
+          value={props.property.full_bathrooms}
         />
-        <GridField label="Bedrooms" value={props.property.property.bedrooms} />
+        <GridField label="Bedrooms" value={props.property.bedrooms} />
         <GridField
           label="YearBuilt"
-          value={props.property.property.year_built?.slice(0, 4)}
+          value={props.property.year_built?.slice(0, 4)}
         />
         <GridField
           label="Half Bathrooms"
-          value={props.property.property.half_bathrooms}
+          value={props.property.half_bathrooms}
         />
-        <GridField label="Lot Size" value={props.property.property.lot_size} />
+        <GridField label="Lot Size" value={props.property.lot_size} />
         <GridField label="Mls" value="" />
         <GridField
           label="Building Size"
-          value={props.property.property.building_area}
+          value={props.property.building_area}
         />
         <GridField label="Zoning" value="" />
-        <GridField label="Floors" value={props.property.property.floors} />
+        <GridField label="Floors" value={props.property.floors} />
       </Grid>
       {/* <Grid container justifyContent="flex-end"> */}
       {/*   <ThemedButton text="More" onClick={() => setOpen(!open)} /> */}

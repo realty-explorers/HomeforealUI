@@ -30,55 +30,64 @@ type FinancingExpansesProps = {
   active: boolean;
   toggleActive: () => void;
 };
+
 const FinancingExpanses = (props: FinancingExpansesProps) => {
   const priceTypes = [
-    { label: "ARV", value: props.property?.arv },
+    { label: "ARV", value: props.property?.arv_price },
     { label: "Listing Price", value: props.property?.listing_price || 0 },
   ];
 
-  const [downPayment, setDownPayment] = useState<Expanse>({
-    id: uuidv4(),
-    label: "Down Payment",
-    value: 0,
-    priceType: priceTypes[0],
-  });
-  const [loanAmount, setLoanAmount] = useState<Expanse>({
+  const defaultLoanAmount = {
     id: uuidv4(),
     label: "Loan Amount",
-    value: 0,
-    priceType: priceTypes[0],
-  });
-  const [originationFee, setOriginationFee] = useState<Expanse>({
+    value: props.property?.loan?.amount?.expense_amount || 0,
+    priceType: props.property?.loan?.amount?.expense_ref === "arv"
+      ? priceTypes[0]
+      : priceTypes[1],
+  };
+
+  const defaultDownPayment = {
+    id: uuidv4(),
+    label: "Down Payment",
+    value: defaultLoanAmount.priceType.value - defaultLoanAmount.value,
+    priceType: props.property?.loan?.down_payment?.expense_ref === "arv"
+      ? priceTypes[0]
+      : priceTypes[1],
+  };
+
+  const defaultOriginationFee = {
     id: uuidv4(),
     label: "Origination Fee",
-    value: 0,
-    priceType: priceTypes[0],
+    value: props.property?.loan?.closing_cost?.expense_amount || 0,
+    priceType: props.property?.loan?.closing_cost?.expense_ref === "arv"
+      ? priceTypes[0]
+      : priceTypes[1],
+  };
+
+  const defaultInterestRate = props.property?.loan?.interest_rate || 0;
+  const defaultMonths = props.property?.loan?.duration || 0;
+
+  const [downPayment, setDownPayment] = useState<Expanse>({
+    ...defaultDownPayment,
+  });
+  const [loanAmount, setLoanAmount] = useState<Expanse>({
+    ...defaultLoanAmount,
+  });
+  const [originationFee, setOriginationFee] = useState<Expanse>({
+    ...defaultOriginationFee,
   });
   const [expanses, setExpanses] = useState<Expanse[]>([]);
-  const [months, setMonths] = useState<number>(0);
-  const [interestRate, setInterestRate] = useState<number>(0);
+  const [months, setMonths] = useState<number>(defaultMonths);
+  const [interestRate, setInterestRate] = useState<number>(defaultInterestRate);
 
   useEffect(() => {
     setExpanses([
-      {
-        id: uuidv4(),
-        label: "Origination Fee",
-        value: 0,
-        priceType: priceTypes[0],
-      },
+      { ...defaultOriginationFee },
     ]);
-    setMonths(0);
-    setInterestRate(0);
-    setDownPayment({
-      ...downPayment,
-      priceType: priceTypes[0],
-      value: 0,
-    });
-    setLoanAmount({
-      ...loanAmount,
-      priceType: priceTypes[0],
-      value: 0,
-    });
+    setMonths(defaultMonths);
+    setInterestRate(defaultInterestRate);
+    setDownPayment({ ...defaultDownPayment });
+    setLoanAmount({ ...defaultLoanAmount });
   }, [props.property]);
 
   const handleChangeExpanses = (changedExpanse: Expanse) => {

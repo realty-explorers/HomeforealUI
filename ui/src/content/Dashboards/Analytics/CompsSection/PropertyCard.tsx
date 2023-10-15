@@ -3,7 +3,7 @@ import GridTableField from "@/components/Grid/GridTableField";
 import Image from "@/components/Photos/Image";
 import analyticsStyles from "../Analytics.module.scss";
 import styles from "./CompsSection.module.scss";
-import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
+import AnalyzedProperty, { CompData } from "@/models/analyzedProperty";
 import { priceFormatter } from "@/utils/converters";
 import clsx from "clsx";
 import React from "react";
@@ -68,7 +68,7 @@ const gridRows = (property: Property) => [
 
 type PropertyCardProps = {
   property: AnalyzedProperty;
-  compsProperties: Property[];
+  compsProperties: CompData[];
 };
 
 const PropertyCard = (props: PropertyCardProps) => {
@@ -136,7 +136,7 @@ const PropertyCard = (props: PropertyCardProps) => {
             Comps AVG.
           </Typography>
         </div>
-        {gridRows(props.property.property).map((property, index) => {
+        {gridRows(props.property).map((property, index) => {
           const averageLabel = property.averageProperty
             ? property.averageFormatter
               ? property.averageFormatter(
@@ -180,7 +180,7 @@ const PropertyCard = (props: PropertyCardProps) => {
       {/*       }, */}
       {/*     ]} */}
       {/*   /> */}
-      {/*   {gridRows(props.property.property).map((property, index) => { */}
+      {/*   {gridRows(props.property).map((property, index) => { */}
       {/*     const averageLabel = property.averageProperty */}
       {/*       ? property.averageFormatter */}
       {/*         ? property.averageFormatter( */}
