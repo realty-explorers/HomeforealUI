@@ -2,6 +2,17 @@ const priceFormatter = (value: number | string) =>
   `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 const percentFormatter = (value: number) => `%${value.toFixed(2)}`;
 const distanceFormatter = (value: number) => `${value.toFixed(2)} Miles`;
+const currencyFormatter = (currency: number): string => {
+  if (currency >= 1000000) {
+    const millionValue = (currency / 1000000).toFixed();
+    return `$${millionValue}M`;
+  } else if (currency >= 1000) {
+    const thousandValue = (currency / 1000).toFixed();
+    return `$${thousandValue}K`;
+  } else {
+    return `$${currency}`;
+  }
+};
 
 const numberStringUtil = (value?: number | string) =>
   value && typeof value === "number" ? value : 0;
@@ -96,6 +107,7 @@ export {
   ageFormatter,
   ageReverseScale,
   ageScale,
+  currencyFormatter,
   distanceFormatter,
   numberStringUtil,
   percentFormatter,

@@ -95,19 +95,22 @@ const MainControls: React.FC<MainControlsProps> = (
         />
       </SliderField>
 
-      {/* <SliderField fieldName="Comps Margin"> */}
-      {/*   <SliderInput */}
-      {/*     inputProps={{ */}
-      {/*       title: 'Comps Margin', */}
-      {/*       name: 'underComps', */}
-      {/*       min: 0, */}
-      {/*       max: 100, */}
-      {/*       step: 1 */}
-      {/*     }} */}
-      {/*     value={compsMargin} */}
-      {/*     update={(value) => dispatch(setCompsMargin(value))} */}
-      {/*   /> */}
-      {/* </SliderField> */}
+      <SliderField
+        fieldName="Sales Comps Margin"
+        tooltip="Percentage under market sales comps"
+      >
+        <SliderInput
+          inputProps={{
+            title: "Comps Margin",
+            name: "underComps",
+            min: 0,
+            max: 100,
+            step: 1,
+          }}
+          value={compsMargin}
+          update={(value) => dispatch(setCompsMargin(value))}
+        />
+      </SliderField>
       <SliderField
         fieldName="ARV Margin"
         tooltip="Percentage under estimated market ARV"

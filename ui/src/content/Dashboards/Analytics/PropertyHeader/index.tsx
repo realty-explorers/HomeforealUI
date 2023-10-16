@@ -30,7 +30,7 @@ const PropertyHeader = (props: PropertyHeaderProps) => {
           />
         </div>
         <div className="flex gap-1">
-          <MarginInfo />
+          <MarginInfo property={props.property} />
         </div>
       </div>
       <div className="flex">

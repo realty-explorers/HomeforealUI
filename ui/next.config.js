@@ -19,6 +19,15 @@ module.exports = async (phase, { defaultConfig }) => {
     typescript: {
       ignoreBuildErrors: true,
     },
+
+    images: {
+      remotePatterns: [
+        {
+          protocol: "https",
+          hostname: "**",
+        },
+      ],
+    },
   };
   return nextConfig;
 };

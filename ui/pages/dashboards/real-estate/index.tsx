@@ -31,8 +31,6 @@ import styles from "./RealEstate.module.scss";
 import SaleComparableIndicators from "@/content/Dashboards/Analytics/SaleComparableIndicators";
 import { CompData } from "@/models/analyzedProperty";
 
-// import { withPageAuthRequired } from '@auth0/nextjs-auth0/client';
-
 const MoreDetailsSection = (
   { selectedProperty, selectedComps, setSelectedComps },
 ) => {
@@ -45,7 +43,7 @@ const MoreDetailsSection = (
         {/* <EnvironmentalIndicators property={selectedProperty} /> */}
         {/* <OwnershipInfo property={selectedProperty} /> */}
         <div className="mt-8">
-          <SaleComparableIndicators />
+          <SaleComparableIndicators property={selectedProperty} />
           <SaleComparable property={selectedProperty} />
           <CompsSection
             property={selectedProperty}
@@ -87,7 +85,7 @@ const DashboardRealEstate = (props: any) => {
         <title>Real Estate Dashboard</title>
       </Head> */
       }
-      <div className="flex w-full h-[calc(100%-60px)]">
+      <div className="flex w-full h-[calc(100%-60px)] ">
         <div
           className={clsx([
             "hidden md:block h-[calc(100%-60px)] w-1/2 transition-all duration-500 absolute overflow-x-auto",
@@ -100,6 +98,7 @@ const DashboardRealEstate = (props: any) => {
             setSelectedComps={handleSetSelectedComps}
           />
         </div>
+
         {/* <SplitPane split="vertical"> */}
         {/*   <MoreDetailsSection */}
         {/*     selectedProperty={selectedProperty} */}

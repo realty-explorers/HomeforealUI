@@ -96,7 +96,7 @@ const ExpansesRow = (props: ExpansesRowProps) => {
                   <InputAdornment position="start">%</InputAdornment>
                 }
                 label="Amount"
-                inputProps={{ min: 0, step: 1 }}
+                inputProps={{ min: 0, max: 100, step: 1 }}
                 itemScope
                 value={Math.round(
                   (expanse.value / expanse.priceType.value) * 100,
@@ -118,6 +118,11 @@ const ExpansesRow = (props: ExpansesRowProps) => {
                 }
                 label="Amount"
                 type="number"
+                inputProps={{
+                  min: 0,
+                  max: expanse.priceType.value,
+                  step: 1000,
+                }}
                 value={Math.round(expanse.value)}
                 onChange={handleChangeAmount}
               />

@@ -24,49 +24,52 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   borderBottom: "none",
 }));
 
-type SaleComparableIndicatorsProps = {};
+type SaleComparableIndicatorsProps = {
+  property: AnalyzedProperty;
+};
 const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
-  return (
-    <div className="flex w-full items-center gap-4 p-4 ">
-      <div className="grid grid-cols-2 gap-4 gap-x-20">
-        <div className="flex">
-          <Typography
-            className={clsx([styles.header])}
-          >
-            Sale Comps
-          </Typography>
-        </div>
-        <div className="flex">
-          <Typography
-            className={clsx([
-              styles.indicator,
-              "bg-[rgba(182,151,221,0.29)] ",
-            ])}
-          >
-            $ 270,000
-          </Typography>
-        </div>
+  return (props.property?.sales_comps?.data?.length > 0 &&
+    (
+      <div className="flex w-full items-center gap-4 p-4 ">
+        <div className="grid grid-cols-2 gap-4 gap-x-20">
+          <div className="flex">
+            <Typography
+              className={clsx([styles.header])}
+            >
+              Sale Comps
+            </Typography>
+          </div>
+          <div className="flex">
+            <Typography
+              className={clsx([
+                styles.indicator,
+                "bg-[rgba(182,151,221,0.29)] ",
+              ])}
+            >
+              $ 270,000
+            </Typography>
+          </div>
 
-        <div className="flex">
-          <Typography
-            className={clsx([styles.header])}
-          >
-            Top 25th ARV
-          </Typography>
-        </div>
-        <div className="flex">
-          <Typography
-            className={clsx([
-              styles.indicator,
-              "bg-[#D6FCD0] ",
-            ])}
-          >
-            $ 330,000
-          </Typography>
+          <div className="flex">
+            <Typography
+              className={clsx([styles.header])}
+            >
+              Top 25th ARV
+            </Typography>
+          </div>
+          <div className="flex">
+            <Typography
+              className={clsx([
+                styles.indicator,
+                "bg-[#D6FCD0] ",
+              ])}
+            >
+              $ 330,000
+            </Typography>
+          </div>
         </div>
       </div>
-    </div>
-  );
+    ));
 };
 
 export default SaleComparableIndicators;

@@ -38,47 +38,48 @@ const CompsSection = (props: CompsSectionProps) => {
     }
   };
 
-  return (
-    <Grid className={`${analyticsStyles.sectionContainer}`}>
-      <Typography className={styles.compsSectionInfo}>
-        We found {props.property.sales_comps?.data?.length}{" "}
-        comps that match your search
-      </Typography>
-      <Button
-        onClick={() => setFilterOpen(!filterOpen)}
-        startIcon={<TuneIcon />}
-        className="text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl mt-2 px-4"
-      >
-        Filter Comps
-      </Button>
-      <CompsFilter
-        open={filterOpen}
-        setOpen={setFilterOpen}
-        compsProperties={props.property.sales_comps?.data}
-        setSelectedComps={props.setSelectedComps}
-      />
+  return (props.property?.sales_comps?.data?.length > 0 &&
+    (
+      <Grid className={`${analyticsStyles.sectionContainer}`}>
+        <Typography className={styles.compsSectionInfo}>
+          We found {props.property.sales_comps?.data?.length}{" "}
+          comps that match your search
+        </Typography>
+        <Button
+          onClick={() => setFilterOpen(!filterOpen)}
+          startIcon={<TuneIcon />}
+          className="text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl mt-2 px-4"
+        >
+          Filter Comps
+        </Button>
+        <CompsFilter
+          open={filterOpen}
+          setOpen={setFilterOpen}
+          compsProperties={props.property.sales_comps?.data}
+          setSelectedComps={props.setSelectedComps}
+        />
 
-      <Wrapper className={styles.cardsWrapper}>
-        <Grid item className="mb-8 sticky left-0 z-[1]">
-          <PropertyCard
-            property={props.property}
-            compsProperties={props.selectedComps}
-          />
-        </Grid>
-        {props.property.sales_comps?.data?.map((compsProperty, index) => (
-          <Grid item key={index} className="mb-8 left-0">
-            <CompsCard
-              compsProperty={compsProperty}
-              index={index}
-              selected={props.selectedComps?.includes(compsProperty)}
-              toggle={() =>
-                handleToggle(compsProperty)}
+        <Wrapper className={styles.cardsWrapper}>
+          <Grid item className="mb-8 sticky left-0 z-[1]">
+            <PropertyCard
+              property={props.property}
+              compsProperties={props.selectedComps}
             />
           </Grid>
-        ))}
-      </Wrapper>
-    </Grid>
-  );
+          {props.property.sales_comps?.data?.map((compsProperty, index) => (
+            <Grid item key={index} className="mb-8 left-0">
+              <CompsCard
+                compsProperty={compsProperty}
+                index={index}
+                selected={props.selectedComps?.includes(compsProperty)}
+                toggle={() =>
+                  handleToggle(compsProperty)}
+              />
+            </Grid>
+          ))}
+        </Wrapper>
+      </Grid>
+    ));
 };
 
 export default CompsSection;

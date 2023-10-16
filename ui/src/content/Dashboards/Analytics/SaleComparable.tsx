@@ -43,110 +43,121 @@ const SaleComparable = (props: SaleComparableProps) => {
   const priceToSqft = area && area > 0
     ? props.property.listing_price / area
     : 0;
-  const compsPriceToSqft = selectedComps?.reduce((acc, comp) => {
-    const compArea = comp.building_area;
-    const compPriceToSqft = compArea && compArea > 0
-      ? numberStringUtil(comp.sales_closing_price) / compArea
-      : 0;
-    return acc + compPriceToSqft;
-  }, 0) / selectedComps?.length;
+  const compsPriceToSqft = selectedComps
+    ? selectedComps.reduce((acc, comp) => {
+      const compArea = comp.building_area;
+      const compPriceToSqft = compArea && compArea > 0
+        ? numberStringUtil(comp.sales_closing_price) / compArea
+        : 0;
+      return acc + compPriceToSqft;
+    }, 0) / selectedComps.length
+    : null;
 
-  const compsAverageDOM = selectedComps?.reduce((acc, comp) => {
-    return acc + calcDays(comp.sales_date);
-  }, 0) / selectedComps?.length;
+  const compsAverageDOM = selectedComps
+    ? selectedComps?.reduce((acc, comp) => {
+      return acc + calcDays(comp.sales_date);
+    }, 0) / selectedComps?.length
+    : null;
 
-  return (
-    <div className="p-4">
-      <Grid className={styles.tableWrapper}>
-        <TableContainer>
-          <Table>
-            <TableHead>
-              <TableRow>
-                <StyledTableCell></StyledTableCell>
-                <StyledTableCell></StyledTableCell>
-                <StyledTableCell>
-                  <Typography className={styles.columnTitle}>
-                    Property
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell>
-                  <Typography className={styles.columnTitle}>Comps</Typography>
-                </StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <StyledTableCell component="th" scope="row">
-                  <Typography
-                    className={clsx([styles.cellText, styles.cellHeader])}
-                  >
-                    Price/Sqft
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <hr className="border-t-black border-dashed" />
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>
-                    {priceFormatter(priceToSqft?.toFixed())}
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>
-                    {priceFormatter(compsPriceToSqft.toFixed())}
-                  </Typography>
-                </StyledTableCell>
-              </TableRow>
+  return (props.property?.sales_comps?.data?.length > 0 &&
+    (
+      <div className="p-4">
+        <Grid className={styles.tableWrapper}>
+          <TableContainer>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <StyledTableCell></StyledTableCell>
+                  <StyledTableCell></StyledTableCell>
+                  <StyledTableCell>
+                    <Typography className={styles.columnTitle}>
+                      Property
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell>
+                    <Typography className={styles.columnTitle}>
+                      Comps
+                    </Typography>
+                  </StyledTableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                <TableRow>
+                  <StyledTableCell component="th" scope="row">
+                    <Typography
+                      className={clsx([styles.cellText, styles.cellHeader])}
+                    >
+                      Price/Sqft
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <hr className="border-t-black border-dashed" />
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <Typography className={styles.cellText}>
+                      {priceToSqft
+                        ? priceFormatter(priceToSqft.toFixed())
+                        : "-"}
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <Typography className={styles.cellText}>
+                      {compsPriceToSqft
+                        ? priceFormatter(compsPriceToSqft.toFixed())
+                        : "-"}
+                    </Typography>
+                  </StyledTableCell>
+                </TableRow>
 
-              <TableRow>
-                <StyledTableCell component="th" scope="row">
-                  <Typography className={styles.cellText}>
-                    Average DOM
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <hr className="border-t-black border-dashed" />
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>
-                    {props.property.sales_date}
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>
-                    {compsAverageDOM.toFixed()}
-                  </Typography>
-                </StyledTableCell>
-              </TableRow>
+                <TableRow>
+                  <StyledTableCell component="th" scope="row">
+                    <Typography className={styles.cellText}>
+                      Average DOM
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <hr className="border-t-black border-dashed" />
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <Typography className={styles.cellText}>
+                      {props.property.sales_date}
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <Typography className={styles.cellText}>
+                      {compsAverageDOM?.toFixed() || "-"}
+                    </Typography>
+                  </StyledTableCell>
+                </TableRow>
 
-              <TableRow>
-                <StyledTableCell component="th" scope="row">
-                  <Typography className={styles.cellText}>
-                    Total Comps
-                  </Typography>
-                </StyledTableCell>
-                <StyledTableCell align="center" className="w-full">
-                  <hr className="border-t-black border-dashed w-full" />
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>-</Typography>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>
-                    {props.property.sales_comps.data?.length}
-                  </Typography>
-                </StyledTableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
+                <TableRow>
+                  <StyledTableCell component="th" scope="row">
+                    <Typography className={styles.cellText}>
+                      Total Comps
+                    </Typography>
+                  </StyledTableCell>
+                  <StyledTableCell align="center" className="w-full">
+                    <hr className="border-t-black border-dashed w-full" />
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <Typography className={styles.cellText}>-</Typography>
+                  </StyledTableCell>
+                  <StyledTableCell align="center">
+                    <Typography className={styles.cellText}>
+                      {props.property.sales_comps.data?.length || 0}
+                    </Typography>
+                  </StyledTableCell>
+                </TableRow>
+              </TableBody>
+            </Table>
+          </TableContainer>
 
-        {/* <Grid container justifyContent="flex-end"> */}
-        {/*   <ThemedButton text="Market Facts" /> */}
-        {/* </Grid> */}
-      </Grid>
-    </div>
-  );
+          {/* <Grid container justifyContent="flex-end"> */}
+          {/*   <ThemedButton text="Market Facts" /> */}
+          {/* </Grid> */}
+        </Grid>
+      </div>
+    ));
 };
 
 export default SaleComparable;

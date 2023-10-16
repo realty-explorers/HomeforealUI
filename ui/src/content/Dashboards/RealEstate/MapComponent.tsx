@@ -24,8 +24,11 @@ import AnalyzedProperty from "@/models/analyzedProperty";
 import { PropertyType } from "@/models/property";
 import Lottie from "lottie-react";
 import mapAnimation from "@/static/animations/loading/mapAnimation.json";
+import mapLoadingAnimation from "@/static/animations/loading/mapLoadingAnimation.json";
 import * as TWEEN from "@tweenjs/tween.js";
 import { EasingFunction } from "framer-motion";
+import clsx from "clsx";
+import Popper from "@mui/material/Popper";
 
 const center = {
   lat: 33.429565,
@@ -295,6 +298,7 @@ const MapComponent: React.FC<MapComponentProps> = (
         lastTween = newTween;
         TWEEN.add(newTween);
       }
+      // tween.delay(250);
       tween.start();
     }
   };
@@ -409,6 +413,9 @@ const MapComponent: React.FC<MapComponentProps> = (
     west: -125.000000,
     east: -66.934570,
   };
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popper" : undefined;
 
   return isLoaded
     ? (
@@ -437,6 +444,13 @@ const MapComponent: React.FC<MapComponentProps> = (
               featureType: "poi",
               stylers: [{ visibility: "off" }],
             },
+            {
+              featureType: "road",
+              elementType: "labels",
+              stylers: [
+                { visibility: "off" },
+              ],
+            },
           ],
         }}
       >
@@ -446,13 +460,63 @@ const MapComponent: React.FC<MapComponentProps> = (
           selectedProperty={selectedProperty}
           setSelectedProperty={handleSelectProperty}
         />
-        {/* <MapControls /> */}
+        {/* <Popper */}
+        {/*   id={id} */}
+        {/*   open={true} */}
+        {/*   anchorEl={anchorEl} */}
+        {/*   modifiers={[ */}
+        {/*     { */}
+        {/*       name: "flip", */}
+        {/*       enabled: true, */}
+        {/*       options: { */}
+        {/*         altBoundary: true, */}
+        {/*         rootBoundary: "document", */}
+        {/*         padding: 8, */}
+        {/*       }, */}
+        {/*     }, */}
+        {/*     { */}
+        {/*       name: "preventOverflow", */}
+        {/*       enabled: true, */}
+        {/*       options: { */}
+        {/*         altAxis: true, */}
+        {/*         altBoundary: true, */}
+        {/*         tether: true, */}
+        {/*         rootBoundary: "document", */}
+        {/*         padding: 8, */}
+        {/*       }, */}
+        {/*     }, */}
+        {/*     // { */}
+        {/*     //   name: "arrow", */}
+        {/*     //   enabled: true, */}
+        {/*     //   options: { */}
+        {/*     //     element: arrowRef, */}
+        {/*     //   }, */}
+        {/*     // }, */}
+        {/*   ]} */}
+        {/* > */}
+        {/*   <div className="bg-red-500 w-20 h-20"> */}
+        {/*     The content of the Popper. */}
+        {/*   </div> */}
+        {/* </Popper> */}
+        {propertiesState.isFetching && (
+          <div
+            className={clsx([
+              "absolute top-0 right-0 w-20 h-20 ",
+              propertiesState.isFetching ? "flex" : "hidden",
+            ])}
+          >
+            <Lottie
+              animationData={mapLoadingAnimation}
+              className="h-20 w-20"
+            />
+          </div>
+        )}
+
         <MapControlPanel />
         <LocationBounds locationData={locationState?.data} />
         {selectedProperty
           ? (
             <>
-              {/* <PropertyRadius selectedDeal={selectedDeal} /> */}
               <SelectedPropertyMarker
                 selectedProperty={selectedProperty}
                 setSelectedProperty={handleSelectProperty}
@@ -473,7 +537,6 @@ const MapComponent: React.FC<MapComponentProps> = (
               onClick={handleClusterClicked}
               minimumClusterSize={5}
               zoomOnClick={false}
-              // TODO: onClusteringEnd - save state of clusters and when clicked update zoom
             >
               {(clusterer) => (
                 <>
@@ -481,6 +544,7 @@ const MapComponent: React.FC<MapComponentProps> = (
                     properties={filterProperties(propertiesState?.data)}
                     setSelectedProperty={handleSelectProperty}
                     clusterer={clusterer}
+                    setAnchorEl={setAnchorEl}
                   />
                 </>
               )}

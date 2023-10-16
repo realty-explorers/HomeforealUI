@@ -25,6 +25,11 @@ import PropertyCard from "./PropertyCard";
 import CompsProperty from "@/models/comps_property";
 import { openGoogleSearch } from "@/utils/windowFunctions";
 import AnalyzedProperty from "@/models/analyzedProperty";
+import Image from "next/image";
+import HotelIcon from "@mui/icons-material/Hotel";
+import BathtubIcon from "@mui/icons-material/Bathtub";
+import SquareFootIcon from "@mui/icons-material/SquareFoot";
+import PinDropOutlinedIcon from "@mui/icons-material/PinDropOutlined";
 
 const AddressLink = styled("h3")(({ theme }) => ({
   padding: 0,
@@ -44,7 +49,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   props: PropertyMapCardProps,
 ) => {
   const [cardImage, setCardImage] = useState(
-    "https://img.freepik.com/free-vector/house-icon_23-2147510119.jpg",
+    props.property.primary_image,
   );
 
   const showDistance = () => {
@@ -56,6 +61,56 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
       return 0;
     }
   };
+  return (
+    <div className="flex rounded-xl bg-white w-80 h-32">
+      <div className="w-1/3 h-full relative">
+        <Image
+          src={cardImage}
+          alt={props.property.address}
+          onError={() =>
+            setCardImage(
+              "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=",
+            )}
+          fill
+          className="object-cover object-center w-full h-full rounded-l-xl"
+        />
+      </div>
+      <div className="flex flex-col justify-around w-2/3 px-4 gap-y-2">
+        {/* import HotelIcon from '@mui/icons-material/Hotel'; */}
+        {/* import BathtubIcon from '@mui/icons-material/Bathtub'; */}
+        {/* import SquareFootIcon from '@mui/icons-material/SquareFoot'; */}
+        <div className="flex w-full items-center justify-between mt-2">
+          <div className="flex">
+            <HotelIcon />
+            <Typography>{props.property.bedrooms}</Typography>
+          </div>
+          <div className="flex">
+            <BathtubIcon />
+            <Typography>{props.property.full_bathrooms}</Typography>
+          </div>
+          <div className="flex">
+            <SquareFootIcon />
+            <Typography>{props.property.building_area}</Typography>
+          </div>
+        </div>
+        <div className="flex items-center">
+          <PinDropOutlinedIcon />
+          <Typography className="text-[0.7rem]">
+            {props.property.address}
+          </Typography>
+        </div>
+        <div className="flex items-center">
+          <Typography className="font-poppins font-bold text-lg">
+            {priceFormatter(props.property.listing_price)}
+          </Typography>
+
+          {/* <Typography className="font-poppins font-bold text-lg"> */}
+          {/*   {props.property.arv_price} */}
+          {/* </Typography> */}
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <>
