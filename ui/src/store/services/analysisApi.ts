@@ -1,33 +1,74 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {
+  BaseQueryApi,
+  createApi,
+  FetchArgs,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
+import { logout } from "../slices/authSlice";
 
 // const baseUrl = process.env.NEXT_PUBLIC_analysis_API_URL;
-const baseUrl = "http://20.253.72.70:8001/analysis";
+const baseUrl = "http://172.171.238.111:8001/analysis";
 const GENERAL_BUYBOX_ID = "3dbf8068-bfda-4422-af27-7597045dac6e";
+
+const baseQuery = fetchBaseQuery({
+  baseUrl,
+  prepareHeaders: async (headers, { getState }) => {
+    let token = (getState() as RootState).auth.token;
+
+    if (!token) {
+      try {
+        const request = await fetch("/api/protected");
+        token = (await request.json()).accessToken;
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    // If we have a token set in state, let's assume that we should be passing it.
+    if (token) {
+      headers.set("authorization", `Bearer ${token}`);
+    }
+
+    return headers;
+  },
+});
+const baseQueryWithReauth = async (
+  args: string | FetchArgs,
+  api: BaseQueryApi,
+  extraOptions: any,
+) => {
+  let result = await baseQuery(args, api, extraOptions);
+  if (result?.error?.status === 403) {
+    //TODO: fetch new accessToken using refresh token and update auth state and recall the api
+  } else if (result?.error?.status === 401) {
+    api.dispatch(logout());
+  }
+  return result;
+};
 
 export const analysisApi = createApi({
   reducerPath: "analysisApi",
-  baseQuery: fetchBaseQuery({
-    baseUrl,
-    prepareHeaders: async (headers, { getState }) => {
-      const token = (getState() as RootState).auth.token;
-      if (token) {
-        headers.set("authorization", `Bearer ${token}`);
-      }
-      return headers;
-    },
-  }),
+  baseQuery: baseQueryWithReauth,
+  tagTypes: ["BuyBoxLeads", "BuyBoxLeadsCount"],
   endpoints: (builder) => ({
-    getSummary: builder.query({
-      query: () => ({ url: `summary/${GENERAL_BUYBOX_ID}` }),
-      transformResponse: (response: any) => response,
-    }),
     getLeads: builder.query({
-      query: (id) => `leads/${id}`,
-      // transformResponse: (response) => response
+      query: ({ id, skip, limit }) => ({
+        url: `summary?buybox_id=${id}&skip=${skip}&limit=${limit}`,
+      }),
+      transformResponse: (response: any) => response,
+      providesTags: ["BuyBoxLeads"],
+    }),
+    getLeadsCount: builder.query({
+      query: (id) => ({
+        url: `count?buybox_id=${id}`,
+      }),
+      transformResponse: (response: any) => response,
+      providesTags: ["BuyBoxLeadsCount"],
     }),
   }),
 });
 
 export const analysisApiEndpoints = analysisApi.endpoints;
 
-export const { useGetSummaryQuery, useGetLeadsQuery } = analysisApi;
+export const { useGetLeadsQuery, useLazyGetLeadsQuery, useGetLeadsCountQuery } =
+  analysisApi;

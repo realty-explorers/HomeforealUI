@@ -122,7 +122,6 @@ export const buyBoxApi = createApi({
 export const buyBoxApiEndpoints = buyBoxApi.endpoints;
 
 export const {
-  useLazyGetLeadsQuery,
   useGetBuyBoxesQuery,
   useLazyGetBuyBoxesQuery,
   useCreateBuyBoxMutation,

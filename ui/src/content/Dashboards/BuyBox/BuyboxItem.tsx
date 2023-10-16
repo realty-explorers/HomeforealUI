@@ -20,6 +20,8 @@ import { skipToken } from "@reduxjs/toolkit/dist/query";
 import BuyBox from "@/models/buybox";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import BuyBoxLeads from "./BuyBoxLeads";
+import { useState } from "react";
 
 const columns: GridColDef[] = [
   {
@@ -162,12 +164,18 @@ const BuyboxItem = (props: BuyboxItemProps) => {
   //   props.data?.buybox_id || skipToken,
   // );
 
+  const [expanded, setExpanded] = useState(false);
+
   const handleEditBuyBox = (e) => {
     e.stopPropagation();
     props.editBuyBox(props.buybox);
   };
 
   const allowedToEdit = props.buybox.permissions.includes("edit");
+
+  const handleChange = (event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpanded(isExpanded);
+  };
 
   const rows = []?.map((lead: Lead, index) => {
     return {
@@ -187,7 +195,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
 
   return (
     <>
-      <StyledAccordion>
+      <StyledAccordion onChange={handleChange}>
         <StyledAccordionSummary
           expandIcon={<ExpandMoreIcon className="-rotate-90" />}
           className="flex-row-reverse"
@@ -208,10 +216,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
           </div>
         </StyledAccordionSummary>
         <AccordionDetails>
-          <Typography>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse
-            malesuada lacus ex, sit amet blandit leo lobortis eget.
-          </Typography>
+          <BuyBoxLeads buybox={props.buybox} open={expanded} />
         </AccordionDetails>
       </StyledAccordion>
       {/* <DataGrid */}
