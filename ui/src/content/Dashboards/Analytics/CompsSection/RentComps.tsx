@@ -12,18 +12,19 @@ import { Height } from "@mui/icons-material";
 import AnalyzedProperty, { CompData } from "@/models/analyzedProperty";
 import { useState } from "react";
 import CompsFilter from "./CompsFilter";
+import RentsCard from "./RentsCard";
 
 const Wrapper = styled(Box)(({ theme }) => ({
   width: "10rem",
   overflow: "hidden",
 }));
 
-type CompsSectionProps = {
+type RentCompsProps = {
   property: AnalyzedProperty;
   selectedComps: CompData[];
   setSelectedComps: (compsProperties: CompData[]) => void;
 };
-const CompsSection = (props: CompsSectionProps) => {
+const RentComps = (props: RentCompsProps) => {
   const [filterOpen, setFilterOpen] = useState(false);
 
   const handleToggle = (compsProperty: CompData) => {
@@ -38,11 +39,11 @@ const CompsSection = (props: CompsSectionProps) => {
     }
   };
 
-  return (props.property?.sales_comps?.data?.length > 0 &&
+  return (props.property?.rents_comps?.data?.length > 0 &&
     (
       <Grid className={`${analyticsStyles.sectionContainer}`}>
         <Typography className={styles.compsSectionInfo}>
-          We found {props.property.sales_comps?.data?.length}{" "}
+          We found {props.property.rents_comps?.data?.length}{" "}
           comps that match your search
         </Typography>
         <Button
@@ -55,7 +56,7 @@ const CompsSection = (props: CompsSectionProps) => {
         <CompsFilter
           open={filterOpen}
           setOpen={setFilterOpen}
-          compsProperties={props.property.sales_comps?.data}
+          compsProperties={props.property.rents_comps?.data}
           setSelectedComps={props.setSelectedComps}
         />
 
@@ -66,14 +67,15 @@ const CompsSection = (props: CompsSectionProps) => {
               compsProperties={props.selectedComps}
             />
           </Grid>
-          {props.property.sales_comps?.data?.map((compsProperty, index) => (
+          {props.property.rents_comps?.data?.map((compsProperty, index) => (
             <Grid item key={index} className="mb-8 left-0">
-              <CompsCard
+              <RentsCard
                 compsProperty={compsProperty}
                 index={index}
                 selected={props.selectedComps?.includes(compsProperty)}
                 toggle={() =>
                   handleToggle(compsProperty)}
+                className={styles.rentCompsCard}
               />
             </Grid>
           ))}
@@ -82,4 +84,4 @@ const CompsSection = (props: CompsSectionProps) => {
     ));
 };
 
-export default CompsSection;
+export default RentComps;

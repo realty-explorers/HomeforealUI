@@ -27,6 +27,10 @@ module.exports = async (phase, { defaultConfig }) => {
           hostname: "**",
         },
       ],
+      // images: {
+      // loader: "custom",
+      // loaderFile: "./public/static/images/placeholders/covers/house_bg.jpg",
+      // },
     },
   };
   return nextConfig;

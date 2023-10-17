@@ -13,11 +13,14 @@ import ArrowCircleLeftSharpIcon from "@mui/icons-material/ArrowCircleLeftSharp";
 import ArrowCircleRightSharpIcon from "@mui/icons-material/ArrowCircleRightSharp";
 import AnalyzedProperty from "@/models/analyzedProperty";
 import PropertyCard from "./PropertyCard";
-import { useDraggable } from "react-use-draggable-scroll";
+// import { useDraggable } from "react-use-draggable-scroll";
 import { grey } from "@mui/material/colors";
 import { Global } from "@emotion/react";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import clsx from "clsx";
+import { FixedSizeList } from "react-window";
+import AutoSizer from "react-virtualized-auto-sizer";
+import { ClockNumber } from "@mui/x-date-pickers/TimeClock/ClockNumber";
 
 const Panel = styled(Stack)(({ theme }) => ({
   // pointerEvents: 'auto',
@@ -58,19 +61,8 @@ type CardsPanelProps = {
   properties: AnalyzedProperty[];
   selectedProperty: AnalyzedProperty;
   setSelectedProperty: (property: AnalyzedProperty) => void;
-  window?: () => Window;
+  setHoveredProperty: (property: AnalyzedProperty) => void;
 };
-
-const Root = styled("div")(({ theme }) => ({
-  height: "100%",
-  backgroundColor: theme.palette.mode === "light"
-    ? grey[100]
-    : theme.palette.background.default,
-}));
-
-const StyledBox = styled(Box)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "light" ? "#fff" : grey[800],
-}));
 
 const Puller = styled(Box)(({ theme }) => ({
   width: 30,
@@ -83,20 +75,20 @@ const Puller = styled(Box)(({ theme }) => ({
 }));
 const drawerBleeding = 56;
 const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
-  const ref = useRef(); // We will use React useRef hook to reference the wrapping div:
-  const { window } = props;
+  // const ref = useRef(); // We will use React useRef hook to reference the wrapping div:
+  const [ref, setRef] = useState(null);
   const [open, setOpen] = React.useState(false);
   const [cardsOpen, setCardsOpen] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [index, setIndex] = useState(0);
 
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpen(newOpen);
-  };
-  const container = window !== undefined
-    ? () => window().document.body
-    : undefined;
-  const { events } = useDraggable(ref);
+  // const toggleDrawer = (newOpen: boolean) => () => {
+  //   setOpen(newOpen);
+  // };
+  // const container = window !== undefined
+  //   ? () => window().document.body
+  //   : undefined;
+  // const { events } = useDraggable(ref);
   const scrollLeft = () => {
     const el: any = ref.current;
     el.scrollTo({
@@ -104,7 +96,7 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
       behavior: "smooth",
     });
   };
-
+  //
   const scrollRight = () => {
     const el: any = ref.current;
     el.scrollTo({
@@ -113,7 +105,23 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
     });
   };
   useEffect(() => {
-    const el: any = ref.current;
+    const element = document.querySelector("#meow > div");
+    setRef(element);
+    if (props.selectedProperty) {
+      const selectedPropertyIndex = props.properties?.findIndex(
+        (property) => property.source_id === props.selectedProperty?.source_id,
+      );
+      setIndex(selectedPropertyIndex);
+      const scrollObject = {
+        left: 230 * selectedPropertyIndex,
+      };
+      if (Math.abs(selectedPropertyIndex - index) < 10) {
+        scrollObject["behavior"] = "smooth";
+      }
+      element?.scrollTo(scrollObject);
+    }
+
+    // const el: any = ref.current;
     // if (props.setSelectedProperty) {
     //   const card = document.getElementById(props.selectedProperty.source_id);
     //   const el: any = ref.current;
@@ -124,23 +132,27 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
     //     });
     //   }
     // }
-    if (el) {
-      const onWheel = (e) => {
-        if (e.deltaY == 0) return;
-        e.preventDefault();
-        el.scrollTo({
-          left: el.scrollLeft + e.deltaY,
-          // left: e.deltaY < 0 ? -30 : 30,
-          // behavior: 'smooth'
-        });
-      };
-      el.addEventListener("wheel", onWheel);
-      return () => el.removeEventListener("wheel", onWheel);
-    }
+    // if (el) {
+    //   const onWheel = (e) => {
+    //     if (e.deltaY == 0) return;
+    //     e.preventDefault();
+    //     el.scrollTo({
+    //       left: el.scrollLeft + e.deltaY,
+    //       // left: e.deltaY < 0 ? -30 : 30,
+    //       // behavior: 'smooth'
+    //     });
+    //   };
+    //   el.addEventListener("wheel", onWheel);
+    //   return () => el.removeEventListener("wheel", onWheel);
+    // }
   }, [props.selectedProperty]);
 
   const handleSelectProperty = (property: AnalyzedProperty, index: number) => {
     props.setSelectedProperty(property);
+    ref?.scrollTo({
+      left: 230 * index,
+      behavior: "smooth",
+    });
     // const card = document.getElementById(property.source_id);
     // const el: any = ref.current;
     // if (el) {
@@ -150,6 +162,82 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
     //   });
     // }
   };
+  const Column = ({ index, style }) => (
+    <div style={{ ...style }} className="px-2 py-2">
+      <div className="w-full h-full rounded-xl bg-white">
+        <PropertyCard
+          key={index}
+          property={props.properties?.[index]}
+          selectedProperty={props.selectedProperty}
+          setSelectedProperty={(property) =>
+            handleSelectProperty(property, index)}
+          setOpenMoreDetails={() => {}}
+          setHoveredProperty={props.setHoveredProperty}
+        />
+      </div>
+    </div>
+  );
+
+  const [scrolling, setScrolling] = useState(false);
+  const [scrollX, setScrollX] = useState(0);
+  const [clientX, setClientX] = useState(0);
+  const onMouseDown = (e) => {
+    console.log("mousedown");
+    setScrolling(true);
+    setClientX(e.clientX);
+  };
+
+  const onMouseUp = () => {
+    console.log("mouseup ");
+    setScrolling(false);
+  };
+
+  const onMouseMove = (e) => {
+    if (scrolling) {
+      // setClientX(0);
+      const width = e.clientX - clientX + scrollX;
+      // setClientX(e.clientX);
+      // setScrollX(scrollX + e.clientX - clientX);
+      console.log("moving ", width);
+      console.log("clientx ", e.clientX);
+      console.log("scrollX ", scrollX);
+      ref.scrollLeft = -width > 0 ? -width : 0;
+      // ref.scrollLeft = scrollX + e.clientX - clientX;
+      setScrollX(width);
+      // setClientX(e.clientX);
+      // ref.scrollLeft = 500;
+    }
+  };
+
+  // const handleMouseDown = (e) => {
+  //   e.preventDefault();
+  //   console.log("dragging");
+  //   ref.scrollLeft = 0;
+  //   console.log(ref);
+  // };
+  return (
+    <div className={clsx(["absolute bottom-0 w-screen h-60 "])}>
+      <div className="relative flex w-full h-full">
+        <AutoSizer className="w-full">
+          {({ height, width }) => (
+            <div id="meow">
+              <FixedSizeList
+                className="List"
+                height={height}
+                itemCount={props.properties?.length ?? 0}
+                itemSize={230}
+                layout="horizontal"
+                width={width}
+              >
+                {Column}
+              </FixedSizeList>
+            </div>
+          )}
+        </AutoSizer>
+      </div>
+    </div>
+  );
+
   return (
     <>
       <div

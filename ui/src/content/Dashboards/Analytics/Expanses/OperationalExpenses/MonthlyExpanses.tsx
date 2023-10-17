@@ -19,16 +19,22 @@ import { TransitionGroup } from "react-transition-group";
 import AnalyzedProperty from "@/models/analyzedProperty";
 import { priceFormatter } from "@/utils/converters";
 
-type InitialInvestmentProps = {
+type MonthlyExpansesProps = {
   property: AnalyzedProperty;
   setExpanses: (value: number) => void;
   active: boolean;
   toggleActive: () => void;
 };
-const InitialInvestment = (props: InitialInvestmentProps) => {
+const MonthlyExpanses = (props: MonthlyExpansesProps) => {
   const priceTypes = [
     { label: "ARV", value: props.property?.arv_price },
     { label: "Listing Price", value: props.property?.listing_price || 0 },
+    // {
+    //   label: "Rental Price",
+    //   value: typeof props.property?.rents_listing_price === "number"
+    //     ? props.property?.rents_listing_price
+    //     : 0,
+    // },
   ];
 
   const [expanses, setExpanses] = useState<Expanse[]>([]);
@@ -37,35 +43,57 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
     const defaultExpanses = [
       {
         id: uuidv4(),
-        label: "Fixed Fee",
-        value: props.property?.expenses?.fixed_fee?.expense_amount || 0,
-        priceType: props.property.expenses?.fixed_fee?.expense_ref === "arv"
-          ? priceTypes[0]
-          : priceTypes[1],
+        label: "Property Tax",
+        value:
+          props.property?.operational_expenses?.property_tax?.expense_amount ||
+          0,
+        priceType:
+          props.property.operational_expenses?.property_tax?.expense_ref ===
+              "arv"
+            ? priceTypes[0]
+            : priceTypes[1],
       },
       {
         id: uuidv4(),
-        label: "Closing Free",
-        value: props.property?.expenses?.closing_fee?.expense_amount || 0,
-        priceType: props.property.expenses?.closing_fee?.expense_ref === "arv"
-          ? priceTypes[0]
-          : priceTypes[1],
+        label: "Insurance",
+        value:
+          props.property?.operational_expenses?.insurance?.expense_amount || 0,
+        priceType:
+          props.property.expenses?.operational_expenses?.insurance === "arv"
+            ? priceTypes[0]
+            : priceTypes[1],
       },
       {
         id: uuidv4(),
-        label: "Selling Fee",
-        value: props.property?.expenses?.selling_fee?.expense_amount || 0,
-        priceType: props.property.expenses?.selling_fee?.expense_ref === "arv"
-          ? priceTypes[0]
-          : priceTypes[1],
+        label: "Maintenance",
+        value:
+          props.property?.operational_expenses?.maintenance?.expense_amount ||
+          0,
+        priceType:
+          props.property.operational_expenses?.maintenance?.expense_ref ===
+              "arv"
+            ? priceTypes[0]
+            : priceTypes[1],
       },
       {
         id: uuidv4(),
-        label: "Rehab",
-        value: props.property?.expenses?.rehab?.expense_amount || 0,
-        priceType: props.property.expenses?.rehab?.expense_ref === "arv"
-          ? priceTypes[0]
-          : priceTypes[1],
+        label: "Management",
+        value:
+          props.property?.operational_expenses?.management?.expense_amount || 0,
+        priceType:
+          props.property.operational_expenses?.management?.expense_ref === "arv"
+            ? priceTypes[0]
+            : priceTypes[1],
+      },
+      {
+        id: uuidv4(),
+        label: "Vacancy",
+        value: props.property?.operational_expenses?.vacancy?.expense_amount ||
+          0,
+        priceType:
+          props.property.operational_expenses?.vacancy?.expense_ref === "arv"
+            ? priceTypes[0]
+            : priceTypes[1],
       },
     ];
     setExpanses(defaultExpanses);
@@ -114,12 +142,12 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
           onChange={props.toggleActive}
         />
         <Typography className={styles.checkboxLabel}>
-          Initial Investment
+          Monthly Expenses
         </Typography>
       </Grid>
       <Grid item container xs={6} justifyContent="center">
         <Typography className={styles.totalExpansesLabel}>
-          {priceFormatter(Math.round(totalExpanses(expanses)))}
+          {priceFormatter(Math.round(totalExpanses(expanses) / 12))}/Month
         </Typography>
       </Grid>
       <List className="w-full">
@@ -146,4 +174,4 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
   );
 };
 
-export default InitialInvestment;
+export default MonthlyExpanses;

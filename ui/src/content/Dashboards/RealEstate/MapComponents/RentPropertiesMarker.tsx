@@ -37,7 +37,7 @@ const CompsMarker = (props: {
       label={{
         text: props.text ?? "",
         className:
-          "bg-primary font-poppins text-white py-[4px] px-0 rounded-2xl  w-[25px] h-[25px]",
+          "bg-[#002278] font-poppins text-white py-[4px] px-0 rounded-2xl  w-[25px] h-[25px]",
         color: "#fff",
         fontSize: "12px",
         fontFamily: "Poppins",
@@ -78,11 +78,11 @@ const CompsMarker = (props: {
   );
 };
 
-type SoldPropertiesMarkersProps = {
+type RentPropertiesMarkersProps = {
   selectedComps?: CompData[];
 };
 
-const SoldPropertiesMarkers = (props: SoldPropertiesMarkersProps) => {
+const RentPropertiesMarkers = (props: RentPropertiesMarkersProps) => {
   const [hoveredProperty, setHoveredProperty] = useState<string>("");
   const [showOverlayTimeout, setShowOverlayTimeout] = useState<any>();
 
@@ -120,4 +120,4 @@ const SoldPropertiesMarkers = (props: SoldPropertiesMarkersProps) => {
   return <>{props.selectedComps ? renderCompsMarkers() : <></>}</>;
 };
 
-export default SoldPropertiesMarkers;
+export default RentPropertiesMarkers;

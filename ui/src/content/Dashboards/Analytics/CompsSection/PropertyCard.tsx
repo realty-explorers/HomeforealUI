@@ -146,13 +146,13 @@ const PropertyCard = (props: PropertyCardProps) => {
             : "";
           return (
             <React.Fragment key={index}>
-              <div>
+              <div className="text-white">
                 <Typography className={styles.propertyRowHeader}>
                   {property.label}
                 </Typography>
               </div>
 
-              <div>
+              <div className="text-white">
                 <Typography
                   className={clsx([styles.propertyText, property.className])}
                 >
@@ -160,7 +160,7 @@ const PropertyCard = (props: PropertyCardProps) => {
                 </Typography>
               </div>
 
-              <div>
+              <div className="text-white">
                 <Typography className={styles.propertyText}>
                   {averageLabel}
                 </Typography>

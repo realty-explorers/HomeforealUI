@@ -1,3 +1,4 @@
+import AnalyzedProperty from "@/models/analyzedProperty";
 import Deal from "@/models/deal";
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import data from "./mockData.json";
@@ -28,7 +29,7 @@ export const propertiesApi = createApi({
         }
         return `leads?buybox_id=${GENERAL_BUYBOX_ID}&${queryUrl}`;
       },
-      transformResponse: (response: any) => {
+      transformResponse: (response: AnalyzedProperty[]) => {
         try {
           // const set = [];
           // const a = data[0];
@@ -40,8 +41,16 @@ export const propertiesApi = createApi({
           // }
           // console.log(set);
           // return set;
-          return response.slice(0, 50);
-          // return response;
+          // return response.slice(0, 50);
+          response.sort((a, b) => {
+            if (a.arv_price && !b.arv_price) return -1;
+            if (!a.arv_price && b.arv_price) return 1;
+            if (!a.arv_price && !b.arv_price) return 0;
+            if (a.arv_price > b.arv_price) return 1;
+            if (a.arv_price < b.arv_price) return -1;
+            return 0;
+          });
+          return response;
         } catch (e) {
           console.log(e);
         }

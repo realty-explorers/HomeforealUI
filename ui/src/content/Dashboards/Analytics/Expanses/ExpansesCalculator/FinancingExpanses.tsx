@@ -81,13 +81,20 @@ const FinancingExpanses = (props: FinancingExpansesProps) => {
   const [interestRate, setInterestRate] = useState<number>(defaultInterestRate);
 
   useEffect(() => {
-    setExpanses([
-      { ...defaultOriginationFee },
-    ]);
+    const defaultExpanses = [{ ...defaultOriginationFee }];
+    setExpanses(defaultExpanses);
     setMonths(defaultMonths);
     setInterestRate(defaultInterestRate);
     setDownPayment({ ...defaultDownPayment });
     setLoanAmount({ ...defaultLoanAmount });
+    props.setExpanses(
+      totalExpanses(
+        defaultExpanses,
+        defaultLoanAmount.value,
+        defaultInterestRate,
+        defaultMonths,
+      ),
+    );
   }, [props.property]);
 
   const handleChangeExpanses = (changedExpanse: Expanse) => {
@@ -189,7 +196,7 @@ const FinancingExpanses = (props: FinancingExpansesProps) => {
           )}
         </Typography>
       </Grid>
-      <List>
+      <List className="w-full">
         <ExpansesRow
           expanse={downPayment}
           setExpanse={(expanse) => handleChangeDownPayment(expanse)}

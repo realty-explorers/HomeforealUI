@@ -15,24 +15,33 @@ import PropertyFeatures from "@/content/Dashboards/Analytics/PropertyFeatrues";
 import EnvironmentalIndicators from "@/content/Dashboards/Analytics/EnvironmentalIndicators";
 import OwnershipInfo from "@/content/Dashboards/Analytics/OwnershipInfo";
 import SaleComparable from "@/content/Dashboards/Analytics/SaleComparable";
-import CompsSection from "@/content/Dashboards/Analytics/CompsSection";
+import SalesComps from "@/content/Dashboards/Analytics/CompsSection/SalesComps";
+import RentComps from "@/content/Dashboards/Analytics/CompsSection/RentComps";
 import ExpansesCalculator from "@/content/Dashboards/Analytics/Expanses/ExpansesCalculator";
+import OperationalExpanses from "@/content/Dashboards/Analytics/Expanses/OperationalExpenses";
 import RentComparable from "@/content/Dashboards/Analytics/RentComparable";
-import OperationalExpanses from "@/content/Dashboards/Analytics/Expanses/OperationalExpanses";
 import SplitPane from "react-split-pane";
 import clsx from "clsx";
 import {
   selectProperties,
   setSelectedComps,
   setSelectedProperty,
+  setSelectedRentalComps,
 } from "@/store/slices/propertiesSlice";
 // import { Property } from "@/models/analyzedProperty";
 import styles from "./RealEstate.module.scss";
 import SaleComparableIndicators from "@/content/Dashboards/Analytics/SaleComparableIndicators";
 import { CompData } from "@/models/analyzedProperty";
+import { motion, Variants } from "framer-motion";
 
 const MoreDetailsSection = (
-  { selectedProperty, selectedComps, setSelectedComps },
+  {
+    selectedProperty,
+    selectedComps,
+    setSelectedComps,
+    selectedRentalComps,
+    setSelectedRentalComps,
+  },
 ) => {
   return selectedProperty
     ? (
@@ -45,16 +54,20 @@ const MoreDetailsSection = (
         <div className="mt-8">
           <SaleComparableIndicators property={selectedProperty} />
           <SaleComparable property={selectedProperty} />
-          <CompsSection
+          <SalesComps
             property={selectedProperty}
             selectedComps={selectedComps}
             setSelectedComps={setSelectedComps}
           />
         </div>
         <ExpansesCalculator property={selectedProperty} />
-        {/* <RentComparable property={selectedProperty} /> */}
-        {/* <CompsSection property={selectedProperty} /> */}
-        {/* <OperationalExpanses property={selectedProperty} /> */}
+        <RentComparable property={selectedProperty} />
+        <RentComps
+          property={selectedProperty}
+          selectedComps={selectedRentalComps}
+          setSelectedComps={setSelectedRentalComps}
+        />
+        <OperationalExpanses property={selectedProperty} />
       </>
     )
     : <></>;
@@ -65,7 +78,9 @@ const DashboardRealEstate = (props: any) => {
   //   required: true
   // });
   const dispatch = useDispatch();
-  const { selectedProperty, selectedComps } = useSelector(selectProperties);
+  const { selectedProperty, selectedComps, selectedRentalComps } = useSelector(
+    selectProperties,
+  );
   const openMoreDetails = selectedProperty;
 
   // const setSelectedComps = (comps) => {
@@ -74,6 +89,10 @@ const DashboardRealEstate = (props: any) => {
 
   const handleSetSelectedComps = (compsProperties: CompData[]) => {
     dispatch(setSelectedComps(compsProperties));
+  };
+
+  const handleSelectRentalComps = (compsProperties: CompData[]) => {
+    dispatch(setSelectedRentalComps(compsProperties));
   };
   const [showFirstPanel, setShowFirstPanel] = useState(true);
   const [showLastPanel, setShowLastPanel] = useState(true);
@@ -86,18 +105,45 @@ const DashboardRealEstate = (props: any) => {
       </Head> */
       }
       <div className="flex w-full h-[calc(100%-60px)] ">
-        <div
-          className={clsx([
-            "hidden md:block h-[calc(100%-60px)] w-1/2 transition-all duration-500 absolute overflow-x-auto",
-            openMoreDetails ? "left-0" : "-left-full",
-          ])}
-        >
-          <MoreDetailsSection
-            selectedProperty={selectedProperty}
-            selectedComps={selectedComps}
-            setSelectedComps={handleSetSelectedComps}
-          />
-        </div>
+        {/* {openMoreDetails && ( */}
+        {/**/}
+        {/*   <div */}
+        {/*     className={clsx([ */}
+        {/*       "hidden md:block h-[calc(100%-60px)] w-1/2 transition-all duration-500 absolute overflow-x-auto", */}
+        {/*       openMoreDetails ? "left-0" : "-left-full", */}
+        {/*     ])} */}
+        {/*   > */}
+        {/*     <MoreDetailsSection */}
+        {/*       selectedProperty={selectedProperty} */}
+        {/*       selectedComps={selectedComps} */}
+        {/*       setSelectedComps={handleSetSelectedComps} */}
+        {/*     /> */}
+        {/*   </div> */}
+        {/* )} */}
+
+        {openMoreDetails && (
+          <motion.div
+            // initial={{ opacity: 0, scale: 0.5 }}
+            // animate={{ opacity: 1, scale: 1 }}
+            initial={{ left: "-100%" }}
+            animate={{ left: "0" }}
+            transition={{
+              duration: 0.8,
+              // delay: 0.5,
+              ease: [0, 0.71, 0.2, 1.01],
+            }}
+            className="w-1/2 h-[calc(100%-60px)] overflow-x-auto absolute"
+            // hidden md:block h-[calc(100%-60px)] w-1/2 transition-all duration-500 absolute overflow-x-auto
+          >
+            <MoreDetailsSection
+              selectedProperty={selectedProperty}
+              selectedComps={selectedComps}
+              setSelectedComps={handleSetSelectedComps}
+              selectedRentalComps={selectedRentalComps}
+              setSelectedRentalComps={handleSelectRentalComps}
+            />
+          </motion.div>
+        )}
 
         {/* <SplitPane split="vertical"> */}
         {/*   <MoreDetailsSection */}
@@ -112,7 +158,7 @@ const DashboardRealEstate = (props: any) => {
 
         <div
           className={clsx([
-            "h-[calc(100%-60px)]  absolute w-full left-0 bg-white",
+            "h-[calc(100%-56px)]  absolute w-full left-0 bg-white",
             openMoreDetails ? "md:w-1/2 md:left-1/2" : "w-full left-0",
             // openMoreDetails ? "w-1/2 left-1/2" : "w-1/2 left-1/2",
           ])}

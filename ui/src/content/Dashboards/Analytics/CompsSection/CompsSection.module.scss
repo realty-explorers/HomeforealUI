@@ -34,9 +34,19 @@
   margin-left: 0;
   height: 100%;
 }
+
 .compsCard {
   width: 22.5rem;
   background-color: #590d82;
+  padding: 1rem;
+  margin: 1rem 0.5rem;
+  margin-left: 0;
+  height: 100%;
+}
+
+.rentCompsCard {
+  width: 22.5rem;
+  background-color: #002278;
   padding: 1rem;
   margin: 1rem 0.5rem;
   margin-left: 0;
@@ -74,7 +84,6 @@
 }
 
 .propertyRowHeader {
-  color: #fff;
   @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
@@ -84,11 +93,9 @@
 }
 
 .propertyText {
-  color: #fff;
   @apply font-poppins;
   font-size: 1rem;
   font-style: normal;
-  font-weight: 400;
   line-height: 159.5%; /* 1.39563rem */
   text-transform: capitalize;
 }

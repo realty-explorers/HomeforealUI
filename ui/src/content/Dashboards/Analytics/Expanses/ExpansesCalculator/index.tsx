@@ -53,8 +53,6 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
     (financingExpansesActive ? financingExpanses : 0);
 
   useEffect(() => {
-    setInitialInvestmentExpanses(0);
-    setFinancingExpanses(0);
     setInitialInvestmentActive(true);
     setFinancingExpansesActive(false);
   }, [props.property]);

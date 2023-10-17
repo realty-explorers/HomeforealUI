@@ -6,12 +6,14 @@ import AnalyzedProperty, { CompData } from "@/models/analyzedProperty";
 export interface PropertiesState {
   selectedProperty?: AnalyzedProperty;
   selectedComps: CompData[];
+  selectedRentalComps: CompData[];
 }
 
 // Initial state
 const initialState: PropertiesState = {
   selectedProperty: undefined,
   selectedComps: [],
+  selectedRentalComps: [],
 };
 
 // Actual Slice
@@ -26,11 +28,15 @@ export const propertiesSlice = createSlice({
     setSelectedComps(state, action: PayloadAction<CompData[]>) {
       state.selectedComps = action.payload;
     },
+
+    setSelectedRentalComps(state, action: PayloadAction<CompData[]>) {
+      state.selectedRentalComps = action.payload;
+    },
   },
 });
 
 export const propertiesReducer = propertiesSlice.reducer;
-export const { setSelectedProperty, setSelectedComps } =
+export const { setSelectedProperty, setSelectedComps, setSelectedRentalComps } =
   propertiesSlice.actions;
 export const selectProperties: (state: AppState) => PropertiesState = (
   state: AppState,

@@ -4,6 +4,7 @@ import { openGoogleSearch } from "@/utils/windowFunctions";
 import {
   alpha,
   Box,
+  Button,
   Card,
   CardActionArea,
   CardActions,
@@ -48,6 +49,8 @@ import IconListItem from "../DetailsPanel/IconListItem";
 import IconSwitch from "../FormFields/IconSwitch";
 import styles from "./styles.module.scss";
 import { setSelectedProperty } from "@/store/slices/propertiesSlice";
+import Image from "next/image";
+import clsx from "clsx";
 interface StyledCardProps extends CardProps {
   selected?: boolean;
 }
@@ -62,7 +65,7 @@ const StyledCard = styled(Card, {
   }),
   backgroundColor: "rgba(255, 255, 255, 0.8)",
   width: "15rem",
-  // height: '19rem',
+  height: "19rem",
   // flexShrink: 0,
   margin: "0 0.5rem",
   pointerEvents: "all",
@@ -124,6 +127,7 @@ type PropertyCardProps = {
   setSelectedProperty: (property: AnalyzedProperty) => void;
   setOpenMoreDetails: (open: boolean) => void;
   selectedProperty: AnalyzedProperty;
+  setHoveredProperty: (property: AnalyzedProperty) => void;
   className?: string;
 };
 const PropertyCard: React.FC<PropertyCardProps> = (
@@ -132,9 +136,9 @@ const PropertyCard: React.FC<PropertyCardProps> = (
   const dispatch = useDispatch();
   const [cardImage, setCardImage] = useState(
     // props.property.primaryImage,
-    props.property.images[0] || "",
+    props.property?.images?.[0] || "",
   );
-  const handlepropertySelected = async () => {
+  const handlePropertySelected = async () => {
     if (
       props.selectedProperty &&
       props.selectedProperty.source_id === props.property.source_id
@@ -165,11 +169,82 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
 
   useEffect(() => {
-    setCardImage(props.property.images[0] || defaultImage);
+    setCardImage(props.property?.images[0] || defaultImage);
     return () => {};
-  }, [props.property]);
+  }, [props.property, props.selectedProperty]);
 
-  const profit = numberStringUtil(props.property.arv_percentage).toFixed(2);
+  const profit = numberStringUtil(props.property?.arv_percentage).toFixed(2);
+
+  return (
+    <Button
+      className={clsx([
+        "w-full h-full flex flex-col p-0 rounded-xl relative",
+        props.selectedProperty &&
+        props.selectedProperty.source_id === props.property.source_id &&
+        "ring ring-black",
+      ])}
+      onClick={handlePropertySelected}
+      onMouseOver={() => props.setHoveredProperty(props.property)}
+    >
+      {numberStringUtil(profit) >= 0 && (
+        <Grid className={styles.cardDiscountChip} container>
+          <Grid item xs={12}>
+            <Typography className={styles.cardDiscountValue}>
+              {numberStringUtil(props.property?.arv_percentage).toFixed()}%
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <Typography className={styles.cardDiscountText}>
+              Under ARV
+            </Typography>
+          </Grid>
+        </Grid>
+      )}
+      <div className="flex w-full h-1/3 relative">
+        <Image
+          src={cardImage || defaultImage}
+          alt={props.property?.address || ""}
+          // onError={() =>
+          //   setCardImage(
+          //     "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=",
+          //   )}
+          fill
+          className="object-cover object-center rounded-t-xl"
+        />
+      </div>
+      <div className="flex flex-col h-2/3 w-full px-4">
+        <Chip
+          label={props.property?.address}
+          clickable
+          size="small"
+          className=" my-2 h-5"
+          onClick={() => openGoogleSearch(props.property.address)}
+        />
+        <div className={styles.cardInfoRow}>
+          <Typography>Price</Typography>
+          <Typography>
+            {priceFormatter(props.property.listing_price)}
+          </Typography>
+        </div>
+        <div className={styles.cardInfoRow}>
+          <Typography>Comps Sale</Typography>
+          <Typography>
+            {priceFormatter(props.property.sales_comps_price)}
+          </Typography>
+        </div>
+        <div className={styles.cardInfoRow}>
+          <Typography>ARV</Typography>
+          <Typography>{priceFormatter(props.property.arv_price)}</Typography>
+        </div>
+        <div className={styles.cardInfoRow}>
+          <Typography>Cap Rate</Typography>
+          <Typography>
+            {(numberStringUtil(props.property.cap_rate) * 100).toFixed(2)} %
+          </Typography>
+        </div>
+      </div>
+    </Button>
+  );
 
   return (
     <StyledCard

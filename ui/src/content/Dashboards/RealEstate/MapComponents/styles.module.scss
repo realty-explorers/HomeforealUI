@@ -1,4 +1,17 @@
 @import url('https://fonts.googleapis.com/css?family=Poppins');
+.cardInfoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  div {
+    color: black;
+    font-family: Poppins;
+    margin-bottom: 0.5rem;
+  }
+  :first-child {
+    font-weight: 700;
+  }
+}
 .cardDiscountChip {
   width: 40%;
   position: absolute;

@@ -6,6 +6,7 @@ import {
   selectProperties,
   setSelectedComps,
   setSelectedProperty,
+  setSelectedRentalComps,
 } from "@/store/slices/propertiesSlice";
 import {
   GoogleMap,
@@ -20,7 +21,7 @@ import PropertiesMarkers from "./MapComponents/PropertiesMarkers";
 import SelectedPropertyMarker from "./MapComponents/SelectedPropertyMarker";
 import SoldPropertiesMarkers from "./MapComponents/SoldPropertiesMarkers";
 import MapControlPanel from "./MapControlPanel/MapControlPanel";
-import AnalyzedProperty from "@/models/analyzedProperty";
+import AnalyzedProperty, { CompData } from "@/models/analyzedProperty";
 import { PropertyType } from "@/models/property";
 import Lottie from "lottie-react";
 import mapAnimation from "@/static/animations/loading/mapAnimation.json";
@@ -29,6 +30,9 @@ import * as TWEEN from "@tweenjs/tween.js";
 import { EasingFunction } from "framer-motion";
 import clsx from "clsx";
 import Popper from "@mui/material/Popper";
+import { Fade } from "@mui/material";
+import PropertyMapCard from "./MapComponents/PropertyMapCard";
+import RentPropertiesMarkers from "./MapComponents/RentPropertiesMarker";
 
 const center = {
   lat: 33.429565,
@@ -40,7 +44,9 @@ type MapComponentProps = {};
 const MapComponent: React.FC<MapComponentProps> = (
   props: MapComponentProps,
 ) => {
-  const { selectedProperty, selectedComps } = useSelector(selectProperties);
+  const { selectedProperty, selectedComps, selectedRentalComps } = useSelector(
+    selectProperties,
+  );
 
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
@@ -79,6 +85,7 @@ const MapComponent: React.FC<MapComponentProps> = (
   const handleSelectProperty = (property: AnalyzedProperty) => {
     dispatch(setSelectedProperty(property));
     dispatch(setSelectedComps(property?.sales_comps?.data));
+    dispatch(setSelectedRentalComps(property?.rents_comps?.data));
   };
 
   const filterProperties: (
@@ -379,7 +386,17 @@ const MapComponent: React.FC<MapComponentProps> = (
   const handleClusterClicked = useCallback((cluster) => {
     handleCloseInfoWindow();
     try {
-      const map = cluster.getMap();
+      // const map = cluster.getMap();
+      // const firstTarget = {
+      //   duration: 350,
+      //   center: {
+      //     latitude: cluster.center.lat(),
+      //     longitude: cluster.center.lng(),
+      //   },
+      //   zoom: map.getZoom() + 2,
+      // };
+      //
+      // animateMap([firstTarget]);
       const newZoom = map.getZoom() + 2;
       const cameraOptions = {
         center: cluster.center,
@@ -414,8 +431,22 @@ const MapComponent: React.FC<MapComponentProps> = (
     east: -66.934570,
   };
   const [anchorEl, setAnchorEl] = useState(null);
+  const [hoveredProperty, setHoveredProperty] = useState<
+    AnalyzedProperty
+  >();
   const open = Boolean(anchorEl);
   const id = open ? "simple-popper" : undefined;
+
+  const getMockProperties = () => {
+    const properties = [];
+    for (let i = 0; i < 20; i++) {
+      const newProperty = {
+        images: [],
+      } as AnalyzedProperty;
+      properties.push(newProperty);
+    }
+    return properties;
+  };
 
   return isLoaded
     ? (
@@ -457,47 +488,60 @@ const MapComponent: React.FC<MapComponentProps> = (
         <CardsPanel
           // deals={filterDeals(propertiesState.data)}
           properties={filterProperties(propertiesState?.data)}
+          // properties={getMockProperties()}
           selectedProperty={selectedProperty}
           setSelectedProperty={handleSelectProperty}
+          setHoveredProperty={setHoveredProperty}
         />
-        {/* <Popper */}
-        {/*   id={id} */}
-        {/*   open={true} */}
-        {/*   anchorEl={anchorEl} */}
-        {/*   modifiers={[ */}
-        {/*     { */}
-        {/*       name: "flip", */}
-        {/*       enabled: true, */}
-        {/*       options: { */}
-        {/*         altBoundary: true, */}
-        {/*         rootBoundary: "document", */}
-        {/*         padding: 8, */}
-        {/*       }, */}
-        {/*     }, */}
-        {/*     { */}
-        {/*       name: "preventOverflow", */}
-        {/*       enabled: true, */}
-        {/*       options: { */}
-        {/*         altAxis: true, */}
-        {/*         altBoundary: true, */}
-        {/*         tether: true, */}
-        {/*         rootBoundary: "document", */}
-        {/*         padding: 8, */}
-        {/*       }, */}
-        {/*     }, */}
-        {/*     // { */}
-        {/*     //   name: "arrow", */}
-        {/*     //   enabled: true, */}
-        {/*     //   options: { */}
-        {/*     //     element: arrowRef, */}
-        {/*     //   }, */}
-        {/*     // }, */}
-        {/*   ]} */}
-        {/* > */}
-        {/*   <div className="bg-red-500 w-20 h-20"> */}
-        {/*     The content of the Popper. */}
-        {/*   </div> */}
-        {/* </Popper> */}
+        <Popper
+          id={id}
+          open={open}
+          anchorEl={anchorEl}
+          modifiers={[
+            {
+              name: "flip",
+              enabled: true,
+              options: {
+                altBoundary: true,
+                rootBoundary: "document",
+                padding: 8,
+              },
+            },
+            {
+              name: "preventOverflow",
+              enabled: true,
+              options: {
+                altAxis: true,
+                altBoundary: true,
+                tether: true,
+                rootBoundary: "document",
+                padding: 8,
+              },
+            },
+            // {
+            //   name: "arrow",
+            //   enabled: true,
+            //   options: {
+            //     element: arrowRef,
+            //   },
+            // },
+          ]}
+        >
+          <Fade in={open} timeout={500}>
+            <div
+              // style={divStyle}
+              onMouseEnter={(e) => {
+                // setAnchorEl(e.currentTarget);
+              }}
+              // onMouseLeave={() => handleMouseOut()}
+            >
+              <PropertyMapCard
+                property={hoveredProperty as AnalyzedProperty}
+              />
+            </div>
+          </Fade>
+        </Popper>
+
         {propertiesState.isFetching && (
           <div
             className={clsx([
@@ -524,6 +568,10 @@ const MapComponent: React.FC<MapComponentProps> = (
               <SoldPropertiesMarkers
                 selectedComps={selectedComps}
               />
+
+              <RentPropertiesMarkers
+                selectedComps={selectedRentalComps}
+              />
             </>
           )
           : (
@@ -535,7 +583,7 @@ const MapComponent: React.FC<MapComponentProps> = (
               onMouseOver={handleOpenInfoWindow}
               onMouseOut={handleCloseInfoWindow}
               onClick={handleClusterClicked}
-              minimumClusterSize={5}
+              minimumClusterSize={4}
               zoomOnClick={false}
             >
               {(clusterer) => (
@@ -545,6 +593,8 @@ const MapComponent: React.FC<MapComponentProps> = (
                     setSelectedProperty={handleSelectProperty}
                     clusterer={clusterer}
                     setAnchorEl={setAnchorEl}
+                    setHoveredProperty={setHoveredProperty}
+                    hoveredProperty={hoveredProperty}
                   />
                 </>
               )}

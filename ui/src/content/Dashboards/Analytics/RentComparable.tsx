@@ -26,7 +26,7 @@ type RentComparableProps = {
   property: AnalyzedProperty;
 };
 const RentComparable = (props: RentComparableProps) => {
-  return (
+  return (props.property?.rents_comps?.data?.length > 0 && (
     <Grid
       container
       className={`${analyticsStyles.sectionContainer}`}
@@ -116,7 +116,7 @@ const RentComparable = (props: RentComparableProps) => {
         </Grid>
       </Grid>
     </Grid>
-  );
+  ));
 };
 
 export default RentComparable;

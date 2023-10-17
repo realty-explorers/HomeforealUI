@@ -85,7 +85,7 @@ const ExpansesRow = (props: ExpansesRowProps) => {
             </FormControl>
           </Grid>
           <Grid item xs={4} paddingX={1}>
-            <FormControl>
+            <FormControl fullWidth>
               <InputLabel htmlFor="outlined-adornment-amount">
                 Amount
               </InputLabel>

@@ -15,8 +15,8 @@ const CheckBoxWhite = styled(Checkbox)(({ theme }) => ({
 
 const gridRows = (property: CompData) => [
   {
-    label: "AskedPrice",
-    value: priceFormatter(property.sales_listing_price),
+    label: "Rent Price",
+    value: priceFormatter(property.rents_closing_price),
   },
   {
     label: "Bedrooms",
@@ -51,10 +51,10 @@ const gridRows = (property: CompData) => [
     value: property.neighborhood,
   },
   {
-    label: "Price/Sqft",
+    label: "Rent/Sqft",
     value: priceFormatter(
       property.building_area && property.building_area > 0
-        ? (property.sales_closing_price / property.building_area).toFixed()
+        ? (property.rents_closing_price / property.building_area).toFixed()
         : 0,
     ),
   },
@@ -93,14 +93,14 @@ const getSimilarityValues = (color?: string) => {
 const defaultImage =
   "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
 
-type CompsCardProps = {
+type RentsCardProps = {
   index: number;
   compsProperty: CompData;
   selected: boolean;
   toggle: () => void;
   className?: string;
 };
-const CompsCard = (props: CompsCardProps) => {
+const RentsCard = (props: RentsCardProps) => {
   const [cardImage, setCardImage] = useState(
     props.compsProperty.primary_image || defaultImage,
   );
@@ -212,29 +212,9 @@ const CompsCard = (props: CompsCardProps) => {
             </Typography>
           </div>
         </>
-
-        <>
-          <div className="text-white">
-            <Typography
-              className={clsx([styles.propertyRowHeader, "truncate"])}
-            >
-              Closed Price
-            </Typography>
-          </div>
-          <div className="text-white">
-            <Typography
-              className={clsx([
-                styles.propertyText,
-                "truncate",
-              ])}
-            >
-              {priceFormatter(props.compsProperty.sales_closing_price)}
-            </Typography>
-          </div>
-        </>
       </div>
     </Card>
   );
 };
 
-export default CompsCard;
+export default RentsCard;

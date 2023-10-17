@@ -27,7 +27,9 @@ import { openGoogleSearch } from "@/utils/windowFunctions";
 import AnalyzedProperty from "@/models/analyzedProperty";
 import Image from "next/image";
 import HotelIcon from "@mui/icons-material/Hotel";
-import BathtubIcon from "@mui/icons-material/Bathtub";
+import BathtubOutlinedIcon from "@mui/icons-material/BathtubOutlined";
+import WcIcon from "@mui/icons-material/Wc";
+import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import PinDropOutlinedIcon from "@mui/icons-material/PinDropOutlined";
 
@@ -48,8 +50,10 @@ type PropertyMapCardProps = {
 const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   props: PropertyMapCardProps,
 ) => {
+  const defaultImage =
+    "/static/images/placeholders/covers/house_placeholder.jpg";
   const [cardImage, setCardImage] = useState(
-    props.property.primary_image,
+    props.property?.primary_image || defaultImage,
   );
 
   const showDistance = () => {
@@ -62,15 +66,15 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
     }
   };
   return (
-    <div className="flex rounded-xl bg-white w-80 h-32">
+    <div className="flex rounded-xl bg-white w-80 h-40">
       <div className="w-1/3 h-full relative">
         <Image
-          src={cardImage}
+          src={typeof cardImage === "string" ? cardImage : defaultImage}
           alt={props.property.address}
-          onError={() =>
-            setCardImage(
-              "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=",
-            )}
+          // onError={() =>
+          //   setCardImage(
+          //     "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=",
+          //   )}
           fill
           className="object-cover object-center w-full h-full rounded-l-xl"
         />
@@ -81,11 +85,11 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
         {/* import SquareFootIcon from '@mui/icons-material/SquareFoot'; */}
         <div className="flex w-full items-center justify-between mt-2">
           <div className="flex">
-            <HotelIcon />
+            <BedOutlinedIcon />
             <Typography>{props.property.bedrooms}</Typography>
           </div>
           <div className="flex">
-            <BathtubIcon />
+            <WcIcon />
             <Typography>{props.property.full_bathrooms}</Typography>
           </div>
           <div className="flex">
@@ -95,14 +99,36 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
         </div>
         <div className="flex items-center">
           <PinDropOutlinedIcon />
-          <Typography className="text-[0.7rem]">
-            {props.property.address}
+          <Typography className="text-[0.7rem] ml-2 font-poppins">
+            {props.property.address.substring(
+              0,
+              props.property.address.indexOf(","),
+            )}
+            {props.property.neighborhood !== "N/A" &&
+              props.property.neighborhood}, {props.property.zipcode}
           </Typography>
         </div>
-        <div className="flex items-center">
-          <Typography className="font-poppins font-bold text-lg">
-            {priceFormatter(props.property.listing_price)}
-          </Typography>
+        <div className="flex items-center justify-between">
+          <div className="flex flex-col">
+            <Typography className="font-poppins justify-center text-center">
+              Price
+            </Typography>
+
+            <Typography className="font-poppins font-bold">
+              {priceFormatter(props.property.listing_price)}
+            </Typography>
+          </div>
+          {typeof props.property.arv_price === "number" && (
+            <div className="flex flex-col">
+              <Typography className="font-poppins justify-center text-center">
+                ARV
+              </Typography>
+
+              <Typography className="font-poppins font-bold">
+                {priceFormatter(props.property.arv_price)}
+              </Typography>
+            </div>
+          )}
 
           {/* <Typography className="font-poppins font-bold text-lg"> */}
           {/*   {props.property.arv_price} */}

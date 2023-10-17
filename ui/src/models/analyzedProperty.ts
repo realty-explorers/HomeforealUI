@@ -95,8 +95,8 @@ interface AnalyzedProperty {
   sales_date: string | "N/A";
   tax: string | "N/A";
   rents_status: string;
-  rents_listing_price: string | "N/A";
-  rents_closing_price: string | "N/A";
+  rents_listing_price: number | "N/A";
+  rents_closing_price: number | "N/A";
   rents_days_on_market: string | "N/A";
   rents_date: string | "N/A";
   floors: number;
@@ -114,7 +114,13 @@ interface AnalyzedProperty {
   full_bathrooms: number;
   half_bathrooms: number;
   total_bathrooms: number;
-  operational_expenses: Record<string, any>; // You may specify a more specific type.
+  operational_expenses: {
+    property_tax: ExpensesData;
+    insurance: ExpensesData;
+    maintenance: ExpensesData;
+    management: ExpensesData;
+    vacancy: ExpensesData;
+  };
 }
 
 export default AnalyzedProperty;
