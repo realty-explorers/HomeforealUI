@@ -128,14 +128,20 @@ const RentsCard = (props: RentsCardProps) => {
         marginBottom={"2rem"}
       >
         <div className="h-44 w-full relative">
-          <Image
+          {/* <Image */}
+          {/*   src={cardImage} */}
+          {/*   alt={props.compsProperty.address} */}
+          {/*   placeholder="blur" */}
+          {/*   blurDataURL={defaultImage} */}
+          {/*   onError={() => setCardImage(defaultImage)} */}
+          {/*   fill */}
+          {/*   className="h-44 ascpect-ratio object-cover object-center  rounded-xl" */}
+          {/* /> */}
+
+          <img
             src={cardImage}
-            alt={props.compsProperty.address}
-            placeholder="blur"
-            blurDataURL={defaultImage}
-            onError={() => setCardImage(defaultImage)}
-            fill
             className="h-44 ascpect-ratio object-cover object-center  rounded-xl"
+            onError={() => setCardImage(defaultImage)}
           />
         </div>
         {/* <img */}

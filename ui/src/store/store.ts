@@ -9,6 +9,8 @@ import { propertiesApi } from "./services/propertiesApiService";
 import { buyBoxApi } from "./services/buyboxApiService";
 import { analysisApi } from "./services/analysisApi";
 import { authReducer } from "./slices/authSlice";
+import { buyBoxesReducer } from "./slices/buyBoxesSlice";
+import { mapReducer } from "./slices/mapSlice";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +18,8 @@ export const store = configureStore({
     filter: filterReducer,
     properties: propertiesReducer,
     auth: authReducer,
+    buyBoxes: buyBoxesReducer,
+    map: mapReducer,
     [locationApi.reducerPath]: locationApi.reducer,
     [propertiesApi.reducerPath]: propertiesApi.reducer,
     [buyBoxApi.reducerPath]: buyBoxApi.reducer,

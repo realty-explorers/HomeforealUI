@@ -8,10 +8,10 @@ import { priceFormatter } from "@/utils/converters";
 import clsx from "clsx";
 import React from "react";
 
-const gridRows = (property: Property) => [
+const gridRows = (property: AnalyzedProperty) => [
   {
     label: "AskedPrice",
-    value: priceFormatter(property.sales_listing_price),
+    value: priceFormatter(property.listing_price),
     averageProperty: "sales_listing_price",
     averageFormatter: priceFormatter,
   },
@@ -27,7 +27,7 @@ const gridRows = (property: Property) => [
   },
   {
     label: "Lot Sqft",
-    value: property["lot_size"],
+    value: property.lot_size,
     averageProperty: "lot_size",
   },
   {
@@ -42,12 +42,14 @@ const gridRows = (property: Property) => [
   },
   {
     label: "Garages",
-    value: property["garages"],
+    value: property.garages,
     averageProperty: "garages",
   },
   {
     label: "Year Built",
-    value: property["year_built"].slice(0, 4),
+    value: typeof property["year_built"] === "string"
+      ? property["year_built"].slice(0, 4)
+      : 0,
   },
   // {
   //   label: "Neighborhood",

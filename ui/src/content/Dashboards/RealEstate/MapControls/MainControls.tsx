@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Grid, styled } from "@mui/material";
 import SliderRangeInput from "../FormFields/SliderRangeInput";
+import SliderRangeInputV2 from "../FormFields/SliderRangeInputv2";
 import SliderInput from "../FormFields/SliderInput";
 import {
   priceFormatter,
@@ -22,6 +23,7 @@ import {
   setMinSqft,
   setPropertyTypes,
 } from "@/store/slices/filterSlice";
+import debounce from "lodash.debounce";
 import { useDispatch, useSelector } from "react-redux";
 import PropertyTypes from "./PropertyTypes";
 import PropertyTypeFilter from "./PropertyTypeFilter";
@@ -52,11 +54,12 @@ const MainControls: React.FC<MainControlsProps> = (
   const dispatch = useDispatch();
 
   const { suggestion } = useSelector(selectLocation);
-  const propertiesState = propertiesApiEndpoints.getProperties.useQueryState(
-    suggestion,
-  );
+  const propertiesState = propertiesApiEndpoints.getPropertiesPreviews
+    .useQueryState(
+      suggestion,
+    );
   locationApiEndpoints.getLocationData.useQuerySubscription(suggestion);
-  propertiesApiEndpoints.getProperties.useQuerySubscription(suggestion);
+  propertiesApiEndpoints.getPropertiesPreviews.useQuerySubscription(suggestion);
 
   const {
     arvMargin,
@@ -72,13 +75,51 @@ const MainControls: React.FC<MainControlsProps> = (
     propertyTypes,
   } = useSelector(selectFilter);
 
+  const [arv, setArv] = useState(0);
+  const [price, setPrice] = useState([0, 1000000]);
+  const [comps, setComps] = useState(0);
+  const [area, setArea] = useState([0, 10000]);
+
+  const updateArv = (value: number) => {
+    setArv(value);
+
+    debounceUpdate(() => {
+      dispatch(setArvMargin(value));
+    });
+    // debounceUpdateArv(value);
+  };
+
+  const setValue = (setFunction, updateFunction) => {
+    setFunction();
+    debounceUpdate(() => {
+      updateFunction();
+    });
+  };
+
+  const debounceUpdate = useMemo(
+    () =>
+      debounce((updateFunction) => {
+        updateFunction();
+      }, 200),
+    [],
+  );
+
+  const debounceUpdateArv = useMemo(
+    () =>
+      debounce((value: number) => {
+        console.log("meow");
+        dispatch(setArvMargin(value));
+      }, 200),
+    [],
+  );
+
   return (
     <div>
       <div className="absolute top-2 right-4 font-poppins font-bold">
         {propertiesState.data ? `${propertiesState.data.length} found` : ""}
       </div>
       <SliderField fieldName="Listing Price">
-        <SliderRangeInput
+        <SliderRangeInputV2
           inputProps={{
             title: "Listing Price",
             name: "listingPrice",
@@ -87,10 +128,15 @@ const MainControls: React.FC<MainControlsProps> = (
             step: 1,
             format: priceFormatter,
           }}
-          minValue={minListingPrice}
-          maxValue={maxListingPrice}
-          updateMinValue={(value) => dispatch(setMinListingPrice(value))}
-          updateMaxValue={(value) => dispatch(setMaxListingPrice(value))}
+          value={price}
+          updateValue={(value) =>
+            setValue(
+              () => setPrice(value),
+              () => {
+                dispatch(setMinListingPrice(value[0]));
+                dispatch(setMaxListingPrice(value[1]));
+              },
+            )}
           scale={{ scale: priceScale, reverseScale: priceReverseScale }}
         />
       </SliderField>
@@ -123,8 +169,10 @@ const MainControls: React.FC<MainControlsProps> = (
             max: 100,
             step: 1,
           }}
-          value={arvMargin}
-          update={(value) => dispatch(setArvMargin(value))}
+          value={arv}
+          // update={(value) => updateArv(value)}
+          update={(value) =>
+            setValue(() => setArv(value), () => dispatch(setArvMargin(value)))}
         />
       </SliderField>
 
@@ -159,7 +207,7 @@ const MainControls: React.FC<MainControlsProps> = (
         />
       </SliderField>
       <SliderField fieldName="Building Sqft">
-        <SliderRangeInput
+        <SliderRangeInputV2
           inputProps={{
             title: "Building Sqft",
             name: "sqft",
@@ -167,10 +215,19 @@ const MainControls: React.FC<MainControlsProps> = (
             max: 10000,
             step: 50,
           }}
-          minValue={minSqft}
-          maxValue={maxSqft}
-          updateMinValue={(value) => dispatch(setMinSqft(value))}
-          updateMaxValue={(value) => dispatch(setMaxSqft(value))}
+          // minValue={minArea}
+          // maxValue={maxArea}
+          value={area}
+          updateValue={(value) =>
+            setValue(
+              () => setArea(value),
+              () => {
+                dispatch(setMinSqft(value[0]));
+                dispatch(setMaxSqft(value[1]));
+              },
+            )}
+          // updateMinValue={(value) => dispatch(setMinSqft(value))}
+          // updateMaxValue={(value) => dispatch(setMaxSqft(value))}
           // scale={{ scale: priceScale, reverseScale: sqftScale }}
         />
       </SliderField>

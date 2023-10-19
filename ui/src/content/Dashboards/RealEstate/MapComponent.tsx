@@ -1,11 +1,16 @@
 import { locationApiEndpoints } from "@/store/services/locationApiService";
-import { propertiesApiEndpoints } from "@/store/services/propertiesApiService";
+import {
+  propertiesApiEndpoints,
+  useLazyGetPropertiesQuery,
+  useLazyGetPropertyQuery,
+} from "@/store/services/propertiesApiService";
 import { selectFilter } from "@/store/slices/filterSlice";
 import { selectLocation } from "@/store/slices/locationSlice";
 import {
   selectProperties,
   setSelectedComps,
   setSelectedProperty,
+  setSelectedPropertyPreview,
   setSelectedRentalComps,
 } from "@/store/slices/propertiesSlice";
 import {
@@ -13,7 +18,7 @@ import {
   MarkerClusterer,
   useJsApiLoader,
 } from "@react-google-maps/api";
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import CardsPanel from "./MapComponents/CardsPanel";
 import LocationBounds from "./MapComponents/LocationBounds";
@@ -29,14 +34,22 @@ import mapLoadingAnimation from "@/static/animations/loading/mapLoadingAnimation
 import * as TWEEN from "@tweenjs/tween.js";
 import { EasingFunction } from "framer-motion";
 import clsx from "clsx";
-import Popper from "@mui/material/Popper";
 import { Fade } from "@mui/material";
+import debounce from "lodash.debounce";
 import PropertyMapCard from "./MapComponents/PropertyMapCard";
 import RentPropertiesMarkers from "./MapComponents/RentPropertiesMarker";
+import PropertyPreview from "@/models/propertyPreview";
+import { init } from "next/dist/compiled/webpack/webpack";
+import { useDebounce } from "@/hooks/useDebounce";
+import { selectMap } from "@/store/slices/mapSlice";
 
+// const center = {
+//   lat: 33.429565,
+//   lng: -86.84005,
+// };
 const center = {
-  lat: 33.429565,
-  lng: -86.84005,
+  lat: 27.6648,
+  lng: -81.5158,
 };
 
 type MapComponentProps = {};
@@ -44,7 +57,12 @@ type MapComponentProps = {};
 const MapComponent: React.FC<MapComponentProps> = (
   props: MapComponentProps,
 ) => {
-  const { selectedProperty, selectedComps, selectedRentalComps } = useSelector(
+  const {
+    selectedProperty,
+    selectedPropertyPreview,
+    selectedComps,
+    selectedRentalComps,
+  } = useSelector(
     selectProperties,
   );
 
@@ -66,9 +84,12 @@ const MapComponent: React.FC<MapComponentProps> = (
   const locationState = locationApiEndpoints.getLocationData.useQueryState(
     suggestion,
   );
-  const propertiesState = propertiesApiEndpoints.getProperties.useQueryState(
-    suggestion,
-  );
+  const propertiesState = propertiesApiEndpoints.getPropertiesPreviews
+    .useQueryState(
+      suggestion,
+    );
+
+  const [getProperty, propertyState] = useLazyGetPropertyQuery();
 
   //Resubscribe to redux cache so the data wont be lost when the component unmounts
   // locationApiEndpoints.getLocationData.useQuerySubscription(suggestion);
@@ -82,18 +103,38 @@ const MapComponent: React.FC<MapComponentProps> = (
   const [map, updateMap] = useState<google.maps.Map>();
   let infoWindow: google.maps.InfoWindow;
 
-  const handleSelectProperty = (property: AnalyzedProperty) => {
-    dispatch(setSelectedProperty(property));
-    dispatch(setSelectedComps(property?.sales_comps?.data));
-    dispatch(setSelectedRentalComps(property?.rents_comps?.data));
+  const handleSelectProperty = (property?: PropertyPreview) => {
+    dispatch(setSelectedPropertyPreview(property));
+    if (property) {
+      fetchPropertyData(property);
+    } else {
+      dispatch(setSelectedProperty(null));
+    }
+
+    // dispatch(setSelectedComps(property?.sales_comps?.data));
+    // dispatch(setSelectedRentalComps(property?.rents_comps?.data));
+  };
+
+  const fetchPropertyData = async (property: PropertyPreview) => {
+    //TODO: Watch out here for race conditions when internet not stable
+    const propertyData = await getProperty(property?.source_id).unwrap();
+    dispatch(setSelectedComps(propertyData?.sales_comps?.data));
+    dispatch(setSelectedRentalComps(propertyData?.rents_comps?.data));
+    dispatch(setSelectedProperty(propertyData));
   };
 
   const filterProperties: (
-    properties?: AnalyzedProperty[],
-  ) => AnalyzedProperty[] = (
-    properties?: AnalyzedProperty[],
+    properties?: PropertyPreview[],
+  ) => PropertyPreview[] = (
+    properties?: PropertyPreview[],
   ) => {
     const filteredProperties = properties?.filter((property) => {
+      console.log("filtering");
+      const arvPercentage = typeof property?.arv_price === "number"
+        ? (property.arv_price - property.sales_listing_price) /
+          property.sales_listing_price * 100
+        : 0;
+
       if (
         property.bedrooms < minBeds ||
         property.bedrooms > maxBeds
@@ -101,18 +142,18 @@ const MapComponent: React.FC<MapComponentProps> = (
         return false;
       }
       if (
-        property.full_bathrooms < minBaths ||
-        property.full_bathrooms > maxBaths
+        property.total_bathrooms < minBaths ||
+        property.total_bathrooms > maxBaths
       ) {
         return false;
       }
       if (
-        property.listing_price < minListingPrice ||
-        property.listing_price > maxListingPrice
+        property.sales_listing_price < minListingPrice ||
+        property.sales_listing_price > maxListingPrice
       ) {
         return false;
       }
-      if (property.arv_percentage < arvMargin) {
+      if (arvMargin > 0 && arvPercentage < arvMargin) {
         return false;
       }
       // if (property.margin_percentage < arvMargin) {
@@ -138,7 +179,8 @@ const MapComponent: React.FC<MapComponentProps> = (
   };
 
   const handleMapClicked = () => {
-    dispatch(setSelectedProperty(null));
+    dispatch(setSelectedPropertyPreview(null));
+    // dispatch(setSelectedProperty(null));
     dispatch(setSelectedComps([]));
   };
 
@@ -146,25 +188,22 @@ const MapComponent: React.FC<MapComponentProps> = (
     handleCloseInfoWindow();
   };
 
-  const onLoad = useCallback(function callback(map: google.maps.Map) {
-    updateMap(map);
-    const propertySelected = selectedProperty && map &&
-      selectedProperty?.latitude &&
-      selectedProperty?.longitude;
-    if (suggestion && suggestion.latitude && suggestion.longitude) {
-      map.panTo({
-        lat: suggestion.latitude,
-        lng: suggestion.longitude,
-      });
-    } else if (propertySelected) {
-      map.panTo({
-        lat: selectedProperty.latitude,
-        lng: selectedProperty.longitude,
-      });
+  const initMapLocation = (map: google.maps.Map) => {
+    const propertySelected = selectedPropertyPreview;
+    typeof selectedPropertyPreview?.latitude === "number" &&
+      typeof selectedPropertyPreview?.longitude === "number";
+    console.log(
+      "property selected",
+      propertySelected ? "ture" : "false",
+    );
+    if (propertySelected) {
+      panToProperty(map);
     } else {
-      map.setCenter(center);
+      centerMap(map);
     }
-    map.setZoom(12);
+  };
+
+  const onLoad = useCallback(function callback(map: google.maps.Map) {
     map.setOptions({
       streetViewControlOptions: {
         position: google.maps.ControlPosition.LEFT_BOTTOM,
@@ -180,21 +219,48 @@ const MapComponent: React.FC<MapComponentProps> = (
     map.controls[google.maps.ControlPosition.TOP_LEFT].clear();
 
     infoWindow = new google.maps.InfoWindow();
+    map.setCenter(center);
+    map.setZoom(11);
+    initMapLocation(map);
+    updateMap(map);
+    // const propertySelected = selectedProperty && map &&
+    //   selectedProperty?.latitude &&
+    //   selectedProperty?.longitude;
+    //
+    // if (suggestion && suggestion.latitude && suggestion.longitude) {
+    //   map.panTo({
+    //     lat: suggestion.latitude,
+    //     lng: suggestion.longitude,
+    //   });
+    // } else if (propertySelected) {
+    //   map.panTo({
+    //     lat: selectedProperty.latitude,
+    //     lng: selectedProperty.longitude,
+    //   });
+    // } else {
+    //   map.setCenter(center);
+    // }
   }, []);
 
-  const centerMap = async (signal: AbortSignal) => {
-    if (locationState?.data && map) {
-      const firstTarget = {
-        duration: 1000,
-        center: {
-          latitude: locationState.data.center.latitude,
-          longitude: locationState.data.center.longitude,
-        },
-        zoom: 11,
+  const centerMap = async (map: google.maps.Map) => {
+    let newCenter = {
+      latitude: center.lat,
+      longitude: center.lng,
+    };
+    if (suggestion && suggestion.latitude && suggestion.longitude) {
+      newCenter = {
+        latitude: suggestion.latitude,
+        longitude: suggestion.longitude,
       };
-
-      animateMap([firstTarget]);
+      console.log("has suggestions ");
     }
+    const firstTarget = {
+      duration: 1000,
+      center: newCenter,
+      zoom: 11,
+    };
+
+    animateMap([firstTarget], map);
   };
 
   const propertyInBounds = (property: AnalyzedProperty) =>
@@ -203,12 +269,12 @@ const MapComponent: React.FC<MapComponentProps> = (
       lng: property.longitude,
     });
 
-  const panToProperty = async (signal: AbortSignal) => {
+  const panToProperty = async (map: google.maps.Map) => {
     const firstTarget = {
       duration: 1000,
       center: {
-        latitude: selectedProperty.latitude,
-        longitude: selectedProperty.longitude,
+        latitude: selectedPropertyPreview.latitude,
+        longitude: selectedPropertyPreview.longitude,
       },
       zoom: 13,
     };
@@ -217,12 +283,12 @@ const MapComponent: React.FC<MapComponentProps> = (
       duration: 1000,
       zoom: 14,
       center: {
-        latitude: selectedProperty.latitude,
-        longitude: selectedProperty.longitude,
+        latitude: selectedPropertyPreview.latitude,
+        longitude: selectedPropertyPreview.longitude,
       },
       easing: TWEEN.Easing.Quartic.Out,
     };
-    animateMap([firstTarget, secondTarget]);
+    animateMap([firstTarget, secondTarget], map);
   };
 
   function sleep(ms) {
@@ -230,6 +296,7 @@ const MapComponent: React.FC<MapComponentProps> = (
   }
 
   const createTween = (
+    map: google.maps.Map,
     mapCameraOptions: {
       zoom?: number;
       lat?: number;
@@ -269,6 +336,7 @@ const MapComponent: React.FC<MapComponentProps> = (
       center?: { latitude: number; longitude: number };
       zoom?: number;
     }[],
+    map: google.maps.Map,
   ) => {
     const tweens = TWEEN.getAll();
     for (const tween of tweens) {
@@ -287,6 +355,7 @@ const MapComponent: React.FC<MapComponentProps> = (
         lng: map.getCenter().lng(),
       };
       const tween = createTween(
+        map,
         cameraOptions,
         targets[0].duration,
         targets[0].center,
@@ -296,6 +365,7 @@ const MapComponent: React.FC<MapComponentProps> = (
       let lastTween = tween;
       for (let i = 1; i < targets.length; i++) {
         const newTween = createTween(
+          map,
           cameraOptions,
           targets[i].duration,
           targets[i].center,
@@ -311,25 +381,18 @@ const MapComponent: React.FC<MapComponentProps> = (
   };
 
   useEffect(() => {
-    const controller = new AbortController();
-    console.log("properties state", propertiesState?.data?.length);
-    const signal = controller.signal;
-    const mapAnimation = async (signal: AbortSignal) => {
-      const propertySelected = selectedProperty && map &&
-        selectedProperty?.latitude &&
-        selectedProperty?.longitude;
-      if (propertySelected) {
-        panToProperty(signal);
-      } else {
-        centerMap(signal);
-      }
-    };
-    mapAnimation(signal);
-    return () => controller.abort();
+    console.log(
+      "selectedProperty  preview",
+      selectedPropertyPreview?.sales_listing_price,
+    );
+    if (map) {
+      initMapLocation(map);
+    }
   }, [
     selectedProperty,
+    selectedPropertyPreview,
     locationState?.currentData,
-    propertiesState?.currentData,
+    propertiesState?.data,
   ]);
 
   const onUnmount = useCallback(function callback() {
@@ -430,12 +493,6 @@ const MapComponent: React.FC<MapComponentProps> = (
     west: -125.000000,
     east: -66.934570,
   };
-  const [anchorEl, setAnchorEl] = useState(null);
-  const [hoveredProperty, setHoveredProperty] = useState<
-    AnalyzedProperty
-  >();
-  const open = Boolean(anchorEl);
-  const id = open ? "simple-popper" : undefined;
 
   const getMockProperties = () => {
     const properties = [];
@@ -451,6 +508,7 @@ const MapComponent: React.FC<MapComponentProps> = (
   return isLoaded
     ? (
       <GoogleMap
+        id="map"
         mapContainerStyle={containerStyle}
         // zoom={zoom}
         onLoad={onLoad}
@@ -487,60 +545,15 @@ const MapComponent: React.FC<MapComponentProps> = (
       >
         <CardsPanel
           // deals={filterDeals(propertiesState.data)}
-          properties={filterProperties(propertiesState?.data)}
+          // properties={filterProperties(propertiesState?.data)}
+          properties={filterProperties(propertiesState.data)}
+          // properties={propertiesState.data}
           // properties={getMockProperties()}
-          selectedProperty={selectedProperty}
+          selectedProperty={selectedPropertyPreview}
           setSelectedProperty={handleSelectProperty}
-          setHoveredProperty={setHoveredProperty}
+          // selectedProperty={{} as PropertyPreview}
+          // setSelectedProperty={() => {}}
         />
-        <Popper
-          id={id}
-          open={open}
-          anchorEl={anchorEl}
-          modifiers={[
-            {
-              name: "flip",
-              enabled: true,
-              options: {
-                altBoundary: true,
-                rootBoundary: "document",
-                padding: 8,
-              },
-            },
-            {
-              name: "preventOverflow",
-              enabled: true,
-              options: {
-                altAxis: true,
-                altBoundary: true,
-                tether: true,
-                rootBoundary: "document",
-                padding: 8,
-              },
-            },
-            // {
-            //   name: "arrow",
-            //   enabled: true,
-            //   options: {
-            //     element: arrowRef,
-            //   },
-            // },
-          ]}
-        >
-          <Fade in={open} timeout={500}>
-            <div
-              // style={divStyle}
-              onMouseEnter={(e) => {
-                // setAnchorEl(e.currentTarget);
-              }}
-              // onMouseLeave={() => handleMouseOut()}
-            >
-              <PropertyMapCard
-                property={hoveredProperty as AnalyzedProperty}
-              />
-            </div>
-          </Fade>
-        </Popper>
 
         {propertiesState.isFetching && (
           <div
@@ -558,21 +571,12 @@ const MapComponent: React.FC<MapComponentProps> = (
 
         <MapControlPanel />
         <LocationBounds locationData={locationState?.data} />
-        {selectedProperty
+        {selectedPropertyPreview
           ? (
-            <>
-              <SelectedPropertyMarker
-                selectedProperty={selectedProperty}
-                setSelectedProperty={handleSelectProperty}
-              />
-              <SoldPropertiesMarkers
-                selectedComps={selectedComps}
-              />
-
-              <RentPropertiesMarkers
-                selectedComps={selectedRentalComps}
-              />
-            </>
+            <SelectedPropertyMarker
+              selectedProperty={selectedPropertyPreview}
+              setSelectedProperty={handleSelectProperty}
+            />
           )
           : (
             <MarkerClusterer
@@ -590,15 +594,25 @@ const MapComponent: React.FC<MapComponentProps> = (
                 <>
                   <PropertiesMarkers
                     properties={filterProperties(propertiesState?.data)}
+                    // properties={propertiesState?.data || []}
                     setSelectedProperty={handleSelectProperty}
                     clusterer={clusterer}
-                    setAnchorEl={setAnchorEl}
-                    setHoveredProperty={setHoveredProperty}
-                    hoveredProperty={hoveredProperty}
                   />
                 </>
               )}
             </MarkerClusterer>
+          )}
+        {selectedProperty &&
+          (
+            <>
+              <SoldPropertiesMarkers
+                selectedComps={selectedComps}
+              />
+
+              <RentPropertiesMarkers
+                selectedComps={selectedRentalComps}
+              />
+            </>
           )}
       </GoogleMap>
     )

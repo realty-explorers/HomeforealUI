@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import ArrowCircleLeftSharpIcon from "@mui/icons-material/ArrowCircleLeftSharp";
 import ArrowCircleRightSharpIcon from "@mui/icons-material/ArrowCircleRightSharp";
-import AnalyzedProperty from "@/models/analyzedProperty";
+import PropertyPreview from "@/models/propertyPreview";
 import PropertyCard from "./PropertyCard";
 // import { useDraggable } from "react-use-draggable-scroll";
 import { grey } from "@mui/material/colors";
@@ -58,10 +58,10 @@ const Wrapper = styled("div")(({ theme }) => ({
 }));
 
 type CardsPanelProps = {
-  properties: AnalyzedProperty[];
-  selectedProperty: AnalyzedProperty;
-  setSelectedProperty: (property: AnalyzedProperty) => void;
-  setHoveredProperty: (property: AnalyzedProperty) => void;
+  properties: PropertyPreview[];
+  selectedProperty: PropertyPreview;
+  setSelectedProperty: (property: PropertyPreview) => void;
+  // setHoveredProperty: (property: PropertyPreview) => void;
 };
 
 const Puller = styled(Box)(({ theme }) => ({
@@ -81,6 +81,7 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
   const [cardsOpen, setCardsOpen] = useState(true);
   const [scrollPosition, setScrollPosition] = useState(0);
   const [index, setIndex] = useState(0);
+  const [scrollDistance, setScrollDistance] = useState(0);
 
   // const toggleDrawer = (newOpen: boolean) => () => {
   //   setOpen(newOpen);
@@ -90,25 +91,44 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
   //   : undefined;
   // const { events } = useDraggable(ref);
   const scrollLeft = () => {
-    const el: any = ref.current;
-    el.scrollTo({
-      left: el.scrollLeft - ref.current.offsetWidth,
+    ref?.scrollTo({
+      left: ref.scrollLeft - ref.offsetWidth,
+      // left: ref.scrollLeft - scrollDistance,
       behavior: "smooth",
     });
   };
   //
   const scrollRight = () => {
-    const el: any = ref.current;
-    el.scrollTo({
-      left: el.scrollLeft + ref.current.offsetWidth,
+    ref?.scrollTo({
+      left: ref.scrollLeft + ref.offsetWidth,
       behavior: "smooth",
     });
   };
+
+  const validValue = (value: string | number | undefined) => {
+    if (typeof value === "number") {
+      return value;
+    }
+    return 0;
+  };
+  const sortedProperties = props.properties &&
+    [...props.properties].sort((a, b) => {
+      if (!validValue(a.arv_price) && validValue(b.arv_price)) return 1;
+      if (validValue(a.arv_price) && !validValue(b.arv_price)) return -1;
+      // if (a.arv_price && b.arv_price) {
+      const arvPercentageA = (a.arv_price - a.sales_listing_price) /
+        a.arv_price;
+      const arvPercentageB = (b.arv_price - b.sales_listing_price) /
+        b.arv_price;
+      return arvPercentageB - arvPercentageA;
+      // }
+      return 0;
+    });
   useEffect(() => {
-    const element = document.querySelector("#meow > div");
+    const element = document.querySelector("#list-container > div > div");
     setRef(element);
     if (props.selectedProperty) {
-      const selectedPropertyIndex = props.properties?.findIndex(
+      const selectedPropertyIndex = sortedProperties?.findIndex(
         (property) => property.source_id === props.selectedProperty?.source_id,
       );
       setIndex(selectedPropertyIndex);
@@ -145,14 +165,16 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
     //   el.addEventListener("wheel", onWheel);
     //   return () => el.removeEventListener("wheel", onWheel);
     // }
+    // }, [props.selectedProperty]);
   }, [props.selectedProperty]);
 
-  const handleSelectProperty = (property: AnalyzedProperty, index: number) => {
+  const handleSelectProperty = (property: PropertyPreview, index: number) => {
+    console.log(index);
     props.setSelectedProperty(property);
-    ref?.scrollTo({
-      left: 230 * index,
-      behavior: "smooth",
-    });
+    // ref?.scrollTo({
+    //   left: -100,
+    //   behavior: "smooth",
+    // });
     // const card = document.getElementById(property.source_id);
     // const el: any = ref.current;
     // if (el) {
@@ -162,17 +184,18 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
     //   });
     // }
   };
+
   const Column = ({ index, style }) => (
     <div style={{ ...style }} className="px-2 py-2">
       <div className="w-full h-full rounded-xl bg-white">
         <PropertyCard
           key={index}
-          property={props.properties?.[index]}
+          property={sortedProperties[index]}
           selectedProperty={props.selectedProperty}
           setSelectedProperty={(property) =>
             handleSelectProperty(property, index)}
           setOpenMoreDetails={() => {}}
-          setHoveredProperty={props.setHoveredProperty}
+          // setHoveredProperty={props.setHoveredProperty}
         />
       </div>
     </div>
@@ -216,11 +239,38 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
   //   console.log(ref);
   // };
   return (
-    <div className={clsx(["absolute bottom-0 w-screen h-60 "])}>
-      <div className="relative flex w-full h-full">
-        <AutoSizer className="w-full">
-          {({ height, width }) => (
-            <div id="meow">
+    <div
+      className={clsx([
+        "absolute bottom-0 w-full h-60 transition-[margin] duration-300",
+        !cardsOpen && "-mb-48",
+      ])}
+    >
+      <div
+        className={clsx([
+          "relative flex w-full h-full",
+        ])}
+      >
+        {props.properties?.length > 0 && (
+          <IconButton
+            className="absolute top-0 left-1/2 -translate-y-full -translate-x-1/2 bg-white w-12 h-4 border border-black"
+            style={{ border: "1px dashed black" }}
+            onClick={() => setCardsOpen(!cardsOpen)}
+          >
+            <ExpandMoreIcon
+              className={clsx([
+                "transition-all",
+                cardsOpen ? "" : "rotate-180",
+              ])}
+            />
+          </IconButton>
+        )}
+
+        <IconButton onClick={scrollLeft}>
+          <ArrowCircleLeftSharpIcon />
+        </IconButton>
+        <div className="w-full h-full" id="list-container">
+          <AutoSizer>
+            {({ height, width }) => (
               <FixedSizeList
                 className="List"
                 height={height}
@@ -231,9 +281,13 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
               >
                 {Column}
               </FixedSizeList>
-            </div>
-          )}
-        </AutoSizer>
+            )}
+          </AutoSizer>
+        </div>
+
+        <IconButton onClick={scrollRight}>
+          <ArrowCircleRightSharpIcon />
+        </IconButton>
       </div>
     </div>
   );

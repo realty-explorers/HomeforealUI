@@ -1,16 +1,78 @@
-import { Box } from '@mui/material';
+import {
+  memo,
+  ReactEventHandler,
+  SyntheticEvent,
+  useEffect,
+  useState,
+} from "react";
+import Lottie from "lottie-react";
+import mapLoadingAnimation from "@/static/animations/loading/mapLoadingAnimation.json";
+import clsx from "clsx";
 
-const Image = (props: any) => {
+type ImageProps = {
+  src: string;
+  alt: string;
+  defaultSrc?: string;
+  className?: string;
+  overrideStyles?: string;
+} & React.ImgHTMLAttributes<HTMLImageElement>;
+const Image = (
+  { src, alt, defaultSrc, className, overrideStyles, ...imgProps }: ImageProps,
+) => {
+  const [loading, setLoading] = useState(false);
+  const [imgSrc, setImgSrc] = useState(src);
+  const [lock, setLock] = useState(true);
+
+  useEffect(() => {
+    setImgSrc(src);
+  }, [src]);
+
+  const handleError = (e: SyntheticEvent<HTMLImageElement, Event>) => {
+    setImgSrc(defaultSrc || "");
+    setLoading(false);
+  };
+
+  const handleStartLoad = (e: SyntheticEvent<HTMLImageElement, Event>) => {
+    setLoading(true);
+  };
+
+  const handleEndLoad = (e: SyntheticEvent<HTMLImageElement, Event>) => {
+    setLoading(false);
+    setLock(false);
+  };
+
   return (
-    <Box
-      {...props}
-      width="100%"
-      height="100%"
-      borderRadius="0.5rem"
-      component="img"
-      alt="The house from the offer."
-      src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&w=350&dpr=2"
-    />
+    <div className="relative w-full h-full">
+      {loading &&
+        (
+          <div
+            className={clsx([
+              "w-full h-full  justify-center items-center",
+              !loading ? "hidden" : "flex",
+            ])}
+          >
+            <Lottie
+              animationData={mapLoadingAnimation}
+              className="h-full aspect-square z-[3]"
+            />
+          </div>
+        )}
+
+      <img
+        {...imgProps}
+        src={imgSrc}
+        alt={alt}
+        className={clsx(
+          "w-full h-full  object-cover object-center transition-opacity duration-1000 delay-100",
+          className,
+          loading ? "opacity-0 hidden" : "opacity-100",
+        )}
+        onLoadedData={handleEndLoad}
+        onLoadStart={handleStartLoad}
+        onError={handleError}
+        onLoad={handleEndLoad}
+      />
+    </div>
   );
 };
 

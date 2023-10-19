@@ -29,6 +29,7 @@ import { useSnackbar, VariantType } from "notistack";
 import { motion, Variants } from "framer-motion";
 import Lottie from "lottie-react";
 import searchingDocumentsAnimation from "@/static/animations/loading/searchingDocumentsAnimation.json";
+import { useRouter } from "next/router";
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -128,7 +129,7 @@ const BuyboxList = (props: BuyboxListProps) => {
   useEffect(() => {
     const getBuyBoxesData = async () => {
       try {
-        const data = await getBuyBoxes("1").unwrap();
+        const data = await getBuyBoxes("1", true).unwrap();
       } catch (error) {
         enqueueSnackbar(`${error.error}`, {
           variant: "error",
@@ -159,6 +160,7 @@ const BuyboxList = (props: BuyboxListProps) => {
                   key={index}
                   buybox={buybox}
                   editBuyBox={props.editBuyBox}
+                  // setOpenBuyBoxes={setOpenBuyBoxes}
                 />
               </motion.div>
             ))}

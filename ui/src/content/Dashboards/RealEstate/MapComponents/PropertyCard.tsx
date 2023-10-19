@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import AnalyzedProperty from "@/models/analyzedProperty";
+import PropertyPreview from "@/models/propertyPreview";
 import { openGoogleSearch } from "@/utils/windowFunctions";
 import {
   alpha,
@@ -43,13 +43,14 @@ import {
   numberStringUtil,
   percentFormatter,
   priceFormatter,
+  validateValue,
 } from "@/utils/converters";
 import { useDispatch } from "react-redux";
 import IconListItem from "../DetailsPanel/IconListItem";
 import IconSwitch from "../FormFields/IconSwitch";
 import styles from "./styles.module.scss";
-import { setSelectedProperty } from "@/store/slices/propertiesSlice";
-import Image from "next/image";
+import { setSelectedPropertyPreview } from "@/store/slices/propertiesSlice";
+import Image from "@/components/Photos/Image";
 import clsx from "clsx";
 interface StyledCardProps extends CardProps {
   selected?: boolean;
@@ -122,12 +123,15 @@ const StyledTooltip = styled(Tooltip)({
   },
 });
 
+const defaultImage =
+  "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
+
 type PropertyCardProps = {
-  property: AnalyzedProperty;
-  setSelectedProperty: (property: AnalyzedProperty) => void;
+  property: PropertyPreview;
+  setSelectedProperty: (property: PropertyPreview) => void;
   setOpenMoreDetails: (open: boolean) => void;
-  selectedProperty: AnalyzedProperty;
-  setHoveredProperty: (property: AnalyzedProperty) => void;
+  selectedProperty: PropertyPreview;
+  // setHoveredProperty: (property: PropertyPreview) => void;
   className?: string;
 };
 const PropertyCard: React.FC<PropertyCardProps> = (
@@ -135,19 +139,18 @@ const PropertyCard: React.FC<PropertyCardProps> = (
 ) => {
   const dispatch = useDispatch();
   const [cardImage, setCardImage] = useState(
-    // props.property.primaryImage,
-    props.property?.images?.[0] || "",
+    validateValue(props.property?.primary_image, "string", defaultImage),
   );
   const handlePropertySelected = async () => {
     if (
       props.selectedProperty &&
       props.selectedProperty.source_id === props.property.source_id
     ) {
-      dispatch(setSelectedProperty(null));
+      dispatch(setSelectedPropertyPreview(null));
       props.setSelectedProperty(null);
     } else {
       props.setSelectedProperty(props.property);
-      dispatch(setSelectedProperty(props.property));
+      dispatch(setSelectedPropertyPreview(props.property));
     }
   };
 
@@ -165,15 +168,23 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     }
   };
 
-  const defaultImage =
-    "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
-
   useEffect(() => {
-    setCardImage(props.property?.images[0] || defaultImage);
-    return () => {};
+    setCardImage(
+      validateValue(props.property?.primary_image, "string", defaultImage),
+    );
+    console.log("rereneer2");
   }, [props.property, props.selectedProperty]);
 
-  const profit = numberStringUtil(props.property?.arv_percentage).toFixed(2);
+  const arvPercentage =
+    props.property?.arv_price && props.property.arv_price > 0
+      ? Math.round(
+        props.property.arv_price -
+          props.property.sales_listing_price,
+      ) / props.property.sales_listing_price * 100
+      : 0;
+
+  // const profit = arvPercentage.toFixed(100);
+  const profit = 3;
 
   return (
     <Button
@@ -184,13 +195,13 @@ const PropertyCard: React.FC<PropertyCardProps> = (
         "ring ring-black",
       ])}
       onClick={handlePropertySelected}
-      onMouseOver={() => props.setHoveredProperty(props.property)}
+      // onMouseOver={() => props.setHoveredProperty(props.property)}
     >
-      {numberStringUtil(profit) >= 0 && (
+      {typeof props.property.arv_price === "number" && (
         <Grid className={styles.cardDiscountChip} container>
           <Grid item xs={12}>
             <Typography className={styles.cardDiscountValue}>
-              {numberStringUtil(props.property?.arv_percentage).toFixed()}%
+              {arvPercentage.toFixed()}%
             </Typography>
           </Grid>
           <Grid item xs={12}>
@@ -201,15 +212,26 @@ const PropertyCard: React.FC<PropertyCardProps> = (
         </Grid>
       )}
       <div className="flex w-full h-1/3 relative">
+        {/* <Image */}
+        {/*   src={validateValue(cardImage, "string", defaultImage)} */}
+        {/*   alt={props.property?.address || ""} */}
+        {/*   // onError={() => */}
+        {/*   //   setCardImage( */}
+        {/*   //     "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=", */}
+        {/*   //   )} */}
+        {/*   fill */}
+        {/*   className="object-cover object-center rounded-t-xl opacity-0 transition-opacity duration-1000" */}
+        {/*   onLoadingComplete={(image) => image.classList.remove("opacity-0")} */}
+        {/* /> */}
+        {/* <img */}
+        {/*   src={validateValue(cardImage, "string", defaultImage)} */}
+        {/*   className="w-full h-full rounded-t-xl object-cover object-center" */}
+        {/* /> */}
         <Image
-          src={cardImage || defaultImage}
-          alt={props.property?.address || ""}
-          // onError={() =>
-          //   setCardImage(
-          //     "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=",
-          //   )}
-          fill
-          className="object-cover object-center rounded-t-xl"
+          src={validateValue(cardImage, "string", "")}
+          alt=""
+          defaultSrc={defaultImage}
+          className="w-full h-full rounded-t-xl object-cover object-center"
         />
       </div>
       <div className="flex flex-col h-2/3 w-full px-4">
@@ -223,23 +245,23 @@ const PropertyCard: React.FC<PropertyCardProps> = (
         <div className={styles.cardInfoRow}>
           <Typography>Price</Typography>
           <Typography>
-            {priceFormatter(props.property.listing_price)}
+            {priceFormatter(props.property?.sales_listing_price)}
           </Typography>
         </div>
         <div className={styles.cardInfoRow}>
           <Typography>Comps Sale</Typography>
           <Typography>
-            {priceFormatter(props.property.sales_comps_price)}
+            {priceFormatter(props.property?.sales_comps_price)}
           </Typography>
         </div>
         <div className={styles.cardInfoRow}>
           <Typography>ARV</Typography>
-          <Typography>{priceFormatter(props.property.arv_price)}</Typography>
+          <Typography>{priceFormatter(props.property?.arv_price)}</Typography>
         </div>
         <div className={styles.cardInfoRow}>
           <Typography>Cap Rate</Typography>
           <Typography>
-            {(numberStringUtil(props.property.cap_rate) * 100).toFixed(2)} %
+            {(numberStringUtil(props.property?.cap_rate) * 100).toFixed(2)} %
           </Typography>
         </div>
       </div>

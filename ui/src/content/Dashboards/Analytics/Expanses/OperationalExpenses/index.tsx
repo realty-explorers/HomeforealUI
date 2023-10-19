@@ -24,33 +24,34 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
     setMonthlyExpansesActive(true);
   }, [props.property]);
 
-  return (
-    <div className="p-4">
-      <Grid
-        className={`${analyticsStyles.blackBorderedSection} ${analyticsStyles.sectionContainer}`}
-      >
-        <Grid container justifyContent="center" rowGap={3}>
-          <Grid item xs={6}>
-            <h1 className={analyticsStyles.sectionHeader}>
-              Expanses Calculator
-            </h1>
-          </Grid>
-          <Grid item xs={6} className="sticky top-0 z-[2]">
-            <ValueCard
-              title="Annual Expanses"
-              value={priceFormatter(totalExpanses.toFixed())}
+  return (props.property?.rents_comps?.data?.length > 0 &&
+    (
+      <div className="p-4">
+        <Grid
+          className={`${analyticsStyles.blackBorderedSection} ${analyticsStyles.sectionContainer}`}
+        >
+          <Grid container justifyContent="center" rowGap={3}>
+            <Grid item xs={6}>
+              <h1 className={analyticsStyles.sectionHeader}>
+                Expanses Calculator
+              </h1>
+            </Grid>
+            <Grid item xs={6} className="sticky top-0 z-[2]">
+              <ValueCard
+                title="Annual Expanses"
+                value={priceFormatter(totalExpanses.toFixed())}
+              />
+            </Grid>
+            <MonthlyExpanses
+              property={props.property}
+              setExpanses={setMonthlyExpanses}
+              active={monthlyExpansesActive}
+              toggleActive={() => setMonthlyExpansesActive((prev) => !prev)}
             />
           </Grid>
-          <MonthlyExpanses
-            property={props.property}
-            setExpanses={setMonthlyExpanses}
-            active={monthlyExpansesActive}
-            toggleActive={() => setMonthlyExpansesActive((prev) => !prev)}
-          />
         </Grid>
-      </Grid>
-    </div>
-  );
+      </div>
+    ));
 };
 
 export default ExpansesCalculator;

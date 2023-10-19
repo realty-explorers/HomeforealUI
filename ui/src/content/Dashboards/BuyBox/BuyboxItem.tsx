@@ -22,6 +22,14 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import BuyBoxLeads from "./BuyBoxLeads";
 import { useState } from "react";
+import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectBuyBoxes,
+  setBuyBoxOpen,
+  setBuyBoxPage,
+} from "@/store/slices/buyBoxesSlice";
 
 const columns: GridColDef[] = [
   {
@@ -157,6 +165,7 @@ const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
 type BuyboxItemProps = {
   buybox: BuyBox;
   editBuyBox: (buybox: BuyBox) => void;
+  // setOpenBuyBoxes: (buyboxState: {buybox_id: string, page: number}) => void;
 };
 
 const BuyboxItem = (props: BuyboxItemProps) => {
@@ -164,7 +173,10 @@ const BuyboxItem = (props: BuyboxItemProps) => {
   //   props.data?.buybox_id || skipToken,
   // );
 
-  const [expanded, setExpanded] = useState(false);
+  const dispatch = useDispatch();
+  const { buyboxes } = useSelector(selectBuyBoxes);
+
+  const expanded = buyboxes[props.buybox.id]?.open === true;
 
   const handleEditBuyBox = (e) => {
     e.stopPropagation();
@@ -173,8 +185,16 @@ const BuyboxItem = (props: BuyboxItemProps) => {
 
   const allowedToEdit = props.buybox.permissions.includes("edit");
 
-  const handleChange = (event: React.SyntheticEvent, isExpanded: boolean) => {
-    setExpanded(isExpanded);
+  const handleClick = () => {
+    if (expanded) {
+      dispatch(setBuyBoxOpen({ buybox_id: props.buybox.id, open: false }));
+      return;
+    }
+    dispatch(setBuyBoxOpen({ buybox_id: props.buybox.id, open: true }));
+  };
+
+  const setPage = (page: number) => {
+    dispatch(setBuyBoxPage({ buybox_id: props.buybox.id, page: page }));
   };
 
   const rows = []?.map((lead: Lead, index) => {
@@ -183,10 +203,10 @@ const BuyboxItem = (props: BuyboxItemProps) => {
       image:
         "https://photos.zillowstatic.com/fp/b312180f50220b7ae1c090b3c3126e81-cc_ft_768.webp",
       address: lead.address,
-      opportunity: lead.is_opp ? "Fix & Flip" : "",
+      opportunity: lead.opportunities.join(","),
       askingPrice: lead.listing_price,
-      ARV: lead.arv,
-      NOI: "",
+      ARV: lead.arv_price,
+      NOI: lead.noi,
       capRate: lead.cap_rate,
       zipCode: lead.zipcode,
       note: "",
@@ -195,7 +215,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
 
   return (
     <>
-      <StyledAccordion onChange={handleChange}>
+      <StyledAccordion expanded={expanded} onChange={handleClick}>
         <StyledAccordionSummary
           expandIcon={<ExpandMoreIcon className="-rotate-90" />}
           className="flex-row-reverse"
@@ -216,7 +236,12 @@ const BuyboxItem = (props: BuyboxItemProps) => {
           </div>
         </StyledAccordionSummary>
         <AccordionDetails>
-          <BuyBoxLeads buybox={props.buybox} open={expanded} />
+          <BuyBoxLeads
+            buybox={props.buybox}
+            open={expanded}
+            page={buyboxes[props.buybox.id]?.page || 0}
+            setPage={setPage}
+          />
         </AccordionDetails>
       </StyledAccordion>
       {/* <DataGrid */}

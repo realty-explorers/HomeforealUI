@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import MainControls from "../MapControls/MainControls";
 import { useLazyGetLocationDataQuery } from "@/store/services/locationApiService";
 import {
-  useLazyGetPropertiesQuery,
+  useLazyGetPropertiesPreviewsQuery,
 } from "@/store/services/propertiesApiService";
 import { Button, Collapse } from "@mui/material";
 import TuneIcon from "@mui/icons-material/Tune";
@@ -17,7 +17,9 @@ const MapControlPanel = (props: MapControlPanelProps) => {
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
   const [getLocationData, locationDataState] = useLazyGetLocationDataQuery();
-  const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
+  // const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
+  const [getPropertiesPreviews, propertiesPreviewsState] =
+    useLazyGetPropertiesPreviewsQuery();
   const [filtersOpen, setFiltersOpen] = useState(false);
 
   useEffect(() => {
@@ -26,7 +28,8 @@ const MapControlPanel = (props: MapControlPanelProps) => {
 
   const handleSearch = async () => {
     const locationDataRequest = getLocationData(suggestion, true);
-    const propertiesDataRequest = getPropertiesData(suggestion);
+    // const propertiesDataRequest = getPropertiesData(suggestion);
+    const propertiesDataRequest = getPropertiesPreviews(suggestion);
 
     await Promise.all([locationDataRequest, propertiesDataRequest]);
 

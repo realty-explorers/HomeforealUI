@@ -5,7 +5,7 @@
   align-items: center;
   div {
     color: black;
-    font-family: Poppins;
+    @apply font-poppins;
     margin-bottom: 0.5rem;
   }
   :first-child {
@@ -13,17 +13,17 @@
   }
 }
 .cardDiscountChip {
+  @apply font-poppins;
   width: 40%;
   position: absolute;
-  top: 0.5em;
-  left: 0.5em;
+  top: 0.3em;
+  left: 0.3em;
   border-radius: 0.5rem;
   padding: 0;
   z-index: 1;
   background-color: #9747ff;
   color: #fff;
   text-align: center;
-  font-family: Poppins;
   font-size: 0.9375rem;
   font-style: normal;
   font-weight: 700;
@@ -34,7 +34,7 @@
 .cardDiscountValue {
   color: #fff;
   text-align: center;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 1.2rem;
   font-style: normal;
   font-weight: 900;
@@ -45,7 +45,7 @@
 .cardDiscountText {
   color: #fff;
   text-align: center;
-  font-family: Poppins;
+  @apply font-poppins;
   font-size: 0.8rem;
   font-style: normal;
   font-weight: 700;

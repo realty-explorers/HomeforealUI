@@ -30,7 +30,9 @@ const PropertyFacts = (props: PropertyFactsProps) => {
         <GridField label="Bedrooms" value={props.property.bedrooms} />
         <GridField
           label="YearBuilt"
-          value={props.property.year_built?.slice(0, 4)}
+          value={typeof props.property?.year_built === "string"
+            ? props.property.year_built.slice(0, 4)
+            : ""}
         />
         <GridField
           label="Half Bathrooms"

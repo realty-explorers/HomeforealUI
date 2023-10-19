@@ -4,7 +4,7 @@ import Image from "next/image";
 import analyticsStyles from "../Analytics.module.scss";
 import styles from "./CompsSection.module.scss";
 import styled from "@emotion/styled";
-import { priceFormatter } from "@/utils/converters";
+import { priceFormatter, validateValue } from "@/utils/converters";
 import clsx from "clsx";
 import React, { useState } from "react";
 import { CompData } from "@/models/analyzedProperty";
@@ -44,7 +44,7 @@ const gridRows = (property: CompData) => [
   },
   {
     label: "Year Built",
-    value: property.year_built.slice(0, 4),
+    value: validateValue(property.year_built, "string", "").slice(0, 4),
   },
   {
     label: "Hood",
@@ -128,14 +128,19 @@ const CompsCard = (props: CompsCardProps) => {
         marginBottom={"2rem"}
       >
         <div className="h-44 w-full relative">
-          <Image
+          {/* <Image */}
+          {/*   src={cardImage} */}
+          {/*   alt={props.compsProperty.address} */}
+          {/*   placeholder="blur" */}
+          {/*   blurDataURL={defaultImage} */}
+          {/*   onError={() => setCardImage(defaultImage)} */}
+          {/*   fill */}
+          {/*   className="h-44 ascpect-ratio object-cover object-center  rounded-xl" */}
+          {/* /> */}
+          <img
             src={cardImage}
-            alt={props.compsProperty.address}
-            placeholder="blur"
-            blurDataURL={defaultImage}
-            onError={() => setCardImage(defaultImage)}
-            fill
             className="h-44 ascpect-ratio object-cover object-center  rounded-xl"
+            onError={() => setCardImage(defaultImage)}
           />
         </div>
         {/* <img */}

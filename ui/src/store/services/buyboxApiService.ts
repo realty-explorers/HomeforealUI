@@ -6,8 +6,8 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { logout } from "../slices/authSlice";
 
-// const baseUrl = process.env.NEXT_PUBLIC_BUYBOX_API_URL;
-const baseUrl = "http://localhost:8000/buybox";
+const baseUrl = process.env.NEXT_PUBLIC_BUYBOX_API_URL;
+// const baseUrl = "http://localhost:8000/buybox";
 const GENERAL_BUYBOX_ID = "3dbf8068-bfda-4422-af27-7597045dac6e";
 
 const baseQuery = fetchBaseQuery({

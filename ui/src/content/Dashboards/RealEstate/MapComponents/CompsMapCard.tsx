@@ -6,12 +6,15 @@ import {
 import { Typography } from "@mui/material";
 import { useState } from "react";
 import { CompData } from "@/models/analyzedProperty";
-import Image from "next/image";
+import Image from "@/components/Photos/Image";
 import WcIcon from "@mui/icons-material/Wc";
 import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import PinDropOutlinedIcon from "@mui/icons-material/PinDropOutlined";
 import clsx from "clsx";
+
+const defaultImage =
+  "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
 
 type CompsMapCardProps = {
   property: CompData;
@@ -50,16 +53,27 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
   return (
     <div className="flex rounded-xl bg-white w-80 h-40">
       <div className="w-1/3 h-full relative">
+        {/* <Image */}
+        {/*   src={cardImage} */}
+        {/*   alt={props.property.address} */}
+        {/*   onError={() => */}
+        {/*     setCardImage( */}
+        {/*       "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=", */}
+        {/*     )} */}
+        {/*   fill */}
+        {/*   className="object-cover object-center w-full h-full rounded-l-xl" */}
+        {/* /> */}
         <Image
           src={cardImage}
-          alt={props.property.address}
-          onError={() =>
-            setCardImage(
-              "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=",
-            )}
-          fill
+          defaultSrc={defaultImage}
+          alt={props.property?.address}
           className="object-cover object-center w-full h-full rounded-l-xl"
         />
+
+        {/* <img */}
+        {/*   src={cardImage} */}
+        {/*   className="w-full h-full rounded-l-xl object-cover object-center" */}
+        {/* /> */}
       </div>
       <div className="flex flex-col justify-around w-2/3 px-4 gap-y-2">
         {/* import HotelIcon from '@mui/icons-material/Hotel'; */}

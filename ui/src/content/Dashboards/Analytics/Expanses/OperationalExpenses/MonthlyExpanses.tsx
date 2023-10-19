@@ -147,7 +147,7 @@ const MonthlyExpanses = (props: MonthlyExpansesProps) => {
       </Grid>
       <Grid item container xs={6} justifyContent="center">
         <Typography className={styles.totalExpansesLabel}>
-          {priceFormatter(Math.round(totalExpanses(expanses) / 12))}/Month
+          {priceFormatter(Math.round(totalExpanses(expanses) / 12))}/Monthly
         </Typography>
       </Grid>
       <List className="w-full">

@@ -15,30 +15,50 @@ import GridField from "@/components/Grid/GridField";
 import ValueCard from "@/components/Cards/ValueCard";
 import styled from "@emotion/styled";
 import analyticsStyles from "./Analytics.module.scss";
-import styles from "./RentComparable.module.scss";
+import styles from "./SaleComparable.module.scss";
 import AnalyzedProperty from "@/models/analyzedProperty";
+import { useSelector } from "react-redux";
+import { selectProperties } from "@/store/slices/propertiesSlice";
+import { numberStringUtil, priceFormatter } from "@/utils/converters";
+import clsx from "clsx";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   borderBottom: "none",
 }));
 
+const calcDays = (date: string) => {
+  const date1 = new Date(date);
+  const date2 = new Date();
+  const diffTime = Math.abs(date2.getTime() - date1.getTime());
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+};
+
 type RentComparableProps = {
   property: AnalyzedProperty;
 };
 const RentComparable = (props: RentComparableProps) => {
+  const { selectedRentalComps } = useSelector(selectProperties);
+  const area = props.property.building_area;
+  const rentListingPrice =
+    typeof props.property.rents_listing_price === "number"
+      ? props.property.rents_listing_price
+      : 0;
+  const rentToSqft = area && area > 0 ? rentListingPrice / area : 0;
+  const compsRentToSqft = selectedRentalComps
+    ? selectedRentalComps.reduce((acc, comp) => {
+      const compArea = comp.building_area;
+      const compRentalPrice = typeof comp.rents_listing_price === "number"
+        ? comp.rents_listing_price
+        : 0;
+      const compPriceToSqft = compArea && compArea > 0
+        ? numberStringUtil(compRentalPrice) / compArea
+        : 0;
+      return acc + compPriceToSqft;
+    }, 0) / selectedRentalComps.length
+    : null;
+
   return (props.property?.rents_comps?.data?.length > 0 && (
-    <Grid
-      container
-      className={`${analyticsStyles.sectionContainer}`}
-      alignItems="center"
-      justifyContent="center"
-    >
-      <Grid item xs={6}>
-        <h1 className={analyticsStyles.sectionHeader}>Rent Comparable</h1>
-      </Grid>
-      <Grid item xs={6} sx={{ marginBottom: "1rem" }}>
-        <ValueCard title="Estimated Rent" value="$2,000" />
-      </Grid>
+    <div className="p-4">
       <Grid className={styles.tableWrapper}>
         <TableContainer>
           <Table>
@@ -52,23 +72,58 @@ const RentComparable = (props: RentComparableProps) => {
                   </Typography>
                 </StyledTableCell>
                 <StyledTableCell>
-                  <Typography className={styles.columnTitle}>Comps</Typography>
+                  <Typography className={styles.columnTitle}>
+                    Comps
+                  </Typography>
                 </StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               <TableRow>
                 <StyledTableCell component="th" scope="row">
-                  <Typography className={styles.cellText}>Rent/Sqft</Typography>
+                  <Typography
+                    className={clsx([styles.cellText, styles.cellHeader])}
+                  >
+                    Rent/Sqft
+                  </Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  ------------------------------------------------
+                  <hr className="border-t-black border-dashed" />
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>$11</Typography>
+                  <Typography className={styles.cellText}>
+                    {rentToSqft ? priceFormatter(rentToSqft.toFixed()) : "-"}
+                  </Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>0</Typography>
+                  <Typography className={styles.cellText}>
+                    {compsRentToSqft
+                      ? priceFormatter(compsRentToSqft.toFixed())
+                      : "-"}
+                  </Typography>
+                </StyledTableCell>
+              </TableRow>
+
+              <TableRow>
+                <StyledTableCell component="th" scope="row">
+                  <Typography className={styles.cellText}>
+                    Cap Rate
+                  </Typography>
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <hr className="border-t-black border-dashed" />
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <Typography className={styles.cellText}>
+                    {typeof props.property.cap_rate === "number"
+                      ? `${props.property.cap_rate.toFixed(2)}%`
+                      : "-"}
+                  </Typography>
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  <Typography className={styles.cellText}>
+                    -
+                  </Typography>
                 </StyledTableCell>
               </TableRow>
 
@@ -78,44 +133,27 @@ const RentComparable = (props: RentComparableProps) => {
                     Total Comps
                   </Typography>
                 </StyledTableCell>
-                <StyledTableCell align="center">
-                  ------------------------------------------------
+                <StyledTableCell align="center" className="w-full">
+                  <hr className="border-t-black border-dashed w-full" />
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <Typography className={styles.cellText}>-</Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>15</Typography>
-                </StyledTableCell>
-              </TableRow>
-
-              <TableRow>
-                <StyledTableCell component="th" scope="row">
-                  <Typography className={styles.cellText}>Cap Rate</Typography>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  ------------------------------------------------
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>4.5%</Typography>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <Typography className={styles.cellText}>3.5%</Typography>
+                  <Typography className={styles.cellText}>
+                    {props.property.rents_comps.data?.length || 0}
+                  </Typography>
                 </StyledTableCell>
               </TableRow>
             </TableBody>
           </Table>
         </TableContainer>
 
-        <Grid container justifyContent="flex-end">
-          <Button className={analyticsStyles.button}>
-            <Typography className={analyticsStyles.buttonText}>
-              Market Facts
-            </Typography>
-          </Button>
-        </Grid>
+        {/* <Grid container justifyContent="flex-end"> */}
+        {/*   <ThemedButton text="Market Facts" /> */}
+        {/* </Grid> */}
       </Grid>
-    </Grid>
+    </div>
   ));
 };
 

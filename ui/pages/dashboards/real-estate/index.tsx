@@ -33,6 +33,11 @@ import styles from "./RealEstate.module.scss";
 import SaleComparableIndicators from "@/content/Dashboards/Analytics/SaleComparableIndicators";
 import { CompData } from "@/models/analyzedProperty";
 import { motion, Variants } from "framer-motion";
+import { propertiesApiEndpoints } from "@/store/services/propertiesApiService";
+import { selectLocation } from "@/store/slices/locationSlice";
+
+import Lottie from "lottie-react";
+import mapLoadingAnimation from "@/static/animations/loading/mapLoadingAnimation.json";
 
 const MoreDetailsSection = (
   {
@@ -61,12 +66,14 @@ const MoreDetailsSection = (
           />
         </div>
         <ExpansesCalculator property={selectedProperty} />
-        <RentComparable property={selectedProperty} />
-        <RentComps
-          property={selectedProperty}
-          selectedComps={selectedRentalComps}
-          setSelectedComps={setSelectedRentalComps}
-        />
+        <div className="mt-8">
+          <RentComparable property={selectedProperty} />
+          <RentComps
+            property={selectedProperty}
+            selectedComps={selectedRentalComps}
+            setSelectedComps={setSelectedRentalComps}
+          />
+        </div>
         <OperationalExpanses property={selectedProperty} />
       </>
     )
@@ -82,6 +89,12 @@ const DashboardRealEstate = (props: any) => {
     selectProperties,
   );
   const openMoreDetails = selectedProperty;
+
+  const { selectedPropertyPreview } = useSelector(selectProperties);
+  const selectedPropertyState = propertiesApiEndpoints.getProperty
+    .useQueryState(
+      selectedPropertyPreview?.source_id,
+    );
 
   // const setSelectedComps = (comps) => {
   //   dispatch(setSelectedComps(comps));
@@ -132,16 +145,31 @@ const DashboardRealEstate = (props: any) => {
               // delay: 0.5,
               ease: [0, 0.71, 0.2, 1.01],
             }}
-            className="w-1/2 h-[calc(100%-60px)] overflow-x-auto absolute"
+            className={clsx([
+              "w-1/2 h-[calc(100%-60px)] overflow-x-auto absolute",
+            ])}
             // hidden md:block h-[calc(100%-60px)] w-1/2 transition-all duration-500 absolute overflow-x-auto
           >
-            <MoreDetailsSection
-              selectedProperty={selectedProperty}
-              selectedComps={selectedComps}
-              setSelectedComps={handleSetSelectedComps}
-              selectedRentalComps={selectedRentalComps}
-              setSelectedRentalComps={handleSelectRentalComps}
-            />
+            {selectedPropertyState.isFetching && (
+              <Lottie
+                animationData={mapLoadingAnimation}
+                className="h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%]"
+              />
+            )}
+            <div
+              className={clsx([
+                "duration-500 transition-opacity",
+                selectedPropertyState.isFetching && "opacity-50",
+              ])}
+            >
+              <MoreDetailsSection
+                selectedProperty={selectedProperty}
+                selectedComps={selectedComps}
+                setSelectedComps={handleSetSelectedComps}
+                selectedRentalComps={selectedRentalComps}
+                setSelectedRentalComps={handleSelectRentalComps}
+              />
+            </div>
           </motion.div>
         )}
 

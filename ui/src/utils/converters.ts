@@ -14,6 +14,13 @@ const currencyFormatter = (currency: number): string => {
   }
 };
 
+const validateValue = (value: any, type: string, default_value: any) => {
+  if (typeof value === type) {
+    return value;
+  }
+  return default_value;
+};
+
 const numberStringUtil = (value?: number | string) =>
   value && typeof value === "number" ? value : 0;
 
@@ -114,4 +121,5 @@ export {
   priceFormatter,
   priceReverseScale,
   priceScale,
+  validateValue,
 };

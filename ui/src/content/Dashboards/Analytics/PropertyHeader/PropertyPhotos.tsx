@@ -12,22 +12,24 @@ import Slideshow from "yet-another-react-lightbox/plugins/slideshow";
 import "yet-another-react-lightbox/styles.css";
 import "yet-another-react-lightbox/plugins/thumbnails.css";
 import clsx from "clsx";
+import { validateValue } from "@/utils/converters";
+import Image from "@/components/Photos/Image";
 
-const Image = (props: any) => {
-  const defaultImage =
-    "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
-  return (
-    <Box
-      {...props}
-      width="100%"
-      height="100%"
-      borderRadius="0.5rem"
-      component="img"
-      alt="The house from the offer."
-      src={props.src || defaultImage}
-    />
-  );
-};
+// const Image = (props: any) => {
+//   const defaultImage =
+//     "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
+//   return (
+//     <Box
+//       {...props}
+//       width="100%"
+//       height="100%"
+//       borderRadius="0.5rem"
+//       component="img"
+//       alt="The house from the offer."
+//       src={props.src || defaultImage}
+//     />
+//   );
+// };
 
 const images = [
   {
@@ -43,6 +45,9 @@ const images = [
       "https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg",
   },
 ];
+
+const defaultImage =
+  "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
 
 type PropertyPhotosProps = {
   photos: string[];
@@ -69,11 +74,18 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
             props.photos.length == 1 ? "col-span-2" : "",
           ])}
         >
-          <img
-            src={props.photos[0] || ""}
-            className="w-full h-full rounded object-cover"
+          <Image
+            src={validateValue(props.photos[0], "string", "")}
+            alt=""
+            className="rounded"
             onClick={() => setOpen(!open)}
+            defaultSrc={defaultImage}
           />
+          {/* <img */}
+          {/*   src={props.photos[0] || ""} */}
+          {/*   className="w-full h-full rounded object-cover" */}
+          {/*   onClick={() => setOpen(!open)} */}
+          {/* /> */}
           {/* <Image src={props.photos[0]} /> */}
         </div>
         <div
@@ -83,10 +95,18 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
             props.photos.length == 2 ? "row-span-2" : "",
           ])}
         >
-          <img
-            src={props.photos[1] || ""}
-            className="w-full h-full rounded object-cover"
+          {/* <img */}
+          {/*   src={props.photos[1] || ""} */}
+          {/*   className="w-full h-full rounded object-cover" */}
+          {/*   onClick={() => setOpen(!open)} */}
+          {/* /> */}
+
+          <Image
+            src={validateValue(props.photos[1], "string", "")}
+            className="rounded"
+            alt=""
             onClick={() => setOpen(!open)}
+            defaultSrc={defaultImage}
           />
           {/* <Image src={props.photos[1]} /> */}
         </div>
@@ -96,9 +116,12 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
             props.photos.length < 3 ? "hidden" : "",
           ])}
         >
-          <img
-            src={props.photos[2]}
-            className="w-full h-full rounded object-cover"
+          <Image
+            src={validateValue(props.photos[2], "string", "")}
+            className="rounded"
+            alt=""
+            onClick={() => setOpen(!open)}
+            defaultSrc={defaultImage}
           />
           <ThemedButton
             onClick={() => setOpen(!open)}

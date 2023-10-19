@@ -3,6 +3,7 @@ import {
   distanceFormatter,
   percentFormatter,
   priceFormatter,
+  validateValue,
 } from "@/utils/converters";
 import {
   Box,
@@ -24,8 +25,8 @@ import { TransitionGroup } from "react-transition-group";
 import PropertyCard from "./PropertyCard";
 import CompsProperty from "@/models/comps_property";
 import { openGoogleSearch } from "@/utils/windowFunctions";
-import AnalyzedProperty from "@/models/analyzedProperty";
-import Image from "next/image";
+import PropertyPreview from "@/models/propertyPreview";
+import Image from "@/components/Photos/Image";
 import HotelIcon from "@mui/icons-material/Hotel";
 import BathtubOutlinedIcon from "@mui/icons-material/BathtubOutlined";
 import WcIcon from "@mui/icons-material/Wc";
@@ -45,7 +46,7 @@ const AddressLink = styled("h3")(({ theme }) => ({
 }));
 
 type PropertyMapCardProps = {
-  property: AnalyzedProperty;
+  property: PropertyPreview;
 };
 const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   props: PropertyMapCardProps,
@@ -68,14 +69,25 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   return (
     <div className="flex rounded-xl bg-white w-80 h-40">
       <div className="w-1/3 h-full relative">
+        {/* <Image */}
+        {/*   src={typeof cardImage === "string" ? cardImage : defaultImage} */}
+        {/*   alt={props.property.address} */}
+        {/*   // onError={() => */}
+        {/*   //   setCardImage( */}
+        {/*   //     "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=", */}
+        {/*   //   )} */}
+        {/*   fill */}
+        {/*   className="object-cover object-center w-full h-full rounded-l-xl" */}
+        {/* /> */}
+        {/* <img */}
+        {/*   src={cardImage} */}
+        {/*   className="w-full h-full rounded-l-xl object-cover object-center" */}
+        {/* /> */}
+
         <Image
-          src={typeof cardImage === "string" ? cardImage : defaultImage}
-          alt={props.property.address}
-          // onError={() =>
-          //   setCardImage(
-          //     "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=",
-          //   )}
-          fill
+          src={validateValue(cardImage, "string", defaultImage)}
+          alt={props.property?.address}
+          defaultSrc={defaultImage}
           className="object-cover object-center w-full h-full rounded-l-xl"
         />
       </div>
@@ -86,26 +98,21 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
         <div className="flex w-full items-center justify-between mt-2">
           <div className="flex">
             <BedOutlinedIcon />
-            <Typography>{props.property.bedrooms}</Typography>
+            <Typography>{props.property?.bedrooms}</Typography>
           </div>
           <div className="flex">
             <WcIcon />
-            <Typography>{props.property.full_bathrooms}</Typography>
+            <Typography>{props.property?.total_bathrooms}</Typography>
           </div>
           <div className="flex">
             <SquareFootIcon />
-            <Typography>{props.property.building_area}</Typography>
+            <Typography>{props.property?.building_area}</Typography>
           </div>
         </div>
         <div className="flex items-center">
           <PinDropOutlinedIcon />
           <Typography className="text-[0.7rem] ml-2 font-poppins">
-            {props.property.address.substring(
-              0,
-              props.property.address.indexOf(","),
-            )}
-            {props.property.neighborhood !== "N/A" &&
-              props.property.neighborhood}, {props.property.zipcode}
+            {props.property?.address}
           </Typography>
         </div>
         <div className="flex items-center justify-between">
@@ -115,17 +122,17 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
             </Typography>
 
             <Typography className="font-poppins font-bold">
-              {priceFormatter(props.property.listing_price)}
+              {priceFormatter(props.property?.sales_listing_price)}
             </Typography>
           </div>
-          {typeof props.property.arv_price === "number" && (
+          {typeof props.property?.arv_price === "number" && (
             <div className="flex flex-col">
               <Typography className="font-poppins justify-center text-center">
                 ARV
               </Typography>
 
               <Typography className="font-poppins font-bold">
-                {priceFormatter(props.property.arv_price)}
+                {priceFormatter(props.property?.arv_price)}
               </Typography>
             </div>
           )}

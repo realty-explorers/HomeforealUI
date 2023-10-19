@@ -1,9 +1,9 @@
-import AnalyzedProperty from "@/models/analyzedProperty";
+import PropertyPreview from "@/models/propertyPreview";
 import { Marker } from "@react-google-maps/api";
 
 type SelectedPropertyMarkerProps = {
-  selectedProperty: AnalyzedProperty | null;
-  setSelectedProperty: (property: AnalyzedProperty | null) => void;
+  selectedProperty: PropertyPreview | null;
+  setSelectedProperty: (property: PropertyPreview | null) => void;
 };
 
 const SelectedPropertyMarker = (props: SelectedPropertyMarkerProps) => {

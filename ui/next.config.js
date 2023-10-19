@@ -26,6 +26,11 @@ module.exports = async (phase, { defaultConfig }) => {
           protocol: "https",
           hostname: "**",
         },
+
+        {
+          protocol: "http",
+          hostname: "**",
+        },
       ],
       // images: {
       // loader: "custom",

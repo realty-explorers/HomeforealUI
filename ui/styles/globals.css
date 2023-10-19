@@ -4,15 +4,25 @@
 
 /* Map styles */
 .custom-marker::after {
-  content: '';
+  content: '\2023';
   position: absolute;
   bottom: 1.3rem;
-  left: 50%;
-  margin-left: -10px; /* Adjust the arrow's width as needed */
-  border-width: 10px;
-  border-style: solid;
-  border-color: #590d82 transparent transparent transparent;
+  color: #590d82;
+  font-size: 25px;
+  transform: rotate(90deg);
+  left: 38%;
 }
+
+/* .custom-marker::after { */
+/*   content: ''; */
+/*   position: absolute; */
+/*   bottom: 1.3rem; */
+/*   left: 50%; */
+/*   margin-left: -10px; /* Adjust the arrow's width as needed */
+/*   border-width: 10px; */
+/*   border-style: solid; */
+/*   border-color: #590d82 transparent transparent transparent; */
+/* } */
 
 .custom-marker-hovered::after {
   content: '';

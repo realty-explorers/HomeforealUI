@@ -16,7 +16,7 @@ import styled from "@emotion/styled";
 import analyticsStyles from "./Analytics.module.scss";
 import styles from "./SaleComparable.module.scss";
 import ThemedButton from "@/components/Buttons/ThemedButton";
-import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
+import AnalyzedProperty from "@/models/analyzedProperty";
 import { numberStringUtil, priceFormatter } from "@/utils/converters";
 import clsx from "clsx";
 import { useSelector } from "react-redux";
