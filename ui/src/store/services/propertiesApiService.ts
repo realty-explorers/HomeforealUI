@@ -6,8 +6,8 @@ import data from "./mockData.json";
 
 const baseUrl = process.env.NEXT_PUBLIC_PROPERTIES_API_URL;
 // const baseUrl = "http://localhost:8000/";
-const GENERAL_BUYBOX_ID = "1fc03787-65ca-44b2-aec3-f9b707a2748f";
-// const GENERAL_BUYBOX_ID = "3dbf8068-bfda-4422-af27-7597045dac6e";
+// const GENERAL_BUYBOX_ID = "1fc03787-65ca-44b2-aec3-f9b707a2748f";
+const GENERAL_BUYBOX_ID = "3dbf8068-bfda-4422-af27-7597045dac6e";
 
 export const propertiesApi = createApi({
   reducerPath: "propertiesApi",

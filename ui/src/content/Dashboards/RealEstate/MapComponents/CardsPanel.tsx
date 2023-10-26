@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { memo, useEffect, useMemo, useRef, useState } from "react";
 import {
   Box,
   Button,
@@ -21,6 +21,18 @@ import clsx from "clsx";
 import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { ClockNumber } from "@mui/x-date-pickers/TimeClock/ClockNumber";
+import memoize from "memoize-one";
+import { useDispatch, useSelector } from "react-redux";
+import { selectFilter } from "@/store/slices/filterSlice";
+import {
+  selectProperties,
+  setSelectedComps,
+  setSelectedProperty,
+  setSelectedPropertyPreview,
+  setSelectedRentalComps,
+} from "@/store/slices/propertiesSlice";
+import { useLazyGetPropertyQuery } from "@/store/services/propertiesApiService";
+import select from "@/@core/theme/overrides/select";
 
 const Panel = styled(Stack)(({ theme }) => ({
   // pointerEvents: 'auto',
@@ -57,12 +69,7 @@ const Wrapper = styled("div")(({ theme }) => ({
   margin: "0 auto",
 }));
 
-type CardsPanelProps = {
-  properties: PropertyPreview[];
-  selectedProperty: PropertyPreview;
-  setSelectedProperty: (property: PropertyPreview) => void;
-  // setHoveredProperty: (property: PropertyPreview) => void;
-};
+type CardsPanelProps = {};
 
 const Puller = styled(Box)(({ theme }) => ({
   width: 30,
@@ -82,6 +89,15 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const [index, setIndex] = useState(0);
   const [scrollDistance, setScrollDistance] = useState(0);
+
+  const { filteredProperties } = useSelector(selectFilter);
+  const { selectedProperty, selectedPropertyPreview } = useSelector(
+    selectProperties,
+  );
+  const [selectedPropertyIndex, setSelectedIndex] = useState(-1);
+
+  const [getProperty, propertyState] = useLazyGetPropertyQuery();
+  const dispatch = useDispatch();
 
   // const toggleDrawer = (newOpen: boolean) => () => {
   //   setOpen(newOpen);
@@ -111,8 +127,9 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
     }
     return 0;
   };
-  const sortedProperties = props.properties &&
-    [...props.properties].sort((a, b) => {
+
+  const sortedProperties = filteredProperties &&
+    [...filteredProperties].sort((a, b) => {
       if (!validValue(a.arv_price) && validValue(b.arv_price)) return 1;
       if (validValue(a.arv_price) && !validValue(b.arv_price)) return -1;
       // if (a.arv_price && b.arv_price) {
@@ -124,82 +141,77 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
       // }
       return 0;
     });
-  useEffect(() => {
-    const element = document.querySelector("#list-container > div > div");
-    setRef(element);
-    if (props.selectedProperty) {
-      const selectedPropertyIndex = sortedProperties?.findIndex(
-        (property) => property.source_id === props.selectedProperty?.source_id,
-      );
-      setIndex(selectedPropertyIndex);
-      const scrollObject = {
-        left: 230 * selectedPropertyIndex,
-      };
-      if (Math.abs(selectedPropertyIndex - index) < 10) {
-        scrollObject["behavior"] = "smooth";
-      }
-      element?.scrollTo(scrollObject);
+
+  const handleSelectProperty = (property?: PropertyPreview) => {
+    dispatch(setSelectedPropertyPreview(property));
+    if (property) {
+      fetchPropertyData(property);
+    } else {
+      dispatch(setSelectedProperty(null));
     }
-
-    // const el: any = ref.current;
-    // if (props.setSelectedProperty) {
-    //   const card = document.getElementById(props.selectedProperty.source_id);
-    //   const el: any = ref.current;
-    //   if (el) {
-    //     el.scrollTo({
-    //       left: index * card.scrollWidth,
-    //       behavior: "smooth",
-    //     });
-    //   }
-    // }
-    // if (el) {
-    //   const onWheel = (e) => {
-    //     if (e.deltaY == 0) return;
-    //     e.preventDefault();
-    //     el.scrollTo({
-    //       left: el.scrollLeft + e.deltaY,
-    //       // left: e.deltaY < 0 ? -30 : 30,
-    //       // behavior: 'smooth'
-    //     });
-    //   };
-    //   el.addEventListener("wheel", onWheel);
-    //   return () => el.removeEventListener("wheel", onWheel);
-    // }
-    // }, [props.selectedProperty]);
-  }, [props.selectedProperty]);
-
-  const handleSelectProperty = (property: PropertyPreview, index: number) => {
-    console.log(index);
-    props.setSelectedProperty(property);
-    // ref?.scrollTo({
-    //   left: -100,
-    //   behavior: "smooth",
-    // });
-    // const card = document.getElementById(property.source_id);
-    // const el: any = ref.current;
-    // if (el) {
-    //   el.scrollTo({
-    //     left: index * card.scrollWidth,
-    //     behavior: "smooth",
-    //   });
-    // }
   };
 
-  const Column = ({ index, style }) => (
-    <div style={{ ...style }} className="px-2 py-2">
-      <div className="w-full h-full rounded-xl bg-white">
-        <PropertyCard
-          key={index}
-          property={sortedProperties[index]}
-          selectedProperty={props.selectedProperty}
-          setSelectedProperty={(property) =>
-            handleSelectProperty(property, index)}
-          setOpenMoreDetails={() => {}}
-          // setHoveredProperty={props.setHoveredProperty}
-        />
+  const fetchPropertyData = async (property: PropertyPreview) => {
+    //TODO: Watch out here for race conditions when internet not stable
+    const propertyData = await getProperty(property?.source_id).unwrap();
+    dispatch(setSelectedComps(propertyData?.sales_comps?.data));
+    dispatch(setSelectedRentalComps(propertyData?.rents_comps?.data));
+    dispatch(setSelectedProperty(propertyData));
+  };
+
+  const [notSelected, setNotSelected] = useState(true);
+  useEffect(() => {
+    console.log("rerender cards panel");
+    if (selectedPropertyPreview) {
+      const selectedPropertyIndex = filteredProperties.findIndex((property) =>
+        property.source_id === selectedPropertyPreview.source_id
+      );
+      setSelectedIndex(selectedPropertyIndex);
+      if (notSelected) {
+        setCardsOpen(false);
+      }
+      setNotSelected(false);
+    } else {
+      setNotSelected(true);
+      setCardsOpen(true);
+    }
+    // const element = document.querySelector("#list-container > div > div");
+    // setRef(element);
+    // if (props.selectedProperty) {
+    //   const selectedPropertyIndex = sortedProperties?.findIndex(
+    //     (property) => property.source_id === props.selectedProperty?.source_id,
+    //   );
+    //   setIndex(selectedPropertyIndex);
+    //   const scrollObject = {
+    //     left: 230 * selectedPropertyIndex,
+    //   };
+    //   if (Math.abs(selectedPropertyIndex - index) < 10) {
+    //     scrollObject["behavior"] = "smooth";
+    //   }
+    //   element?.scrollTo(scrollObject);
+    // }
+  }, [filteredProperties, selectedPropertyPreview]);
+
+  let cardsCache = {};
+
+  const Column = ({ index, style }) => {
+    return (
+      <div style={{ ...style }} className="px-2 py-2">
+        <div className="w-full h-full rounded-xl bg-white">
+          <PropertyCard
+            key={index}
+            property={sortedProperties[index]}
+            selected={selectedPropertyPreview?.source_id ===
+              sortedProperties[index].source_id}
+            // selected={index === selectedPropertyIndex}
+            setSelectedProperty={(property) => handleSelectProperty(property)}
+            setOpenMoreDetails={() => {}}
+            // setHoveredProperty={props.setHoveredProperty}
+          />
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
 
   const [scrolling, setScrolling] = useState(false);
   const [scrollX, setScrollX] = useState(0);
@@ -231,13 +243,6 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
       // ref.scrollLeft = 500;
     }
   };
-
-  // const handleMouseDown = (e) => {
-  //   e.preventDefault();
-  //   console.log("dragging");
-  //   ref.scrollLeft = 0;
-  //   console.log(ref);
-  // };
   return (
     <div
       className={clsx([
@@ -250,7 +255,7 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
           "relative flex w-full h-full",
         ])}
       >
-        {props.properties?.length > 0 && (
+        {filteredProperties?.length > 0 && (
           <IconButton
             className="absolute top-0 left-1/2 -translate-y-full -translate-x-1/2 bg-white w-12 h-4 border border-black"
             style={{ border: "1px dashed black" }}
@@ -274,7 +279,7 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
               <FixedSizeList
                 className="List"
                 height={height}
-                itemCount={props.properties?.length ?? 0}
+                itemCount={filteredProperties?.length ?? 0}
                 itemSize={230}
                 layout="horizontal"
                 width={width}
@@ -412,4 +417,4 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
   );
 };
 
-export default CardsPanel;
+export default memo(CardsPanel);

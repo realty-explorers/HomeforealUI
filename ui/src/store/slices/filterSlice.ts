@@ -1,10 +1,7 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "../store";
-import { HYDRATE } from "next-redux-wrapper";
-import Deal from "@/models/deal";
-import LocationSuggestion from "@/models/location_suggestions";
-import Location from "@/models/location_data";
 import Property, { PropertyType } from "@/models/property";
+import PropertyPreview from "@/models/propertyPreview";
 
 // Type for our state
 export interface Filter {
@@ -19,6 +16,7 @@ export interface Filter {
   minSqft: number;
   maxSqft: number;
   propertyTypes: PropertyType[];
+  filteredProperties: PropertyPreview[];
 }
 
 // Initial state
@@ -38,6 +36,7 @@ const initialState: Filter = {
     PropertyType.CONDO,
     PropertyType.MULTI_FAMILY,
   ],
+  filteredProperties: [],
 };
 
 // Actual Slice
@@ -79,6 +78,9 @@ export const filterSlice = createSlice({
     setPropertyTypes(state, action: PayloadAction<PropertyType[]>) {
       state.propertyTypes = action.payload;
     },
+    setFilteredProperties(state, action: PayloadAction<PropertyPreview[]>) {
+      state.filteredProperties = action.payload;
+    },
   },
 });
 
@@ -95,6 +97,7 @@ export const {
   setMinSqft,
   setMaxSqft,
   setPropertyTypes,
+  setFilteredProperties,
 } = filterSlice.actions;
 export const selectFilter: (state: AppState) => Filter = (state: AppState) =>
   state.filter;

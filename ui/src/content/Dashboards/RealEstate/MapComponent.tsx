@@ -1,7 +1,6 @@
 import { locationApiEndpoints } from "@/store/services/locationApiService";
 import {
   propertiesApiEndpoints,
-  useLazyGetPropertiesQuery,
   useLazyGetPropertyQuery,
 } from "@/store/services/propertiesApiService";
 import { selectFilter } from "@/store/slices/filterSlice";
@@ -69,17 +68,7 @@ const MapComponent: React.FC<MapComponentProps> = (
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
   const {
-    arvMargin,
-    compsMargin,
-    maxBaths,
-    minBaths,
-    maxBeds,
-    minBeds,
-    minListingPrice,
-    maxListingPrice,
-    minSqft,
-    maxSqft,
-    propertyTypes,
+    filteredProperties,
   } = useSelector(selectFilter);
   const locationState = locationApiEndpoints.getLocationData.useQueryState(
     suggestion,
@@ -121,61 +110,6 @@ const MapComponent: React.FC<MapComponentProps> = (
     dispatch(setSelectedComps(propertyData?.sales_comps?.data));
     dispatch(setSelectedRentalComps(propertyData?.rents_comps?.data));
     dispatch(setSelectedProperty(propertyData));
-  };
-
-  const filterProperties: (
-    properties?: PropertyPreview[],
-  ) => PropertyPreview[] = (
-    properties?: PropertyPreview[],
-  ) => {
-    const filteredProperties = properties?.filter((property) => {
-      console.log("filtering");
-      const arvPercentage = typeof property?.arv_price === "number"
-        ? (property.arv_price - property.sales_listing_price) /
-          property.sales_listing_price * 100
-        : 0;
-
-      if (
-        property.bedrooms < minBeds ||
-        property.bedrooms > maxBeds
-      ) {
-        return false;
-      }
-      if (
-        property.total_bathrooms < minBaths ||
-        property.total_bathrooms > maxBaths
-      ) {
-        return false;
-      }
-      if (
-        property.sales_listing_price < minListingPrice ||
-        property.sales_listing_price > maxListingPrice
-      ) {
-        return false;
-      }
-      if (arvMargin > 0 && arvPercentage < arvMargin) {
-        return false;
-      }
-      // if (property.margin_percentage < arvMargin) {
-      //   return false;
-      // }
-      // if (property.sal < compsMargin) {
-      //   return false;
-      // }
-      if (
-        property.building_area < minSqft ||
-        property.building_area > maxSqft
-      ) {
-        return false;
-      }
-      if (
-        !propertyTypes.includes(property.property_type as PropertyType)
-      ) {
-        return false;
-      }
-      return true;
-    });
-    return filteredProperties;
   };
 
   const handleMapClicked = () => {
@@ -260,7 +194,14 @@ const MapComponent: React.FC<MapComponentProps> = (
       zoom: 11,
     };
 
-    animateMap([firstTarget], map);
+    // animateMap([firstTarget], map);
+    map.moveCamera({
+      zoom: firstTarget.zoom,
+      center: {
+        lat: firstTarget.center.latitude,
+        lng: firstTarget.center.longitude,
+      },
+    });
   };
 
   const propertyInBounds = (property: AnalyzedProperty) =>
@@ -288,7 +229,14 @@ const MapComponent: React.FC<MapComponentProps> = (
       },
       easing: TWEEN.Easing.Quartic.Out,
     };
-    animateMap([firstTarget, secondTarget], map);
+    // animateMap([firstTarget, secondTarget], map);
+    map.moveCamera({
+      zoom: firstTarget.zoom,
+      center: {
+        lat: firstTarget.center.latitude,
+        lng: firstTarget.center.longitude,
+      },
+    });
   };
 
   function sleep(ms) {
@@ -393,6 +341,7 @@ const MapComponent: React.FC<MapComponentProps> = (
     selectedPropertyPreview,
     locationState?.currentData,
     propertiesState?.data,
+    filteredProperties,
   ]);
 
   const onUnmount = useCallback(function callback() {
@@ -546,8 +495,9 @@ const MapComponent: React.FC<MapComponentProps> = (
         <CardsPanel
           // deals={filterDeals(propertiesState.data)}
           // properties={filterProperties(propertiesState?.data)}
-          properties={filterProperties(propertiesState.data)}
+          // properties={filterProperties(propertiesState.data)}
           // properties={propertiesState.data}
+          properties={filteredProperties}
           // properties={getMockProperties()}
           selectedProperty={selectedPropertyPreview}
           setSelectedProperty={handleSelectProperty}
@@ -593,7 +543,8 @@ const MapComponent: React.FC<MapComponentProps> = (
               {(clusterer) => (
                 <>
                   <PropertiesMarkers
-                    properties={filterProperties(propertiesState?.data)}
+                    // properties={filterProperties(propertiesState?.data)}
+                    properties={filteredProperties}
                     // properties={propertiesState?.data || []}
                     setSelectedProperty={handleSelectProperty}
                     clusterer={clusterer}

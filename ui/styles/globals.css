@@ -3,6 +3,26 @@
 @tailwind utilities;
 
 /* Map styles */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.mapboxgl-popup-content {
+  padding: 0 !important;
+  animation: fadeIn 0.3s ease-in-out;
+  border-radius: 2rem !important;
+}
+.mapbox-popup {
+  /* @apply flex rounded-xl bg-white w-[200rem] h-40; */
+  max-width: 50rem !important;
+  max-height: 10rem !important;
+  width: 20rem;
+  height: 10rem;
+}
 .custom-marker::after {
   content: '\2023';
   position: absolute;

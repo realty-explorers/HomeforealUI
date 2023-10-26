@@ -22,6 +22,8 @@ import {
 } from "@/store/services/locationApiService";
 import { borderRadius, styled } from "@mui/system";
 import styles from "./AutoComplete.module.scss";
+import locations from "./locations.json";
+import Fuse from "fuse.js";
 
 const SuggestionsContainer = (props) => {
   return (
@@ -33,7 +35,7 @@ const SuggestionsContainer = (props) => {
   );
 };
 
-function StyledInput({ handleSearch, searching, params, value }) {
+function StyledInput({ searching, params, value }) {
   return (
     <form className="flex items-center bg-white rounded-3xl px-4 py-0  font-poppins shadow-xl border-2 border-transparent focus-within:border-[rgba(155,81,224,0.5)] hover:border-[rgba(155,81,224,0.5)] transition-all">
       <InputBase
@@ -43,7 +45,7 @@ function StyledInput({ handleSearch, searching, params, value }) {
         endAdornment={
           <div className="absolute -right-4">
             <InputAdornment position="start">
-              <IconButton onClick={handleSearch} disabled={searching}>
+              <IconButton disabled={searching}>
                 {searching
                   ? (
                     <CircularProgress
@@ -68,7 +70,6 @@ type AutocompleteInputProps = {
   // setValue: UseFormSetValue<any>;
   setLocation: (location: LocationSuggestion) => void;
   location: LocationSuggestion;
-  search?: () => Promise<void>;
 };
 const AutocompleteInput: React.FC<AutocompleteInputProps> = (
   props: AutocompleteInputProps,
@@ -80,16 +81,33 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
   const [options, setOptions] = React.useState<LocationSuggestion[]>([]);
   const [searching, setSearching] = useState(false);
 
-  const handleSearch = async () => {
-    setSearching(true);
-    await props.search();
-    setSearching(false);
-  };
-
   const fetch = useMemo(
     () =>
       debounce(async (searchTerm: string) => {
         try {
+          const location = locations[0];
+          const fuseOptions = {
+            // isCaseSensitive: false,
+            // includeScore: false,
+            // shouldSort: true,
+            // includeMatches: false,
+            // findAllMatches: false,
+            // minMatchCharLength: 1,
+            // location: 0,
+            // threshold: 0.6,
+            // distance: 100,
+            // useExtendedSearch: false,
+            // ignoreLocation: false,
+            // ignoreFieldNorm: false,
+            // fieldNormWeight: 1,
+            keys: [
+              "name",
+            ],
+          };
+          // const fuse = new Fuse(locations, fuseOptions);
+          // const matches = fuse.search(searchTerm);
+          // const newOptions = matches.map((match) => match.item.name);
+
           const response = await getLocationSuggestions(
             searchTerm,
             true,
@@ -133,14 +151,15 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
       renderInput={(params) => (
         <StyledInput
           params={params}
-          handleSearch={handleSearch}
           searching={searching || state.isFetching}
           value={props.location?.display}
         />
       )}
       renderOption={(props, option) => {
         return (
-          <li {...props}>
+          <li
+            {...props}
+          >
             <Grid container alignItems="center">
               <Grid item sx={{ display: "flex", width: 44 }}>
                 <LocationOnIcon sx={{ color: "text.secondary" }} />

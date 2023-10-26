@@ -9,7 +9,7 @@ type SoldPropertiesMarkersProps = {
 const SoldPropertiesMarkers = (props: SoldPropertiesMarkersProps) => {
   return (
     <>
-      {props.selectedComps.map(
+      {props.selectedComps?.map(
         (compsProperty: CompData, index: number) => (
           <CompMarker
             key={index}

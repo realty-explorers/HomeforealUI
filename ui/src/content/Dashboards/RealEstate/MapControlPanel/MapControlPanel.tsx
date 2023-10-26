@@ -10,36 +10,37 @@ import {
 import { Button, Collapse } from "@mui/material";
 import TuneIcon from "@mui/icons-material/Tune";
 import clsx from "clsx";
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
+import {
+  selectFilter,
+  setFilteredProperties,
+} from "@/store/slices/filterSlice";
+import { selectProperties } from "@/store/slices/propertiesSlice";
 
 type MapControlPanelProps = {};
 const MapControlPanel = (props: MapControlPanelProps) => {
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
+  const { selectedPropertyPreview } = useSelector(selectProperties);
   const [getLocationData, locationDataState] = useLazyGetLocationDataQuery();
   // const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
   const [getPropertiesPreviews, propertiesPreviewsState] =
     useLazyGetPropertiesPreviewsQuery();
-  const [filtersOpen, setFiltersOpen] = useState(false);
+  const [filtersOpen, setFiltersOpen] = useState(true);
+  const { filteredProperties } = useSelector(selectFilter);
+  const [notSelected, setNotSelected] = useState(true);
 
   useEffect(() => {
-    setFiltersOpen(true);
-  }, []);
+    if (selectedPropertyPreview) {
+      if (notSelected) {
+        setFiltersOpen(false);
+      }
+      setNotSelected(false);
+    } else {
+      setNotSelected(true);
+    }
+  }, [selectedPropertyPreview]);
 
-  const handleSearch = async () => {
-    const locationDataRequest = getLocationData(suggestion, true);
-    // const propertiesDataRequest = getPropertiesData(suggestion);
-    const propertiesDataRequest = getPropertiesPreviews(suggestion);
-
-    await Promise.all([locationDataRequest, propertiesDataRequest]);
-
-    // const meow = await getDealsData(suggestion).unwrap();
-    // const response = await getDealsData(suggestion).unwrap();
-    // console.log(`deals resonse: ${isError}, ${error}, ${status}`, response);
-
-    // const response = await getDealsData(suggestion).unwrap();
-    // console.log('response from auto: ', response);
-  };
   return (
     <div className="absolute left-0 top-0 flex p-4 pointer-events-none">
       <div className="flex flex-col">
@@ -49,7 +50,6 @@ const MapControlPanel = (props: MapControlPanelProps) => {
               location={suggestion}
               setLocation={(location: LocationSuggestion) =>
                 dispatch(setSuggestion(location))}
-              search={handleSearch}
             />
           </div>
           <div className="w-40 flex justify-center items-center">
@@ -77,4 +77,4 @@ const MapControlPanel = (props: MapControlPanelProps) => {
   );
 };
 
-export default MapControlPanel;
+export default memo(MapControlPanel);

@@ -3,7 +3,7 @@ import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0";
 // import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from "next/head";
 import SidebarLayout from "@/layouts/SidebarLayout";
-import { Box, Button, Container, Grid, Slide } from "@mui/material";
+import { Box, Button, Container, Grid, IconButton, Slide } from "@mui/material";
 import Footer from "@/components/Footer";
 import Map from "@/content/Dashboards/RealEstate/Map";
 import Deal from "@/models/deal";
@@ -26,6 +26,7 @@ import {
   selectProperties,
   setSelectedComps,
   setSelectedProperty,
+  setSelectedPropertyPreview,
   setSelectedRentalComps,
 } from "@/store/slices/propertiesSlice";
 // import { Property } from "@/models/analyzedProperty";
@@ -38,6 +39,7 @@ import { selectLocation } from "@/store/slices/locationSlice";
 
 import Lottie from "lottie-react";
 import mapLoadingAnimation from "@/static/animations/loading/mapLoadingAnimation.json";
+import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
 
 const MoreDetailsSection = (
   {
@@ -48,9 +50,16 @@ const MoreDetailsSection = (
     setSelectedRentalComps,
   },
 ) => {
+  const dispatch = useDispatch();
   return selectedProperty
     ? (
       <>
+        <IconButton
+          className="-mb-4"
+          onClick={() => dispatch(setSelectedPropertyPreview(null))}
+        >
+          <KeyboardReturnIcon />
+        </IconButton>
         <PropertyHeader property={selectedProperty} />
         <PropertyFacts property={selectedProperty} />
         {/* <PropertyFeatures property={selectedProperty} /> */}
@@ -65,16 +74,16 @@ const MoreDetailsSection = (
             setSelectedComps={setSelectedComps}
           />
         </div>
-        <ExpansesCalculator property={selectedProperty} />
-        <div className="mt-8">
-          <RentComparable property={selectedProperty} />
-          <RentComps
-            property={selectedProperty}
-            selectedComps={selectedRentalComps}
-            setSelectedComps={setSelectedRentalComps}
-          />
-        </div>
-        <OperationalExpanses property={selectedProperty} />
+        {/* <ExpansesCalculator property={selectedProperty} /> */}
+        {/* <div className="mt-8"> */}
+        {/*   <RentComparable property={selectedProperty} /> */}
+        {/*   <RentComps */}
+        {/*     property={selectedProperty} */}
+        {/*     selectedComps={selectedRentalComps} */}
+        {/*     setSelectedComps={setSelectedRentalComps} */}
+        {/*   /> */}
+        {/* </div> */}
+        {/* <OperationalExpanses property={selectedProperty} /> */}
       </>
     )
     : <></>;
@@ -85,12 +94,16 @@ const DashboardRealEstate = (props: any) => {
   //   required: true
   // });
   const dispatch = useDispatch();
-  const { selectedProperty, selectedComps, selectedRentalComps } = useSelector(
+  const {
+    selectedProperty,
+    selectedComps,
+    selectedPropertyPreview,
+    selectedRentalComps,
+  } = useSelector(
     selectProperties,
   );
-  const openMoreDetails = selectedProperty;
+  const openMoreDetails = selectedPropertyPreview;
 
-  const { selectedPropertyPreview } = useSelector(selectProperties);
   const selectedPropertyState = propertiesApiEndpoints.getProperty
     .useQueryState(
       selectedPropertyPreview?.source_id,
@@ -112,28 +125,8 @@ const DashboardRealEstate = (props: any) => {
 
   return (
     <>
-      {
-        /* <Head>
-        <title>Real Estate Dashboard</title>
-      </Head> */
-      }
-      <div className="flex w-full h-[calc(100%-60px)] ">
-        {/* {openMoreDetails && ( */}
-        {/**/}
-        {/*   <div */}
-        {/*     className={clsx([ */}
-        {/*       "hidden md:block h-[calc(100%-60px)] w-1/2 transition-all duration-500 absolute overflow-x-auto", */}
-        {/*       openMoreDetails ? "left-0" : "-left-full", */}
-        {/*     ])} */}
-        {/*   > */}
-        {/*     <MoreDetailsSection */}
-        {/*       selectedProperty={selectedProperty} */}
-        {/*       selectedComps={selectedComps} */}
-        {/*       setSelectedComps={handleSetSelectedComps} */}
-        {/*     /> */}
-        {/*   </div> */}
-        {/* )} */}
-
+      {/* <div className="flex w-full h-[calc(100%-60px)] "> */}
+      <div className="flex w-full h-full">
         {openMoreDetails && (
           <motion.div
             // initial={{ opacity: 0, scale: 0.5 }}
@@ -150,12 +143,17 @@ const DashboardRealEstate = (props: any) => {
             ])}
             // hidden md:block h-[calc(100%-60px)] w-1/2 transition-all duration-500 absolute overflow-x-auto
           >
-            {selectedPropertyState.isFetching && (
+            {
               <Lottie
                 animationData={mapLoadingAnimation}
-                className="h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%]"
+                className={clsx([
+                  "h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%] transition-opacity duration-500",
+                  selectedPropertyState.isFetching
+                    ? "opacity-100"
+                    : "opacity-0",
+                ])}
               />
-            )}
+            }
             <div
               className={clsx([
                 "duration-500 transition-opacity",
@@ -173,20 +171,9 @@ const DashboardRealEstate = (props: any) => {
           </motion.div>
         )}
 
-        {/* <SplitPane split="vertical"> */}
-        {/*   <MoreDetailsSection */}
-        {/*     selectedProperty={selectedProperty} */}
-        {/*     selectedComps={selectedComps} */}
-        {/*     setSelectedComps={setSelectedComps} */}
-        {/*   /> */}
-        {/**/}
-        {/*   <Map /> */}
-        {/* </SplitPane> */}
-        {/* </div> */}
-
         <div
           className={clsx([
-            "h-[calc(100%-56px)]  absolute w-full left-0 bg-white",
+            "h-[calc(100%-58px)]  absolute w-full left-0 bg-white transition-all duration-500",
             openMoreDetails ? "md:w-1/2 md:left-1/2" : "w-full left-0",
             // openMoreDetails ? "w-1/2 left-1/2" : "w-1/2 left-1/2",
           ])}

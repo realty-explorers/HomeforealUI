@@ -13,6 +13,7 @@ import {
   selectFilter,
   setArvMargin,
   setCompsMargin,
+  setFilteredProperties,
   setMaxBaths,
   setMaxBeds,
   setMaxListingPrice,
@@ -31,6 +32,8 @@ import AnalyzedProperty from "@/models/analyzedProperty";
 import { locationApiEndpoints } from "@/store/services/locationApiService";
 import { selectLocation } from "@/store/slices/locationSlice";
 import { propertiesApiEndpoints } from "@/store/services/propertiesApiService";
+import PropertyPreview from "@/models/propertyPreview";
+import { PropertyType } from "@/models/property";
 
 const GridDiv = styled("div")(({}) => ({
   display: "flex",
@@ -73,12 +76,17 @@ const MainControls: React.FC<MainControlsProps> = (
     minSqft,
     maxSqft,
     propertyTypes,
+    filteredProperties,
   } = useSelector(selectFilter);
 
   const [arv, setArv] = useState(0);
   const [price, setPrice] = useState([0, 1000000]);
   const [comps, setComps] = useState(0);
   const [area, setArea] = useState([0, 10000]);
+
+  useEffect(() => {
+    dispatch(setFilteredProperties(propertiesState.data));
+  }, [propertiesState.data]);
 
   const updateArv = (value: number) => {
     setArv(value);
@@ -92,8 +100,56 @@ const MainControls: React.FC<MainControlsProps> = (
   const setValue = (setFunction, updateFunction) => {
     setFunction();
     debounceUpdate(() => {
-      updateFunction();
+      // updateFunction();
+      filterProperties(price[0], price[1], comps, arv, area[0], area[1]);
     });
+  };
+
+  const filterProperties = (
+    minPrice: number,
+    maxPrice: number,
+    compsSale: number,
+    arv: number,
+    minArea: number,
+    maxArea: number,
+  ) => {
+    const filteredProperties = propertiesState.data?.filter(
+      (property: PropertyPreview) => {
+        const arvPercentage = typeof property?.arv_price === "number"
+          ? (property.arv_price - property.sales_listing_price) /
+            property.sales_listing_price * 100
+          : 0;
+
+        if (
+          property.sales_listing_price < minPrice ||
+          property.sales_listing_price > maxPrice
+        ) {
+          return false;
+        }
+        if (arvMargin > 0 && arvPercentage < arv) {
+          return false;
+        }
+        // if (property.margin_percentage < arvMargin) {
+        //   return false;
+        // }
+        // if (property.sal < compsMargin) {
+        //   return false;
+        // }
+        if (
+          property.building_area < minArea ||
+          property.building_area > maxArea
+        ) {
+          return false;
+        }
+        if (
+          !propertyTypes.includes(property.property_type as PropertyType)
+        ) {
+          return false;
+        }
+        return true;
+      },
+    );
+    dispatch(setFilteredProperties(filteredProperties));
   };
 
   const debounceUpdate = useMemo(
@@ -116,7 +172,7 @@ const MainControls: React.FC<MainControlsProps> = (
   return (
     <div>
       <div className="absolute top-2 right-4 font-poppins font-bold">
-        {propertiesState.data ? `${propertiesState.data.length} found` : ""}
+        {filteredProperties?.length} found
       </div>
       <SliderField fieldName="Listing Price">
         <SliderRangeInputV2

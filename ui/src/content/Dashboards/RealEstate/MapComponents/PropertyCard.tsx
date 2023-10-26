@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { memo, useEffect, useState } from "react";
 import PropertyPreview from "@/models/propertyPreview";
 import { openGoogleSearch } from "@/utils/windowFunctions";
 import {
@@ -72,57 +72,6 @@ const StyledCard = styled(Card, {
   pointerEvents: "all",
 }));
 
-const StyledListItem = styled(ListItem)(
-  ({ theme }) => `
-  padding: 0;
-  padding-bottom: ${theme.spacing(1)};
-  `,
-);
-
-const ListItemAvatarWrapper = styled(ListItemAvatar)(
-  ({ theme }) => `
-  min-width: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: ${theme.spacing(1)};
-  // padding: ${theme.spacing(0.5)};
-  border-radius: 60px;
-  background: ${
-    theme.palette.mode === "dark"
-      ? theme.colors.alpha.trueWhite[30]
-      : alpha(theme.colors.alpha.black[100], 0.07)
-  };
-
-  img {
-    background: ${theme.colors.alpha.trueWhite[100]};
-    padding: ${theme.spacing(0.5)};
-    display: block;
-    border-radius: inherit;
-    height: ${theme.spacing(4.5)};
-    width: ${theme.spacing(4.5)};
-  }
-`,
-);
-
-const AddressLink = styled("h3")(({ theme }) => ({
-  padding: 0,
-  margin: 0,
-  textAlign: "center",
-  width: "100%",
-  display: "flex",
-  justifyContent: "center",
-  paddingBottom: "2px",
-  cursor: "pointer",
-}));
-
-const StyledTooltip = styled(Tooltip)({
-  margin: "4px",
-  tooltipPlacementRight: {
-    margin: "4px",
-  },
-});
-
 const defaultImage =
   "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
 
@@ -130,7 +79,7 @@ type PropertyCardProps = {
   property: PropertyPreview;
   setSelectedProperty: (property: PropertyPreview) => void;
   setOpenMoreDetails: (open: boolean) => void;
-  selectedProperty: PropertyPreview;
+  selected: boolean;
   // setHoveredProperty: (property: PropertyPreview) => void;
   className?: string;
 };
@@ -142,10 +91,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     validateValue(props.property?.primary_image, "string", defaultImage),
   );
   const handlePropertySelected = async () => {
-    if (
-      props.selectedProperty &&
-      props.selectedProperty.source_id === props.property.source_id
-    ) {
+    if (props.selected) {
       dispatch(setSelectedPropertyPreview(null));
       props.setSelectedProperty(null);
     } else {
@@ -172,8 +118,8 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     setCardImage(
       validateValue(props.property?.primary_image, "string", defaultImage),
     );
-    console.log("rereneer2");
-  }, [props.property, props.selectedProperty]);
+    console.log("rerender property card");
+  }, [props.property]);
 
   const arvPercentage =
     props.property?.arv_price && props.property.arv_price > 0
@@ -190,8 +136,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     <Button
       className={clsx([
         "w-full h-full flex flex-col p-0 rounded-xl relative",
-        props.selectedProperty &&
-        props.selectedProperty.source_id === props.property.source_id &&
+        props.selected &&
         "ring ring-black",
       ])}
       onClick={handlePropertySelected}
@@ -381,4 +326,4 @@ const PropertyCard: React.FC<PropertyCardProps> = (
   );
 };
 
-export default PropertyCard;
+export default memo(PropertyCard);
