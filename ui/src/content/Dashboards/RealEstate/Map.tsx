@@ -1,40 +1,20 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import MapComponent from "./MapComponent";
-import MapBox, {
-  Layer,
-  Marker,
-  Popup,
-  Source,
-  ViewStateChangeEvent,
-} from "react-map-gl";
+import MapBox, { Marker, Popup, ViewStateChangeEvent } from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as turf from "@turf/turf";
-
 import type { MapRef } from "react-map-gl";
 import type { GeoJSONSource } from "react-map-gl";
-import {
-  boundsLayer,
-  boundsLineLayer,
-  clusterCountLayer,
-  clusterLayer,
-  compsIndexLayer,
-  compsLayer,
-  unclusteredPointLayer,
-} from "./layers";
+import { clusterLayer } from "./MapComponents/Layers/layers";
 import MapControlPanel from "./MapControlPanel/MapControlPanel";
 import { FeatureCollection, Geometry } from "@turf/turf";
 import mapboxgl from "mapbox-gl";
 import { locationApiEndpoints } from "@/store/services/locationApiService";
-import {
-  propertiesApiEndpoints,
-  useLazyGetPropertyQuery,
-} from "@/store/services/propertiesApiService";
+import { useLazyGetPropertyQuery } from "@/store/services/propertiesApiService";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLocation } from "@/store/slices/locationSlice";
 import PropertyPreview from "@/models/propertyPreview";
-import CardsPanel from "./MapComponents/CardsPanel";
+import CardsPanel from "./MapComponents/CardsPanel/CardsPanel";
 import { selectFilter } from "@/store/slices/filterSlice";
-import { currencyFormatter } from "@/utils/converters";
 import {
   selectProperties,
   setSelectedComps,
@@ -42,51 +22,29 @@ import {
   setSelectedPropertyPreview,
   setSelectedRentalComps,
 } from "@/store/slices/propertiesSlice";
-import { CompData } from "@/models/analyzedProperty";
-import PropertyMapCard from "./MapComponents/PropertyMapCard";
-const GEOFENCE = turf.circle([-74.0122106, 40.7467898], 5, { units: "miles" });
 
-function generateGeoJson(property: PropertyPreview) {
-  return {
-    type: "Feature",
-    properties: {
-      id: property.source_id, // Generate a random ID
-      price: currencyFormatter(property.sales_listing_price),
-    },
-    geometry: {
-      type: "Point",
-      coordinates: [property.longitude, property.latitude, 0.0],
-    },
-  };
-}
-
-function generateCompsGeoJson(comp: CompData, index) {
-  return {
-    type: "Feature",
-    properties: {
-      id: comp.source_id, // Generate a random ID
-      index: index,
-    },
-    geometry: {
-      type: "Point",
-      coordinates: [comp.longitude, comp.latitude, 0.0],
-    },
-  };
-}
-
-const US_BOUNDS = [
-  [-125.000000, 24.396308], // Southwest coordinates
-  [-66.934570, 49.3457868], // Northeast coordinates
-];
+import PropertiesSource from "./MapComponents/Sources/PropertiesSource";
+import CompsSource from "./MapComponents/Sources/CompsSource";
+import LocationBoundsSource from "./MapComponents/Sources/LocationBoundsSource";
+import SelectedPropertyMarker from "./MapComponents/Markers/SelectedPropertyMarker";
+import MarkerPopup from "./MapComponents/Overlays/MarkerPopup";
+import {
+  generateCompsGeoJson,
+  generatePropertyGeoJson,
+} from "./MapUtils/CoordinatesUtils";
+import {
+  INITIAL_VIEW_STATE,
+  MAPBOX_STYLE,
+  MAPBOX_TOKEN,
+  US_BOUNDS,
+} from "./MapUtils/constants";
+import { CircularProgress } from "@mui/material";
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
   const mapRef = useRef<MapRef>(null);
-  const [viewState, setViewState] = useState({
-    latitude: 40.67,
-    longitude: -103.59,
-    zoom: 5,
-  });
+  const [loaded, setLoaded] = useState(false);
+  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [data, setData] = useState<
     FeatureCollection<Geometry, {
       [name: string]: any;
@@ -118,10 +76,9 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     suggestion,
   );
 
-  const propertiesState = propertiesApiEndpoints.getPropertiesPreviews
-    .useQueryState(
-      suggestion,
-    );
+  const handleDeselectProperty = () => {
+    dispatch(setSelectedPropertyPreview(null));
+  };
 
   const handleSelectProperty = (property?: PropertyPreview) => {
     dispatch(setSelectedPropertyPreview(property));
@@ -165,8 +122,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     if (feature) {
       const clusterId = feature.properties.cluster_id;
 
-      const mapboxSource = mapRef.current.getSource(
-        "earthquakes",
+      const mapboxSource = mapRef.current?.getSource(
+        "properties",
       ) as GeoJSONSource;
 
       mapboxSource?.getClusterExpansionZoom(clusterId, (err, zoom) => {
@@ -174,7 +131,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           return;
         }
 
-        mapRef.current.flyTo({
+        mapRef.current?.flyTo({
           center: feature.geometry.coordinates,
           zoom,
           duration: 500,
@@ -195,11 +152,6 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       (property) => property.source_id === feature.properties.id,
     );
     setHoveredProperty(hoveredProperty);
-
-    // setHoveredProperty({
-    //   longitude: feature.geometry.coordinates[0],
-    //   latitude: feature.geometry.coordinates[1],
-    // });
   };
 
   const handleMouseLeaveProperty = (
@@ -224,36 +176,30 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     handleSelectProperty(selectedProperty);
   };
 
-  const createElement = (props) => {
-    const el = document.createElement("div");
-    el.className = "marker";
-    el.style.backgroundImage = `url(/static/images/pins/clusterPin.png)`;
-    el.style.width = "40px";
-    el.style.height = "40px";
-    el.style.backgroundSize = "cover";
-    el.style.backgroundRepeat = "no-repeat";
-    el.style.backgroundPosition = "center";
-    el.style.display = "flex";
-    el.style.justifyContent = "center";
-    el.style.alignItems = "center";
-    el.style.color = "#fff";
-    el.style.fontSize = "12px";
-    el.style.fontWeight = "bold";
-    el.style.cursor = "pointer";
-    el.style.borderRadius = "50%";
-    el.style.boxShadow = "0px 0px 10px rgba(0, 0, 0, 0.2)";
-    el.style.zIndex = "1";
-    el.innerHTML = "meow";
-    return el;
-  };
-
-  const markers = {};
-  let markersOnScreen = {};
-  const updateMarkers = () => {
-  };
-
   const handleRender = () => {
     if (!mapRef.current?.isSourceLoaded("properties")) return;
+  };
+
+  const centerMap = () => {
+    if (mapRef && locationState.data?.center) {
+      mapRef.current?.flyTo({
+        center: [
+          locationState.data.center.longitude,
+          locationState.data.center.latitude,
+        ],
+        zoom: 10,
+        pitch: 0,
+        duration: 500,
+      });
+    }
+  };
+
+  const handleResize = () => {
+    mapRef.current?.resize();
+    const infoEl = document.getElementsByClassName(
+      "mapboxgl-ctrl mapboxgl-ctrl-attrib",
+    );
+    infoEl[0]?.classList.add("mapboxgl-compact");
   };
 
   useEffect(() => {
@@ -268,34 +214,20 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     mapRef?.current?.on("click", "clusters", handleClickCluster);
 
     return () => {
-      mapRef.current.off("click", "unclustered-point", handleClickProperty);
-      mapRef?.current?.on(
+      mapRef.current?.off("click", "unclustered-point", handleClickProperty);
+      mapRef?.current?.off(
         "mouseenter",
         "unclustered-point",
         handleHoverProperty,
       );
-      mapRef?.current?.on(
+      mapRef?.current?.off(
         "mouseleave",
         "unclustered-point",
         handleMouseLeaveProperty,
       );
-      mapRef.current.off("click", "clusters", handleClickCluster);
+      mapRef.current?.off("click", "clusters", handleClickCluster);
     };
   }, [mapRef.current, filteredProperties]);
-
-  const centerMap = () => {
-    if (mapRef && locationState.data?.center) {
-      mapRef.current.flyTo({
-        center: [
-          locationState.data.center.longitude,
-          locationState.data.center.latitude,
-        ],
-        zoom: 10,
-        pitch: 0,
-        duration: 500,
-      });
-    }
-  };
 
   useEffect(() => {
     centerMap();
@@ -305,12 +237,6 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         type: "MultiPolygon",
         coordinates: bounds,
       };
-      // const newData: FeatureCollection<Geometry, {
-      //   [name: string]: any;
-      // }> = {
-      //   type: "geojson",
-      //   features: bounds,
-      // };
       setBoundsData(newData);
     }
   }, [locationState.data]);
@@ -319,9 +245,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     const coordinates = [];
     if (filteredProperties?.length > 0) {
       for (const property of filteredProperties) {
-        coordinates.push(generateGeoJson(property));
+        coordinates.push(generatePropertyGeoJson(property));
       }
-      // const coordinates = propertiesState.data?.map(property => generateGeoJson(property));
       const newData: FeatureCollection<Geometry, {
         [name: string]: any;
       }> = {
@@ -348,7 +273,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     }
 
     if (selectedPropertyPreview) {
-      mapRef.current.flyTo({
+      mapRef.current?.flyTo({
         center: [
           selectedPropertyPreview?.longitude,
           selectedPropertyPreview?.latitude,
@@ -361,118 +286,52 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       centerMap();
     }
 
-    const timeoutes = [];
-    for (let i = 0; i < 5; i++) {
-      const resizeTimeout = setTimeout(() => {
-        mapRef.current?.resize();
-      }, 100 * i);
-      timeoutes.push(resizeTimeout);
-    }
-
-    return () => {
-      for (const timeout of timeoutes) {
-        clearTimeout(timeout);
-      }
-    };
+    mapRef.current?.resize();
   }, [selectedPropertyPreview, selectedComps, selectedRentalComps]);
 
-  const handleResize = () => {
-    mapRef.current?.resize();
-    const infoEl = document.getElementsByClassName(
-      "mapboxgl-ctrl mapboxgl-ctrl-attrib",
-    );
-    infoEl[0]?.classList.add("mapboxgl-compact");
+  const handleLoad = () => {
+    setLoaded(true);
   };
 
   return (
     <>
+      {!loaded && (
+        <div className="absolute top-0 left-0 w-full h-full bg-white z-50 flex items-center justify-center">
+          <CircularProgress />
+        </div>
+      )}
       <MapBox
         reuseMaps
-        onResize={handleResize}
-        {...viewState}
-        onMove={onMove}
-        mapboxAccessToken="pk.eyJ1Ijoic2hhcm9uZmFiaW4iLCJhIjoiY2xvNW9hOXE0MGYxaTJqbXYweHJhcjZmNCJ9.rgBtH32YRHpNHRJoXzyhYA"
-        initialViewState={{
-          latitude: 40.67,
-          longitude: -103.59,
-          zoom: 5,
+        mapboxAccessToken={MAPBOX_TOKEN}
+        mapStyle={MAPBOX_STYLE}
+        style={{
+          width: "100%",
+          height: "100%",
+          opacity: loaded ? 1 : 0,
+          transition: "opacity 0.5s ease",
         }}
-        style={{ width: "100%", height: "100%" }}
-        mapStyle="mapbox://styles/sharonfabin/clo5pj7y400pv01qvgnsdejw9"
+        onLoad={handleLoad}
         interactiveLayerIds={[clusterLayer.id]}
-        // onClick={onClick}
+        onResize={handleResize}
+        onMove={onMove}
         ref={mapRef}
         maxBounds={US_BOUNDS}
+        initialViewState={INITIAL_VIEW_STATE}
+        {...viewState}
       >
         <MapControlPanel />
-
         <CardsPanel />
-        <Source
-          id="bounds"
-          type="geojson"
-          data={boundsData}
-        >
-          <Layer {...boundsLayer} />
-          <Layer {...boundsLineLayer} />
-        </Source>
-        <Source
-          id="properties"
-          type="geojson"
-          data={data}
-          cluster={true}
-          clusterMaxZoom={14}
-          clusterRadius={50}
-          clusterMinPoints={5}
-        >
-          {!selectedPropertyPreview && (
-            <>
-              <Layer {...unclusteredPointLayer} />
-              <Layer {...clusterLayer} />
-              <Layer {...clusterCountLayer} />
-            </>
-          )}
-        </Source>
-        <Source
-          id="comps"
-          type="geojson"
-          data={compsData}
-        >
-          {selectedPropertyPreview && (
-            <>
-              <Layer {...compsLayer} />
-              <Layer {...compsIndexLayer} />
-            </>
-          )}
-        </Source>
-
-        {selectedPropertyPreview && (
-          <Marker
-            longitude={selectedPropertyPreview.longitude}
-            latitude={selectedPropertyPreview.latitude}
-            anchor="bottom"
-          >
-            <img src="/static/images/pins/homePin.png" width={60} height={60} />
-          </Marker>
-        )}
-
-        {hoveredProperty && (
-          <Popup
-            longitude={Number(hoveredProperty.longitude)}
-            latitude={Number(hoveredProperty.latitude)}
-            anchor="bottom"
-            closeButton={false}
-            className="mapbox-popup"
-          >
-            <PropertyMapCard
-              // property={hoveredProperty as PropertyPreview}
-              property={hoveredProperty}
-            />
-          </Popup>
-        )}
+        <LocationBoundsSource show={true} data={boundsData} />
+        <PropertiesSource show={!selectedPropertyPreview} data={data} />
+        <CompsSource show={Boolean(selectedPropertyPreview)} data={compsData} />
+        <SelectedPropertyMarker
+          onClick={handleDeselectProperty}
+          selectedProperty={selectedPropertyPreview}
+        />
+        <MarkerPopup property={hoveredProperty} />
       </MapBox>
     </>
   );
-  // return <MapComponent />;
 };
 
 export default Map;

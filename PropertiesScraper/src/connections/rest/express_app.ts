@@ -65,6 +65,8 @@ class App {
             "http://localhost:",
             "http://18.188.195.163:3000",
             "http://18.188.195.163",
+            "http://20.42.85.234:3000",
+            "http://20.42.85.234",
           ],
           credentials: true,
         },

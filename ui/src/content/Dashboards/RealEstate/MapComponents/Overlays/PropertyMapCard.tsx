@@ -22,7 +22,6 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { TransitionGroup } from "react-transition-group";
-import PropertyCard from "./PropertyCard";
 import CompsProperty from "@/models/comps_property";
 import { openGoogleSearch } from "@/utils/windowFunctions";
 import PropertyPreview from "@/models/propertyPreview";

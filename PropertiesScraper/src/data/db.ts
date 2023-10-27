@@ -180,24 +180,95 @@ export default class PropertyRepository {
     }
   };
 
+  public removeDuplicates = async (indexName: string) => {
+    const propertiesSearchQuery = {
+      index: indexName,
+      scroll: "1m",
+      size: 10000,
+      body: {
+        _source: "source_id", // Only retrieve the source_id field
+      },
+    };
+
+    let results = await this.client!.search(propertiesSearchQuery);
+    let allData: any = [];
+
+    while (results.hits.hits.length > 0) {
+      allData = allData.concat(
+        results.hits.hits.map((hit: any) => hit["_source"]["source_id"]),
+      );
+      results = await this.client!.scroll({
+        scroll_id: results._scroll_id,
+        scroll: "1m",
+      });
+    }
+    const ids = new Set();
+    const duplicates = [];
+    for (const id of allData) {
+      if (ids.has(id)) {
+        duplicates.push(id);
+      } else {
+        ids.add(id);
+      }
+    }
+
+    for (const id of duplicates) {
+      const searchResponse = await this.client!.search({
+        index: indexName,
+        body: {
+          query: {
+            match: {
+              source_id: id,
+            },
+          },
+          size: 10000, // Limit the search to the first matching document
+        },
+      });
+      console.log(searchResponse.hits.hits.length);
+      if (
+        searchResponse?.hits?.hits?.length &&
+        searchResponse.hits.hits.length > 0
+      ) {
+        for (let i = 1; i < searchResponse.hits.hits.length; i++) {
+          const document = searchResponse.hits.hits[i];
+          const deleteResponse = await this.client!.delete({
+            index: indexName,
+            id: document._id,
+          });
+          console.log(`Deleted document ${document._id}, source_id: ${id}`);
+        }
+      }
+    }
+
+    return duplicates;
+  };
+
   public testData = async (city: string, state: string) => {
     try {
-      // const results = await this.client?.cat.indices({ format: "json" });
+      const results = await this.client?.cat.indices({ format: "json" });
 
-      const propertiesSearchQuery = {
-        "query": {
-          "match_all": {},
-        },
-      };
-      const index = this.getIndexByState(state);
-      const results = await this.client!.search(propertiesSearchQuery);
+      const chosenIndex = "properties_texas";
+      // const aggregationOptions = {
+      //   index: "properties_florida",
+      //   body: {
+      //     "size": 0,
+      //     "aggs": {
+      //       "duplicateNames": {
+      //         "terms": {
+      //           "field": "source_id",
+      //           "min_doc_count": 2,
+      //         },
+      //       },
+      //     },
+      //   },
+      // };
+      // const data = await this.client!.search(aggregationOptions);
+
+      // const results = await this.client!.search(propertiesSearchQuery);
       // const results = await this.getAllResults(
       //   "properties_florida",
       //   propertiesSearchQuery,
       // );
-      return results;
-
-      return results;
     } catch (error) {
       console.log();
     }

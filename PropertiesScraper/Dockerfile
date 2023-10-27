@@ -8,6 +8,7 @@ WORKDIR /usr/src/app
 # where available (npm@5+)
 COPY package*.json ./
 COPY tsconfig.json ./
+COPY .env ./
 
 # RUN npm ci --only=production
 RUN npm install
@@ -21,6 +22,7 @@ RUN npm run build
 FROM node:16
 WORKDIR /usr/src/app
 COPY package*.json ./
+COPY .env ./
 RUN npm ci --only=production
 COPY --from=0 /usr/src/app/build ./build
 ENV __DEV__=true

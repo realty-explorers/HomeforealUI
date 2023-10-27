@@ -3,7 +3,15 @@ import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0";
 // import { signIn, signOut, useSession } from 'next-auth/react';
 import Head from "next/head";
 import SidebarLayout from "@/layouts/SidebarLayout";
-import { Box, Button, Container, Grid, IconButton, Slide } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Container,
+  Grid,
+  IconButton,
+  Slide,
+} from "@mui/material";
 import Footer from "@/components/Footer";
 import Map from "@/content/Dashboards/RealEstate/Map";
 import Deal from "@/models/deal";
@@ -74,16 +82,16 @@ const MoreDetailsSection = (
             setSelectedComps={setSelectedComps}
           />
         </div>
-        {/* <ExpansesCalculator property={selectedProperty} /> */}
-        {/* <div className="mt-8"> */}
-        {/*   <RentComparable property={selectedProperty} /> */}
-        {/*   <RentComps */}
-        {/*     property={selectedProperty} */}
-        {/*     selectedComps={selectedRentalComps} */}
-        {/*     setSelectedComps={setSelectedRentalComps} */}
-        {/*   /> */}
-        {/* </div> */}
-        {/* <OperationalExpanses property={selectedProperty} /> */}
+        <ExpansesCalculator property={selectedProperty} />
+        <div className="mt-8">
+          <RentComparable property={selectedProperty} />
+          <RentComps
+            property={selectedProperty}
+            selectedComps={selectedRentalComps}
+            setSelectedComps={setSelectedRentalComps}
+          />
+        </div>
+        <OperationalExpanses property={selectedProperty} />
       </>
     )
     : <></>;
@@ -143,17 +151,21 @@ const DashboardRealEstate = (props: any) => {
             ])}
             // hidden md:block h-[calc(100%-60px)] w-1/2 transition-all duration-500 absolute overflow-x-auto
           >
-            {
-              <Lottie
-                animationData={mapLoadingAnimation}
-                className={clsx([
-                  "h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%] transition-opacity duration-500",
-                  selectedPropertyState.isFetching
-                    ? "opacity-100"
-                    : "opacity-0",
-                ])}
-              />
-            }
+            {/* <Lottie */}
+            {/*   animationData={mapLoadingAnimation} */}
+            {/*   className={clsx([ */}
+            {/*     "h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%] transition-opacity duration-500", */}
+            {/*     selectedPropertyState.isFetching */}
+            {/*       ? "opacity-100" */}
+            {/*       : "opacity-0", */}
+            {/*   ])} */}
+            {/* /> */}
+            <CircularProgress
+              className={clsx([
+                "h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%] transition-opacity duration-500",
+                selectedPropertyState.isFetching ? "opacity-100" : "opacity-0",
+              ])}
+            />
             <div
               className={clsx([
                 "duration-500 transition-opacity",
@@ -173,41 +185,16 @@ const DashboardRealEstate = (props: any) => {
 
         <div
           className={clsx([
-            "h-[calc(100%-58px)]  absolute w-full left-0 bg-white transition-all duration-500",
-            openMoreDetails ? "md:w-1/2 md:left-1/2" : "w-full left-0",
+            "h-[calc(100%-58px)]  absolute left-1/2 bg-white transition-transform duration-500 ",
+            openMoreDetails
+              ? "md:w-1/2 md:translate-x-0"
+              : "w-full -translate-x-1/2",
             // openMoreDetails ? "w-1/2 left-1/2" : "w-1/2 left-1/2",
           ])}
         >
           <Map />
         </div>
       </div>
-      {
-        /* <MoreDetailsModal
-        deal={selectedDeal}
-        open={openMoreDetails}
-        setOpen={setOpenMoreDetails}
-      /> */
-      }
-      {
-        /* <Container maxWidth="lg">
-        <Grid
-          container
-          direction="row"
-          justifyContent="center"
-          alignItems="stretch"
-          spacing={4}
-        >
-          <Grid item xs={12}>
-            <Properties
-              deals={searchResults}
-              setSelectedDeal={setSelectedDeal}
-              selectedDeal={selectedDeal}
-            />
-          </Grid>
-        </Grid>
-      </Container> */
-      }
-      {/* <Footer /> */}
     </>
   );
 };

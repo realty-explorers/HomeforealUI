@@ -203,6 +203,7 @@ export default class LocationService {
 
   private parseBoundary = (boundary: [number, number][]) => {
     const parsedBoundary = boundary.map((pointData: [number, number]) => {
+      return pointData;
       return {
         latitude: pointData[0],
         longitude: pointData[1],

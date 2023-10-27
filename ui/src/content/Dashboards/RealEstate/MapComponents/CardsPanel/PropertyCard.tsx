@@ -46,9 +46,7 @@ import {
   validateValue,
 } from "@/utils/converters";
 import { useDispatch } from "react-redux";
-import IconListItem from "../DetailsPanel/IconListItem";
-import IconSwitch from "../FormFields/IconSwitch";
-import styles from "./styles.module.scss";
+import styles from "../styles.module.scss";
 import { setSelectedPropertyPreview } from "@/store/slices/propertiesSlice";
 import Image from "@/components/Photos/Image";
 import clsx from "clsx";
