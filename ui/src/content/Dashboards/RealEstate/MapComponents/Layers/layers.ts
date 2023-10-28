@@ -56,7 +56,7 @@ export const unclusteredPointLayer: LayerProps = {
 };
 
 export const compsLayer: LayerProps = {
-  id: "comps-layer-circle",
+  id: "comps-point",
   type: "circle",
   source: "comps",
   paint: {

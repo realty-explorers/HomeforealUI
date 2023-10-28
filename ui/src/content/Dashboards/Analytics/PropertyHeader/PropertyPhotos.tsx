@@ -1,9 +1,4 @@
 import ThemedButton from "@/components/Buttons/ThemedButton";
-import Property from "@/models/property";
-import { Box, Button, Dialog, Grid, Typography } from "@mui/material";
-import Modal from "@mui/joy/Modal";
-import ModalClose from "@mui/joy/ModalClose";
-import ModalDialog from "@mui/joy/ModalDialog";
 import { useState } from "react";
 import Lightbox from "yet-another-react-lightbox";
 import Thumbnails from "yet-another-react-lightbox/plugins/thumbnails";
@@ -14,37 +9,6 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 import clsx from "clsx";
 import { validateValue } from "@/utils/converters";
 import Image from "@/components/Photos/Image";
-
-// const Image = (props: any) => {
-//   const defaultImage =
-//     "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
-//   return (
-//     <Box
-//       {...props}
-//       width="100%"
-//       height="100%"
-//       borderRadius="0.5rem"
-//       component="img"
-//       alt="The house from the offer."
-//       src={props.src || defaultImage}
-//     />
-//   );
-// };
-
-const images = [
-  {
-    src:
-      "https://timellenberger.com/static/blog-content/dark-mode/win10-dark-mode.jpg",
-  },
-  {
-    src:
-      "https://timellenberger.com/static/blog-content/dark-mode/macos-dark-mode.png",
-  },
-  {
-    src:
-      "https://timellenberger.com/static/blog-content/dark-mode/android-9-dark-mode.jpg",
-  },
-];
 
 const defaultImage =
   "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
@@ -70,8 +34,8 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
       >
         <div
           className={clsx([
-            "row-span-2 col-span-2 xl:col-span-1 flex items-center justify-center cursor-pointer",
-            props.photos.length == 1 ? "col-span-2" : "",
+            "row-span-2 flex items-center justify-center cursor-pointer",
+            props.photos.length == 1 ? "col-span-2" : "col-span-1",
           ])}
         >
           <Image
@@ -90,9 +54,9 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
         </div>
         <div
           className={clsx([
-            "hidden xl:flex h-full justify-center items-center cursor-pointer ",
-            props.photos.length < 2 ? "hidden" : "",
-            props.photos.length == 2 ? "row-span-2" : "",
+            "h-full justify-center items-center cursor-pointer ",
+            props.photos.length < 2 ? "hidden" : "xl:flex",
+            props.photos.length == 2 ? "row-span-2" : "row-span-1",
           ])}
         >
           {/* <img */}
@@ -112,8 +76,8 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
         </div>
         <div
           className={clsx([
-            "hidden xl:flex h-full justify-center items-center relative",
-            props.photos.length < 3 ? "hidden" : "",
+            "h-full justify-center items-center relative",
+            props.photos.length < 3 ? "hidden" : "hidden xl:flex",
           ])}
         >
           <Image

@@ -39,6 +39,10 @@ interface CompData {
   total_bathrooms: number;
 }
 
+interface FilteredComp extends CompData {
+  index: number;
+}
+
 interface ExpensesData {
   expense_type: string;
   expense_ref: string;
@@ -124,4 +128,4 @@ interface AnalyzedProperty {
 }
 
 export default AnalyzedProperty;
-export type { CompData, ExpensesData, LoanData };
+export type { CompData, ExpensesData, FilteredComp, LoanData };

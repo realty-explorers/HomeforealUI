@@ -40,7 +40,7 @@ import {
 // import { Property } from "@/models/analyzedProperty";
 import styles from "./RealEstate.module.scss";
 import SaleComparableIndicators from "@/content/Dashboards/Analytics/SaleComparableIndicators";
-import { CompData } from "@/models/analyzedProperty";
+import { CompData, FilteredComp } from "@/models/analyzedProperty";
 import { motion, Variants } from "framer-motion";
 import { propertiesApiEndpoints } from "@/store/services/propertiesApiService";
 import { selectLocation } from "@/store/slices/locationSlice";
@@ -53,7 +53,6 @@ const MoreDetailsSection = (
   {
     selectedProperty,
     selectedComps,
-    setSelectedComps,
     selectedRentalComps,
     setSelectedRentalComps,
   },
@@ -76,11 +75,7 @@ const MoreDetailsSection = (
         <div className="mt-8">
           <SaleComparableIndicators property={selectedProperty} />
           <SaleComparable property={selectedProperty} />
-          <SalesComps
-            property={selectedProperty}
-            selectedComps={selectedComps}
-            setSelectedComps={setSelectedComps}
-          />
+          <SalesComps />
         </div>
         <ExpansesCalculator property={selectedProperty} />
         <div className="mt-8">
@@ -120,10 +115,6 @@ const DashboardRealEstate = (props: any) => {
   // const setSelectedComps = (comps) => {
   //   dispatch(setSelectedComps(comps));
   // };
-
-  const handleSetSelectedComps = (compsProperties: CompData[]) => {
-    dispatch(setSelectedComps(compsProperties));
-  };
 
   const handleSelectRentalComps = (compsProperties: CompData[]) => {
     dispatch(setSelectedRentalComps(compsProperties));
@@ -175,7 +166,6 @@ const DashboardRealEstate = (props: any) => {
               <MoreDetailsSection
                 selectedProperty={selectedProperty}
                 selectedComps={selectedComps}
-                setSelectedComps={handleSetSelectedComps}
                 selectedRentalComps={selectedRentalComps}
                 setSelectedRentalComps={handleSelectRentalComps}
               />

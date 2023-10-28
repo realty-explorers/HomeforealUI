@@ -34,6 +34,10 @@ import { selectLocation } from "@/store/slices/locationSlice";
 import { propertiesApiEndpoints } from "@/store/services/propertiesApiService";
 import PropertyPreview from "@/models/propertyPreview";
 import { PropertyType } from "@/models/property";
+import {
+  selectProperties,
+  setSelectedComps,
+} from "@/store/slices/propertiesSlice";
 
 const GridDiv = styled("div")(({}) => ({
   display: "flex",
@@ -97,11 +101,65 @@ const MainControls: React.FC<MainControlsProps> = (
     // debounceUpdateArv(value);
   };
 
-  const setValue = (setFunction, updateFunction) => {
+  const filterPropertiesByValue = (
+    value: number | number[],
+    fieldName: string,
+  ) => {
+    const filteredProperties = propertiesState.data?.filter(
+      (property: PropertyPreview) => {
+        const propertyValue = property[fieldName];
+        if (typeof fieldName === "string") {
+          if (fieldName === "arv_price") {
+            const arvPercentage = typeof property?.arv_price === "number"
+              ? (property.arv_price - property.sales_listing_price) /
+                property.arv_price * 100
+              : 0;
+            if (value > 0 && value > arvPercentage) {
+              return false;
+            }
+          }
+          if (fieldName === "sales_comps_price") {
+            const compsSalePercentage =
+              typeof property?.sales_comps_price === "number"
+                ? (property.sales_comps_price - property.sales_listing_price) /
+                  property.sales_comps_price * 100
+                : 0;
+
+            if (value > 0 && value > compsSalePercentage) {
+              return false;
+            }
+          }
+          if (
+            value > 0 && value > propertyValue
+          ) {
+            console.log("meow");
+            return false;
+          } else {
+            console.log(`value: ${value}, property: ${propertyValue}`);
+          }
+        } else {
+          const minValue = value[0];
+          const maxValue = value[1];
+
+          if (
+            propertyValue < minValue ||
+            propertyValue > maxValue
+          ) {
+            return false;
+          }
+        }
+        return true;
+      },
+    );
+    dispatch(setFilteredProperties(filteredProperties));
+  };
+
+  const setValue = (setFunction, updateFunction, value, fieldName) => {
     setFunction();
     debounceUpdate(() => {
-      // updateFunction();
-      filterProperties(price[0], price[1], comps, arv, area[0], area[1]);
+      updateFunction();
+      filterPropertiesByValue(value, fieldName);
+      // filterProperties(price[0], price[1], comps, arv, area[0], area[1]);
     });
   };
 
@@ -113,12 +171,19 @@ const MainControls: React.FC<MainControlsProps> = (
     minArea: number,
     maxArea: number,
   ) => {
+    console.log("comps: " + compsMargin);
     const filteredProperties = propertiesState.data?.filter(
       (property: PropertyPreview) => {
         const arvPercentage = typeof property?.arv_price === "number"
           ? (property.arv_price - property.sales_listing_price) /
-            property.sales_listing_price * 100
+            property.arv_price * 100
           : 0;
+
+        const compsSalePercentage =
+          typeof property?.sales_comps_price === "number"
+            ? (property.sales_comps_price - property.sales_listing_price) /
+              property.sales_comps_price * 100
+            : 0;
 
         if (
           property.sales_listing_price < minPrice ||
@@ -129,9 +194,12 @@ const MainControls: React.FC<MainControlsProps> = (
         if (arvMargin > 0 && arvPercentage < arv) {
           return false;
         }
-        // if (property.margin_percentage < arvMargin) {
-        //   return false;
-        // }
+        if (compsSale > 0 && compsSalePercentage < compsSale) {
+          console.log(compsSale);
+          return false;
+        } else {
+          console.log();
+        }
         // if (property.sal < compsMargin) {
         //   return false;
         // }
@@ -192,6 +260,8 @@ const MainControls: React.FC<MainControlsProps> = (
                 dispatch(setMinListingPrice(value[0]));
                 dispatch(setMaxListingPrice(value[1]));
               },
+              value,
+              "sales_listing_price",
             )}
           scale={{ scale: priceScale, reverseScale: priceReverseScale }}
         />
@@ -209,8 +279,14 @@ const MainControls: React.FC<MainControlsProps> = (
             max: 100,
             step: 1,
           }}
-          value={compsMargin}
-          update={(value) => dispatch(setCompsMargin(value))}
+          value={comps}
+          update={(value) =>
+            setValue(
+              () => setComps(value),
+              () => dispatch(setCompsMargin(value)),
+              value,
+              "sales_comps_price",
+            )}
         />
       </SliderField>
       <SliderField
@@ -228,7 +304,12 @@ const MainControls: React.FC<MainControlsProps> = (
           value={arv}
           // update={(value) => updateArv(value)}
           update={(value) =>
-            setValue(() => setArv(value), () => dispatch(setArvMargin(value)))}
+            setValue(
+              () => setArv(value),
+              () => dispatch(setArvMargin(value)),
+              value,
+              "arv_price",
+            )}
         />
       </SliderField>
 
@@ -281,17 +362,18 @@ const MainControls: React.FC<MainControlsProps> = (
                 dispatch(setMinSqft(value[0]));
                 dispatch(setMaxSqft(value[1]));
               },
+              value,
+              "building_area",
             )}
           // updateMinValue={(value) => dispatch(setMinSqft(value))}
           // updateMaxValue={(value) => dispatch(setMaxSqft(value))}
           // scale={{ scale: priceScale, reverseScale: sqftScale }}
         />
       </SliderField>
-      <PropertyTypeFilter
-        propertyTypes={propertyTypes}
-        updateTypes={(value) => dispatch(setPropertyTypes(value))}
-      />
-      {/* <PropertyTypes /> */}
+      {/* <PropertyTypeFilter */}
+      {/*   propertyTypes={propertyTypes} */}
+      {/*   updateTypes={(value) => dispatch(setPropertyTypes(value))} */}
+      {/* /> */}
     </div>
   );
 };

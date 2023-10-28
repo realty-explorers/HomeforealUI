@@ -1,13 +1,16 @@
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "../store";
-import AnalyzedProperty, { CompData } from "@/models/analyzedProperty";
+import AnalyzedProperty, {
+  CompData,
+  FilteredComp,
+} from "@/models/analyzedProperty";
 import PropertyPreview from "@/models/propertyPreview";
 
 // Type for our state
 export interface PropertiesState {
   selectedProperty?: AnalyzedProperty;
   selectedPropertyPreview?: PropertyPreview;
-  selectedComps: CompData[];
+  selectedComps: FilteredComp[];
   selectedRentalComps: CompData[];
 }
 
@@ -32,7 +35,7 @@ export const propertiesSlice = createSlice({
     setSelectedPropertyPreview(state, action: PayloadAction<PropertyPreview>) {
       state.selectedPropertyPreview = action.payload;
     },
-    setSelectedComps(state, action: PayloadAction<CompData[]>) {
+    setSelectedComps(state, action: PayloadAction<FilteredComp[]>) {
       state.selectedComps = action.payload;
     },
 

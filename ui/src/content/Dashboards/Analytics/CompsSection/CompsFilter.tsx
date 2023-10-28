@@ -8,7 +8,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { defaults } from "@/schemas/defaults";
 import SwitchField from "@/components/Form/SwitchField";
 import React from "react";
-import { Property } from "@/models/analyzedProperty";
+import { CompData, FilteredComp } from "@/models/analyzedProperty";
+import {
+  selectProperties,
+  setSelectedComps,
+} from "@/store/slices/propertiesSlice";
+
+import { useDispatch, useSelector } from "react-redux";
 
 const fields = [
   {
@@ -105,10 +111,13 @@ type CompsFilterSchemaType = z.infer<typeof compsFiltersSchema>;
 type CompsFilterProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
-  compsProperties: Property[];
-  setSelectedComps: (compsProperties: Property[]) => void;
 };
-const CompsFilter = ({ open, setOpen, compsProperties, setSelectedComps }) => {
+const CompsFilter = (
+  { open, setOpen }: CompsFilterProps,
+) => {
+  const dispatch = useDispatch();
+  const { selectedProperty, selectedComps } = useSelector(selectProperties);
+
   function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
     return Object.fromEntries(
       Object.entries(schema.shape).map(([key, value]) => {
@@ -135,17 +144,24 @@ const CompsFilter = ({ open, setOpen, compsProperties, setSelectedComps }) => {
 
   const handleClose = () => setOpen(false);
   const onSubmit = async (data: any) => {
-    const filteredComps = [];
-    for (const comp of compsProperties) {
+    const filteredComps: FilteredComp[] = [];
+    for (let i = 0; i < selectedProperty.sales_comps.data?.length; i++) {
+      const comp = selectedProperty.sales_comps.data?.[i];
       let add = true;
       for (const field of fields) {
-        if (comp[field.fieldName]) {
+        if (comp[field.fieldName] !== undefined) {
           const value = data[field.fieldName];
           if (field.type === "range") {
             if (
               value[0] > comp[field.fieldName] ||
               value[1] < comp[field.fieldName]
             ) {
+              console.log(
+                "no range ",
+                field.fieldName,
+                value,
+                comp[field.fieldName],
+              );
               add = false;
               break;
             }
@@ -155,13 +171,15 @@ const CompsFilter = ({ open, setOpen, compsProperties, setSelectedComps }) => {
               break;
             }
           }
+        } else {
+          console.log("no field ", field.fieldName);
         }
       }
       if (add) {
-        filteredComps.push(comp);
+        filteredComps.push({ ...comp, index: i });
       }
     }
-    setSelectedComps(filteredComps);
+    dispatch(setSelectedComps(filteredComps));
     handleClose();
   };
 

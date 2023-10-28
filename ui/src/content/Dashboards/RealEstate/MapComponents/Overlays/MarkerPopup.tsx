@@ -1,3 +1,4 @@
+import { CompData } from "@/models/analyzedProperty";
 import PropertyPreview from "@/models/propertyPreview";
 import { Popup } from "react-map-gl";
 import PropertyMapCard from "./PropertyMapCard";

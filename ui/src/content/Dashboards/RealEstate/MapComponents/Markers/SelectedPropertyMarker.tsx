@@ -15,6 +15,7 @@ const SelectedPropertyMarker = (
       latitude={selectedProperty.latitude}
       anchor="bottom"
       onClick={() => onClick(selectedProperty)}
+      style={{ cursor: "pointer" }}
     >
       <img src="/static/images/pins/homePin.png" width={60} height={60} />
     </Marker>

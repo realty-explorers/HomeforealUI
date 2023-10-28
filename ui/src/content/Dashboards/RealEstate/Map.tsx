@@ -39,11 +39,12 @@ import {
   US_BOUNDS,
 } from "./MapUtils/constants";
 import { CircularProgress } from "@mui/material";
+import CompMarkersPopup from "./MapComponents/Overlays/CompMarkerPopup";
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
   const mapRef = useRef<MapRef>(null);
-  const [loaded, setLoaded] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [data, setData] = useState<
     FeatureCollection<Geometry, {
@@ -64,12 +65,17 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const [boundsData, setBoundsData] = useState<Geometry>();
   const [hoveredProperty, setHoveredProperty] = useState<any>();
+  const [hoveredComp, setHoveredComp] = useState<any>();
 
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
   const { filteredProperties } = useSelector(selectFilter);
-  const { selectedPropertyPreview, selectedComps, selectedRentalComps } =
-    useSelector(selectProperties);
+  const {
+    selectedPropertyPreview,
+    selectedComps,
+    selectedRentalComps,
+    selectedProperty,
+  } = useSelector(selectProperties);
 
   const [getProperty, propertyState] = useLazyGetPropertyQuery();
   const locationState = locationApiEndpoints.getLocationData.useQueryState(
@@ -92,8 +98,6 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const fetchPropertyData = async (property: PropertyPreview) => {
     //TODO: Watch out here for race conditions when internet not stable
     const propertyData = await getProperty(property?.source_id).unwrap();
-    dispatch(setSelectedComps(propertyData?.sales_comps?.data));
-    dispatch(setSelectedRentalComps(propertyData?.rents_comps?.data));
     dispatch(setSelectedProperty(propertyData));
   };
 
@@ -146,7 +150,9 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       features?: mapboxgl.MapboxGeoJSONFeature[];
     } & mapboxgl.EventData,
   ) => {
-    mapRef.current.getCanvas().style.cursor = "pointer";
+    if (mapRef?.current) {
+      mapRef.current.getCanvas().style.cursor = "pointer";
+    }
     const feature = e.features[0];
     const hoveredProperty = filteredProperties?.find(
       (property) => property.source_id === feature.properties.id,
@@ -159,7 +165,9 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       features?: mapboxgl.MapboxGeoJSONFeature[];
     } & mapboxgl.EventData,
   ) => {
-    mapRef.current.getCanvas().style.cursor = "";
+    if (mapRef?.current) {
+      mapRef.current.getCanvas().style.cursor = "";
+    }
     setHoveredProperty(null);
   };
 
@@ -174,6 +182,26 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       (property) => property.source_id === feature.properties.id,
     );
     handleSelectProperty(selectedProperty);
+  };
+
+  const handleMouseEnterComps = (
+    e: mapboxgl.MapMouseEvent & {
+      features?: mapboxgl.MapboxGeoJSONFeature[];
+    } & mapboxgl.EventData,
+  ) => {
+    const feature = e.features[0];
+    const hoveredProperty = selectedComps?.find(
+      (property) => property.index === feature.properties.index - 1,
+    );
+    setHoveredComp(hoveredProperty);
+  };
+
+  const handleMouseLeaveComps = (
+    e: mapboxgl.MapMouseEvent & {
+      features?: mapboxgl.MapboxGeoJSONFeature[];
+    } & mapboxgl.EventData,
+  ) => {
+    setHoveredComp(null);
   };
 
   const handleRender = () => {
@@ -225,6 +253,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         "unclustered-point",
         handleMouseLeaveProperty,
       );
+
       mapRef.current?.off("click", "clusters", handleClickCluster);
     };
   }, [mapRef.current, filteredProperties]);
@@ -258,20 +287,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   }, [filteredProperties]);
 
   useEffect(() => {
-    const coordinates = [];
-    if (selectedComps?.length > 0) {
-      for (let i = 0; i < selectedComps.length; i++) {
-        coordinates.push(generateCompsGeoJson(selectedComps[i], i));
-      }
-      const newData: FeatureCollection<Geometry, {
-        [name: string]: any;
-      }> = {
-        type: "FeatureCollection",
-        features: coordinates,
-      };
-      setCompsData(newData);
-    }
-
+    mapRef.current?.resize();
     if (selectedPropertyPreview) {
       mapRef.current?.flyTo({
         center: [
@@ -285,18 +301,40 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     } else {
       centerMap();
     }
+  }, [selectedPropertyPreview]);
 
-    mapRef.current?.resize();
-  }, [selectedPropertyPreview, selectedComps, selectedRentalComps]);
+  useEffect(() => {
+    mapRef?.current?.on("mouseenter", "comps-point", handleMouseEnterComps);
+    mapRef?.current?.on("mouseleave", "comps-point", handleMouseLeaveComps);
+
+    const coordinates = [];
+    if (selectedComps?.length > 0) {
+      for (let i = 0; i < selectedComps.length; i++) {
+        coordinates.push(generateCompsGeoJson(selectedComps[i]));
+      }
+      const newData: FeatureCollection<Geometry, {
+        [name: string]: any;
+      }> = {
+        type: "FeatureCollection",
+        features: coordinates,
+      };
+      setCompsData(newData);
+    }
+
+    return () => {
+      mapRef?.current?.off("mouseenter", "comps-point", handleMouseEnterComps);
+      mapRef?.current?.off("mouseleave", "comps-point", handleMouseLeaveComps);
+    };
+  }, [selectedComps]);
 
   const handleLoad = () => {
-    setLoaded(true);
+    setLoading(true);
   };
 
   return (
     <>
-      {!loaded && (
-        <div className="absolute top-0 left-0 w-full h-full bg-white z-50 flex items-center justify-center">
+      {!loading && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  z-50 flex items-center justify-center">
           <CircularProgress />
         </div>
       )}
@@ -307,7 +345,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         style={{
           width: "100%",
           height: "100%",
-          opacity: loaded ? 1 : 0,
+          opacity: loading ? 1 : 0,
           transition: "opacity 0.5s ease",
         }}
         onLoad={handleLoad}
@@ -329,6 +367,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           selectedProperty={selectedPropertyPreview}
         />
         <MarkerPopup property={hoveredProperty} />
+        <CompMarkersPopup comp={hoveredComp} />
       </MapBox>
     </>
   );

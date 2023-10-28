@@ -124,7 +124,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
       ? Math.round(
         props.property.arv_price -
           props.property.sales_listing_price,
-      ) / props.property.sales_listing_price * 100
+      ) / props.property.arv_price * 100
       : 0;
 
   // const profit = arvPercentage.toFixed(100);

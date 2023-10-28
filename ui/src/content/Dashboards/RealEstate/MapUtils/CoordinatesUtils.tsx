@@ -1,6 +1,7 @@
 import PropertyPreview from "@/models/propertyPreview";
 import CompData from "@/models/compData";
 import { currencyFormatter } from "@/utils/converters";
+import { FilteredComp } from "@/models/analyzedProperty";
 
 const generatePropertyGeoJson = (property: PropertyPreview) => {
   return {
@@ -16,12 +17,12 @@ const generatePropertyGeoJson = (property: PropertyPreview) => {
   };
 };
 
-const generateCompsGeoJson = (comp: CompData, index) => {
+const generateCompsGeoJson = (comp: FilteredComp) => {
   return {
     type: "Feature",
     properties: {
       id: comp.source_id, // Generate a random ID
-      index: index,
+      index: comp.index + 1,
     },
     geometry: {
       type: "Point",

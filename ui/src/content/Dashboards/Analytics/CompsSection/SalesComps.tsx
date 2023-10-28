@@ -9,41 +9,60 @@ import CompsProperty from "@/models/comps_property";
 import styled from "@emotion/styled";
 import TuneIcon from "@mui/icons-material/Tune";
 import { Height } from "@mui/icons-material";
-import AnalyzedProperty, { CompData } from "@/models/analyzedProperty";
-import { useState } from "react";
+import AnalyzedProperty, {
+  CompData,
+  FilteredComp,
+} from "@/models/analyzedProperty";
+import { useEffect, useState } from "react";
 import CompsFilter from "./CompsFilter";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectProperties,
+  setSelectedComps,
+} from "@/store/slices/propertiesSlice";
 
 const Wrapper = styled(Box)(({ theme }) => ({
   width: "10rem",
   overflow: "hidden",
 }));
 
-type SalesCompsProps = {
-  property: AnalyzedProperty;
-  selectedComps: CompData[];
-  setSelectedComps: (compsProperties: CompData[]) => void;
-};
+type SalesCompsProps = {};
 const SalesComps = (props: SalesCompsProps) => {
+  const dispatch = useDispatch();
+  const { selectedProperty, selectedComps } = useSelector(selectProperties);
   const [filterOpen, setFilterOpen] = useState(false);
 
-  const handleToggle = (compsProperty: CompData) => {
-    if (props.selectedComps.includes(compsProperty)) {
-      const filteredComps = props.selectedComps.filter((property) =>
-        property !== compsProperty
+  const selectedCompsIndexes = selectedComps?.map((comp) => comp.index);
+
+  const handleToggle = (index) => {
+    if (selectedCompsIndexes?.includes(index)) {
+      const filteredComps = selectedComps.filter((property) =>
+        property.index !== index
       );
-      props.setSelectedComps(filteredComps);
+      dispatch(setSelectedComps(filteredComps));
     } else {
-      const newComps = [...props.selectedComps, compsProperty];
-      props.setSelectedComps(newComps);
+      const newSelectedComps = [...selectedComps, {
+        ...selectedProperty.sales_comps?.data?.[index],
+        index,
+      }];
+      dispatch(setSelectedComps(newSelectedComps));
     }
   };
 
-  return (props.property?.sales_comps?.data?.length > 0 &&
+  useEffect(() => {
+    const newComps: FilteredComp[] = selectedProperty.sales_comps?.data?.map(
+      (comp, index) => {
+        return { ...comp, index };
+      },
+    );
+    dispatch(setSelectedComps(newComps));
+  }, [selectedProperty]);
+
+  return (selectedProperty?.sales_comps?.data?.length > 0 &&
     (
       <Grid className={`${analyticsStyles.sectionContainer}`}>
         <Typography className={styles.compsSectionInfo}>
-          We found {props.property.sales_comps?.data?.length}{" "}
-          comps that match your search
+          We found {selectedComps?.length} comps that match your search
         </Typography>
         <Button
           onClick={() => setFilterOpen(!filterOpen)}
@@ -55,25 +74,22 @@ const SalesComps = (props: SalesCompsProps) => {
         <CompsFilter
           open={filterOpen}
           setOpen={setFilterOpen}
-          compsProperties={props.property.sales_comps?.data}
-          setSelectedComps={props.setSelectedComps}
         />
 
         <Wrapper className={styles.cardsWrapper}>
           <Grid item className="mb-8 sticky left-0 z-[1]">
             <PropertyCard
-              property={props.property}
-              compsProperties={props.selectedComps}
+              property={selectedProperty}
+              compsProperties={selectedComps}
             />
           </Grid>
-          {props.property.sales_comps?.data?.map((compsProperty, index) => (
+          {selectedProperty.sales_comps?.data?.map((compsProperty, index) => (
             <Grid item key={index} className="mb-8 left-0">
               <CompsCard
                 compsProperty={compsProperty}
                 index={index}
-                selected={props.selectedComps?.includes(compsProperty)}
-                toggle={() =>
-                  handleToggle(compsProperty)}
+                selected={selectedCompsIndexes?.includes(index)}
+                toggle={() => handleToggle(index)}
                 className={styles.compsCard}
               />
             </Grid>

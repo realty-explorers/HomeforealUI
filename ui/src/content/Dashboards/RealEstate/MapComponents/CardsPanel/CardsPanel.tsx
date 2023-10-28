@@ -154,8 +154,6 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
   const fetchPropertyData = async (property: PropertyPreview) => {
     //TODO: Watch out here for race conditions when internet not stable
     const propertyData = await getProperty(property?.source_id).unwrap();
-    dispatch(setSelectedComps(propertyData?.sales_comps?.data));
-    dispatch(setSelectedRentalComps(propertyData?.rents_comps?.data));
     dispatch(setSelectedProperty(propertyData));
   };
 

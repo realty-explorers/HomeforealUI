@@ -13,15 +13,15 @@ const defaults = {
   },
   area: {
     min: 0,
-    max: 10000,
-    step: 1,
-    default: [0, 10000],
+    max: 50000,
+    step: 100,
+    default: [0, 50000],
   },
   lotSize: {
     min: 0,
-    max: 10000,
-    step: 1,
-    default: [0, 10000],
+    max: 50000,
+    step: 100,
+    default: [0, 50000],
   },
   yearBuilt: {
     min: 1900,
@@ -81,15 +81,15 @@ const defaults = {
   },
   building_area: {
     min: 0,
-    max: 10000,
-    step: 1,
-    default: [0, 10000],
+    max: 50000,
+    step: 100,
+    default: [0, 50000],
   },
   lot_size: {
     min: 0,
-    max: 10000,
-    step: 1,
-    default: [0, 10000],
+    max: 50000,
+    step: 100,
+    default: [0, 50000],
   },
   sales_closing_price: {
     min: 0,
