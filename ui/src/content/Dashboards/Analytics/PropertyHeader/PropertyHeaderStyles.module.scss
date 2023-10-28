@@ -30,6 +30,7 @@
 
 .marginCard {
   @apply font-poppins grow m-2 flex flex-col justify-center items-center;
+  position: relative;
   border-radius: 0.5rem;
   background: rgba(182, 151, 221, 0.29);
 

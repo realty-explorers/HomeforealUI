@@ -18,8 +18,11 @@ import CompsFilter from "./CompsFilter";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectProperties,
+  setCalculatedProperty,
   setSelectedComps,
+  setSelectedProperty,
 } from "@/store/slices/propertiesSlice";
+import { useCalculateCompsMutation } from "@/store/services/analysisApi";
 
 const Wrapper = styled(Box)(({ theme }) => ({
   width: "10rem",
@@ -32,7 +35,22 @@ const SalesComps = (props: SalesCompsProps) => {
   const { selectedProperty, selectedComps } = useSelector(selectProperties);
   const [filterOpen, setFilterOpen] = useState(false);
 
+  const [calculateComps, compsResult] = useCalculateCompsMutation();
+
   const selectedCompsIndexes = selectedComps?.map((comp) => comp.index);
+
+  const recalculateComps = async (compsIds: string[]) => {
+    const response = await calculateComps({
+      "buybox_id": selectedProperty.buybox_id,
+      "source_id": selectedProperty.source_id,
+      "list_of_comps": compsIds,
+      "analysis_comp_name": "flip",
+    });
+    if (response.data) {
+      const newSelectedProperty = response.data as AnalyzedProperty;
+      dispatch(setCalculatedProperty(newSelectedProperty));
+    }
+  };
 
   const handleToggle = (index) => {
     if (selectedCompsIndexes?.includes(index)) {
@@ -40,12 +58,14 @@ const SalesComps = (props: SalesCompsProps) => {
         property.index !== index
       );
       dispatch(setSelectedComps(filteredComps));
+      recalculateComps(filteredComps.map((comp) => comp.source_id));
     } else {
       const newSelectedComps = [...selectedComps, {
         ...selectedProperty.sales_comps?.data?.[index],
         index,
       }];
       dispatch(setSelectedComps(newSelectedComps));
+      recalculateComps(newSelectedComps.map((comp) => comp.source_id));
     }
   };
 
@@ -74,6 +94,7 @@ const SalesComps = (props: SalesCompsProps) => {
         <CompsFilter
           open={filterOpen}
           setOpen={setFilterOpen}
+          recalculateComps={recalculateComps}
         />
 
         <Wrapper className={styles.cardsWrapper}>

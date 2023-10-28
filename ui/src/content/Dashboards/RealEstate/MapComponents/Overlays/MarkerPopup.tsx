@@ -12,6 +12,7 @@ const MarkerPopup = ({ property }: MarkerPopupProps) => {
       longitude={Number(property.longitude)}
       latitude={Number(property.latitude)}
       anchor="bottom"
+      offset={[0, -10]}
       closeButton={false}
       className="mapbox-popup"
     >

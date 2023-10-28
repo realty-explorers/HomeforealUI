@@ -72,7 +72,7 @@ const MoreDetailsSection = (
         {/* <PropertyFeatures property={selectedProperty} /> */}
         {/* <EnvironmentalIndicators property={selectedProperty} /> */}
         {/* <OwnershipInfo property={selectedProperty} /> */}
-        <div className="mt-8">
+        <div className="mt-8 relative">
           <SaleComparableIndicators property={selectedProperty} />
           <SaleComparable property={selectedProperty} />
           <SalesComps />
@@ -151,12 +151,16 @@ const DashboardRealEstate = (props: any) => {
             {/*       : "opacity-0", */}
             {/*   ])} */}
             {/* /> */}
-            <CircularProgress
-              className={clsx([
-                "h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%] transition-opacity duration-500",
-                selectedPropertyState.isFetching ? "opacity-100" : "opacity-0",
-              ])}
-            />
+            {selectedPropertyState.isFetching && (
+              <CircularProgress
+                className={clsx([
+                  "h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%] transition-opacity duration-500",
+                  selectedPropertyState.isFetching
+                    ? "opacity-100"
+                    : "opacity-0",
+                ])}
+              />
+            )}
             <div
               className={clsx([
                 "duration-500 transition-opacity",

@@ -111,9 +111,10 @@ type CompsFilterSchemaType = z.infer<typeof compsFiltersSchema>;
 type CompsFilterProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
+  recalculateComps: (compsIds: string[]) => void;
 };
 const CompsFilter = (
-  { open, setOpen }: CompsFilterProps,
+  { open, setOpen, recalculateComps }: CompsFilterProps,
 ) => {
   const dispatch = useDispatch();
   const { selectedProperty, selectedComps } = useSelector(selectProperties);
@@ -143,6 +144,7 @@ const CompsFilter = (
   });
 
   const handleClose = () => setOpen(false);
+
   const onSubmit = async (data: any) => {
     const filteredComps: FilteredComp[] = [];
     for (let i = 0; i < selectedProperty.sales_comps.data?.length; i++) {
@@ -180,6 +182,7 @@ const CompsFilter = (
       }
     }
     dispatch(setSelectedComps(filteredComps));
+    recalculateComps(filteredComps.map((comp) => comp.source_id));
     handleClose();
   };
 

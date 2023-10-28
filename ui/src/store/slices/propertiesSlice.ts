@@ -9,6 +9,7 @@ import PropertyPreview from "@/models/propertyPreview";
 // Type for our state
 export interface PropertiesState {
   selectedProperty?: AnalyzedProperty;
+  calculatedProperty?: AnalyzedProperty;
   selectedPropertyPreview?: PropertyPreview;
   selectedComps: FilteredComp[];
   selectedRentalComps: CompData[];
@@ -17,6 +18,7 @@ export interface PropertiesState {
 // Initial state
 const initialState: PropertiesState = {
   selectedProperty: undefined,
+  calculatedProperty: undefined,
   selectedPropertyPreview: undefined,
   selectedComps: [],
   selectedRentalComps: [],
@@ -31,7 +33,9 @@ export const propertiesSlice = createSlice({
     setSelectedProperty(state, action: PayloadAction<AnalyzedProperty>) {
       state.selectedProperty = action.payload;
     },
-
+    setCalculatedProperty(state, action: PayloadAction<AnalyzedProperty>) {
+      state.calculatedProperty = action.payload;
+    },
     setSelectedPropertyPreview(state, action: PayloadAction<PropertyPreview>) {
       state.selectedPropertyPreview = action.payload;
     },
@@ -48,6 +52,7 @@ export const propertiesSlice = createSlice({
 export const propertiesReducer = propertiesSlice.reducer;
 export const {
   setSelectedProperty,
+  setCalculatedProperty,
   setSelectedComps,
   setSelectedRentalComps,
   setSelectedPropertyPreview,

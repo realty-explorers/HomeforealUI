@@ -19,6 +19,8 @@ import ThemedButton from "@/components/Buttons/ThemedButton";
 import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
 import { numberStringUtil, priceFormatter } from "@/utils/converters";
 import clsx from "clsx";
+import { useSelector } from "react-redux";
+import { selectProperties } from "@/store/slices/propertiesSlice";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   borderBottom: "none",
@@ -28,9 +30,10 @@ type SaleComparableIndicatorsProps = {
   property: AnalyzedProperty;
 };
 const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
-  return (props.property?.sales_comps?.data?.length > 0 &&
+  const { calculatedProperty } = useSelector(selectProperties);
+  return (calculatedProperty?.sales_comps?.data?.length > 0 &&
     (
-      <div className="flex w-full items-center gap-4 p-4 ">
+      <div className="flex w-full items-center gap-4 p-4 sticky top-0 z-[2] bg-[#f2f5f9]">
         <div className="grid grid-cols-2 gap-4 gap-x-20">
           <div className="flex">
             <Typography
@@ -46,7 +49,7 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
                 "bg-[rgba(182,151,221,0.29)] ",
               ])}
             >
-              $ 270,000
+              {priceFormatter(calculatedProperty?.sales_comps_price.toFixed())}
             </Typography>
           </div>
 
@@ -64,7 +67,7 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
                 "bg-[#D6FCD0] ",
               ])}
             >
-              $ 330,000
+              {priceFormatter(calculatedProperty?.arv_price.toFixed())}
             </Typography>
           </div>
         </div>

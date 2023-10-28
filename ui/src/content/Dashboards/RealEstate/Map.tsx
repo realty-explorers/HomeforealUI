@@ -17,6 +17,7 @@ import CardsPanel from "./MapComponents/CardsPanel/CardsPanel";
 import { selectFilter } from "@/store/slices/filterSlice";
 import {
   selectProperties,
+  setCalculatedProperty,
   setSelectedComps,
   setSelectedProperty,
   setSelectedPropertyPreview,
@@ -44,7 +45,7 @@ import CompMarkersPopup from "./MapComponents/Overlays/CompMarkerPopup";
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
   const mapRef = useRef<MapRef>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [data, setData] = useState<
     FeatureCollection<Geometry, {
@@ -99,6 +100,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     //TODO: Watch out here for race conditions when internet not stable
     const propertyData = await getProperty(property?.source_id).unwrap();
     dispatch(setSelectedProperty(propertyData));
+    dispatch(setCalculatedProperty(propertyData));
   };
 
   const onMove = useCallback((viewState: ViewStateChangeEvent) => {
@@ -215,10 +217,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           locationState.data.center.longitude,
           locationState.data.center.latitude,
         ],
-        zoom: 10,
+        zoom: 11,
         pitch: 0,
         duration: 500,
       });
+      // mapRef.current?.fitBounds(locationState.data.bounds);
     }
   };
 
@@ -328,12 +331,19 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   }, [selectedComps]);
 
   const handleLoad = () => {
-    setLoading(true);
+    setLoading(false);
+    mapRef?.current?.loadImage(
+      "/static/images/pins/marker-label.png",
+      (error, image) => {
+        if (error) throw error;
+        mapRef?.current?.addImage("custom-marker", image);
+      },
+    );
   };
 
   return (
     <>
-      {!loading && (
+      {loading && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  z-50 flex items-center justify-center">
           <CircularProgress />
         </div>
@@ -345,7 +355,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         style={{
           width: "100%",
           height: "100%",
-          opacity: loading ? 1 : 0,
+          opacity: loading ? 0 : 1,
           transition: "opacity 0.5s ease",
         }}
         onLoad={handleLoad}

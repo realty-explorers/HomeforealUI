@@ -44,7 +44,9 @@ const gridRows = (property: CompData) => [
   },
   {
     label: "Year Built",
-    value: property.year_built.slice(0, 4),
+    value: typeof property.year_built === "string"
+      ? property.year_built.slice(0, 4)
+      : property.year_built,
   },
   {
     label: "Hood",

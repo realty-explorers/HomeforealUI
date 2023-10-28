@@ -49,7 +49,7 @@ const baseQueryWithReauth = async (
 export const analysisApi = createApi({
   reducerPath: "analysisApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["BuyBoxLeads", "BuyBoxLeadsCount"],
+  tagTypes: ["BuyBoxLeads", "BuyBoxLeadsCount", "SelectedComps"],
   endpoints: (builder) => ({
     getLeads: builder.query({
       query: ({ id, skip, limit }) => ({
@@ -65,10 +65,28 @@ export const analysisApi = createApi({
       transformResponse: (response: any) => response,
       providesTags: ["BuyBoxLeadsCount"],
     }),
+    calculateComps: builder.mutation({
+      query: ({ buybox_id, source_id, list_of_comps, analysis_comp_name }) => ({
+        url: "edit-comps",
+        method: "POST",
+        body: {
+          "buybox_id": buybox_id,
+          "source_id": source_id,
+          "list_of_comps": list_of_comps,
+          "analysis_comp_name": analysis_comp_name,
+        },
+      }),
+      transformResponse: (response: any) => response,
+      invalidatesTags: ["SelectedComps"],
+    }),
   }),
 });
 
 export const analysisApiEndpoints = analysisApi.endpoints;
 
-export const { useGetLeadsQuery, useLazyGetLeadsQuery, useGetLeadsCountQuery } =
-  analysisApi;
+export const {
+  useGetLeadsQuery,
+  useLazyGetLeadsQuery,
+  useGetLeadsCountQuery,
+  useCalculateCompsMutation,
+} = analysisApi;
