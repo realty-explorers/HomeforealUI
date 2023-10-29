@@ -15,122 +15,17 @@ import {
 } from "@mui/material";
 import styles from "./BuyboxItem.module.scss";
 import clsx from "clsx";
-import { useGetLeadsQuery } from "@/store/services/analysisApi";
-import { skipToken } from "@reduxjs/toolkit/dist/query";
 import BuyBox from "@/models/buybox";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import BuyBoxLeads from "./BuyBoxLeads";
-import { useState } from "react";
-import { useRouter } from "next/router";
-import { useSearchParams } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import {
   selectBuyBoxes,
   setBuyBoxOpen,
   setBuyBoxPage,
+  setBuyBoxPageSize,
 } from "@/store/slices/buyBoxesSlice";
-
-const columns: GridColDef[] = [
-  {
-    field: "image",
-    headerName: "",
-    flex: 2,
-    minWidth: 150,
-    renderCell: (cellValues) => {
-      return (
-        <div className="flex flex-1 h-full grow items-center p-2 rounded-md">
-          <div className="w-full h-full  flex align-center justify-center">
-            <img
-              src={cellValues.value}
-              alt=""
-              className="max-h-full aspect-video"
-            />
-          </div>
-        </div>
-      );
-    },
-  },
-  {
-    field: "address",
-    headerName: "",
-    flex: 1,
-    minWidth: 100,
-    renderCell: (cellValues) => {
-      return <Typography className="text-center">{cellValues.value}
-      </Typography>;
-    },
-  },
-  { field: "opportunity", headerName: "Opportunity", flex: 1 },
-
-  {
-    field: "askingPrice",
-    headerName: "Asking Price",
-    flex: 1,
-    minWidth: 100,
-    editable: true,
-  },
-  {
-    field: "ARV",
-    headerName: "ARV",
-    flex: 1,
-    minWidth: 100,
-    editable: true,
-  },
-
-  {
-    field: "NOI",
-    headerName: "NOI",
-    flex: 1,
-    minWidth: 100,
-    editable: true,
-  },
-
-  {
-    field: "capRate",
-    headerName: "Cap Rate",
-    flex: 1,
-    minWidth: 100,
-    editable: true,
-  },
-  {
-    field: "zipCode",
-    headerName: "Zip Code",
-    flex: 1,
-    minWidth: 100,
-    editable: true,
-  },
-  {
-    field: "note",
-    headerName: "Note",
-    flex: 1,
-    minWidth: 100,
-    editable: true,
-  },
-  {
-    field: "action",
-    headerName: "",
-    flex: 1,
-    minWidth: 120,
-    renderCell: (cellValues) => {
-      return (
-        <div className="w-full h-full flex items-center justify-center m-2">
-          <Button
-            variant="contained"
-            className={clsx([
-              "bg-secondary",
-              "hover:bg-secondary hover:opacity-80",
-            ])}
-          >
-            <Typography className={clsx([styles.buttonText])}>
-              Analysis
-            </Typography>
-          </Button>
-        </div>
-      );
-    },
-  },
-];
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -169,10 +64,6 @@ type BuyboxItemProps = {
 };
 
 const BuyboxItem = (props: BuyboxItemProps) => {
-  // const { data, isFetching } = useGetLeadsQuery(
-  //   props.data?.buybox_id || skipToken,
-  // );
-
   const dispatch = useDispatch();
   const { buyboxes } = useSelector(selectBuyBoxes);
 
@@ -197,21 +88,11 @@ const BuyboxItem = (props: BuyboxItemProps) => {
     dispatch(setBuyBoxPage({ buybox_id: props.buybox.id, page: page }));
   };
 
-  const rows = []?.map((lead: Lead, index) => {
-    return {
-      id: index,
-      image:
-        "https://photos.zillowstatic.com/fp/b312180f50220b7ae1c090b3c3126e81-cc_ft_768.webp",
-      address: lead.address,
-      opportunity: lead.opportunities.join(","),
-      askingPrice: lead.listing_price,
-      ARV: lead.arv_price,
-      NOI: lead.noi,
-      capRate: lead.cap_rate,
-      zipCode: lead.zipcode,
-      note: "",
-    };
-  }) ?? [];
+  const setPageSize = (pageSize: number) => {
+    dispatch(
+      setBuyBoxPageSize({ buybox_id: props.buybox.id, pageSize: pageSize }),
+    );
+  };
 
   return (
     <>
@@ -240,7 +121,9 @@ const BuyboxItem = (props: BuyboxItemProps) => {
             buybox={props.buybox}
             open={expanded}
             page={buyboxes[props.buybox.id]?.page || 0}
+            pageSize={buyboxes[props.buybox.id]?.pageSize || 5}
             setPage={setPage}
+            setPageSize={setPageSize}
           />
         </AccordionDetails>
       </StyledAccordion>

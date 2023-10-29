@@ -12,7 +12,10 @@ import {
   setSelectedPropertyPreview,
   setSelectedRentalComps,
 } from "@/store/slices/propertiesSlice";
-import { Button, Typography } from "@mui/material";
+import { Button, ListItemIcon, MenuItem, Typography } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
+import BookmarkIcon from "@mui/icons-material/Bookmark";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
 
 import {
   DataGrid,
@@ -23,133 +26,37 @@ import {
 } from "@mui/x-data-grid";
 import { skipToken } from "@reduxjs/toolkit/query";
 import clsx from "clsx";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import PropertyPreview from "@/models/propertyPreview";
-
-const PAGE_SIZE = 5;
+import {
+  MaterialReactTable,
+  type MRT_ColumnDef,
+  MRT_PaginationState,
+  useMaterialReactTable,
+} from "material-react-table";
 
 type BuyBoxLeadsProps = {
   open: boolean;
   page: number;
+  pageSize: number;
   setPage: (page: number) => void;
+  setPageSize: (pageSize: number) => void;
   buybox: BuyBox;
 };
 
 const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
-  const columns: GridColDef[] = [
-    {
-      field: "image",
-      headerName: "",
-      // flex: 1,
-      minWidth: 150,
-      renderCell: (cellValues) => {
-        return (
-          <div className="flex flex-1 h-full grow items-center p-2 rounded-md">
-            <div className="w-full h-full  flex align-center justify-center">
-              <img
-                src={cellValues.value}
-                alt=""
-                className="max-h-full aspect-video"
-              />
-            </div>
-          </div>
-        );
-      },
-    },
-    {
-      field: "address",
-      headerName: "",
-      // flex: 1,
-      minWidth: 100,
-      renderCell: (cellValues) => {
-        return (
-          <Typography className="text-center">{cellValues.value}</Typography>
-        );
-      },
-    },
-    {
-      field: "opportunity",
-      headerName: "Opportunity", // flex: 1
-    },
-
-    {
-      field: "askingPrice",
-      headerName: "Asking Price",
-      // flex: 1,
-      minWidth: 100,
-      editable: true,
-    },
-    {
-      field: "ARV",
-      headerName: "ARV",
-      // flex: 1,
-      minWidth: 100,
-      editable: true,
-    },
-
-    {
-      field: "NOI",
-      headerName: "NOI",
-      // flex: 1,
-      minWidth: 100,
-      editable: true,
-    },
-
-    {
-      field: "capRate",
-      headerName: "Cap Rate",
-      // flex: 1,
-      minWidth: 100,
-      editable: true,
-    },
-    {
-      field: "zipCode",
-      headerName: "Zip Code",
-      // flex: 1,
-      minWidth: 100,
-      editable: true,
-    },
-    {
-      field: "note",
-      headerName: "Note",
-      // flex: 1,
-      minWidth: 100,
-      editable: true,
-    },
-    {
-      field: "action",
-      headerName: "",
-      // flex: 1,
-      minWidth: 220,
-      renderCell: (cellValues) => {
-        return (
-          <div className="w-full h-full flex items-center justify-center m-2">
-            <Button
-              variant="contained"
-              className={clsx([
-                "bg-secondary",
-                "hover:bg-secondary hover:opacity-80",
-              ])}
-              onClick={() => handleAnalysis(cellValues.row.id)}
-            >
-              <Typography className="">
-                Analysis
-              </Typography>
-            </Button>
-          </div>
-        );
-      },
-    },
-  ];
-
-  const router = useRouter();
   const [getProperty, propertyState] = useLazyGetPropertyQuery();
+  const [pagination, setPagination] = useState<MRT_PaginationState>({
+    pageIndex: props.page,
+    pageSize: props.pageSize,
+  });
   const dispatch = useDispatch();
+  const router = useRouter();
   const handleAnalysis = async (id: string) => {
     const source_id = data?.[id]?.source_id;
     const propertyData = await getProperty(source_id).unwrap();
-    dispatch(setSelectedComps(propertyData?.sales_comps?.data));
+    // dispatch(setSelectedComps(propertyData?.sales_comps?.data));
     dispatch(setSelectedRentalComps(propertyData?.rents_comps?.data));
     dispatch(setSelectedProperty(propertyData));
     dispatch(
@@ -168,36 +75,19 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
     router.push("/dashboards/real-estate");
   };
 
-  const mapPageToNextCursor = useRef<{ [page: number]: GridRowId }>({});
-  const [paginationModel, setPaginationModel] = useState({
-    page: props.page,
-    pageSize: PAGE_SIZE,
-  });
-
   const countQuery = useGetLeadsCountQuery(
     props.open && props.buybox ? props.buybox?.id : skipToken,
   );
+
   const { data, isFetching, error } = useGetLeadsQuery(
     props.buybox && props.open
       ? {
         id: props.buybox.id,
-        skip: paginationModel.page * PAGE_SIZE,
-        limit: PAGE_SIZE,
+        skip: pagination.pageIndex * pagination.pageSize,
+        limit: pagination.pageSize,
       }
       : skipToken,
   );
-  const handlePaginationModelChange = (
-    newPaginationModel: GridPaginationModel,
-  ) => {
-    // We have the cursor, we can allow the page transition.
-    // if (
-    //   newPaginationModel.page === 0 ||
-    //   mapPageToNextCursor.current[newPaginationModel.page - 1]
-    // ) {
-    setPaginationModel(newPaginationModel);
-    props.setPage(newPaginationModel.page);
-    // }
-  };
 
   const rows = data?.map((lead: Lead, index) => {
     return {
@@ -214,43 +104,144 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
     };
   }) ?? [];
 
+  const columns = useMemo<MRT_ColumnDef<any>[]>(
+    () => [
+      {
+        accessorKey: "image",
+        header: "Image",
+        Cell: ({ renderedCellValue, row }) => (
+          <div className="flex flex-1 h-full grow items-center rounded-md">
+            <div className="w-full h-full  flex align-center justify-center">
+              <img
+                src={row.original.image}
+                alt=""
+                className="max-h-full aspect-video rounded-xl"
+              />
+            </div>
+          </div>
+        ),
+      },
+      {
+        accessorKey: "address", //access nested data with dot notation
+        header: "address",
+        size: 150,
+      },
+      {
+        accessorKey: "opportunity",
+        header: "Opportunity",
+        size: 150,
+      },
+      {
+        accessorKey: "askingPrice",
+        header: "Asking Price",
+        size: 150,
+      },
+      {
+        accessorKey: "ARV",
+        header: "ARV",
+        size: 150,
+      },
+      {
+        accessorKey: "NOI",
+        header: "NOI",
+        size: 150,
+      },
+      {
+        accessorKey: "capRate",
+        header: "Cap Rate",
+        size: 150,
+      },
+      {
+        accessorKey: "zipCode",
+        header: "Zip Code",
+        size: 150,
+      },
+      {
+        accessorKey: "note",
+        header: "Note",
+        size: 150,
+      },
+    ],
+    [],
+  );
+
+  useEffect(() => {
+    props.setPage(pagination.pageIndex);
+    props.setPageSize(pagination.pageSize);
+  }, [pagination.pageIndex]);
+
+  const table = useMaterialReactTable({
+    columns,
+    data: rows,
+    enableSorting: false,
+    enableFilters: false,
+    enableRowActions: true,
+    rowCount: countQuery.data?.count || 0,
+    manualPagination: true,
+    onPaginationChange: setPagination,
+    state: {
+      isLoading: isFetching,
+      pagination: {
+        pageSize: pagination.pageSize,
+        pageIndex: pagination.pageIndex,
+      },
+    },
+    getRowId: (row) => row.id,
+    muiTableHeadProps: {
+      sx: {
+        fontFamily: "var(--font-poppins)",
+      },
+    },
+    muiTableBodyCellProps: {
+      sx: {
+        fontFamily: "var(--font-poppins)",
+      },
+    },
+    renderRowActionMenuItems: ({ closeMenu, row }) => [
+      <MenuItem
+        key={1}
+        onClick={() => {
+          handleAnalysis(row.original.id);
+        }}
+        sx={{ m: 0 }}
+      >
+        <ListItemIcon>
+          <AnalyticsIcon />
+        </ListItemIcon>
+        Analysis
+      </MenuItem>,
+      <MenuItem
+        key={0}
+        onClick={() => {
+          // View profile logic...
+          closeMenu();
+        }}
+        sx={{ m: 0 }}
+      >
+        <ListItemIcon>
+          <BookmarkIcon />
+        </ListItemIcon>
+        Save Lead
+      </MenuItem>,
+      <MenuItem
+        key={1}
+        onClick={() => {
+          // Send email logic...
+          closeMenu();
+        }}
+        sx={{ m: 0 }}
+      >
+        <ListItemIcon>
+          <DeleteIcon />
+        </ListItemIcon>
+        Delete Lead
+      </MenuItem>,
+    ],
+  });
+
   return (
     <div>
-      {data?.[0]?.bedrooms}
-      <DataGrid
-        rowCount={countQuery.data?.count || 0}
-        loading={isFetching}
-        paginationMode="server"
-        onPaginationModelChange={handlePaginationModelChange}
-        paginationModel={paginationModel}
-        pageSizeOptions={[PAGE_SIZE]}
-        className="border-none"
-        sx={{
-          "*": {
-            ".MuiDataGrid-cell": {
-              outline: "none",
-              "&:focus": {
-                outline: "none",
-              },
-              "&:focus-within": {
-                outline: "none",
-              },
-            },
-          },
-        }}
-        rows={rows}
-        columns={columns}
-        rowHeight={100}
-        // initialState={{
-        //   pagination: {
-        //     paginationModel: {
-        //       pageSize: 10,
-        //     },
-        //   },
-        // }}
-        checkboxSelection
-        disableRowSelectionOnClick
-      />
+      <MaterialReactTable table={table} />
     </div>
   );
 };

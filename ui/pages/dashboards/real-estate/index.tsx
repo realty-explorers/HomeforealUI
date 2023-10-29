@@ -80,11 +80,7 @@ const MoreDetailsSection = (
         <ExpansesCalculator property={selectedProperty} />
         <div className="mt-8">
           <RentComparable property={selectedProperty} />
-          <RentComps
-            property={selectedProperty}
-            selectedComps={selectedRentalComps}
-            setSelectedComps={setSelectedRentalComps}
-          />
+          <RentComps />
         </div>
         <OperationalExpanses property={selectedProperty} />
       </>

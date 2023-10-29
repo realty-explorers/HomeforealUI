@@ -1,5 +1,5 @@
 import { Layer, Source } from "react-map-gl";
-import { compsIndexLayer, compsLayer } from "../Layers/layers";
+import { compsIndexLayer, compsLayer } from "../Layers/compLayers";
 
 type CompsSourceProps = {
   show: boolean;

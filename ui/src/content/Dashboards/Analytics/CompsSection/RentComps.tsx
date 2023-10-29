@@ -1,86 +1,78 @@
 import { Box, Button, Card, Grid, Typography } from "@mui/material";
-import GridTableField from "@/components/Grid/GridTableField";
-
 import analyticsStyles from "../Analytics.module.scss";
 import styles from "./CompsSection.module.scss";
 import PropertyCard from "./PropertyCard";
-import CompsCard from "./CompsCard";
-import CompsProperty from "@/models/comps_property";
-import styled from "@emotion/styled";
 import TuneIcon from "@mui/icons-material/Tune";
-import { Height } from "@mui/icons-material";
-import AnalyzedProperty, { CompData } from "@/models/analyzedProperty";
-import { useState } from "react";
+import AnalyzedProperty, { FilteredComp } from "@/models/analyzedProperty";
+import { useEffect, useState } from "react";
 import CompsFilter from "./CompsFilter";
 import RentsCard from "./RentsCard";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectProperties,
+  setRentalCalculatedProperty,
+  setSelectedRentalComps,
+} from "@/store/slices/propertiesSlice";
+import { useCalculateCompsMutation } from "@/store/services/analysisApi";
+import CompsSection from "./CompsSection";
 
-const Wrapper = styled(Box)(({ theme }) => ({
-  width: "10rem",
-  overflow: "hidden",
-}));
+type RentCompsProps = {};
+const RentComps = () => {
+  const dispatch = useDispatch();
+  const { selectedProperty, selectedRentalComps } = useSelector(
+    selectProperties,
+  );
+  const [calculateComps, compsResult] = useCalculateCompsMutation();
 
-type RentCompsProps = {
-  property: AnalyzedProperty;
-  selectedComps: CompData[];
-  setSelectedComps: (compsProperties: CompData[]) => void;
-};
-const RentComps = (props: RentCompsProps) => {
-  const [filterOpen, setFilterOpen] = useState(false);
-
-  const handleToggle = (compsProperty: CompData) => {
-    if (props.selectedComps.includes(compsProperty)) {
-      const filteredComps = props.selectedComps.filter((property) =>
-        property !== compsProperty
-      );
-      props.setSelectedComps(filteredComps);
-    } else {
-      const newComps = [...props.selectedComps, compsProperty];
-      props.setSelectedComps(newComps);
+  const recalculateComps = async (compsIds: string[]) => {
+    const response = await calculateComps({
+      "buybox_id": selectedProperty.buybox_id,
+      "source_id": selectedProperty.source_id,
+      "list_of_comps": compsIds,
+      "analysis_comp_name": "flip",
+    });
+    if (response.data) {
+      const newSelectedProperty = response.data as AnalyzedProperty;
+      dispatch(setRentalCalculatedProperty(newSelectedProperty));
     }
   };
 
-  return (props.property?.rents_comps?.data?.length > 0 &&
-    (
-      <Grid className={`${analyticsStyles.sectionContainer}`}>
-        <Typography className={styles.compsSectionInfo}>
-          We found {props.property.rents_comps?.data?.length}{" "}
-          comps that match your search
-        </Typography>
-        <Button
-          onClick={() => setFilterOpen(!filterOpen)}
-          startIcon={<TuneIcon />}
-          className="text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl mt-2 px-4"
-        >
-          Filter Comps
-        </Button>
-        <CompsFilter
-          open={filterOpen}
-          setOpen={setFilterOpen}
-          compsProperties={props.property.rents_comps?.data}
-          setSelectedComps={props.setSelectedComps}
-        />
+  const setNewSelectedComps = (newSelectedComps: FilteredComp[]) => {
+    dispatch(setSelectedRentalComps(newSelectedComps));
+    // recalculateComps(newSelectedComps.map((comp) => comp.source_id));
+  };
 
-        <Wrapper className={styles.cardsWrapper}>
-          <Grid item className="mb-8 sticky left-0 z-[1]">
-            <PropertyCard
-              property={props.property}
-              compsProperties={props.selectedComps}
-            />
-          </Grid>
-          {props.property.rents_comps?.data?.map((compsProperty, index) => (
-            <Grid item key={index} className="mb-8 left-0">
-              <RentsCard
-                compsProperty={compsProperty}
-                index={index}
-                selected={props.selectedComps?.includes(compsProperty)}
-                toggle={() =>
-                  handleToggle(compsProperty)}
-                className={styles.rentCompsCard}
-              />
-            </Grid>
-          ))}
-        </Wrapper>
-      </Grid>
+  useEffect(() => {
+    const newComps: FilteredComp[] = selectedProperty.rents_comps?.data?.map(
+      (comp, index) => {
+        return { ...comp, index };
+      },
+    );
+    dispatch(setSelectedRentalComps(newComps));
+  }, [selectedProperty]);
+
+  return (selectedProperty?.sales_comps?.data?.length > 0 &&
+    (
+      <CompsSection
+        comps={selectedProperty.rents_comps?.data}
+        selectedComps={selectedRentalComps}
+        setSelectedComps={setNewSelectedComps}
+        propertyCard={
+          <PropertyCard
+            property={selectedProperty}
+            compsProperties={selectedRentalComps}
+          />
+        }
+        compCard={
+          <RentsCard
+            compsProperty={null}
+            index={0}
+            selected={false}
+            toggle={() => {}}
+            className={styles.rentCompsCard}
+          />
+        }
+      />
     ));
 };
 

@@ -30,8 +30,8 @@ type SaleComparableIndicatorsProps = {
   property: AnalyzedProperty;
 };
 const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
-  const { calculatedProperty } = useSelector(selectProperties);
-  return (calculatedProperty?.sales_comps?.data?.length > 0 &&
+  const { saleCalculatedProperty } = useSelector(selectProperties);
+  return (saleCalculatedProperty?.sales_comps?.data?.length > 0 &&
     (
       <div className="flex w-full items-center gap-4 p-4 sticky top-0 z-[2] bg-[#f2f5f9]">
         <div className="grid grid-cols-2 gap-4 gap-x-20">
@@ -49,7 +49,9 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
                 "bg-[rgba(182,151,221,0.29)] ",
               ])}
             >
-              {priceFormatter(calculatedProperty?.sales_comps_price.toFixed())}
+              {priceFormatter(
+                saleCalculatedProperty?.sales_comps_price.toFixed(),
+              )}
             </Typography>
           </div>
 
@@ -67,7 +69,7 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
                 "bg-[#D6FCD0] ",
               ])}
             >
-              {priceFormatter(calculatedProperty?.arv_price.toFixed())}
+              {priceFormatter(saleCalculatedProperty?.arv_price.toFixed())}
             </Typography>
           </div>
         </div>

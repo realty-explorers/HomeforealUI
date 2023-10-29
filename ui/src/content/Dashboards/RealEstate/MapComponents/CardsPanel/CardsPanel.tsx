@@ -12,15 +12,18 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectFilter } from "@/store/slices/filterSlice";
 import {
   selectProperties,
-  setCalculatedProperty,
+  setRentalCalculatedProperty,
+  setSaleCalculatedProperty,
   setSelectedProperty,
   setSelectedPropertyPreview,
 } from "@/store/slices/propertiesSlice";
 import { useLazyGetPropertyQuery } from "@/store/services/propertiesApiService";
 
-type CardsPanelProps = {};
+type CardsPanelProps = {
+  open: boolean;
+};
 
-const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
+const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   const [ref, setRef] = useState<Element | undefined>();
   const [cardsOpen, setCardsOpen] = useState(true);
   const { filteredProperties } = useSelector(selectFilter);
@@ -79,15 +82,16 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
     //TODO: Watch out here for race conditions when internet not stable
     const propertyData = await getProperty(property?.source_id).unwrap();
     dispatch(setSelectedProperty(propertyData));
-    dispatch(setCalculatedProperty(propertyData));
+    dispatch(setSaleCalculatedProperty(propertyData));
+    dispatch(setRentalCalculatedProperty(propertyData));
   };
 
   const [notSelected, setNotSelected] = useState(true);
 
   useEffect(() => {
-    console.log("rerender cards panel");
+    console.log("rerender cards panel2");
     if (selectedPropertyPreview) {
-      const selectedPropertyIndex = filteredProperties.findIndex((property) =>
+      const selectedPropertyIndex = filteredProperties?.findIndex((property) =>
         property.source_id === selectedPropertyPreview.source_id
       );
       setSelectedIndex(selectedPropertyIndex);
@@ -103,8 +107,9 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
 
   useEffect(() => {
     const element = document.querySelector("#list-container > div > div");
-    setRef(element);
+    console.log("element", element);
     if (element) {
+      console.log("meow");
       const onwheel = (e) => {
         if (e.deltaY == 0) return;
         element.scrollTo({
@@ -114,7 +119,9 @@ const CardsPanel: React.FC<CardsPanelProps> = (props: CardsPanelProps) => {
       element.addEventListener("wheel", onwheel);
       return () => element.removeEventListener("wheel", onwheel);
     }
-  }, []);
+
+    setRef(element);
+  }, [open]);
 
   let cardsCache = {};
 

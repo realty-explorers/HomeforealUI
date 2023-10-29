@@ -9,7 +9,10 @@ import MapControlPanel from "./MapControlPanel/MapControlPanel";
 import { FeatureCollection, Geometry } from "@turf/turf";
 import mapboxgl from "mapbox-gl";
 import { locationApiEndpoints } from "@/store/services/locationApiService";
-import { useLazyGetPropertyQuery } from "@/store/services/propertiesApiService";
+import {
+  propertiesApiEndpoints,
+  useLazyGetPropertyQuery,
+} from "@/store/services/propertiesApiService";
 import { useDispatch, useSelector } from "react-redux";
 import { selectLocation } from "@/store/slices/locationSlice";
 import PropertyPreview from "@/models/propertyPreview";
@@ -17,7 +20,8 @@ import CardsPanel from "./MapComponents/CardsPanel/CardsPanel";
 import { selectFilter } from "@/store/slices/filterSlice";
 import {
   selectProperties,
-  setCalculatedProperty,
+  setRentalCalculatedProperty,
+  setSaleCalculatedProperty,
   setSelectedComps,
   setSelectedProperty,
   setSelectedPropertyPreview,
@@ -41,6 +45,8 @@ import {
 } from "./MapUtils/constants";
 import { CircularProgress } from "@mui/material";
 import CompMarkersPopup from "./MapComponents/Overlays/CompMarkerPopup";
+import LoadingSpinner from "./MapComponents/Overlays/LoadingSpinner";
+import RentalsSource from "./MapComponents/Sources/RentalsSource";
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
@@ -58,7 +64,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     }>
   >();
 
-  const [rentalData, setRentalData] = useState<
+  const [rentalsData, setRentalsData] = useState<
     FeatureCollection<Geometry, {
       [name: string]: any;
     }>
@@ -83,6 +89,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     suggestion,
   );
 
+  const propertiesState = propertiesApiEndpoints.getPropertiesPreviews
+    .useQueryState(
+      suggestion,
+    );
+
   const handleDeselectProperty = () => {
     dispatch(setSelectedPropertyPreview(null));
   };
@@ -100,7 +111,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     //TODO: Watch out here for race conditions when internet not stable
     const propertyData = await getProperty(property?.source_id).unwrap();
     dispatch(setSelectedProperty(propertyData));
-    dispatch(setCalculatedProperty(propertyData));
+    dispatch(setSaleCalculatedProperty(propertyData));
+    dispatch(setRentalCalculatedProperty(propertyData));
   };
 
   const onMove = useCallback((viewState: ViewStateChangeEvent) => {
@@ -199,6 +211,26 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   };
 
   const handleMouseLeaveComps = (
+    e: mapboxgl.MapMouseEvent & {
+      features?: mapboxgl.MapboxGeoJSONFeature[];
+    } & mapboxgl.EventData,
+  ) => {
+    setHoveredComp(null);
+  };
+
+  const handleMouseEnterRentals = (
+    e: mapboxgl.MapMouseEvent & {
+      features?: mapboxgl.MapboxGeoJSONFeature[];
+    } & mapboxgl.EventData,
+  ) => {
+    const feature = e.features[0];
+    const hoveredProperty = selectedRentalComps?.find(
+      (property) => property.index === feature.properties.index - 1,
+    );
+    setHoveredComp(hoveredProperty);
+  };
+
+  const handleMouseLeaveRentals = (
     e: mapboxgl.MapMouseEvent & {
       features?: mapboxgl.MapboxGeoJSONFeature[];
     } & mapboxgl.EventData,
@@ -330,6 +362,37 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     };
   }, [selectedComps]);
 
+  useEffect(() => {
+    mapRef?.current?.on("mouseenter", "rentals-point", handleMouseEnterRentals);
+    mapRef?.current?.on("mouseleave", "rentals-point", handleMouseLeaveRentals);
+
+    if (selectedRentalComps?.length > 0) {
+      const coordinates = selectedRentalComps?.map((comp) =>
+        generateCompsGeoJson(comp)
+      ) || [];
+      const newData: FeatureCollection<Geometry, {
+        [name: string]: any;
+      }> = {
+        type: "FeatureCollection",
+        features: coordinates,
+      };
+      setRentalsData(newData);
+    }
+
+    return () => {
+      mapRef?.current?.off(
+        "mouseenter",
+        "rentals-point",
+        handleMouseEnterRentals,
+      );
+      mapRef?.current?.off(
+        "mouseleave",
+        "rentals-point",
+        handleMouseLeaveRentals,
+      );
+    };
+  }, [selectedRentalComps]);
+
   const handleLoad = () => {
     setLoading(false);
     mapRef?.current?.loadImage(
@@ -357,6 +420,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           height: "100%",
           opacity: loading ? 0 : 1,
           transition: "opacity 0.5s ease",
+          position: "relative",
         }}
         onLoad={handleLoad}
         interactiveLayerIds={[clusterLayer.id]}
@@ -367,11 +431,18 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         initialViewState={INITIAL_VIEW_STATE}
         {...viewState}
       >
+        <LoadingSpinner
+          loading={propertiesState.isFetching || locationState.isFetching}
+        />
         <MapControlPanel />
-        <CardsPanel />
+        <CardsPanel open={Boolean(propertiesState.data)} />
         <LocationBoundsSource show={true} data={boundsData} />
         <PropertiesSource show={!selectedPropertyPreview} data={data} />
         <CompsSource show={Boolean(selectedPropertyPreview)} data={compsData} />
+        <RentalsSource
+          show={Boolean(selectedPropertyPreview)}
+          data={rentalsData}
+        />
         <SelectedPropertyMarker
           onClick={handleDeselectProperty}
           selectedProperty={selectedPropertyPreview}
