@@ -112,12 +112,12 @@ type CompsFilterProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
   setSelectedComps: (comps: FilteredComp[]) => void;
+  selectedComps: FilteredComp[];
 };
 const CompsFilter = (
-  { open, setOpen, setSelectedComps }: CompsFilterProps,
+  { open, setOpen, setSelectedComps, selectedComps }: CompsFilterProps,
 ) => {
-  const dispatch = useDispatch();
-  const { selectedProperty, selectedComps } = useSelector(selectProperties);
+  const { selectedProperty } = useSelector(selectProperties);
 
   function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
     return Object.fromEntries(
@@ -148,7 +148,7 @@ const CompsFilter = (
   const onSubmit = async (data: any) => {
     const filteredComps: FilteredComp[] = [];
     for (let i = 0; i < selectedProperty.sales_comps.data?.length; i++) {
-      const comp = selectedProperty.sales_comps.data?.[i];
+      const comp = selectedComps?.[i];
       let add = true;
       for (const field of fields) {
         if (comp[field.fieldName] !== undefined) {

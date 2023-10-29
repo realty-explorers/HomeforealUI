@@ -77,3 +77,21 @@
   left: calc(50% - 0.5rem);
   top: calc(50% - 0.5rem);
 }
+
+.moreDetailsPanel {
+}
+
+.moreDetailsPanel::-webkit-scrollbar-track {
+  box-shadow: none;
+}
+.moreDetailsPanel::-webkit-scrollbar-thumb {
+  transition: visibility 0.2s linear;
+  // background-color: transparent;
+  visibility: hidden;
+  // opacity: 0.5/;
+}
+
+.moreDetailsPanel:hover::-webkit-scrollbar-thumb {
+  // background-color: black;
+  visibility: visible;
+}

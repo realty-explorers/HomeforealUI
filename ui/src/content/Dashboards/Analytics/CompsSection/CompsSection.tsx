@@ -64,6 +64,7 @@ const CompsSection = (
         open={filterOpen}
         setOpen={setFilterOpen}
         setSelectedComps={setSelectedComps}
+        selectedComps={selectedComps}
       />
 
       <Wrapper className={styles.cardsWrapper}>

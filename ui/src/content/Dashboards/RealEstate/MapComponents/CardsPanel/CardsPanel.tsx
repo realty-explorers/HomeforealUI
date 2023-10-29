@@ -16,6 +16,7 @@ import {
   setSaleCalculatedProperty,
   setSelectedProperty,
   setSelectedPropertyPreview,
+  setSelecting,
 } from "@/store/slices/propertiesSlice";
 import { useLazyGetPropertyQuery } from "@/store/services/propertiesApiService";
 

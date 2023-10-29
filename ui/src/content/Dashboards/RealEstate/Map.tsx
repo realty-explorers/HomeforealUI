@@ -26,6 +26,7 @@ import {
   setSelectedProperty,
   setSelectedPropertyPreview,
   setSelectedRentalComps,
+  setSelecting,
 } from "@/store/slices/propertiesSlice";
 
 import PropertiesSource from "./MapComponents/Sources/PropertiesSource";
@@ -96,9 +97,10 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const handleDeselectProperty = () => {
     dispatch(setSelectedPropertyPreview(null));
+    dispatch(setSelectedProperty(null));
   };
 
-  const handleSelectProperty = (property?: PropertyPreview) => {
+  const handleSelectProperty = async (property?: PropertyPreview) => {
     dispatch(setSelectedPropertyPreview(property));
     if (property) {
       fetchPropertyData(property);
@@ -251,7 +253,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         ],
         zoom: 11,
         pitch: 0,
-        duration: 500,
+        duration: 2000,
       });
       // mapRef.current?.fitBounds(locationState.data.bounds);
     }
@@ -323,6 +325,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   useEffect(() => {
     mapRef.current?.resize();
+    dispatch(setSelecting(true));
     if (selectedPropertyPreview) {
       mapRef.current?.flyTo({
         center: [
@@ -336,6 +339,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     } else {
       centerMap();
     }
+
+    const selectTimeout = setTimeout(() => {
+      dispatch(setSelecting(false));
+    }, 1000);
+    return () => clearTimeout(selectTimeout);
   }, [selectedPropertyPreview]);
 
   useEffect(() => {

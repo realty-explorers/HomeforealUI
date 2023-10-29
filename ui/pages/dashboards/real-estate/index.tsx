@@ -10,6 +10,7 @@ import {
   Container,
   Grid,
   IconButton,
+  Skeleton,
   Slide,
 } from "@mui/material";
 import Footer from "@/components/Footer";
@@ -48,6 +49,7 @@ import { selectLocation } from "@/store/slices/locationSlice";
 import Lottie from "lottie-react";
 import mapLoadingAnimation from "@/static/animations/loading/mapLoadingAnimation.json";
 import KeyboardReturnIcon from "@mui/icons-material/KeyboardReturn";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 
 const MoreDetailsSection = (
   {
@@ -98,6 +100,7 @@ const DashboardRealEstate = (props: any) => {
     selectedComps,
     selectedPropertyPreview,
     selectedRentalComps,
+    selecting,
   } = useSelector(
     selectProperties,
   );
@@ -112,65 +115,137 @@ const DashboardRealEstate = (props: any) => {
   //   dispatch(setSelectedComps(comps));
   // };
 
-  const handleSelectRentalComps = (compsProperties: CompData[]) => {
+  const handleSelectRentalComps = (compsProperties: FilteredComp[]) => {
     dispatch(setSelectedRentalComps(compsProperties));
   };
   const [showFirstPanel, setShowFirstPanel] = useState(true);
   const [showLastPanel, setShowLastPanel] = useState(true);
+
+  const handleHidePanel = () => {
+    dispatch(setSelectedPropertyPreview(null));
+    dispatch(setSelectedProperty(null));
+  };
 
   return (
     <>
       {/* <div className="flex w-full h-[calc(100%-60px)] "> */}
       <div className="flex w-full h-full">
         {openMoreDetails && (
-          <motion.div
-            // initial={{ opacity: 0, scale: 0.5 }}
-            // animate={{ opacity: 1, scale: 1 }}
-            initial={{ left: "-100%" }}
-            animate={{ left: "0" }}
-            transition={{
-              duration: 0.8,
-              // delay: 0.5,
-              ease: [0, 0.71, 0.2, 1.01],
-            }}
-            className={clsx([
-              "w-1/2 h-[calc(100%-60px)] overflow-x-auto absolute",
-            ])}
-            // hidden md:block h-[calc(100%-60px)] w-1/2 transition-all duration-500 absolute overflow-x-auto
-          >
-            {/* <Lottie */}
-            {/*   animationData={mapLoadingAnimation} */}
-            {/*   className={clsx([ */}
-            {/*     "h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%] transition-opacity duration-500", */}
-            {/*     selectedPropertyState.isFetching */}
-            {/*       ? "opacity-100" */}
-            {/*       : "opacity-0", */}
-            {/*   ])} */}
-            {/* /> */}
-            {selectedPropertyState.isFetching && (
-              <CircularProgress
+          <>
+            <IconButton className="absolute top-1/2 left-1/2 -translate-y-full -translate-x-1/2 bg-white w-1 h-10 shadow z-[1] animate-fadeDelayed opacity-0">
+              <ExpandMoreIcon
                 className={clsx([
-                  "h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%] transition-opacity duration-500",
-                  selectedPropertyState.isFetching
-                    ? "opacity-100"
-                    : "opacity-0",
+                  "transition-all",
+                  openMoreDetails ? "rotate-90" : "-rotate-90",
                 ])}
+                onClick={handleHidePanel}
               />
-            )}
-            <div
+            </IconButton>
+            <motion.div
+              // initial={{ opacity: 0, scale: 0.5 }}
+              // animate={{ opacity: 1, scale: 1 }}
+              initial={{ left: "-100%" }}
+              animate={{ left: "0" }}
+              transition={{
+                duration: 0.8,
+                // delay: 0.5,
+                ease: [0, 0.71, 0.2, 1.01],
+              }}
               className={clsx([
-                "duration-500 transition-opacity",
-                selectedPropertyState.isFetching && "opacity-50",
+                styles.moreDetailsPanel,
+                "w-1/2 h-[calc(100%-60px)] overflow-y-auto absolute",
               ])}
+              // hidden md:block h-[calc(100%-60px)] w-1/2 transition-all duration-500 absolute overflow-x-auto
             >
-              <MoreDetailsSection
-                selectedProperty={selectedProperty}
-                selectedComps={selectedComps}
-                selectedRentalComps={selectedRentalComps}
-                setSelectedRentalComps={handleSelectRentalComps}
-              />
-            </div>
-          </motion.div>
+              {/* <Lottie */}
+              {/*   animationData={mapLoadingAnimation} */}
+              {/*   className={clsx([ */}
+              {/*     "h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%] transition-opacity duration-500", */}
+              {/*     selectedPropertyState.isFetching */}
+              {/*       ? "opacity-100" */}
+              {/*       : "opacity-0", */}
+              {/*   ])} */}
+              {/* /> */}
+
+              {(selectedPropertyState.isFetching || selecting)
+                ? (
+                  selectedProperty
+                    ? (
+                      <div className="flex flex-col p-4">
+                        <div className="grid grid-cols-[2fr_1fr] grid-rows-2 gap-4 mt-4 h-80">
+                          <Skeleton
+                            variant="rounded"
+                            width="100%"
+                            className="row-span-2"
+                            height="100%"
+                          />
+
+                          <Skeleton
+                            variant="rounded"
+                            width="100%"
+                            height="100%"
+                          />
+                          <Skeleton
+                            variant="rounded"
+                            width="100%"
+                            height="100%"
+                          />
+                        </div>
+                        <div className="flex items-center">
+                          <div className="flex flex-col w-1/2">
+                            <Skeleton variant="text" width="60%" />
+                            <Skeleton variant="text" width="3rem" />
+                            <Skeleton variant="text" width="40%" />
+                          </div>
+
+                          <div className="flex gap-x-8 w-1/2">
+                            <Skeleton
+                              variant="text"
+                              width="50%"
+                              height="10rem"
+                            />
+                            <Skeleton variant="text" width="50%" />
+                          </div>
+                        </div>
+                        <div className="flex flex-col w-full gap-4">
+                          <Skeleton
+                            variant="rounded"
+                            width="100%"
+                            height="20rem"
+                          />
+                        </div>
+                      </div>
+                    )
+                    : (
+                      <CircularProgress
+                        className={clsx([
+                          " h-40 w-40 z-[3] fixed top-1/2 left-1/4 translate-x-[-50%] translate-y-[-50%]",
+                          // selectedPropertyState.isFetching
+                          //   ? "opacity-100"
+                          //   : "opacity-0",
+                        ])}
+                      />
+                    )
+                )
+                : (
+                  <div
+                    className={clsx([
+                      "duration-500 transition-opacity animate-fade",
+                      // selectedPropertyState.isFetching
+                      //   ? "opacity-50"
+                      //   : "opacity-0",
+                    ])}
+                  >
+                    <MoreDetailsSection
+                      selectedProperty={selectedProperty}
+                      selectedComps={selectedComps}
+                      selectedRentalComps={selectedRentalComps}
+                      setSelectedRentalComps={handleSelectRentalComps}
+                    />
+                  </div>
+                )}
+            </motion.div>
+          </>
         )}
 
         <div

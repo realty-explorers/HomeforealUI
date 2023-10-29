@@ -14,6 +14,7 @@ export interface PropertiesState {
   selectedPropertyPreview?: PropertyPreview;
   selectedComps: FilteredComp[];
   selectedRentalComps: FilteredComp[];
+  selecting: boolean;
 }
 
 // Initial state
@@ -24,6 +25,7 @@ const initialState: PropertiesState = {
   selectedPropertyPreview: undefined,
   selectedComps: [],
   selectedRentalComps: [],
+  selecting: false,
 };
 
 // Actual Slice
@@ -51,8 +53,11 @@ export const propertiesSlice = createSlice({
       state.selectedComps = action.payload;
     },
 
-    setSelectedRentalComps(state, action: PayloadAction<CompData[]>) {
+    setSelectedRentalComps(state, action: PayloadAction<FilteredComp[]>) {
       state.selectedRentalComps = action.payload;
+    },
+    setSelecting(state, action: PayloadAction<boolean>) {
+      state.selecting = action.payload;
     },
   },
 });
@@ -65,6 +70,7 @@ export const {
   setSelectedComps,
   setSelectedRentalComps,
   setSelectedPropertyPreview,
+  setSelecting,
 } = propertiesSlice.actions;
 export const selectProperties: (state: AppState) => PropertiesState = (
   state: AppState,

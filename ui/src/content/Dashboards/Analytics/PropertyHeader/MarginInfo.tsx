@@ -10,9 +10,10 @@ type MarginInfoProps = {
   property: AnalyzedProperty;
 };
 const MarginInfo = (props: MarginInfoProps) => {
-  const { selectedProperty, selectedComps, calculatedProperty } = useSelector(
-    selectProperties,
-  );
+  const { selectedProperty, selectedComps, saleCalculatedProperty } =
+    useSelector(
+      selectProperties,
+    );
   // const profitMargin = props.property?.listing_price > 0
   //   ? (props.property?.arv_price -
   //     props.property?.listing_price - 0) / props.property?.listing_price * 100
@@ -23,7 +24,7 @@ const MarginInfo = (props: MarginInfoProps) => {
   //   : null;
   //
   // const profitMargin = props.property?.margin_percentage;
-  return (calculatedProperty?.sales_comps?.data?.length > 0 &&
+  return (saleCalculatedProperty?.sales_comps?.data?.length > 0 &&
     (
       <>
         <div className={styles.marginCard}>
@@ -31,10 +32,12 @@ const MarginInfo = (props: MarginInfoProps) => {
             Comps Sale
           </Typography>
           <Typography className={styles.marginCardValue}>
-            {priceFormatter(calculatedProperty?.sales_comps_price?.toFixed())}
+            {priceFormatter(
+              saleCalculatedProperty?.sales_comps_price?.toFixed(),
+            )}
           </Typography>
           <Typography className={styles.marginCardPercentage}>
-            {calculatedProperty.margin_percentage?.toFixed()}% Margin
+            {saleCalculatedProperty.margin_percentage?.toFixed()}% Margin
           </Typography>
           <Tooltip
             className="absolute bottom-1 right-1 w-4 h-4"
@@ -48,10 +51,10 @@ const MarginInfo = (props: MarginInfoProps) => {
             Top 25th ARV
           </Typography>
           <Typography className={styles.marginCardValue}>
-            {priceFormatter(calculatedProperty?.arv_price?.toFixed())}
+            {priceFormatter(saleCalculatedProperty?.arv_price?.toFixed())}
           </Typography>
           <Typography className={styles.marginCardPercentage}>
-            {calculatedProperty.arv_percentage?.toFixed()}% Margin
+            {saleCalculatedProperty.arv_percentage?.toFixed()}% Margin
           </Typography>
           <Tooltip
             className="absolute bottom-1 right-1 w-4 h-4"

@@ -28,6 +28,18 @@ module.exports = {
         // primary: '#1E1E1E',
         // secondary: '#9B51E0'
       },
+      animation: {
+        fadeDelayed: "fadeOut 0s 0.5s ease-in-out forwards",
+        fade: "fadeOut 0.3s ease-in-out forwards",
+      },
+
+      // that is actual animation
+      keyframes: (theme) => ({
+        fadeOut: {
+          "0%": { opacity: 0 },
+          "100%": { opacity: 1 },
+        },
+      }),
     },
   },
   plugins: [],
