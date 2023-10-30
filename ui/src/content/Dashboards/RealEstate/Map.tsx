@@ -1,5 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import MapBox, { Marker, Popup, ViewStateChangeEvent } from "react-map-gl";
+import MapBox, {
+  FullscreenControl,
+  Marker,
+  NavigationControl,
+  Popup,
+  ScaleControl,
+  ViewStateChangeEvent,
+} from "react-map-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import * as turf from "@turf/turf";
 import type { MapRef } from "react-map-gl";
@@ -334,7 +341,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         ],
         zoom: 15,
         pitch: 70,
-        duration: 1000,
+        speed: 0.1,
+        duration: 1500,
       });
     } else {
       centerMap();
@@ -342,7 +350,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
     const selectTimeout = setTimeout(() => {
       dispatch(setSelecting(false));
-    }, 1000);
+    }, 1500);
     return () => clearTimeout(selectTimeout);
   }, [selectedPropertyPreview]);
 
@@ -439,6 +447,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         initialViewState={INITIAL_VIEW_STATE}
         {...viewState}
       >
+        <FullscreenControl />
+        <NavigationControl visualizePitch={true} />
         <LoadingSpinner
           loading={propertiesState.isFetching || locationState.isFetching}
         />
