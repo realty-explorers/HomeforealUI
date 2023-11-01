@@ -5,10 +5,12 @@ import AnalyzedProperty, {
   FilteredComp,
 } from "@/models/analyzedProperty";
 import PropertyPreview from "@/models/propertyPreview";
+import LocationData from "@/models/location_data";
 
 // Type for our state
 export interface PropertiesState {
   selectedProperty?: AnalyzedProperty;
+  selectedPropertyLocation?: LocationData;
   saleCalculatedProperty?: AnalyzedProperty;
   rentalCalculatedProperty?: AnalyzedProperty;
   selectedPropertyPreview?: PropertyPreview;
@@ -20,6 +22,7 @@ export interface PropertiesState {
 // Initial state
 const initialState: PropertiesState = {
   selectedProperty: undefined,
+  selectedPropertyLocation: undefined,
   saleCalculatedProperty: undefined,
   rentalCalculatedProperty: undefined,
   selectedPropertyPreview: undefined,
@@ -36,6 +39,9 @@ export const propertiesSlice = createSlice({
     // Action to set the authentication status
     setSelectedProperty(state, action: PayloadAction<AnalyzedProperty>) {
       state.selectedProperty = action.payload;
+    },
+    setSelectedPropertyLocation(state, action: PayloadAction<LocationData>) {
+      state.selectedPropertyLocation = action.payload;
     },
     setSaleCalculatedProperty(state, action: PayloadAction<AnalyzedProperty>) {
       state.saleCalculatedProperty = action.payload;
@@ -65,6 +71,7 @@ export const propertiesSlice = createSlice({
 export const propertiesReducer = propertiesSlice.reducer;
 export const {
   setSelectedProperty,
+  setSelectedPropertyLocation,
   setSaleCalculatedProperty,
   setRentalCalculatedProperty,
   setSelectedComps,

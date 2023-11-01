@@ -13,7 +13,7 @@ const StyledSlider = styled(Slider)({
   },
 });
 
-type RangeFieldProps = {
+type SliderFieldProps = {
   control: any;
   fieldName: string;
   disabled?: boolean;
@@ -27,7 +27,7 @@ const SliderField = (
     disabled,
     className,
     ...props
-  }: RangeFieldProps,
+  }: SliderFieldProps,
 ) => {
   return (
     <Controller

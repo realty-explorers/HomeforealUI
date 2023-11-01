@@ -9,6 +9,14 @@ const baseUrl = process.env.NEXT_PUBLIC_PROPERTIES_API_URL;
 // const GENERAL_BUYBOX_ID = "1fc03787-65ca-44b2-aec3-f9b707a2748f";
 const GENERAL_BUYBOX_ID = "3dbf8068-bfda-4422-af27-7597045dac6e";
 
+interface LocationFilter {
+  type: string;
+  state: string;
+  city: string;
+  zipCode: string;
+  neighborhood: string;
+}
+
 export const propertiesApi = createApi({
   reducerPath: "propertiesApi",
   baseQuery: fetchBaseQuery({ baseUrl }),
@@ -19,10 +27,14 @@ export const propertiesApi = createApi({
         let queryUrl = "";
         switch (type) {
           case "city":
-            queryUrl = new URLSearchParams({ city }).toString();
+            queryUrl = new URLSearchParams({ city: city.toLowerCase() })
+              .toString();
             break;
           case "neighborhood":
-            queryUrl = new URLSearchParams({ city, neighborhood })
+            queryUrl = new URLSearchParams({
+              city: city.toLowerCase(),
+              neighborhood,
+            })
               .toString();
             break;
           default:

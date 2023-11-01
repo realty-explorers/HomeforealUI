@@ -1,5 +1,5 @@
 import { Layer, Source } from "react-map-gl";
-import { boundsLayer, boundsLineLayer } from "../Layers/layers";
+import { boundsLayer, boundsLineLayer } from "../Layers/boundsLayers";
 
 type LocationBoundsSourceProps = {
   show: boolean;

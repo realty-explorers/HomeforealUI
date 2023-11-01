@@ -75,7 +75,8 @@ const defaultImage =
 
 type PropertyCardProps = {
   property: PropertyPreview;
-  setSelectedProperty: (property: PropertyPreview) => void;
+  selectProperty: (property: PropertyPreview) => void;
+  deselectProperty: (property: PropertyPreview) => void;
   setOpenMoreDetails: (open: boolean) => void;
   selected: boolean;
   // setHoveredProperty: (property: PropertyPreview) => void;
@@ -90,11 +91,9 @@ const PropertyCard: React.FC<PropertyCardProps> = (
   );
   const handlePropertySelected = async () => {
     if (props.selected) {
-      dispatch(setSelectedPropertyPreview(null));
-      props.setSelectedProperty(null);
+      props.deselectProperty(props.property);
     } else {
-      props.setSelectedProperty(props.property);
-      dispatch(setSelectedPropertyPreview(props.property));
+      props.selectProperty(props.property);
     }
   };
 

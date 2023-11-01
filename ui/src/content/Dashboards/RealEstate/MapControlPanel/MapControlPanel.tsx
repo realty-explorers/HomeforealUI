@@ -22,7 +22,6 @@ const MapControlPanel = (props: MapControlPanelProps) => {
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
   const { selectedPropertyPreview } = useSelector(selectProperties);
-  const [getLocationData, locationDataState] = useLazyGetLocationDataQuery();
   // const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
   const [getPropertiesPreviews, propertiesPreviewsState] =
     useLazyGetPropertiesPreviewsQuery();

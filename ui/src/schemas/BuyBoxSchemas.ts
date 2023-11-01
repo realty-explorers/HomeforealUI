@@ -136,14 +136,35 @@ const defaultSimilarityWeights = {
   "green": 0,
 };
 
+const locationSchema = z.object({
+  "locations": z.array(
+    z.object({
+      "type": z.string(),
+      "name": z.string(),
+      "identifier": z.string(),
+    }),
+  ),
+  "area": z.object({
+    "Flood": z.boolean(),
+  }),
+}).optional();
+
+const defaultLocationValues = {
+  "locations": [],
+  "area": {
+    "Flood": false,
+  },
+};
+
 const buyboxSchema = z.object({
   "buybox_name": z.string().default(""),
   "description": z.string().optional(),
   // locations: z.array(z.string()).optional(),
-  locations: z.string().optional(),
-  property: propertySchema.default(defaultPropertyValues),
-  opp: oppSchema.default(defaultOppValues),
-  similarity: similarityFullSchema.default(defaultSimilarityFullValues),
+  "target_location": locationSchema.default(defaultLocationValues),
+  property: propertySchema.default(defaultPropertyValues).optional(),
+  opp: oppSchema.default(defaultOppValues).optional(),
+  similarity: similarityFullSchema.default(defaultSimilarityFullValues)
+    .optional(),
   "similarity_weights": similarityWeightsSchema.default(
     defaultSimilarityWeights,
   ),

@@ -5,7 +5,7 @@ import TuneIcon from "@mui/icons-material/Tune";
 import styled from "@emotion/styled";
 import analyticsStyles from "../Analytics.module.scss";
 import styles from "./CompsSection.module.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import React from "react";
 
 const Wrapper = styled(Box)(({ theme }) => ({
@@ -25,7 +25,14 @@ const CompsSection = (
     CompsSectionProps,
 ) => {
   const [filterOpen, setFilterOpen] = useState(false);
-  const selectedCompsIndexes = selectedComps?.map((comp) => comp.index);
+  // const selectedCompsIndexes = selectedComps?.map((comp) => comp.index);
+  const [selectedCompsIndexes, setSelectedCompsIndexes] = useState<number[]>(
+    [],
+  );
+
+  useEffect(() => {
+    setSelectedCompsIndexes(selectedComps?.map((comp) => comp.index));
+  }, [selectedComps]);
 
   const handleToggle = (index: number) => {
     if (selectedCompsIndexes?.includes(index)) {

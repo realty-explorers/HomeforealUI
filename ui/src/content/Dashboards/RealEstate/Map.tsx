@@ -24,13 +24,14 @@ import { useDispatch, useSelector } from "react-redux";
 import { selectLocation } from "@/store/slices/locationSlice";
 import PropertyPreview from "@/models/propertyPreview";
 import CardsPanel from "./MapComponents/CardsPanel/CardsPanel";
-import { selectFilter } from "@/store/slices/filterSlice";
+import { selectFilter, setPropertyTypes } from "@/store/slices/filterSlice";
 import {
   selectProperties,
   setRentalCalculatedProperty,
   setSaleCalculatedProperty,
   setSelectedComps,
   setSelectedProperty,
+  setSelectedPropertyLocation,
   setSelectedPropertyPreview,
   setSelectedRentalComps,
   setSelecting,
@@ -55,6 +56,9 @@ import { CircularProgress } from "@mui/material";
 import CompMarkersPopup from "./MapComponents/Overlays/CompMarkerPopup";
 import LoadingSpinner from "./MapComponents/Overlays/LoadingSpinner";
 import RentalsSource from "./MapComponents/Sources/RentalsSource";
+import { useLazyGetLocationsQuery } from "@/store/services/dataApiService";
+import PropertyLocationBoundsSource from "./MapComponents/Sources/PropertyLocationBoundsSource";
+import useProperty from "@/hooks/useProperty";
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
@@ -79,6 +83,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   >();
 
   const [boundsData, setBoundsData] = useState<Geometry>();
+  const [propertyBoundsData, setPropertyBoundsData] = useState<Geometry>();
   const [hoveredProperty, setHoveredProperty] = useState<any>();
   const [hoveredComp, setHoveredComp] = useState<any>();
 
@@ -90,7 +95,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     selectedComps,
     selectedRentalComps,
     selectedProperty,
+    selectedPropertyLocation,
+    selecting,
   } = useSelector(selectProperties);
+
+  const { selectProperty, deselectProperty } = useProperty();
 
   const [getProperty, propertyState] = useLazyGetPropertyQuery();
   const locationState = locationApiEndpoints.getLocationData.useQueryState(
@@ -103,17 +112,17 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     );
 
   const handleDeselectProperty = () => {
-    dispatch(setSelectedPropertyPreview(null));
-    dispatch(setSelectedProperty(null));
+    deselectProperty();
   };
 
   const handleSelectProperty = async (property?: PropertyPreview) => {
-    dispatch(setSelectedPropertyPreview(property));
-    if (property) {
-      fetchPropertyData(property);
-    } else {
-      dispatch(setSelectedProperty(null));
-    }
+    selectProperty(property);
+
+    // if (property) {
+    //   fetchPropertyData(property);
+    // } else {
+    //   dispatch(setSelectedProperty(null));
+    // }
   };
 
   const fetchPropertyData = async (property: PropertyPreview) => {
@@ -304,15 +313,26 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   useEffect(() => {
     centerMap();
-    if (locationState.data?.bounds) {
+    if (locationState.data?.bounds && locationState.data?.type) {
       const bounds = locationState.data.bounds;
       const newData: Geometry = {
-        type: "MultiPolygon",
+        type: locationState.data.type,
         coordinates: bounds,
       };
       setBoundsData(newData);
     }
   }, [locationState.data]);
+
+  useEffect(() => {
+    if (selectedPropertyLocation?.bounds && selectedPropertyLocation?.type) {
+      const bounds = selectedPropertyLocation.bounds;
+      const newData: Geometry = {
+        type: selectedPropertyLocation.type,
+        coordinates: bounds,
+      };
+      setPropertyBoundsData(newData);
+    }
+  }, [selectedPropertyLocation]);
 
   useEffect(() => {
     const coordinates = [];
@@ -333,6 +353,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   useEffect(() => {
     mapRef.current?.resize();
     dispatch(setSelecting(true));
+
     if (selectedPropertyPreview) {
       mapRef.current?.flyTo({
         center: [
@@ -345,7 +366,13 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         duration: 1500,
       });
     } else {
-      centerMap();
+      mapRef.current?.flyTo({
+        zoom: mapRef.current.getZoom() - 1,
+        pitch: 0,
+        speed: 0.1,
+        duration: 1500,
+      });
+      // centerMap();
     }
 
     const selectTimeout = setTimeout(() => {
@@ -382,18 +409,16 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     mapRef?.current?.on("mouseenter", "rentals-point", handleMouseEnterRentals);
     mapRef?.current?.on("mouseleave", "rentals-point", handleMouseLeaveRentals);
 
-    if (selectedRentalComps?.length > 0) {
-      const coordinates = selectedRentalComps?.map((comp) =>
-        generateCompsGeoJson(comp)
-      ) || [];
-      const newData: FeatureCollection<Geometry, {
-        [name: string]: any;
-      }> = {
-        type: "FeatureCollection",
-        features: coordinates,
-      };
-      setRentalsData(newData);
-    }
+    const coordinates = selectedRentalComps?.map((comp) =>
+      generateCompsGeoJson(comp)
+    ) || [];
+    const newData: FeatureCollection<Geometry, {
+      [name: string]: any;
+    }> = {
+      type: "FeatureCollection",
+      features: coordinates,
+    };
+    setRentalsData(newData);
 
     return () => {
       mapRef?.current?.off(
@@ -453,17 +478,29 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           loading={propertiesState.isFetching || locationState.isFetching}
         />
         <MapControlPanel />
-        <CardsPanel open={Boolean(propertiesState.data)} />
         <LocationBoundsSource show={true} data={boundsData} />
-        <PropertiesSource show={!selectedPropertyPreview} data={data} />
-        <CompsSource show={Boolean(selectedPropertyPreview)} data={compsData} />
-        <RentalsSource
-          show={Boolean(selectedPropertyPreview)}
-          data={rentalsData}
-        />
         <SelectedPropertyMarker
           onClick={handleDeselectProperty}
           selectedProperty={selectedPropertyPreview}
+        />
+
+        <CardsPanel open={Boolean(propertiesState.data)} />
+        <PropertyLocationBoundsSource
+          show={!selecting}
+          data={propertyBoundsData}
+          map={mapRef.current?.getMap()}
+        />
+        <PropertiesSource
+          show={!selectedPropertyPreview}
+          data={data}
+        />
+        <CompsSource
+          show={Boolean(selectedPropertyPreview && !selecting)}
+          data={compsData}
+        />
+        <RentalsSource
+          show={Boolean(selectedPropertyPreview && !selecting)}
+          data={rentalsData}
         />
         <MarkerPopup property={hoveredProperty} />
         <CompMarkersPopup comp={hoveredComp} />

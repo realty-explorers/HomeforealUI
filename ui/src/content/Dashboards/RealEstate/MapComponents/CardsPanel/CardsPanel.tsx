@@ -19,6 +19,7 @@ import {
   setSelecting,
 } from "@/store/slices/propertiesSlice";
 import { useLazyGetPropertyQuery } from "@/store/services/propertiesApiService";
+import useProperty from "@/hooks/useProperty";
 
 type CardsPanelProps = {
   open: boolean;
@@ -26,7 +27,7 @@ type CardsPanelProps = {
 
 const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   const [ref, setRef] = useState<Element | undefined>();
-  const [cardsOpen, setCardsOpen] = useState(true);
+  const [cardsOpen, setCardsOpen] = useState(false);
   const { filteredProperties } = useSelector(selectFilter);
   const { selectedProperty, selectedPropertyPreview } = useSelector(
     selectProperties,
@@ -34,6 +35,7 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   const [selectedPropertyIndex, setSelectedIndex] = useState(-1);
   const [getProperty, propertyState] = useLazyGetPropertyQuery();
   const dispatch = useDispatch();
+  const { selectProperty, deselectProperty } = useProperty();
 
   const scrollLeft = () => {
     ref?.scrollTo({
@@ -71,12 +73,17 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
     });
 
   const handleSelectProperty = (property?: PropertyPreview) => {
-    dispatch(setSelectedPropertyPreview(property));
-    if (property) {
-      fetchPropertyData(property);
-    } else {
-      dispatch(setSelectedProperty(null));
-    }
+    selectProperty(property);
+
+    // if (property) {
+    //   fetchPropertyData(property);
+    // } else {
+    //   dispatch(setSelectedProperty(null));
+    // }
+  };
+
+  const handleDeselectProperty = () => {
+    deselectProperty();
   };
 
   const fetchPropertyData = async (property: PropertyPreview) => {
@@ -135,7 +142,8 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
             property={sortedProperties[index]}
             selected={selectedPropertyPreview?.source_id ===
               sortedProperties[index].source_id}
-            setSelectedProperty={(property) => handleSelectProperty(property)}
+            selectProperty={(property) => handleSelectProperty(property)}
+            deselectProperty={() => handleDeselectProperty()}
             setOpenMoreDetails={() => {}}
           />
         </div>

@@ -42,16 +42,16 @@ const RentComps = () => {
     // recalculateComps(newSelectedComps.map((comp) => comp.source_id));
   };
 
-  useEffect(() => {
-    const newComps: FilteredComp[] = selectedProperty.rents_comps?.data?.map(
-      (comp, index) => {
-        return { ...comp, index };
-      },
-    );
-    dispatch(setSelectedRentalComps(newComps));
-  }, [selectedProperty]);
+  // useEffect(() => {
+  //   const newComps: FilteredComp[] = selectedProperty.rents_comps?.data?.map(
+  //     (comp, index) => {
+  //       return { ...comp, index };
+  //     },
+  //   );
+  //   dispatch(setSelectedRentalComps(newComps));
+  // }, [selectedProperty]);
 
-  return (selectedProperty?.sales_comps?.data?.length > 0 &&
+  return (selectedProperty?.rents_comps?.data?.length > 0 &&
     (
       <CompsSection
         comps={selectedProperty.rents_comps?.data}

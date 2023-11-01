@@ -11,6 +11,7 @@ import { analysisApi } from "./services/analysisApi";
 import { authReducer } from "./slices/authSlice";
 import { buyBoxesReducer } from "./slices/buyBoxesSlice";
 import { mapReducer } from "./slices/mapSlice";
+import { dataApi } from "./services/dataApiService";
 
 export const store = configureStore({
   reducer: {
@@ -24,13 +25,15 @@ export const store = configureStore({
     [propertiesApi.reducerPath]: propertiesApi.reducer,
     [buyBoxApi.reducerPath]: buyBoxApi.reducer,
     [analysisApi.reducerPath]: analysisApi.reducer,
+    [dataApi.reducerPath]: dataApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(locationApi.middleware)
       .concat(propertiesApi.middleware)
       .concat(analysisApi.middleware)
-      .concat(buyBoxApi.middleware),
+      .concat(buyBoxApi.middleware)
+      .concat(dataApi.middleware),
   devTools: true,
 });
 

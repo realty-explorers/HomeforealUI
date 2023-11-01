@@ -1,5 +1,6 @@
 import {
   AppBar,
+  Autocomplete,
   Button,
   Dialog,
   DialogTitle,
@@ -33,6 +34,16 @@ import {
   useUpdateBuyBoxMutation,
 } from "@/store/services/buyboxApiService";
 import { useSnackbar } from "notistack";
+import {
+  useGetLocationsQuery,
+  useLazyGetLocationsQuery,
+} from "@/store/services/dataApiService";
+
+interface Location {
+  "type": string;
+  "name": string;
+  "identifier": string;
+}
 
 type editBuyBoxDialogProps = {
   buybox?: BuyBox;
@@ -44,11 +55,14 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const [createBuyBox, createResult] = useCreateBuyBoxMutation();
   const [updateBuyBox, updateResult] = useUpdateBuyBoxMutation();
   const [deleteBuyBox, deleteResult] = useDeleteBuyBoxMutation();
+  const locationsQuery = useGetLocationsQuery(props.buybox?.id);
+
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
+    setValue,
     getValues,
     watch,
     control,
@@ -70,6 +84,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   };
 
   const onSubmit = async (data: any) => {
+    console.log("hi");
+    console.log(JSON.stringify(data));
     try {
       if (props.buybox) {
         await updateBuyBox({ id: props.buybox.id, data }).unwrap();
@@ -116,6 +132,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     handleClose();
   };
 
+  const [locations, setLocations] = useState([]);
+
   useEffect(() => {
     if (props.buybox) {
       reset(props.buybox.data);
@@ -123,6 +141,23 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
       reset(getDefaults(buyboxSchema));
     }
   }, [props.buybox]);
+
+  const handleLocationsChanged = (event: any, value: any) => {
+    setValue("target_location.locations", value);
+    console.log(getValues("target_location.locations"));
+  };
+
+  const getUniqueLocations = (locations: Location[]) => {
+    const locationNames = new Set();
+    const uniqueLocations = [];
+    for (const location of locations) {
+      if (!locationNames.has(location.name)) {
+        locationNames.add(location.name);
+        uniqueLocations.push(location);
+      }
+    }
+    return uniqueLocations;
+  };
 
   return (
     <Dialog
@@ -144,6 +179,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           label="Name"
           variant="outlined"
           {...register("buybox_name")}
+          className="mb-4"
         />
         <Typography className={styles.mainLabel}>Description:</Typography>
         <TextField
@@ -153,32 +189,51 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           rows={2}
           maxRows={4}
           {...register("description")}
+          className="mb-4"
         />
 
         <Typography className={styles.mainLabel}>Locations:</Typography>
-        <TextField
-          label="Locations"
-          placeholder="Locations"
-          variant="outlined"
-          {...register("locations")}
+        <Autocomplete
+          multiple
+          id="tags-outlined"
+          options={getUniqueLocations(locationsQuery.data || [])}
+          loading={locationsQuery.isFetching}
+          getOptionLabel={(option: Location) => String(option.name)}
+          filterSelectedOptions
+          defaultValue={props.buybox?.data?.target_location?.locations || []}
+          // filterSelectedOptions
+          renderInput={(params) => (
+            <TextField
+              {...params}
+              label="Locations"
+              placeholder="Locations"
+            />
+          )}
+          onChange={handleLocationsChanged}
         />
 
         <InvestmentCriteria
           register={register}
           control={control}
           watch={watch}
+          setValue={setValue}
+          getValues={getValues}
         />
 
         <PropertyCriteria
           register={register}
           control={control}
           watch={watch}
+          setValue={setValue}
+          getValues={getValues}
         />
 
         <ComparablePreferences
           register={register}
           control={control}
           watch={watch}
+          setValue={setValue}
+          getValues={getValues}
         />
 
         <SimilarityChart
@@ -189,6 +244,13 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
 
         {/* {<p>{watch("bedrooms.active") ? "active" : "disabled"}</p>} */}
         {/* {<p>{watch("bedrooms.values")}</p>} */}
+        {Object.keys(errors).length > 0 && (
+          <div className="col-span-2">
+            <Typography className="text-red-500">
+              {JSON.stringify(errors)}
+            </Typography>
+          </div>
+        )}
 
         <div className=" col-span-2 flex flex-row-reverse justify-between">
           {(props.buybox && props.buybox.permissions.includes("edit")) ||

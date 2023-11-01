@@ -1,5 +1,11 @@
 import SliderField from "@/components/Form/SliderField";
-import { Button, Dialog, DialogTitle, Typography } from "@mui/material";
+import {
+  Button,
+  Dialog,
+  DialogTitle,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useForm } from "react-hook-form";
 import { RangeField } from "./RangeField";
 import styles from "./CompsSection.module.scss";
@@ -15,59 +21,89 @@ import {
 } from "@/store/slices/propertiesSlice";
 
 import { useDispatch, useSelector } from "react-redux";
+import clsx from "clsx";
+import BorderColorOutlinedIcon from "@mui/icons-material/BorderColorOutlined";
+import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
+import { ModeEdit } from "@mui/icons-material";
+import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
+import CompsFilterField from "./CompsFilterField";
 
-const fields = [
+const rangeFields = [
   {
     label: "Bedrooms",
     fieldName: "bedrooms",
-    type: "range",
+    min: defaults.bedrooms.min,
+    max: defaults.bedrooms.max,
+    step: defaults.bedrooms.step,
   },
   {
-    label: "full_bathrooms",
+    label: "Bathrooms",
     fieldName: "full_bathrooms",
-    type: "range",
+    min: defaults.bathrooms.min,
+    max: defaults.bathrooms.max,
+    step: defaults.bathrooms.step,
   },
 
   {
     label: "Lot Sqft",
     fieldName: "lot_size",
-    type: "range",
+    min: defaults.lotSize.min,
+    max: defaults.lotSize.max,
+    step: defaults.lotSize.step,
   },
   {
     label: "Building Sqft",
     fieldName: "building_area",
-    type: "range",
+    min: defaults.area.min,
+    max: defaults.area.max,
+    step: defaults.area.step,
   },
   {
     label: "Year Built",
     fieldName: "year_built",
-    type: "range",
+    min: defaults.yearBuilt.min,
+    max: defaults.yearBuilt.max,
+    step: defaults.yearBuilt.step,
   },
   {
     label: "Garages",
     fieldName: "garages",
-    type: "range",
+    min: defaults.garages.min,
+    max: defaults.garages.max,
+    step: defaults.garages.step,
   },
-  // {
-  //   label: "Pool",
-  //   fieldName: "pool",
-  //   type: "boolean",
-  // },
   {
     label: "Sold Price",
     fieldName: "sales_closing_price",
-    type: "range",
+    min: defaults.soldPrice.min,
+    max: defaults.soldPrice.max,
+    step: defaults.soldPrice.step,
   },
 
   {
     label: "Price/Sqft",
     fieldName: "pricePerSqft",
-    type: "range",
+    min: defaults.pricePerSqft.min,
+    max: defaults.pricePerSqft.max,
+    step: defaults.pricePerSqft.step,
   },
   {
     label: "Max Distance",
     fieldName: "distance",
-    type: "range",
+    min: defaults.distance.min,
+    max: defaults.distance.max,
+    step: defaults.distance.step,
+  },
+];
+
+const booleanFields = [
+  {
+    label: "Pool",
+    fieldName: "pool",
+  },
+  {
+    label: "Same Neighborhood",
+    fieldName: "same_neighborhood",
   },
 ];
 
@@ -136,6 +172,7 @@ const CompsFilter = (
     formState: { errors, isSubmitting },
     reset,
     getValues,
+    setValue,
     watch,
     control,
   } = useForm<CompsFilterSchemaType>({
@@ -146,42 +183,39 @@ const CompsFilter = (
   const handleClose = () => setOpen(false);
 
   const onSubmit = async (data: any) => {
+    console.log(data);
     const filteredComps: FilteredComp[] = [];
-    for (let i = 0; i < selectedProperty.sales_comps.data?.length; i++) {
-      const comp = selectedComps?.[i];
-      let add = true;
-      for (const field of fields) {
-        if (comp[field.fieldName] !== undefined) {
-          const value = data[field.fieldName];
-          if (field.type === "range") {
-            if (
-              value[0] > comp[field.fieldName] ||
-              value[1] < comp[field.fieldName]
-            ) {
-              console.log(
-                "no range ",
-                field.fieldName,
-                value,
-                comp[field.fieldName],
-              );
-              add = false;
-              break;
-            }
-          } else {
-            if (value !== comp[field.fieldName]) {
-              add = false;
-              break;
-            }
-          }
-        } else {
-          console.log("no field ", field.fieldName);
-        }
-      }
-      if (add) {
-        filteredComps.push({ ...comp, index: i });
-      }
+    for (const field of rangeFields) {
+      // console.log(field);
     }
-    setSelectedComps(filteredComps);
+    // for (let i = 0; i < selectedProperty.sales_comps.data?.length; i++) {
+    //   const comp = selectedComps?.[i];
+    //   let add = true;
+    //   for (const field of rangeFields) {
+    //     if (comp[field.fieldName] !== undefined) {
+    //       const value = data[field.fieldName];
+    //       if (
+    //         value[0] > comp[field.fieldName] ||
+    //         value[1] < comp[field.fieldName]
+    //       ) {
+    //         console.log(
+    //           "no range ",
+    //           field.fieldName,
+    //           value,
+    //           comp[field.fieldName],
+    //         );
+    //         add = false;
+    //         break;
+    //       }
+    //     } else {
+    //       console.log("no field ", field.fieldName);
+    //     }
+    //   }
+    //   if (add) {
+    //     filteredComps.push({ ...comp, index: i });
+    //   }
+    // }
+    // setSelectedComps(filteredComps);
     handleClose();
   };
 
@@ -192,46 +226,118 @@ const CompsFilter = (
       fullWidth
       maxWidth="md"
     >
-      <DialogTitle className="font-poppins text-2xl font-bold">
-        Filter Comps
+      <DialogTitle className="flex items-center">
+        <TuneOutlinedIcon className="text-[#590D82]" />
+        <Typography className="pl-2 font-poppins text-2xl font-bold">
+          Filter Comps
+        </Typography>
       </DialogTitle>
-      <form
-        onSubmit={handleSubmit(onSubmit)}
-        className="grid grid-cols-[auto_1fr] m-4 mx-32 gap-x-12 gap-y-4"
-      >
-        {fields.map((field, index) => {
-          return (
+      <form onSubmit={handleSubmit(onSubmit)} className="w-full py-4">
+        <div className="grid grid-cols-[2fr_1fr_1fr_1fr] w-full pr-16 pb-4 gap-y-4 mb-4">
+          <Typography className={clsx([styles.compsFilterHeader])}>
+            Characteristics
+          </Typography>
+          <Typography className={clsx([styles.compsFilterHeader])}>
+            Subject Prop.
+          </Typography>
+          <Typography className={clsx([styles.compsFilterHeader])}>
+            Min
+          </Typography>
+          <Typography className={clsx([styles.compsFilterHeader])}>
+            Max
+          </Typography>
+        </div>
+        <div className="grid grid-cols-[2fr_1fr_1fr_1fr] w-full gap-y-4 pr-16 ">
+          {rangeFields.map((field, index) => (
             <React.Fragment key={index}>
-              <Typography className={styles.filterLabel}>
+              <div className="flex items-center ">
+                <Typography
+                  className={clsx([styles.compsFilterLabel, "ml-[30%]"])}
+                >
+                  {field.label}
+                </Typography>
+              </div>
+              <div className="flex items-center justify-center">
+                <Typography
+                  className={clsx([styles.compsFilterField, "text-center"])}
+                >
+                  {selectedProperty[field.fieldName]}
+                </Typography>
+              </div>
+              <CompsFilterField
+                field={field}
+                getValues={getValues}
+                setValue={setValue}
+              />
+            </React.Fragment>
+          ))}
+        </div>
+        <div className="mt-8 ml-16">
+          {booleanFields.map((field, index) => (
+            <div
+              key={index}
+              className="flex gap-x-4 items-center"
+            >
+              <SwitchField
+                control={control}
+                fieldName={field.fieldName}
+                className="ml-[-12px]"
+              />
+              <Typography className={styles.compsFilterLabel}>
                 {field.label}
               </Typography>
-              {field.type === "range"
-                ? (
-                  <SliderField
-                    control={control}
-                    fieldName={field.fieldName}
-                    min={defaults[field.fieldName]?.min}
-                    max={defaults[field.fieldName]?.max}
-                    step={defaults[field.fieldName]?.step}
-                  />
-                )
-                : (
-                  <SwitchField
-                    control={control}
-                    fieldName={field.fieldName}
-                    className="ml-[-12px]"
-                  />
-                )}
-            </React.Fragment>
-          );
-        })}
+            </div>
+          ))}
+        </div>
+        {/* {Object.keys(errors).length > 0 && ( */}
+        {/*   <div className="col-span-2"> */}
+        {/*     <Typography className="text-red-500"> */}
+        {/*       {Object.values(errors).map((error) => error[0].message).join( */}
+        {/*         ", ", */}
+        {/*       )} */}
+        {/*     </Typography> */}
+        {/*   </div> */}
+        {/* )} */}
+
         <Button
-          className="bg-[#590D82] hover:bg-[#b958ee] text-white"
+          className="bg-[#590D82] hover:bg-[#b958ee] text-white px-4 mx-4 mt-6"
           type="submit"
         >
-          Submit
+          Apply Filter
         </Button>
       </form>
+
+      {/* <form */}
+      {/*   onSubmit={handleSubmit(onSubmit)} */}
+      {/*   className="grid grid-cols-[auto_1fr] m-4 mx-32 gap-x-12 gap-y-4" */}
+      {/* > */}
+      {/*   {fields.map((field, index) => { */}
+      {/*     return ( */}
+      {/*       <React.Fragment key={index}> */}
+      {/*         <Typography className={styles.filterLabel}> */}
+      {/*           {field.label} */}
+      {/*         </Typography> */}
+      {/*         {field.type === "range" */}
+      {/*           ? ( */}
+      {/*             <SliderField */}
+      {/*               control={control} */}
+      {/*               fieldName={field.fieldName} */}
+      {/*               min={defaults[field.fieldName]?.min} */}
+      {/*               max={defaults[field.fieldName]?.max} */}
+      {/*               step={defaults[field.fieldName]?.step} */}
+      {/*             /> */}
+      {/*           ) */}
+      {/*           : ( */}
+      {/*             <SwitchField */}
+      {/*               control={control} */}
+      {/*               fieldName={field.fieldName} */}
+      {/*               className="ml-[-12px]" */}
+      {/*             /> */}
+      {/*           )} */}
+      {/*       </React.Fragment> */}
+      {/*     ); */}
+      {/*   })} */}
+      {/* </form> */}
     </Dialog>
   );
 };

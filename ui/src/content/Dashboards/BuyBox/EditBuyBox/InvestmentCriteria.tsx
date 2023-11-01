@@ -3,18 +3,21 @@ import {
   Control,
   Controller,
   RegisterOptions,
+  UseFormGetValues,
   UseFormRegister,
   UseFormRegisterReturn,
+  UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
 import styles from "./EditBuyBoxDialog.module.scss";
-import { RangeField } from "./RangeField";
+import RangeField from "@/components/Form/RangeField";
 import { defaults } from "@/schemas/defaults";
 import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
 import React from "react";
 import SwitchField from "@/components/Form/SwitchField";
 import SliderField from "@/components/Form/SliderField";
 import clsx from "clsx";
+import NumericTextField from "@/components/Form/NumericTextField";
 
 const groups = [
   {
@@ -64,12 +67,17 @@ type InvestmentCriteriaProps = {
   register: UseFormRegister<buyboxSchemaType>;
   control: Control<buyboxSchemaType>;
   watch: UseFormWatch<buyboxSchemaType>;
+  setValue: UseFormSetValue<buyboxSchemaType>;
+  getValues: UseFormGetValues<buyboxSchemaType>;
 };
 const InvestmentCriteria = (
-  { register, control, watch }: InvestmentCriteriaProps,
+  { register, control, watch, setValue, getValues }: InvestmentCriteriaProps,
 ) => {
   return (
     <>
+      <Typography className={styles.sectionLabel}>
+        Investment Criteria
+      </Typography>
       {groups.map((group, index) => {
         return (
           <React.Fragment key={index}>
@@ -107,16 +115,36 @@ const InvestmentCriteria = (
                       </Typography>
                     </div>
                     <div className={clsx(["flex"])}>
-                      <SliderField
+                      <RangeField
                         min={field.min}
                         max={field.max}
                         step={field.step}
                         fieldName={`${field.fieldName}.1`}
-                        control={control}
-                        // disabled={!watch(`${field.fieldName}.0`)}
+                        setValue={setValue}
+                        getValues={getValues}
                         disabled={!watch(`${group.fieldName}`) ||
                           !watch(`${field.fieldName}.0`)}
                       />
+                      {/* <NumericTextField */}
+                      {/*   min={field.min} */}
+                      {/*   max={field.max} */}
+                      {/*   fieldName={`${field.fieldName}.1.0`} */}
+                      {/*   control={control} */}
+                      {/*   watch={watch} */}
+                      {/*   setValue={setValue} */}
+                      {/*   disabled={!watch(`${group.fieldName}`) || */}
+                      {/*     !watch(`${field.fieldName}.0`)} */}
+                      {/* /> */}
+                      {/* <SliderField */}
+                      {/*   min={field.min} */}
+                      {/*   max={field.max} */}
+                      {/*   step={field.step} */}
+                      {/*   fieldName={`${field.fieldName}.1`} */}
+                      {/*   control={control} */}
+                      {/*   // disabled={!watch(`${field.fieldName}.0`)} */}
+                      {/*   disabled={!watch(`${group.fieldName}`) || */}
+                      {/*     !watch(`${field.fieldName}.0`)} */}
+                      {/* /> */}
                     </div>
                   </>
                 );

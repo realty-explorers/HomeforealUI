@@ -170,6 +170,31 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
     props.setPageSize(pagination.pageSize);
   }, [pagination.pageIndex]);
 
+  const fuzzySearch = () => {
+    // const location = locations[0];
+    const fuseOptions = {
+      // isCaseSensitive: false,
+      // includeScore: false,
+      // shouldSort: true,
+      // includeMatches: false,
+      // findAllMatches: false,
+      // minMatchCharLength: 1,
+      // location: 0,
+      // threshold: 0.6,
+      // distance: 100,
+      // useExtendedSearch: false,
+      // ignoreLocation: false,
+      // ignoreFieldNorm: false,
+      // fieldNormWeight: 1,
+      keys: [
+        "name",
+      ],
+    };
+    // const fuse = new Fuse(locations, fuseOptions);
+    // const matches = fuse.search(searchTerm);
+    // const newOptions = matches.map((match) => match.item.name);
+  };
+
   const table = useMaterialReactTable({
     columns,
     data: rows,

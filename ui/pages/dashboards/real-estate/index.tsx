@@ -132,13 +132,15 @@ const DashboardRealEstate = (props: any) => {
       <div className="flex w-full h-full">
         {openMoreDetails && (
           <>
-            <IconButton className="absolute top-1/2 left-1/2 -translate-y-full -translate-x-1/2 bg-white w-1 h-10 shadow z-[1] animate-fadeDelayed opacity-0">
+            <IconButton
+              className="absolute top-1/2 left-1/2 -translate-y-full -translate-x-1/2 bg-white w-1 h-10 shadow z-[1] animate-fadeDelayed opacity-0"
+              onClick={handleHidePanel}
+            >
               <ExpandMoreIcon
                 className={clsx([
                   "transition-all",
                   openMoreDetails ? "rotate-90" : "-rotate-90",
                 ])}
-                onClick={handleHidePanel}
               />
             </IconButton>
             <motion.div

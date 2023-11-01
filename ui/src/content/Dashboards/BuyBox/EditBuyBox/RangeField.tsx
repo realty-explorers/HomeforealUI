@@ -10,6 +10,7 @@ type RangeFieldProps = {
   register: any;
   control: any;
   watch: any;
+  setValue: any;
   fieldName: string;
   title: string;
   labelClass?: string;
@@ -21,6 +22,7 @@ export const RangeField = (
     register,
     control,
     watch,
+    setValue,
     fieldName,
     title,
     labelClass,

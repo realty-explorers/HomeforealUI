@@ -49,14 +49,14 @@ const SalesComps = (props: SalesCompsProps) => {
     recalculateComps(newSelectedComps.map((comp) => comp.source_id));
   };
 
-  useEffect(() => {
-    const newComps: FilteredComp[] = selectedProperty.sales_comps?.data?.map(
-      (comp, index) => {
-        return { ...comp, index };
-      },
-    );
-    dispatch(setSelectedComps(newComps));
-  }, [selectedProperty]);
+  // useEffect(() => {
+  //   const newComps: FilteredComp[] = selectedProperty.sales_comps?.data?.map(
+  //     (comp, index) => {
+  //       return { ...comp, index };
+  //     },
+  //   );
+  //   dispatch(setSelectedComps(newComps));
+  // }, [selectedProperty]);
 
   return (selectedProperty?.sales_comps?.data?.length > 0 &&
     (

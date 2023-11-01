@@ -5,18 +5,23 @@ import {
   Control,
   Controller,
   RegisterOptions,
+  UseFormGetValues,
   UseFormRegister,
   UseFormRegisterReturn,
+  UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
 import styles from "./EditBuyBoxDialog.module.scss";
-import { RangeField } from "./RangeField";
 import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
+import RangeField from "@/components/Form/RangeField";
+import clsx from "clsx";
 
 type PropertyCriteriaProps = {
   register: UseFormRegister<buyboxSchemaType>;
   control: Control<buyboxSchemaType>;
   watch: UseFormWatch<buyboxSchemaType>;
+  setValue: UseFormSetValue<buyboxSchemaType>;
+  getValues: UseFormGetValues<buyboxSchemaType>;
 };
 
 const fields = [
@@ -88,7 +93,7 @@ const fields = [
   },
 ];
 const PropertyCriteria = (
-  { register, control, watch }: PropertyCriteriaProps,
+  { register, control, watch, setValue, getValues }: PropertyCriteriaProps,
 ) => {
   return (
     <>
@@ -98,17 +103,44 @@ const PropertyCriteria = (
       {fields.map((field, index) => {
         if (field.type === "range") {
           return (
-            <RangeField
-              key={index}
-              register={register}
-              control={control}
-              watch={watch}
-              fieldName={field.fieldName}
-              title={field.title}
-              min={field.min}
-              max={field.max}
-              step={field.step}
-            />
+            <>
+              <div
+                className={clsx([
+                  "flex w-full item-center",
+                ])}
+              >
+                <SwitchField
+                  fieldName={`${field.fieldName}.0`}
+                  control={control}
+                  // disabled={!watch(`${group.fieldName}`)}
+                />
+                <Typography className={styles.label}>
+                  {field.title}
+                </Typography>
+              </div>
+              <RangeField
+                key={index}
+                watch={watch}
+                min={field.min}
+                max={field.max}
+                step={field.step}
+                fieldName={`${field.fieldName}.1`}
+                setValue={setValue}
+                getValues={getValues}
+                disabled={!watch(`${field.fieldName}.0`)}
+              />
+            </>
+            // <RangeField
+            //   key={index}
+            //   register={register}
+            //   control={control}
+            //   watch={watch}
+            //   fieldName={field.fieldName}
+            //   title={field.title}
+            //   min={field.min}
+            //   max={field.max}
+            //   step={field.step}
+            // />
           );
         } else if (field.type === "boolean") {
           return (

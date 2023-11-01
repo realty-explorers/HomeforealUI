@@ -1,19 +1,23 @@
 import { sliderClasses } from "@mui/base";
 import { Checkbox, Slider, Switch, Tab, Tabs, Typography } from "@mui/material";
 import clsx from "clsx";
-import React from "react";
+import React, { useState } from "react";
 import {
   Control,
   Controller,
   RegisterOptions,
+  UseFormGetValues,
   UseFormRegister,
   UseFormRegisterReturn,
+  UseFormSetValue,
   UseFormWatch,
 } from "react-hook-form";
 import styles from "./EditBuyBoxDialog.module.scss";
-import { RangeField } from "./RangeField";
+// import { RangeField } from "./RangeField";
+import RangeField from "@/components/Form/RangeField";
 import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
 import { defaultSimilarityFields } from "@/schemas/defaults";
+import SwitchField from "@/components/Form/SwitchField";
 
 type TabPanelProps = {
   children?: React.ReactNode;
@@ -106,13 +110,16 @@ type ComparablePreferencesProps = {
   register: UseFormRegister<buyboxSchemaType>;
   control: Control<buyboxSchemaType>;
   watch: UseFormWatch<buyboxSchemaType>;
+  setValue: UseFormSetValue<buyboxSchemaType>;
+  getValues: UseFormGetValues<buyboxSchemaType>;
 };
 const ComparablePreferences = (
-  { register, control, watch }: ComparablePreferencesProps,
+  { register, control, watch, setValue, getValues }: ComparablePreferencesProps,
 ) => {
-  const [value, setValue] = React.useState(0);
+  const [tab, setTab] = useState(0);
+  // const [value, setValue] = React.useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
+    setTab(newValue);
   };
   return (
     <>
@@ -121,7 +128,7 @@ const ComparablePreferences = (
       </Typography>
       <div className="col-span-2">
         <Tabs
-          value={value}
+          value={tab}
           onChange={handleChange}
           centered
         >
@@ -135,14 +142,13 @@ const ComparablePreferences = (
         return (
           <React.Fragment key={index}>
             {similarityFields.map((similarityField, idx) => {
-              return (
+              return index === tab && (
                 similarityField.type === "boolean"
                   ? (
                     <div
                       key={idx}
                       className={clsx([
                         "flex w-full item-center col-span-2",
-                        index === value ? "" : "hidden",
                       ])}
                     >
                       <Controller
@@ -162,19 +168,52 @@ const ComparablePreferences = (
                     </div>
                   )
                   : (
-                    <RangeField
-                      key={idx}
-                      register={register}
-                      control={control}
-                      watch={watch}
-                      fieldName={`similarity.${similarityType}.${similarityField.fieldName}`}
-                      title={similarityField.fieldName}
-                      labelClass={index === value ? "" : "hidden"}
-                      sliderClass={index === value ? "" : "hidden"}
-                      min={similarityField.min}
-                      max={similarityField.max}
-                      step={similarityField.step}
-                    />
+                    <>
+                      <div
+                        className={clsx([
+                          " w-full item-center",
+                          index === tab ? "flex" : "hidden",
+                        ])}
+                      >
+                        <SwitchField
+                          fieldName={`similarity.${similarityType}.${similarityField.fieldName}.0`}
+                          control={control}
+                          // disabled={!watch(`${group.fieldName}`)}
+                        />
+                        <Typography className={styles.label}>
+                          {similarityField.fieldName}
+                        </Typography>
+                      </div>
+                      <RangeField
+                        key={index}
+                        watch={watch}
+                        min={similarityField.min}
+                        max={similarityField.max}
+                        step={similarityField.step}
+                        fieldName={`similarity.${similarityType}.${similarityField.fieldName}.1`}
+                        setValue={setValue}
+                        getValues={getValues}
+                        disabled={!watch(
+                          `similarity.${similarityType}.${similarityField.fieldName}.0`,
+                        )}
+                        className={clsx([
+                          index === tab ? "" : "hidden",
+                        ])}
+                      />
+                    </>
+                    // <RangeField
+                    //   key={idx}
+                    //   register={register}
+                    //   control={control}
+                    //   watch={watch}
+                    //   fieldName={`similarity.${similarityType}.${similarityField.fieldName}`}
+                    //   title={similarityField.fieldName}
+                    //   labelClass={index === value ? "" : "hidden"}
+                    //   sliderClass={index === value ? "" : "hidden"}
+                    //   min={similarityField.min}
+                    //   max={similarityField.max}
+                    //   step={similarityField.step}
+                    // />
                   )
               );
             })}

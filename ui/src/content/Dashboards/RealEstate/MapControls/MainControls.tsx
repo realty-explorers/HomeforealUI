@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Grid, styled } from "@mui/material";
+import {
+  Grid,
+  styled,
+  Switch,
+  ToggleButton,
+  ToggleButtonGroup,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import SliderRangeInput from "../FormFields/SliderRangeInput";
 import SliderRangeInputV2 from "../FormFields/SliderRangeInputv2";
 import SliderInput from "../FormFields/SliderInput";
@@ -104,12 +112,13 @@ const MainControls: React.FC<MainControlsProps> = (
   const filterPropertiesByValue = (
     value: number | number[],
     fieldName: string,
+    strategy?: string,
   ) => {
     const filteredProperties = propertiesState.data?.filter(
       (property: PropertyPreview) => {
         const propertyValue = property[fieldName];
         if (typeof fieldName === "string") {
-          if (fieldName === "arv_price") {
+          if (fieldName === "arv_price" && strategy === "ARV") {
             const arvPercentage = typeof property?.arv_price === "number"
               ? (property.arv_price - property.sales_listing_price) /
                 property.arv_price * 100
@@ -118,7 +127,7 @@ const MainControls: React.FC<MainControlsProps> = (
               return false;
             }
           }
-          if (fieldName === "sales_comps_price") {
+          if (fieldName === "sales_comps_price" && strategy === "Comps") {
             const compsSalePercentage =
               typeof property?.sales_comps_price === "number"
                 ? (property.sales_comps_price - property.sales_listing_price) /
@@ -158,7 +167,7 @@ const MainControls: React.FC<MainControlsProps> = (
     setFunction();
     debounceUpdate(() => {
       updateFunction();
-      filterPropertiesByValue(value, fieldName);
+      filterPropertiesByValue(value, fieldName, strategy);
       // filterProperties(price[0], price[1], comps, arv, area[0], area[1]);
     });
   };
@@ -237,11 +246,112 @@ const MainControls: React.FC<MainControlsProps> = (
     [],
   );
 
+  const [strategy, setStrategy] = useState("ARV");
+  const handleChange = (
+    event: React.MouseEvent<HTMLElement>,
+    newStrategy: string,
+  ) => {
+    if (newStrategy !== null) {
+      setStrategy(newStrategy);
+      if (strategy === "ARV") {
+        filterPropertiesByValue(arv, "arv_price", "ARV");
+      } else {
+        filterPropertiesByValue(comps, "sales_comps_price", "Comps");
+      }
+    }
+  };
+
   return (
     <div>
       <div className="absolute top-2 right-4 font-poppins font-bold">
         {filteredProperties?.length} found
       </div>
+      <div className="flex w-full justify-center items-center mb-4">
+        <ToggleButtonGroup
+          color="primary"
+          value={strategy}
+          exclusive
+          onChange={handleChange}
+          className="text-center"
+        >
+          <ToggleButton
+            value="ARV"
+            className="flex items-center justify-center h-8"
+          >
+            <Tooltip title="Choose ARV as margin filtering" enterDelay={700}>
+              <Typography className="font-poppins font-semibold">
+                ARV
+              </Typography>
+            </Tooltip>
+          </ToggleButton>
+
+          <ToggleButton
+            value="Comps"
+            className="flex items-center justify-center h-8"
+          >
+            <Tooltip
+              title="Choose Sales Comps as margin filtering"
+              enterDelay={700}
+            >
+              <Typography className="font-poppins font-semibold">
+                Comps
+              </Typography>
+            </Tooltip>
+          </ToggleButton>
+        </ToggleButtonGroup>
+      </div>
+
+      {strategy === "ARV"
+        ? (
+          <SliderField
+            fieldName="ARV Margin"
+            tooltip="Percentage under estimated market ARV"
+          >
+            <SliderInput
+              inputProps={{
+                title: "ARV Margin",
+                name: "arvMargin",
+                min: 0,
+                max: 100,
+                step: 1,
+              }}
+              value={arv}
+              // update={(value) => updateArv(value)}
+              update={(value) =>
+                setValue(
+                  () => setArv(value),
+                  () => dispatch(setArvMargin(value)),
+                  value,
+                  "arv_price",
+                )}
+            />
+          </SliderField>
+        )
+        : (
+          <SliderField
+            fieldName="Sales Comps Margin"
+            tooltip="Percentage under market sales comps"
+          >
+            <SliderInput
+              inputProps={{
+                title: "Comps Margin",
+                name: "underComps",
+                min: 0,
+                max: 100,
+                step: 1,
+              }}
+              value={comps}
+              update={(value) =>
+                setValue(
+                  () => setComps(value),
+                  () => dispatch(setCompsMargin(value)),
+                  value,
+                  "sales_comps_price",
+                )}
+            />
+          </SliderField>
+        )}
+
       <SliderField fieldName="Listing Price">
         <SliderRangeInputV2
           inputProps={{
@@ -264,52 +374,6 @@ const MainControls: React.FC<MainControlsProps> = (
               "sales_listing_price",
             )}
           scale={{ scale: priceScale, reverseScale: priceReverseScale }}
-        />
-      </SliderField>
-
-      <SliderField
-        fieldName="Sales Comps Margin"
-        tooltip="Percentage under market sales comps"
-      >
-        <SliderInput
-          inputProps={{
-            title: "Comps Margin",
-            name: "underComps",
-            min: 0,
-            max: 100,
-            step: 1,
-          }}
-          value={comps}
-          update={(value) =>
-            setValue(
-              () => setComps(value),
-              () => dispatch(setCompsMargin(value)),
-              value,
-              "sales_comps_price",
-            )}
-        />
-      </SliderField>
-      <SliderField
-        fieldName="ARV Margin"
-        tooltip="Percentage under estimated market ARV"
-      >
-        <SliderInput
-          inputProps={{
-            title: "ARV Margin",
-            name: "arvMargin",
-            min: 0,
-            max: 100,
-            step: 1,
-          }}
-          value={arv}
-          // update={(value) => updateArv(value)}
-          update={(value) =>
-            setValue(
-              () => setArv(value),
-              () => dispatch(setArvMargin(value)),
-              value,
-              "arv_price",
-            )}
         />
       </SliderField>
 
