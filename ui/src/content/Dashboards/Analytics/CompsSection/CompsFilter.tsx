@@ -30,8 +30,17 @@ import CompsFilterField from "./CompsFilterField";
 
 const rangeFields = [
   {
+    label: "Price",
+    fieldName: "sales_closing_price",
+    subjectFieldName: "listing_price",
+    min: defaults.listingPrice.min,
+    max: defaults.listingPrice.max,
+    step: defaults.listingPrice.step,
+  },
+  {
     label: "Bedrooms",
     fieldName: "bedrooms",
+    subjectFieldName: "bedrooms",
     min: defaults.bedrooms.min,
     max: defaults.bedrooms.max,
     step: defaults.bedrooms.step,
@@ -39,6 +48,7 @@ const rangeFields = [
   {
     label: "Bathrooms",
     fieldName: "full_bathrooms",
+    subjectFieldName: "full_bathrooms",
     min: defaults.bathrooms.min,
     max: defaults.bathrooms.max,
     step: defaults.bathrooms.step,
@@ -47,6 +57,7 @@ const rangeFields = [
   {
     label: "Lot Sqft",
     fieldName: "lot_size",
+    subjectFieldName: "lot_size",
     min: defaults.lotSize.min,
     max: defaults.lotSize.max,
     step: defaults.lotSize.step,
@@ -54,6 +65,7 @@ const rangeFields = [
   {
     label: "Building Sqft",
     fieldName: "building_area",
+    subjectFieldName: "building_area",
     min: defaults.area.min,
     max: defaults.area.max,
     step: defaults.area.step,
@@ -61,6 +73,7 @@ const rangeFields = [
   {
     label: "Year Built",
     fieldName: "year_built",
+    subjectFieldName: "year_built",
     min: defaults.yearBuilt.min,
     max: defaults.yearBuilt.max,
     step: defaults.yearBuilt.step,
@@ -68,6 +81,7 @@ const rangeFields = [
   {
     label: "Garages",
     fieldName: "garages",
+    subjectFieldName: "garages",
     min: defaults.garages.min,
     max: defaults.garages.max,
     step: defaults.garages.step,
@@ -75,6 +89,7 @@ const rangeFields = [
   {
     label: "Sold Price",
     fieldName: "sales_closing_price",
+    subjectFieldName: "sales_closing_price",
     min: defaults.soldPrice.min,
     max: defaults.soldPrice.max,
     step: defaults.soldPrice.step,
@@ -83,6 +98,7 @@ const rangeFields = [
   {
     label: "Price/Sqft",
     fieldName: "pricePerSqft",
+    subjectFieldName: "pricePerSqft",
     min: defaults.pricePerSqft.min,
     max: defaults.pricePerSqft.max,
     step: defaults.pricePerSqft.step,
@@ -90,6 +106,7 @@ const rangeFields = [
   {
     label: "Max Distance",
     fieldName: "distance",
+    subjectFieldName: "distance",
     min: defaults.distance.min,
     max: defaults.distance.max,
     step: defaults.distance.step,
@@ -185,37 +202,33 @@ const CompsFilter = (
   const onSubmit = async (data: any) => {
     console.log(data);
     const filteredComps: FilteredComp[] = [];
-    for (const field of rangeFields) {
-      // console.log(field);
+    for (let i = 0; i < selectedProperty?.sales_comps?.data?.length; i++) {
+      const comp = selectedProperty?.sales_comps?.data?.[i];
+      let add = true;
+      for (const field of rangeFields) {
+        if (comp[field.fieldName] !== undefined) {
+          const value = data[field.fieldName];
+          if (
+            value[0] > comp[field.fieldName] || value[1] < comp[field.fieldName]
+          ) {
+            add = false;
+            console.log(
+              "no range ",
+              field.fieldName,
+              value,
+              comp[field.fieldName],
+            );
+            break;
+          }
+        } else {
+          console.log("no field ", field.fieldName);
+        }
+      }
+      if (add) {
+        filteredComps.push({ ...comp, index: i });
+      }
     }
-    // for (let i = 0; i < selectedProperty.sales_comps.data?.length; i++) {
-    //   const comp = selectedComps?.[i];
-    //   let add = true;
-    //   for (const field of rangeFields) {
-    //     if (comp[field.fieldName] !== undefined) {
-    //       const value = data[field.fieldName];
-    //       if (
-    //         value[0] > comp[field.fieldName] ||
-    //         value[1] < comp[field.fieldName]
-    //       ) {
-    //         console.log(
-    //           "no range ",
-    //           field.fieldName,
-    //           value,
-    //           comp[field.fieldName],
-    //         );
-    //         add = false;
-    //         break;
-    //       }
-    //     } else {
-    //       console.log("no field ", field.fieldName);
-    //     }
-    //   }
-    //   if (add) {
-    //     filteredComps.push({ ...comp, index: i });
-    //   }
-    // }
-    // setSelectedComps(filteredComps);
+    setSelectedComps(filteredComps);
     handleClose();
   };
 
@@ -261,7 +274,7 @@ const CompsFilter = (
                 <Typography
                   className={clsx([styles.compsFilterField, "text-center"])}
                 >
-                  {selectedProperty[field.fieldName]}
+                  {selectedProperty[field.subjectFieldName]}
                 </Typography>
               </div>
               <CompsFilterField
@@ -272,32 +285,23 @@ const CompsFilter = (
             </React.Fragment>
           ))}
         </div>
-        <div className="mt-8 ml-16">
-          {booleanFields.map((field, index) => (
-            <div
-              key={index}
-              className="flex gap-x-4 items-center"
-            >
-              <SwitchField
-                control={control}
-                fieldName={field.fieldName}
-                className="ml-[-12px]"
-              />
-              <Typography className={styles.compsFilterLabel}>
-                {field.label}
-              </Typography>
-            </div>
-          ))}
-        </div>
-        {/* {Object.keys(errors).length > 0 && ( */}
-        {/*   <div className="col-span-2"> */}
-        {/*     <Typography className="text-red-500"> */}
-        {/*       {Object.values(errors).map((error) => error[0].message).join( */}
-        {/*         ", ", */}
-        {/*       )} */}
-        {/*     </Typography> */}
-        {/*   </div> */}
-        {/* )} */}
+        {/* <div className="mt-8 ml-16"> */}
+        {/*   {booleanFields.map((field, index) => ( */}
+        {/*     <div */}
+        {/*       key={index} */}
+        {/*       className="flex gap-x-4 items-center" */}
+        {/*     > */}
+        {/*       <SwitchField */}
+        {/*         control={control} */}
+        {/*         fieldName={field.fieldName} */}
+        {/*         className="ml-[-12px]" */}
+        {/*       /> */}
+        {/*       <Typography className={styles.compsFilterLabel}> */}
+        {/*         {field.label} */}
+        {/*       </Typography> */}
+        {/*     </div> */}
+        {/*   ))} */}
+        {/* </div> */}
 
         <Button
           className="bg-[#590D82] hover:bg-[#b958ee] text-white px-4 mx-4 mt-6"
