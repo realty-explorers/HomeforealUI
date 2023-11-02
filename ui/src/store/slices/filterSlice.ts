@@ -17,6 +17,7 @@ export interface Filter {
   maxSqft: number;
   propertyTypes: PropertyType[];
   filteredProperties: PropertyPreview[];
+  strategyMode: string;
 }
 
 // Initial state
@@ -37,6 +38,7 @@ const initialState: Filter = {
     PropertyType.MULTI_FAMILY,
   ],
   filteredProperties: [],
+  strategyMode: "ARV",
 };
 
 // Actual Slice
@@ -81,6 +83,9 @@ export const filterSlice = createSlice({
     setFilteredProperties(state, action: PayloadAction<PropertyPreview[]>) {
       state.filteredProperties = action.payload;
     },
+    setStrategyMode(state, action: PayloadAction<string>) {
+      state.strategyMode = action.payload;
+    },
   },
 });
 
@@ -98,6 +103,7 @@ export const {
   setMaxSqft,
   setPropertyTypes,
   setFilteredProperties,
+  setStrategyMode,
 } = filterSlice.actions;
 export const selectFilter: (state: AppState) => Filter = (state: AppState) =>
   state.filter;

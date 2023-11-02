@@ -31,6 +31,7 @@ import {
   setMinListingPrice,
   setMinSqft,
   setPropertyTypes,
+  setStrategyMode,
 } from "@/store/slices/filterSlice";
 import debounce from "lodash.debounce";
 import { useDispatch, useSelector } from "react-redux";
@@ -118,23 +119,29 @@ const MainControls: React.FC<MainControlsProps> = (
       (property: PropertyPreview) => {
         const propertyValue = property[fieldName];
         if (typeof fieldName === "string") {
+          if (!(typeof property?.arv_price === "number")) {
+            return false;
+          }
           if (fieldName === "arv_price" && strategy === "ARV") {
             const arvPercentage = typeof property?.arv_price === "number"
               ? (property.arv_price - property.sales_listing_price) /
                 property.arv_price * 100
               : 0;
-            if (value > 0 && value > arvPercentage) {
+            if (value > arvPercentage) {
               return false;
             }
           }
           if (fieldName === "sales_comps_price" && strategy === "Comps") {
+            if (!(typeof property?.sales_comps_price === "number")) {
+              return false;
+            }
             const compsSalePercentage =
               typeof property?.sales_comps_price === "number"
                 ? (property.sales_comps_price - property.sales_listing_price) /
                   property.sales_comps_price * 100
                 : 0;
 
-            if (value > 0 && value > compsSalePercentage) {
+            if (value > compsSalePercentage) {
               return false;
             }
           }
@@ -253,10 +260,12 @@ const MainControls: React.FC<MainControlsProps> = (
   ) => {
     if (newStrategy !== null) {
       setStrategy(newStrategy);
-      if (strategy === "ARV") {
+      if (newStrategy === "ARV") {
         filterPropertiesByValue(arv, "arv_price", "ARV");
+        dispatch(setStrategyMode("ARV"));
       } else {
         filterPropertiesByValue(comps, "sales_comps_price", "Comps");
+        dispatch(setStrategyMode("Comps"));
       }
     }
   };

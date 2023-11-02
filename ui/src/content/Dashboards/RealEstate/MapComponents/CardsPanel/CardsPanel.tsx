@@ -28,7 +28,7 @@ type CardsPanelProps = {
 const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   const [ref, setRef] = useState<Element | undefined>();
   const [cardsOpen, setCardsOpen] = useState(false);
-  const { filteredProperties } = useSelector(selectFilter);
+  const { filteredProperties, strategyMode } = useSelector(selectFilter);
   const { selectedProperty, selectedPropertyPreview } = useSelector(
     selectProperties,
   );
@@ -60,13 +60,17 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
 
   const sortedProperties = filteredProperties &&
     [...filteredProperties].sort((a, b) => {
-      if (!validValue(a.arv_price) && validValue(b.arv_price)) return 1;
-      if (validValue(a.arv_price) && !validValue(b.arv_price)) return -1;
-      // if (a.arv_price && b.arv_price) {
-      const arvPercentageA = (a.arv_price - a.sales_listing_price) /
-        a.arv_price;
-      const arvPercentageB = (b.arv_price - b.sales_listing_price) /
-        b.arv_price;
+      const fieldName = strategyMode === "ARV"
+        ? "arv_price"
+        : "sales_comps_price";
+
+      if (!validValue(a[fieldName]) && validValue(b[fieldName])) return 1;
+      if (validValue(a[fieldName]) && !validValue(b[fieldName])) return -1;
+      // if (a[fieldName] && b.arv_price) {
+      const arvPercentageA = (a[fieldName] - a.sales_listing_price) /
+        a[fieldName];
+      const arvPercentageB = (b[fieldName] - b.sales_listing_price) /
+        b[fieldName];
       return arvPercentageB - arvPercentageA;
       // }
       return 0;

@@ -1,74 +1,18 @@
 import React, { memo, useEffect, useState } from "react";
 import PropertyPreview from "@/models/propertyPreview";
 import { openGoogleSearch } from "@/utils/windowFunctions";
-import {
-  alpha,
-  Box,
-  Button,
-  Card,
-  CardActionArea,
-  CardActions,
-  CardContent,
-  CardMedia,
-  CardProps,
-  Chip,
-  Container,
-  Divider,
-  Grid,
-  Icon,
-  IconButton,
-  List,
-  ListItem,
-  ListItemAvatar,
-  ListItemText,
-  styled,
-  Switch,
-  Tooltip,
-  Typography,
-  withStyles,
-} from "@mui/material";
-import FavoriteOutlinedIcon from "@mui/icons-material/FavoriteOutlined";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import ShareIcon from "@mui/icons-material/Share";
-import LinkIcon from "@mui/icons-material/Link";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import PriceChangeIcon from "@mui/icons-material/PriceChange";
-import PriceCheckIcon from "@mui/icons-material/PriceCheck";
-import InsightsIcon from "@mui/icons-material/Insights";
-import ExpandIcon from "@mui/icons-material/Expand";
-import BarChartIcon from "@mui/icons-material/BarChart";
-import ImportContactsIcon from "@mui/icons-material/ImportContacts";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
+import { Button, CardProps, Chip, Grid, Typography } from "@mui/material";
 import {
   numberStringUtil,
   percentFormatter,
   priceFormatter,
   validateValue,
 } from "@/utils/converters";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import styles from "../styles.module.scss";
-import { setSelectedPropertyPreview } from "@/store/slices/propertiesSlice";
 import Image from "@/components/Photos/Image";
 import clsx from "clsx";
-interface StyledCardProps extends CardProps {
-  selected?: boolean;
-}
-
-const StyledCard = styled(Card, {
-  shouldForwardProp: (prop) => prop !== "selected",
-})<StyledCardProps>(({ selected, theme }) => ({
-  ...(selected && {
-    boxShadow:
-      // '0px 0px 30px rgba(0, 24, 255, 0.8),0px 2px 20px rgba(159, 162, 191, 0.7)'
-      " rgba(0, 0, 0, 0.16) 0px 1px 4px, rgb(51, 51, 51) 0px 0px 0px 3px",
-  }),
-  backgroundColor: "rgba(255, 255, 255, 0.8)",
-  width: "15rem",
-  height: "19rem",
-  // flexShrink: 0,
-  margin: "0 0.5rem",
-  pointerEvents: "all",
-}));
+import { selectFilter } from "@/store/slices/filterSlice";
 
 const defaultImage =
   "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
@@ -89,6 +33,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
   const [cardImage, setCardImage] = useState(
     validateValue(props.property?.primary_image, "string", defaultImage),
   );
+  const { strategyMode } = useSelector(selectFilter);
   const handlePropertySelected = async () => {
     if (props.selected) {
       props.deselectProperty(props.property);
@@ -126,8 +71,27 @@ const PropertyCard: React.FC<PropertyCardProps> = (
       ) / props.property.arv_price * 100
       : 0;
 
+  const compsPercentage =
+    props.property?.sales_comps_price && props.property.sales_comps_price > 0
+      ? Math.round(
+        props.property.sales_comps_price -
+          props.property.sales_listing_price,
+      ) / props.property.sales_comps_price * 100
+      : 0;
+
   // const profit = arvPercentage.toFixed(100);
   const profit = 3;
+
+  const getStrategyValue = () => {
+    switch (strategyMode) {
+      case "ARV":
+        return arvPercentage;
+      case "Comps":
+        return compsPercentage;
+      default:
+        return 0;
+    }
+  };
 
   return (
     <Button
@@ -143,12 +107,12 @@ const PropertyCard: React.FC<PropertyCardProps> = (
         <Grid className={styles.cardDiscountChip} container>
           <Grid item xs={12}>
             <Typography className={styles.cardDiscountValue}>
-              {arvPercentage.toFixed()}%
+              {getStrategyValue().toFixed()}%
             </Typography>
           </Grid>
           <Grid item xs={12}>
             <Typography className={styles.cardDiscountText}>
-              Under ARV
+              {strategyMode}
             </Typography>
           </Grid>
         </Grid>
