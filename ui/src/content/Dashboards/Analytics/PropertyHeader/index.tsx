@@ -30,10 +30,11 @@ const PropertyHeader = (props: PropertyHeaderProps) => {
           />
         </div>
         <div className="flex gap-1">
-          <MarginInfo property={props.property} />
+          {/* <MarginInfo property={props.property} /> */}
         </div>
       </div>
       <div className="flex">
+        <MarginInfo />
         {/* <PropertyDetails */}
         {/*   property={props.property || ({} as AnalyzedProperty)} */}
         {/* /> */}

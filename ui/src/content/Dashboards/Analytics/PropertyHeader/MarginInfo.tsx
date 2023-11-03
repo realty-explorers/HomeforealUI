@@ -6,9 +6,7 @@ import { useSelector } from "react-redux";
 import styles from "./PropertyHeaderStyles.module.scss";
 import HelpIcon from "@mui/icons-material/Help";
 
-type MarginInfoProps = {
-  property: AnalyzedProperty;
-};
+type MarginInfoProps = {};
 const MarginInfo = (props: MarginInfoProps) => {
   const { selectedProperty, selectedComps, saleCalculatedProperty } =
     useSelector(

@@ -14,7 +14,7 @@
 }
 .cardDiscountChip {
   @apply font-poppins;
-  width: 40%;
+  width: 45%;
   position: absolute;
   top: 0.3em;
   left: 0.3em;
@@ -40,6 +40,9 @@
   font-weight: 900;
   line-height: normal;
   text-transform: capitalize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .cardDiscountText {

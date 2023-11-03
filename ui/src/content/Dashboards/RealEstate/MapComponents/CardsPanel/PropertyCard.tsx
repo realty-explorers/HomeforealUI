@@ -13,6 +13,7 @@ import styles from "../styles.module.scss";
 import Image from "@/components/Photos/Image";
 import clsx from "clsx";
 import { selectFilter } from "@/store/slices/filterSlice";
+import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
 
 const defaultImage =
   "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
@@ -105,12 +106,17 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     >
       {typeof props.property.arv_price === "number" && (
         <Grid className={styles.cardDiscountChip} container>
-          <Grid item xs={12}>
+          <Grid
+            item
+            xs={12}
+            className="flex justify-center items-center py-0 px-2"
+          >
+            <ArrowCircleDownIcon className="h-8" />
             <Typography className={styles.cardDiscountValue}>
               {getStrategyValue().toFixed()}%
             </Typography>
           </Grid>
-          <Grid item xs={12}>
+          <Grid item xs={12} className="flex justify-center items-center">
             <Typography className={styles.cardDiscountText}>
               {strategyMode}
             </Typography>
@@ -167,7 +173,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
         <div className={styles.cardInfoRow}>
           <Typography>Cap Rate</Typography>
           <Typography>
-            {(numberStringUtil(props.property?.cap_rate) * 100).toFixed(2)} %
+            {(numberStringUtil(props.property?.cap_rate)).toFixed(2)} %
           </Typography>
         </div>
       </div>

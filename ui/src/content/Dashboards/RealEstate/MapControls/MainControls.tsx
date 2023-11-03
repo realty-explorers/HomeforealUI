@@ -42,26 +42,15 @@ import { locationApiEndpoints } from "@/store/services/locationApiService";
 import { selectLocation } from "@/store/slices/locationSlice";
 import { propertiesApiEndpoints } from "@/store/services/propertiesApiService";
 import PropertyPreview from "@/models/propertyPreview";
-import { PropertyType } from "@/models/property";
-import {
-  selectProperties,
-  setSelectedComps,
-} from "@/store/slices/propertiesSlice";
 
-const GridDiv = styled("div")(({}) => ({
-  display: "flex",
-  flexDirection: "row",
-  width: "100%",
-  height: "2rem",
-  "> svg": {
-    marginBottom: "0.5em",
-  },
-  margin: "0 0.2em",
-}));
-
-const LabelContainer = styled(Grid)(({ theme }) => ({
-  display: "flex",
-}));
+const filterFieldNames = [
+  "arv_price",
+  "sales_comps_price",
+  "sales_listing_price",
+  "building_area",
+  "bedrooms",
+  "total_bathrooms",
+];
 
 type MainControlsProps = {};
 const MainControls: React.FC<MainControlsProps> = (
@@ -96,6 +85,8 @@ const MainControls: React.FC<MainControlsProps> = (
   const [price, setPrice] = useState([0, 1000000]);
   const [comps, setComps] = useState(0);
   const [area, setArea] = useState([0, 10000]);
+  const [beds, setBeds] = useState([0, 9]);
+  const [baths, setBaths] = useState([0, 9]);
 
   useEffect(() => {
     dispatch(setFilteredProperties(propertiesState.data));
@@ -110,58 +101,100 @@ const MainControls: React.FC<MainControlsProps> = (
     // debounceUpdateArv(value);
   };
 
+  const strategyFilterFieldNames = [
+    "arv_price",
+    "sales_comps_price",
+  ];
+
+  const strategyFilterFieldsMap = {
+    "sales_comps_price": "Comps",
+    "arv_price": "ARV",
+  };
+
+  const filterByStrategy = (
+    filterValue: number | number[],
+    property: PropertyPreview,
+    fieldName: string,
+    strategy?: string,
+  ) => {
+    const propertyValue = property[fieldName];
+    if (strategyFilterFieldsMap[fieldName] !== strategy) {
+      return true;
+    }
+    if (strategyFilterFieldNames.includes(fieldName)) {
+      if (typeof propertyValue !== "number") {
+        return false;
+      }
+      const percentage = propertyValue > 0
+        ? (propertyValue - property.sales_listing_price) / propertyValue * 100
+        : 0;
+
+      if (filterValue > percentage) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  const getFilterValue = (fieldName, updatedFieldName, updatedValue) => {
+    if (fieldName === "arv_price") {
+      return updatedFieldName === "arv_price" ? updatedValue : arv;
+    }
+    if (fieldName === "sales_comps_price") {
+      return updatedFieldName === "sales_comps_price" ? updatedValue : comps;
+    }
+    if (fieldName === "sales_listing_price") {
+      return updatedFieldName === "sales_listing_price" ? updatedValue : price;
+    }
+    if (fieldName === "building_area") {
+      return updatedFieldName === "building_area" ? updatedValue : area;
+    }
+    if (fieldName === "bedrooms") {
+      return updatedFieldName === "bedrooms" ? updatedValue : beds;
+    }
+    if (fieldName === "total_bathrooms") {
+      return updatedFieldName === "total_bathrooms" ? updatedValue : baths;
+    }
+    return 0;
+  };
+
   const filterPropertiesByValue = (
     value: number | number[],
-    fieldName: string,
+    updatedFieldName: string,
     strategy?: string,
   ) => {
     const filteredProperties = propertiesState.data?.filter(
       (property: PropertyPreview) => {
-        const propertyValue = property[fieldName];
-        if (typeof fieldName === "string") {
-          if (!(typeof property?.arv_price === "number")) {
+        for (const fieldName of filterFieldNames) {
+          const filterValue = getFilterValue(
+            fieldName,
+            updatedFieldName,
+            value,
+          );
+          const propertyValue = property[fieldName];
+          const validStrategyValue = filterByStrategy(
+            filterValue,
+            property,
+            fieldName,
+            strategy,
+          );
+          if (!validStrategyValue) {
             return false;
           }
-          if (fieldName === "arv_price" && strategy === "ARV") {
-            const arvPercentage = typeof property?.arv_price === "number"
-              ? (property.arv_price - property.sales_listing_price) /
-                property.arv_price * 100
-              : 0;
-            if (value > arvPercentage) {
+          if (typeof filterValue === "number") {
+            if (propertyValue < filterValue) {
               return false;
             }
-          }
-          if (fieldName === "sales_comps_price" && strategy === "Comps") {
-            if (!(typeof property?.sales_comps_price === "number")) {
-              return false;
-            }
-            const compsSalePercentage =
-              typeof property?.sales_comps_price === "number"
-                ? (property.sales_comps_price - property.sales_listing_price) /
-                  property.sales_comps_price * 100
-                : 0;
-
-            if (value > compsSalePercentage) {
-              return false;
-            }
-          }
-          if (
-            value > 0 && value > propertyValue
-          ) {
-            console.log("meow");
-            return false;
           } else {
-            console.log(`value: ${value}, property: ${propertyValue}`);
-          }
-        } else {
-          const minValue = value[0];
-          const maxValue = value[1];
+            const minValue = filterValue[0];
+            const maxValue = filterValue[1];
 
-          if (
-            propertyValue < minValue ||
-            propertyValue > maxValue
-          ) {
-            return false;
+            if (
+              propertyValue < minValue ||
+              propertyValue > maxValue
+            ) {
+              return false;
+            }
           }
         }
         return true;
@@ -177,63 +210,6 @@ const MainControls: React.FC<MainControlsProps> = (
       filterPropertiesByValue(value, fieldName, strategy);
       // filterProperties(price[0], price[1], comps, arv, area[0], area[1]);
     });
-  };
-
-  const filterProperties = (
-    minPrice: number,
-    maxPrice: number,
-    compsSale: number,
-    arv: number,
-    minArea: number,
-    maxArea: number,
-  ) => {
-    console.log("comps: " + compsMargin);
-    const filteredProperties = propertiesState.data?.filter(
-      (property: PropertyPreview) => {
-        const arvPercentage = typeof property?.arv_price === "number"
-          ? (property.arv_price - property.sales_listing_price) /
-            property.arv_price * 100
-          : 0;
-
-        const compsSalePercentage =
-          typeof property?.sales_comps_price === "number"
-            ? (property.sales_comps_price - property.sales_listing_price) /
-              property.sales_comps_price * 100
-            : 0;
-
-        if (
-          property.sales_listing_price < minPrice ||
-          property.sales_listing_price > maxPrice
-        ) {
-          return false;
-        }
-        if (arvMargin > 0 && arvPercentage < arv) {
-          return false;
-        }
-        if (compsSale > 0 && compsSalePercentage < compsSale) {
-          console.log(compsSale);
-          return false;
-        } else {
-          console.log();
-        }
-        // if (property.sal < compsMargin) {
-        //   return false;
-        // }
-        if (
-          property.building_area < minArea ||
-          property.building_area > maxArea
-        ) {
-          return false;
-        }
-        if (
-          !propertyTypes.includes(property.property_type as PropertyType)
-        ) {
-          return false;
-        }
-        return true;
-      },
-    );
-    dispatch(setFilteredProperties(filteredProperties));
   };
 
   const debounceUpdate = useMemo(
@@ -260,13 +236,8 @@ const MainControls: React.FC<MainControlsProps> = (
   ) => {
     if (newStrategy !== null) {
       setStrategy(newStrategy);
-      if (newStrategy === "ARV") {
-        filterPropertiesByValue(arv, "arv_price", "ARV");
-        dispatch(setStrategyMode("ARV"));
-      } else {
-        filterPropertiesByValue(comps, "sales_comps_price", "Comps");
-        dispatch(setStrategyMode("Comps"));
-      }
+      filterPropertiesByValue(0, "", newStrategy);
+      dispatch(setStrategyMode(newStrategy));
     }
   };
 

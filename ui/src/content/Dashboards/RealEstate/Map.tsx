@@ -89,7 +89,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
-  const { filteredProperties } = useSelector(selectFilter);
+  const { filteredProperties, strategyMode } = useSelector(selectFilter);
   const {
     selectedPropertyPreview,
     selectedComps,
@@ -338,7 +338,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     const coordinates = [];
     if (filteredProperties?.length > 0) {
       for (const property of filteredProperties) {
-        coordinates.push(generatePropertyGeoJson(property));
+        coordinates.push(generatePropertyGeoJson(property, strategyMode));
       }
       const newData: FeatureCollection<Geometry, {
         [name: string]: any;
@@ -486,7 +486,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
         <CardsPanel open={Boolean(propertiesState.data)} />
         <PropertyLocationBoundsSource
-          show={!selecting}
+          show={!selecting && selectedPropertyPreview}
           data={propertyBoundsData}
           map={mapRef.current?.getMap()}
         />
