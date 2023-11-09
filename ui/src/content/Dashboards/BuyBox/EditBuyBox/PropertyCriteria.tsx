@@ -15,6 +15,7 @@ import styles from "./EditBuyBoxDialog.module.scss";
 import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
 import RangeField from "@/components/Form/RangeField";
 import clsx from "clsx";
+import AutocompleteField from "@/components/Form/AutocompleteField";
 
 type PropertyCriteriaProps = {
   register: UseFormRegister<buyboxSchemaType>;
@@ -27,8 +28,26 @@ type PropertyCriteriaProps = {
 const fields = [
   {
     title: "Property Types",
-    fieldName: "property.Property Type",
-    type: "boolean",
+    fieldName: "property.Property Types",
+    type: "select",
+    options: [
+      "Single Family",
+      // { label: "Multi Family", value: "Multi Family" },
+      // { label: "Condo", value: "Condo" },
+      // { label: "Townhouse", value: "Townhouse" },
+    ],
+    multiple: true,
+  },
+
+  {
+    title: "Pool",
+    fieldName: "property.Pool",
+    type: "select",
+    options: [
+      "With",
+      "Without",
+    ],
+    multiple: false,
   },
   {
     title: "Bedrooms",
@@ -53,6 +72,7 @@ const fields = [
     min: defaults.area.min,
     max: defaults.area.max,
     step: defaults.area.step,
+    formatLabelAsNumber: true,
   },
   {
     title: "Lot Size",
@@ -61,6 +81,7 @@ const fields = [
     min: defaults.area.min,
     max: defaults.area.max,
     step: defaults.area.step,
+    formatLabelAsNumber: true,
   },
   {
     title: "Year Built",
@@ -69,11 +90,6 @@ const fields = [
     min: defaults.yearBuilt.min,
     max: defaults.yearBuilt.max,
     step: defaults.yearBuilt.step,
-  },
-  {
-    title: "Pool",
-    fieldName: "property.Pool",
-    type: "boolean",
   },
   {
     title: "Garages",
@@ -90,6 +106,8 @@ const fields = [
     min: defaults.listingPrice.min,
     max: defaults.listingPrice.max,
     step: defaults.listingPrice.step,
+    prefix: "$",
+    formatLabelAsNumber: true,
   },
 ];
 const PropertyCriteria = (
@@ -120,33 +138,38 @@ const PropertyCriteria = (
               </div>
               <RangeField
                 key={index}
-                watch={watch}
                 min={field.min}
                 max={field.max}
                 step={field.step}
+                prefix={field.prefix}
+                postfix={field.postfix}
+                formatLabelAsNumber={field.formatLabelAsNumber}
                 fieldName={`${field.fieldName}.1`}
                 setValue={setValue}
                 getValues={getValues}
                 disabled={!watch(`${field.fieldName}.0`)}
               />
             </>
-            // <RangeField
-            //   key={index}
-            //   register={register}
-            //   control={control}
-            //   watch={watch}
-            //   fieldName={field.fieldName}
-            //   title={field.title}
-            //   min={field.min}
-            //   max={field.max}
-            //   step={field.step}
-            // />
           );
-        } else if (field.type === "boolean") {
+        } else if (field.type === "select") {
           return (
-            <div key={index} className="flex w-full item-center col-span-2">
-              <SwitchField fieldName={field.fieldName} control={control} />
-              <Typography className={styles.label}>{field.title}</Typography>
+            <div
+              key={index}
+              className="flex w-full items-center justify-center col-span-2 mb-2"
+            >
+              <SwitchField
+                fieldName={`${field.fieldName}.0`}
+                control={control}
+              />
+              <AutocompleteField
+                label={field.title}
+                options={field.options}
+                multiple={field.multiple}
+                setValue={setValue}
+                getValues={getValues}
+                fieldName={`${field.fieldName}.1`}
+                disabled={!watch(`${field.fieldName}.0`)}
+              />
             </div>
           );
         }

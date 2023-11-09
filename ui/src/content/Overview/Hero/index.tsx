@@ -11,8 +11,8 @@ import Image from "next/image";
 
 function Hero() {
   return (
-    <div className="flex flex-col items-center h-full w-full">
-      <div className="lg:flex flex-col justify-center items-center">
+    <div className="flex flex-col items-center h-full w-full bg-off-white">
+      <div className="lg:flex flex-col justify-center items-center bg-off-white">
         <HeroSection />
         <SearchSection />
         <HowItWorksSection />

@@ -27,37 +27,14 @@ const OverviewWrapper = styled(Box)(
 
 function Overview() {
   return (
-    <div className="flex flex-col w-full h-full">
+    <div className="flex flex-col w-full h-full overflow-y-auto relative">
       <Head>
         <title>HomeFoReal App</title>
       </Head>
 
-      <div className="flex h-[60px] w-full">
-        <div className="flex justify-between w-full">
-          <div className="flex px-6">
-            <a href="#">
-              <Logo />
-            </a>
-          </div>
-          <div className="flex justify-between items-center px-6">
-            <Button
-              className={clsx([
-                "bg-primary hover:bg-secondary text-white px-6 py-2 h-12 font-bold text-xl",
-                styles.startButton,
-              ])}
-              href="/dashboards/real-estate"
-            >
-              Get Started
-            </Button>
-            {/* <div> */}
-            {/*   <NavBarComponent /> */}
-            {/* </div> */}
-          </div>
-        </div>
-      </div>
-      <div className="flex grow">
-        <Hero />
-      </div>
+      <NavBarComponent />
+      <div className="h-16" />
+      <Hero />
     </div>
   );
 }

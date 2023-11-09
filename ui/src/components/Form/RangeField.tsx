@@ -1,4 +1,6 @@
+import { numberFormatter } from "@/utils/converters";
 import {
+  InputAdornment,
   Slider,
   SliderProps,
   Switch,
@@ -7,8 +9,8 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import clsx from "clsx";
-import React from "react";
-import { Controller } from "react-hook-form";
+import React, { useState } from "react";
+import NumericField from "./NumericField";
 
 const StyledSlider = styled(Slider)({
   "& .MuiSlider-valueLabel": {
@@ -20,77 +22,137 @@ const StyledSlider = styled(Slider)({
 });
 
 type RangeFieldProps = {
+  min: number;
+  max: number;
   setValue: any;
   getValues: any;
   fieldName: string;
-  watch: any;
+  prefix?: string;
+  postfix?: string;
   disabled?: boolean;
+  formatLabelAsNumber?: boolean;
   className?: string;
 } & SliderProps;
 
 const RangeField = (
   {
+    min,
+    max,
     setValue,
     getValues,
     fieldName,
-    watch,
     disabled,
+    prefix,
+    postfix,
+    formatLabelAsNumber,
     className,
     ...props
   }: RangeFieldProps,
 ) => {
   const [values, setValues] = React.useState(getValues(fieldName));
+  const [meow, setMeow] = useState({
+    numberformat: "1320",
+  });
   const handleNumberInputChangeMin = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setValues([e.target.valueAsNumber, values[1]]);
-    setValue(`${fieldName}.0`, e.target.valueAsNumber);
+    let value = Number(e.target.value);
+    if (value < min) {
+      value = min;
+    }
+    setValues(typeof values !== "object" ? value : [value, values[1]]);
+    setValue(
+      typeof values !== "object" ? `${fieldName}` : `${fieldName}.0`,
+      value,
+    );
   };
 
   const handleNumberInputChangeMax = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
-    setValues([values[0], e.target.valueAsNumber]);
-    setValue(`${fieldName}.1`, e.target.valueAsNumber);
+    let value = Number(e.target.value);
+    if (value > max) {
+      value = max;
+    }
+    setValues(typeof values === "number" ? value : [values[0], value]);
+    setValue(
+      typeof values === "number" ? `${fieldName}` : `${fieldName}.1`,
+      value,
+    );
+    // setValues([values[0], e.target.valueAsNumber]);
+    // setValue(`${fieldName}.1`, e.target.valueAsNumber);
   };
 
   const handleSliderChange = (
     event: Event,
-    value: number[],
+    value: number | number[],
     activeThumb: number,
   ) => {
     setValues(value);
     setValue(fieldName, value);
   };
+
+  const formatLabel = (value: any) => {
+    return `${prefix ? prefix : ""} ${value} ${postfix ? postfix : ""}`;
+  };
   return (
-    <div className="flex w-full justify-center items-center gap-x-4">
+    <div className="grid grid-cols-[1fr_3fr_1fr] w-full gap-x-4 items-center">
       <TextField
-        type="number"
+        label="Min"
         size="small"
-        value={values?.[0] || 0}
+        value={typeof values !== "object" ? values : values?.[0]}
         onChange={handleNumberInputChangeMin}
-        inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+        id="formatted-numberformat-input"
+        InputProps={{
+          inputComponent: NumericField as any,
+          startAdornment: prefix && (
+            <InputAdornment position="start">{prefix}</InputAdornment>
+          ),
+          endAdornment: postfix && (
+            <InputAdornment position="end">{postfix}</InputAdornment>
+          ),
+        }}
+        variant="outlined"
         disabled={disabled}
-        className={clsx([className])}
       />
+
       <StyledSlider
         valueLabelDisplay="auto"
         onChange={handleSliderChange}
         value={values}
         disabled={disabled}
         className={clsx([className])}
+        min={min}
+        max={max}
+        valueLabelFormat={(value) => {
+          return formatLabelAsNumber
+            ? numberFormatter(formatLabel(value))
+            : formatLabel(value);
+        }}
         {...props}
       />
 
-      <TextField
-        type="number"
-        size="small"
-        value={values?.[1] || 0}
-        onChange={handleNumberInputChangeMax}
-        inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
-        disabled={disabled}
-        className={clsx([className])}
-      />
+      {typeof values === "object" && (
+        <TextField
+          size="small"
+          label="Max"
+          value={typeof values === "number" ? values : values?.[1]}
+          onChange={handleNumberInputChangeMax}
+          name="numberformat"
+          id="formatted-numberformat-input"
+          InputProps={{
+            inputComponent: NumericField as any,
+            startAdornment: prefix && (
+              <InputAdornment position="start">{prefix}</InputAdornment>
+            ),
+            endAdornment: postfix && (
+              <InputAdornment position="end">{postfix}</InputAdornment>
+            ),
+          }}
+          variant="outlined"
+          disabled={disabled}
+        />
+      )}
     </div>
   );
 };

@@ -61,9 +61,9 @@ const defaults = {
   },
   distance: {
     min: 0,
-    max: 100,
-    step: 0.5,
-    default: [0, 100],
+    max: 10,
+    step: 0.25,
+    default: [0, 10],
   },
 
   //Need to fix names, temporary
@@ -96,6 +96,45 @@ const defaults = {
     max: 10000000,
     step: 1000,
     default: [0, 10000000],
+  },
+
+  margin: {
+    name: "Margin",
+    type: "range",
+    min: 0,
+    max: 1000000,
+    step: 1000,
+  },
+  centOnDollar: {
+    name: "Cent on $",
+    type: "range",
+    min: 0,
+    max: 1,
+    step: 0.01,
+  },
+  capRate: {
+    name: "Cap Rate",
+    type: "range",
+    min: 0,
+    max: 100,
+    step: 1,
+  },
+  propertyTypes: {
+    name: "Property Types",
+    type: "select",
+    options: [
+      "Single Family",
+    ],
+    multiple: true,
+  },
+  pool: {
+    name: "Pool",
+    type: "select",
+    options: [
+      "With",
+      "Without",
+    ],
+    multiple: false,
   },
 };
 
@@ -154,7 +193,7 @@ const defaultSimilarityFields = {
     name: "Distance",
     type: "range",
     min: 0,
-    max: 1.5,
+    max: 10,
     step: 0.1,
   },
   saleDate: {

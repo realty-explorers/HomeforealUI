@@ -1,10 +1,10 @@
 import z from "zod";
-import { defaultSimilarityFields } from "./defaults";
+import { defaults, defaultSimilarityFields } from "./defaults";
 
 const rangeSchema = z.array(z.union([z.boolean(), z.array(z.number())]));
 
 const propertySchema = z.object({
-  "Property Type": z.array(z.union([z.boolean(), z.string()])),
+  "Property Types": z.array(z.union([z.boolean(), z.array(z.string())])),
   "Bedrooms": rangeSchema,
   "Bathrooms": rangeSchema,
   "Building sqft": rangeSchema,
@@ -16,15 +16,18 @@ const propertySchema = z.object({
 });
 
 const defaultPropertyValues = {
-  "Property Type": [false, "Single-Family"],
-  "Bedrooms": [false, [0, 100]],
-  "Bathrooms": [false, [0, 100]],
-  "Building sqft": [false, [0, 100]],
-  "Lot sqft": [false, [0, 100]],
-  "Year Built": [false, [0, 100]],
+  "Property Types": [false, ["Single-Family"]],
+  "Bedrooms": [false, [defaults.bedrooms.min, defaults.bedrooms.max]],
+  "Bathrooms": [false, [defaults.bathrooms.min, defaults.bathrooms.max]],
+  "Building sqft": [false, [defaults.area.min, defaults.area.max]],
+  "Lot sqft": [false, [defaults.lotSize.min, defaults.lotSize.max]],
+  "Year Built": [false, [defaults.yearBuilt.min, defaults.yearBuilt.max]],
   "Pool": [false, "With"],
-  "Garages": [false, [0, 100]],
-  "Listing Price": [false, [0, 100]],
+  "Garages": [false, [defaults.garages.min, defaults.garages.max]],
+  "Listing Price": [false, [
+    defaults.listingPrice.min,
+    defaults.listingPrice.max,
+  ]],
 };
 
 const oppSchema = z.object({
@@ -53,19 +56,23 @@ const oppSchema = z.object({
 
 const defaultOppValues = {
   "Limitations": [false, {
-    "ARV": [false, [0, 100]],
+    "ARV": [false, [defaults.arv.min, defaults.arv.max]],
   }],
   "Fix & Flip": [false, {
-    "Margin": [false, [0, 100]],
-    "Cent on $": [false, [0, 100]],
+    "Margin": [false, [defaults.margin.min, defaults.margin.max]],
+    "Cent on $": [false, [
+      defaults.centOnDollar.min,
+      defaults.centOnDollar.max,
+    ]],
   }],
   "Buy & Hold": [false, {
-    "Cap Rate": [false, [0, 100]],
+    "Cap Rate": [false, [defaults.capRate.min, defaults.capRate.max]],
   }],
 };
 
 const similaritySchema = z.object({
   "Same Property Type": z.boolean(),
+  "Same Neighborhood": z.boolean(),
   "Bedrooms": rangeSchema.default([false, [0, 100]]),
   "Bathrooms": rangeSchema.default([false, [0, 100]]),
   "Building sqft": rangeSchema.default([false, [0, 100]]),
@@ -79,6 +86,7 @@ const similaritySchema = z.object({
 
 const defaultSimilarityValues = {
   "Same Property Type": false,
+  "Same Neighborhood": true,
   "Bedrooms": [false, [
     defaultSimilarityFields.bedrooms.min,
     defaultSimilarityFields.bedrooms.max,
@@ -130,10 +138,10 @@ const similarityWeightsSchema = z.object({
 });
 
 const defaultSimilarityWeights = {
-  "red": 0,
-  "orange": 0,
-  "yellow": 0,
-  "green": 0,
+  "red": 0.1,
+  "orange": 0.3,
+  "yellow": 0.8,
+  "green": 1,
 };
 
 const locationSchema = z.object({
@@ -161,10 +169,9 @@ const buyboxSchema = z.object({
   "description": z.string().optional(),
   // locations: z.array(z.string()).optional(),
   "target_location": locationSchema.default(defaultLocationValues),
-  property: propertySchema.default(defaultPropertyValues).optional(),
-  opp: oppSchema.default(defaultOppValues).optional(),
-  similarity: similarityFullSchema.default(defaultSimilarityFullValues)
-    .optional(),
+  property: propertySchema.default(defaultPropertyValues),
+  opp: oppSchema.default(defaultOppValues),
+  similarity: similarityFullSchema.default(defaultSimilarityFullValues),
   "similarity_weights": similarityWeightsSchema.default(
     defaultSimilarityWeights,
   ),

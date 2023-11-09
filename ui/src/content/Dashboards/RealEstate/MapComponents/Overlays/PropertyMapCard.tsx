@@ -32,6 +32,10 @@ import WcIcon from "@mui/icons-material/Wc";
 import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import PinDropOutlinedIcon from "@mui/icons-material/PinDropOutlined";
+import StraightenIcon from "@mui/icons-material/Straighten";
+import LocalOfferIcon from "@mui/icons-material/LocalOffer";
+import TodayIcon from "@mui/icons-material/Today";
+import AssessmentIcon from "@mui/icons-material/Assessment";
 
 const AddressLink = styled("h3")(({ theme }) => ({
   padding: 0,
@@ -65,6 +69,33 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
       return 0;
     }
   };
+
+  const stats =
+    `${props.property?.bedrooms} Beds ● ${props.property?.total_bathrooms} Baths ● ${props.property?.building_area} Sqft`;
+
+  const arvPercentage = typeof props.property?.arv_price === "number"
+    ? (
+      props.property?.arv_price > 0
+        ? (
+          props.property.arv_price - props.property.sales_listing_price
+        ) / props.property.arv_price * 100
+        : 0
+    )
+    : 0;
+
+  const compsPercentage = typeof props.property?.sales_comps_price === "number"
+    ? (
+      props.property?.sales_comps_price > 0
+        ? (
+          props.property.sales_comps_price - props.property.sales_listing_price
+        ) / props.property.sales_comps_price * 100
+        : 0
+    )
+    : 0;
+
+  const discounts =
+    `ARV ↓${arvPercentage.toFixed()}% ● Comps ↓${compsPercentage.toFixed()}%`;
+
   return (
     <div className="flex rounded-xl bg-white w-80 h-40">
       <div className="w-1/3 h-full relative">
@@ -90,56 +121,82 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
           className="object-cover object-center w-full h-full rounded-l-xl"
         />
       </div>
-      <div className="flex flex-col justify-around w-2/3 px-4 gap-y-2">
+      <div className="flex flex-col  w-2/3 px-4 gap-y-0">
         {/* import HotelIcon from '@mui/icons-material/Hotel'; */}
         {/* import BathtubIcon from '@mui/icons-material/Bathtub'; */}
         {/* import SquareFootIcon from '@mui/icons-material/SquareFoot'; */}
         <div className="flex w-full items-center justify-between mt-2">
-          <div className="flex">
-            <BedOutlinedIcon />
-            <Typography>{props.property?.bedrooms}</Typography>
-          </div>
-          <div className="flex">
-            <WcIcon />
-            <Typography>{props.property?.total_bathrooms}</Typography>
-          </div>
-          <div className="flex">
-            <SquareFootIcon />
-            <Typography>{props.property?.building_area}</Typography>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <PinDropOutlinedIcon />
-          <Typography className="text-[0.7rem] ml-2 font-poppins">
-            {props.property?.address}
+          <Typography className="font-poppins font-semibold text-xs">
+            {stats}
           </Typography>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex flex-col">
-            <Typography className="font-poppins justify-center text-center">
-              Price
+        <div className="flex items-center mt-2 w-full ">
+          <PinDropOutlinedIcon fontSize="small" />
+          <div className="flex flex-col w-full truncate">
+            <Typography className="text-xs ml-2 font-poppins ">
+              {props.property?.address}
             </Typography>
-
-            <Typography className="font-poppins font-bold">
-              {priceFormatter(props.property?.sales_listing_price)}
+            <Typography className="text-xs ml-2 font-poppins">
             </Typography>
           </div>
-          {typeof props.property?.arv_price === "number" && (
-            <div className="flex flex-col">
-              <Typography className="font-poppins justify-center text-center">
-                ARV
-              </Typography>
-
-              <Typography className="font-poppins font-bold">
-                {priceFormatter(props.property?.arv_price)}
-              </Typography>
-            </div>
-          )}
-
-          {/* <Typography className="font-poppins font-bold text-lg"> */}
-          {/*   {props.property.arv_price} */}
-          {/* </Typography> */}
         </div>
+
+        <div className="flex items-center mt-2 w-full gap-x-2 ">
+          <TodayIcon fontSize="small" />
+          <Typography className="text-xs font-poppins text-center">
+            {/* 3 Days Old */}
+          </Typography>
+        </div>
+
+        <div className="flex items-center mt-2 w-full">
+          <LocalOfferIcon fontSize="small" />
+          <Typography className="text-xs ml-2 font-poppins text-center">
+            {priceFormatter(props.property?.sales_listing_price)}
+          </Typography>
+        </div>
+
+        <div className="flex items-center mt-2 w-full">
+          <AssessmentIcon fontSize="small" />
+          <Typography className="text-xs ml-2 font-poppins text-center">
+            {discounts}
+          </Typography>
+        </div>
+
+        {/* <div className="flex items-center mt-2 w-full"> */}
+        {/*   <LocalOfferIcon fontSize="small" /> */}
+        {/**/}
+        {/*   <Typography className="text-xs ml-1 font-poppins text-center"> */}
+        {/*     3 Days Old */}
+        {/*   </Typography> */}
+        {/**/}
+        {/*   <Typography className="text-xs ml-1 font-poppins text-center"> */}
+        {/*     {priceFormatter(props.property?.sales_listing_price)} */}
+        {/*   </Typography> */}
+        {/* </div> */}
+
+        {/* <div className="flex items-center justify-between"> */}
+        {/*   <div className="flex flex-col"> */}
+        {/*     <Typography className="font-poppins justify-center text-center"> */}
+        {/*       Price */}
+        {/*     </Typography> */}
+        {/**/}
+        {/*     <Typography className="font-poppins font-bold"> */}
+        {/*       {priceFormatter(props.property?.sales_listing_price)} */}
+        {/*     </Typography> */}
+        {/*   </div> */}
+        {/*   {typeof props.property?.arv_price === "number" && ( */}
+        {/*     <div className="flex flex-col"> */}
+        {/*       <Typography className="font-poppins justify-center text-center"> */}
+        {/*         ARV */}
+        {/*       </Typography> */}
+        {/**/}
+        {/*       <Typography className="font-poppins font-bold"> */}
+        {/*         {priceFormatter(props.property?.arv_price)} */}
+        {/*       </Typography> */}
+        {/*     </div> */}
+        {/*   )} */}
+        {/**/}
+        {/* </div> */}
       </div>
     </div>
   );

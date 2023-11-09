@@ -285,6 +285,16 @@ const CompsFilter = (
             </React.Fragment>
           ))}
         </div>
+        {
+          //show errors
+          Object.keys(errors).length > 0 && (
+            <div className="flex flex-col items-center justify-center mt-4">
+              <Typography className="text-red-500">
+                Please fix the errors above
+              </Typography>
+            </div>
+          )
+        }
         {/* <div className="mt-8 ml-16"> */}
         {/*   {booleanFields.map((field, index) => ( */}
         {/*     <div */}

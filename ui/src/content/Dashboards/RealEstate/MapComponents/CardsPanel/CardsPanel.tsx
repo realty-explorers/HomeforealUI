@@ -158,8 +158,8 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   return (
     <div
       className={clsx([
-        "absolute bottom-0 w-full h-60 transition-[margin] duration-300",
-        !cardsOpen && "-mb-48",
+        "absolute bottom-0 w-full h-52 transition-[margin] duration-300",
+        !cardsOpen && "-mb-44",
       ])}
     >
       <div

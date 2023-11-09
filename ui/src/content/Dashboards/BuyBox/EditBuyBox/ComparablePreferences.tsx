@@ -46,7 +46,9 @@ const TabPanel = (props: TabPanelProps) => {
 
 const similarityTypes = ["green", "yellow", "orange", "red"];
 const similarityFields = [
+  { fieldName: "Same Neighborhood", type: "boolean" },
   { fieldName: "Same Property Type", type: "boolean" },
+  { fieldName: "Same Pool Status", type: "boolean" },
   {
     fieldName: "Bedrooms",
     type: "range",
@@ -67,6 +69,7 @@ const similarityFields = [
     min: defaultSimilarityFields.area.min,
     max: defaultSimilarityFields.area.max,
     step: defaultSimilarityFields.area.step,
+    formatLabelAsNumber: true,
   },
   {
     fieldName: "Year Built",
@@ -81,8 +84,8 @@ const similarityFields = [
     min: defaultSimilarityFields.lotSize.min,
     max: defaultSimilarityFields.lotSize.max,
     step: defaultSimilarityFields.lotSize.step,
+    formatLabelAsNumber: true,
   },
-  { fieldName: "Same Pool Status", type: "boolean" },
   {
     fieldName: "Garages",
     type: "range",
@@ -96,6 +99,7 @@ const similarityFields = [
     min: defaultSimilarityFields.distance.min,
     max: defaultSimilarityFields.distance.max,
     step: defaultSimilarityFields.distance.step,
+    postfix: "mi",
   },
   {
     fieldName: "Sale Date",
@@ -103,6 +107,7 @@ const similarityFields = [
     min: defaultSimilarityFields.saleDate.min,
     max: defaultSimilarityFields.saleDate.max,
     step: defaultSimilarityFields.saleDate.step,
+    postfix: "days",
   },
 ];
 
@@ -186,10 +191,13 @@ const ComparablePreferences = (
                       </div>
                       <RangeField
                         key={index}
-                        watch={watch}
                         min={similarityField.min}
                         max={similarityField.max}
                         step={similarityField.step}
+                        // prefix={similarityField.prefix}
+                        postfix={similarityField.postfix}
+                        formatLabelAsNumber={similarityField
+                          .formatLabelAsNumber}
                         fieldName={`similarity.${similarityType}.${similarityField.fieldName}.1`}
                         setValue={setValue}
                         getValues={getValues}
@@ -217,6 +225,33 @@ const ComparablePreferences = (
                   )
               );
             })}
+            {index === tab &&
+              (
+                <>
+                  <div
+                    className={clsx([
+                      " w-full item-center ml-14",
+                      index === tab ? "flex" : "hidden",
+                    ])}
+                  >
+                    <Typography className={styles.label}>
+                      Similarity Weight
+                    </Typography>
+                  </div>
+                  <RangeField
+                    key={index}
+                    min={0}
+                    max={1}
+                    step={0.01}
+                    fieldName={`similarity_weights.${similarityType}`}
+                    setValue={setValue}
+                    getValues={getValues}
+                    className={clsx([
+                      index === tab ? "" : "hidden",
+                    ])}
+                  />
+                </>
+              )}
           </React.Fragment>
         );
       })}

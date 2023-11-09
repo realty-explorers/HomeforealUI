@@ -4,12 +4,13 @@ import { Link, Typography } from "@mui/material";
 import clsx from "clsx";
 import styles from "./LandingPage.module.scss";
 import PropertiesExample from "./PropertiesExample";
+import { TypeAnimation } from "react-type-animation";
 
 const HeroSection = () => {
   return (
     <div className="max-w-[85%] mt-10">
       <div className="flex wrap gap-8 justify-center">
-        <div className="flex flex-wrap w-[60rem] xl:w-[30rem]">
+        <div className="flex flex-wrap w-[60rem] xl:w-[35rem]">
           <div className="flex w-full justify-between items-center gap-2">
             <Typography className={styles.header_1}>
               find untapped
@@ -26,9 +27,30 @@ const HeroSection = () => {
 
           <div className="flex mt-8">
             <Typography className={styles.header_2}>
-              Home for real is a platform that helps leading real estate agents
-              find, match and analyze real estate. unlock hidden real estate
-              opportunists
+              {/* Home for real is a platform that helps leading real estate agents */}
+              {/* find, match and analyze real estate. unlock hidden real estate */}
+              {/* opportunists */}
+              Discover Real Estate Opportunities with HomeForReal. <br />
+              HomeForReal is a platform <br /> for{"  "}
+              <TypeAnimation
+                sequence={[
+                  "Finding hidden Gems", // Types 'One'
+                  2000, // Waits 1s
+                  "Matching with Precision", // Deletes 'One' and types 'Two'
+                  2000, // Waits 2s
+                  "Analyzing with Insight", // Types 'Three' without deleting 'Two'
+                  2000, // Waits 2s
+                  "Unlock Opportunities", // Types 'Three' without deleting 'Two'
+                  2000, // Waits 2s
+                  () => {
+                    console.log("Sequence completed");
+                  },
+                ]}
+                wrapper="span"
+                cursor={true}
+                repeat={Infinity}
+                className="text-[2rem] underline text-primary"
+              />
             </Typography>
           </div>
           <div className="flex items-center mt-4">

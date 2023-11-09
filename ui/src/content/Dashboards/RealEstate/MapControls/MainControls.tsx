@@ -89,7 +89,8 @@ const MainControls: React.FC<MainControlsProps> = (
   const [baths, setBaths] = useState([0, 9]);
 
   useEffect(() => {
-    dispatch(setFilteredProperties(propertiesState.data));
+    filterPropertiesByValue(0, "", strategy);
+    // dispatch(setFilteredProperties(propertiesState.data));
   }, [propertiesState.data]);
 
   const updateArv = (value: number) => {

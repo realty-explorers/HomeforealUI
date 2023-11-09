@@ -1,5 +1,8 @@
 const priceFormatter = (value: number | string) =>
   `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+
+const numberFormatter = (value: number | string) =>
+  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 const percentFormatter = (value: number) => `%${value.toFixed(2)}`;
 const distanceFormatter = (value: number) => `${value.toFixed(2)} Miles`;
 const currencyFormatter = (currency: number): string => {
@@ -116,6 +119,7 @@ export {
   ageScale,
   currencyFormatter,
   distanceFormatter,
+  numberFormatter,
   numberStringUtil,
   percentFormatter,
   priceFormatter,

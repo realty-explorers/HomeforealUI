@@ -5,11 +5,11 @@ export const boundsLayer: LayerProps = {
   type: "fill",
   source: "bounds",
   layout: {
-    "fill-sort-key": -1,
+    "fill-sort-key": -2,
   },
   paint: {
     "fill-color": "#0080ff", // blue color fill
-    "fill-opacity": 0.15,
+    "fill-opacity": 0.1,
   },
 };
 
@@ -31,8 +31,8 @@ export const propertyBoundsLayer: LayerProps = {
     "fill-sort-key": -1,
   },
   paint: {
-    "fill-color": "#ff80ff", // blue color fill
-    "fill-opacity": 0.35,
+    "fill-color": "#0080ff", // blue color fill
+    "fill-opacity": 0.25,
     "fill-opacity-transition": { duration: 1000 },
   },
 };
@@ -41,8 +41,17 @@ export const propertyBoundsLineLayer: LayerProps = {
   id: "property-bounds-line",
   type: "line",
   source: "property-bounds",
+  layout: {
+    "line-cap": "round",
+  },
   paint: {
     "line-color": "#000",
-    "line-width": 2,
+    // "line-color": "#fff",
+    // "line-width": 1,
+    "line-dasharray": [3, 3],
+    "line-width": 1,
+    // "line-dasharray": [0, 4, 3],
+    "line-blur": 0,
+    "line-blur-transition": { duration: 1000 },
   },
 };

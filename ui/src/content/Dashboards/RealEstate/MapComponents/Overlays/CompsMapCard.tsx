@@ -11,6 +11,11 @@ import WcIcon from "@mui/icons-material/Wc";
 import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
 import SquareFootIcon from "@mui/icons-material/SquareFoot";
 import PinDropOutlinedIcon from "@mui/icons-material/PinDropOutlined";
+import StraightenIcon from "@mui/icons-material/Straighten";
+import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
+import TodayIcon from "@mui/icons-material/Today";
+import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
+import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
 import clsx from "clsx";
 
 const defaultImage =
@@ -50,6 +55,14 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
         return "text-gray-500";
     }
   };
+
+  const stats =
+    `${props.property?.bedrooms} Beds ● ${props.property?.total_bathrooms} Baths ● ${props.property?.building_area} Sqft`;
+
+  const locationStats = `${
+    props.property.distance.toFixed(2)
+  } Miles ● ${props.property.sales_days_on_market} Days Old`;
+
   return (
     <div className="flex rounded-xl bg-white w-80 h-40">
       <div className="w-1/3 h-full relative">
@@ -75,45 +88,56 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
         {/*   className="w-full h-full rounded-l-xl object-cover object-center" */}
         {/* /> */}
       </div>
-      <div className="flex flex-col justify-around w-2/3 px-4 gap-y-2">
+      <div className="flex flex-col  w-2/3 px-4 gap-y-0">
         {/* import HotelIcon from '@mui/icons-material/Hotel'; */}
         {/* import BathtubIcon from '@mui/icons-material/Bathtub'; */}
         {/* import SquareFootIcon from '@mui/icons-material/SquareFoot'; */}
         <div className="flex w-full items-center justify-between mt-2">
-          <div className="flex">
-            <BedOutlinedIcon />
-            <Typography>{props.property.bedrooms}</Typography>
-          </div>
-          <div className="flex">
-            <WcIcon />
-            <Typography>{props.property.full_bathrooms}</Typography>
-          </div>
-          <div className="flex">
-            <SquareFootIcon />
-            <Typography>{props.property.building_area}</Typography>
-          </div>
-        </div>
-        <div className="flex items-center">
-          <PinDropOutlinedIcon />
-          <Typography className="text-[0.7rem] ml-2 font-poppins">
-            {props.property.address.substring(
-              0,
-              props.property.address.indexOf(","),
-            )}
-            {props.property.neighborhood !== "N/A" &&
-              props.property.neighborhood}, {props.property.zipcode}
+          <Typography className="font-poppins font-semibold text-xs">
+            {stats}
           </Typography>
         </div>
-        <div className="flex items-center justify-between">
-          <Typography className="font-poppins font-bold">
-            {priceFormatter(props.property.sales_closing_price)} Sold Price
+        <div className="flex items-center mt-2 w-full ">
+          <PinDropOutlinedIcon fontSize="small" />
+          <div className="flex flex-col w-full truncate">
+            <Typography className="text-xs ml-2 font-poppins ">
+              {props.property?.address}
+            </Typography>
+            <Typography className="text-xs ml-2 font-poppins">
+            </Typography>
+          </div>
+        </div>
+
+        <div className="flex items-center mt-2 w-full gap-x-2 ">
+          <div className="flex items-center">
+            {/* <StraightenIcon fontSize="small" /> */}
+            <ExploreOutlinedIcon fontSize="small" />
+            <Typography className="text-xs ml-1 font-poppins text-center">
+              {locationStats}
+            </Typography>
+          </div>
+
+          {/* <div className="flex items-center"> */}
+          {/*   <TodayIcon fontSize="small" /> */}
+          {/*   <Typography className="text-xs ml-1 font-poppins text-center"> */}
+          {/*     3 Days Old */}
+          {/*   </Typography> */}
+          {/* </div> */}
+        </div>
+
+        <div className="flex items-center mt-2 w-full">
+          <LocalOfferOutlinedIcon fontSize="small" />
+          <Typography className="text-xs ml-2 font-poppins text-center">
+            {priceFormatter(props.property?.sales_listing_price)}
           </Typography>
         </div>
 
-        <div className="flex items-center justify-between">
+        <div className="flex items-center mt-2 w-full">
+          <AssessmentOutlinedIcon fontSize="small" />
+
           <Typography
             className={clsx([
-              "font-poppins font-bold",
+              "font-poppins ml-2 font-bold",
               getColorClass(props.property.similarity_color),
             ])}
           >

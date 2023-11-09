@@ -28,7 +28,7 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
     <>
       <div
         className={clsx([
-          "grid grid-cols-[2fr_1fr] grid-rows-2 w-full h-80 gap-4 p-4",
+          "grid grid-cols-[2fr_1fr] grid-rows-2 w-full h-[30vh] gap-1 p-2 mt-4",
           props.photos.length == 0 ? "hidden" : "",
         ])}
       >
@@ -56,7 +56,9 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
           className={clsx([
             "h-full justify-center items-center cursor-pointer ",
             props.photos.length < 2 ? "hidden" : "xl:flex",
-            props.photos.length == 2 ? "row-span-2" : "row-span-1",
+            props.photos.length == 2
+              ? "row-span-2"
+              : "row-span-2 xl:row-span-1",
           ])}
         >
           {/* <img */}

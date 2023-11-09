@@ -283,6 +283,53 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     infoEl[0]?.classList.add("mapboxgl-compact");
   };
 
+  function enableLineAnimation() {
+    alert(mapRef?.current);
+  }
+
+  useEffect(() => {
+    // if (mapRef.current?.getLayer("property-bounds-line")) {
+    //   var step = 0;
+    //   let dashArraySeq = [
+    //     [0, 4, 3],
+    //     [1, 4, 2],
+    //     [2, 4, 1],
+    //     [3, 4, 0],
+    //     [0, 1, 3, 3],
+    //     [0, 2, 3, 2],
+    //     [0, 3, 3, 1],
+    //   ];
+    //   let blurs = [
+    //     0,
+    //     1,
+    //     2,
+    //     3,
+    //     4,
+    //     3,
+    //     2,
+    //     1,
+    //   ];
+    //
+    //   const intervarl = setInterval(() => {
+    //     console.log("meow");
+    //     step = (step + 1) % dashArraySeq.length;
+    //     mapRef?.current?.getMap().setPaintProperty(
+    //       "property-bounds-line",
+    //       "line-dasharray",
+    //       dashArraySeq[step],
+    //     );
+    //
+    //     // step = (step + 1) % blurs.length;
+    //     // mapRef?.current?.getMap().setPaintProperty(
+    //     //   "property-bounds-line",
+    //     //   "line-blur",
+    //     //   blurs[step],
+    //     // );
+    //   }, 50);
+    //   return () => clearInterval(intervarl);
+    // }
+  }, [selectedPropertyPreview, selecting]);
+
   useEffect(() => {
     mapRef?.current?.on("render", handleRender);
     mapRef?.current?.on("click", "unclustered-point", handleClickProperty);
@@ -486,7 +533,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
         <CardsPanel open={Boolean(propertiesState.data)} />
         <PropertyLocationBoundsSource
-          show={!selecting && selectedPropertyPreview}
+          show={!selecting && Boolean(selectedPropertyPreview)}
           data={propertyBoundsData}
           map={mapRef.current?.getMap()}
         />

@@ -38,47 +38,13 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
-    <>
-      <MainWrapper open={open}>
-        {/* <Sidebar open={open} setOpen={setOpen} /> */}
-        <Header open={open} setOpen={setOpen} />
-        <Box
-          sx={{
-            display: "flex",
-            flexGrow: 1,
-            overflow: "hidden",
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          {children}
-        </Box>
-        {
-          /* <Header open={open} setOpen={setOpen} />
-        <Sidebar open={open} setOpen={setOpen} /> */
-        }
-        {
-          /* <Box
-          sx={{
-            position: 'relative',
-            zIndex: 5,
-            display: 'block',
-            height: '100vh',
-            width: '100%',
-            flex: 1,
-            pt: `${theme.header.height}`
-            // [theme.breakpoints.up('lg')]: {
-            //   ml: `${theme.sidebar.width}`
-            // }
-          }}
-        >
-          <Box display="block" sx={{ height: '100%' }}>
-            {children}
-          </Box>
-        </Box> */
-        }
-      </MainWrapper>
-    </>
+    <div className="flex flex-col h-screen w-full">
+      {/* <Sidebar open={open} setOpen={setOpen} /> */}
+      <Header open={open} setOpen={setOpen} />
+      <main className="flex flex-grow w-full">
+        {children}
+      </main>
+    </div>
   );
 };
 

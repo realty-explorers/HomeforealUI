@@ -31,6 +31,8 @@ const groups = [
         min: defaults.arv.min,
         max: defaults.arv.max,
         step: defaults.arv.step,
+        prefix: "$",
+        formatLabelAsNumber: true,
       },
     ],
   },
@@ -42,11 +44,20 @@ const groups = [
         title: "Margin",
         fieldName: "opp.Fix & Flip.1.Margin",
         type: "range",
+        min: defaults.margin.min,
+        max: defaults.margin.max,
+        step: defaults.margin.step,
+        prefix: "$",
+        formatLabelAsNumber: true,
       },
       {
         title: "Cents on $",
         fieldName: "opp.Fix & Flip.1.Cents on $",
         type: "range",
+        min: defaults.centOnDollar.min,
+        max: defaults.centOnDollar.max,
+        step: defaults.centOnDollar.step,
+        prefix: "$",
       },
     ],
   },
@@ -58,6 +69,10 @@ const groups = [
         title: "Cap Rate",
         fieldName: "opp.Buy & Hold.1.Cap Rate",
         type: "range",
+        min: defaults.capRate.min,
+        max: defaults.capRate.max,
+        step: defaults.capRate.step,
+        postfix: "%",
       },
     ],
   },
@@ -119,9 +134,12 @@ const InvestmentCriteria = (
                         min={field.min}
                         max={field.max}
                         step={field.step}
+                        prefix={field.prefix}
+                        postfix={field.postfix}
                         fieldName={`${field.fieldName}.1`}
                         setValue={setValue}
                         getValues={getValues}
+                        formatLabelAsNumber={field.formatLabelAsNumber}
                         disabled={!watch(`${group.fieldName}`) ||
                           !watch(`${field.fieldName}.0`)}
                       />

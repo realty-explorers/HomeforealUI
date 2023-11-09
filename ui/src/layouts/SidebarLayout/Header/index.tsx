@@ -61,6 +61,7 @@ const Header = (props: HeaderProps) => {
     <HeaderWrapper
       display="flex"
       alignItems="center"
+      className="flex h-14"
       sx={{
         boxShadow: "0px 1px 5px 0px rgba(0,0,0,0.5)",
         zIndex: 1,
