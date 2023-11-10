@@ -15,7 +15,7 @@ import StraightenIcon from "@mui/icons-material/Straighten";
 import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
 import TodayIcon from "@mui/icons-material/Today";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
-import ExploreOutlinedIcon from "@mui/icons-material/ExploreOutlined";
+import SettingsEthernetIcon from "@mui/icons-material/SettingsEthernet";
 import clsx from "clsx";
 
 const defaultImage =
@@ -111,7 +111,7 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
         <div className="flex items-center mt-2 w-full gap-x-2 ">
           <div className="flex items-center">
             {/* <StraightenIcon fontSize="small" /> */}
-            <ExploreOutlinedIcon fontSize="small" />
+            <SettingsEthernetIcon fontSize="small" />
             <Typography className="text-xs ml-1 font-poppins text-center">
               {locationStats}
             </Typography>
@@ -144,6 +144,11 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
             {props.property.similarity_score * 100}% Similarity
           </Typography>
         </div>
+        {props.property.is_arv_25th && (
+          <div className="absolute bottom-1 right-1 bg-arv text-white font-poppins text-[0.7rem] px-2 rounded-lg font-semibold">
+            25th ARV
+          </div>
+        )}
       </div>
     </div>
   );

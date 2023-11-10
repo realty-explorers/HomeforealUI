@@ -96,7 +96,7 @@ const ManagementUserProfile = () => {
           transition={{ duration: 0.3 }}
         >
           {selectedIndex === 0 && <Subscriptions />}
-          {selectedIndex === 1 && <Invoice />}
+          {/* {selectedIndex === 1 && <Invoice />} */}
           {selectedIndex === 2 && <UserManagement />}
         </motion.div>
       </div>

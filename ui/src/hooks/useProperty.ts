@@ -4,6 +4,7 @@ import {
   useLazyGetLocationDataQuery,
 } from "@/store/services/locationApiService";
 import { useLazyGetPropertyQuery } from "@/store/services/propertiesApiService";
+import { selectFilter } from "@/store/slices/filterSlice";
 import {
   setRentalCalculatedProperty,
   setSaleCalculatedProperty,
@@ -13,9 +14,11 @@ import {
   setSelectedPropertyPreview,
   setSelectedRentalComps,
 } from "@/store/slices/propertiesSlice";
-import { useDispatch } from "react-redux";
+import { skipToken } from "@reduxjs/toolkit/query";
+import { useDispatch, useSelector } from "react-redux";
 
 export const useProperty = () => {
+  const { buybox } = useSelector(selectFilter);
   const [getLocationData, locationState] = useLazyGetLocationDataQuery();
   const [getProperty, propertyState] = useLazyGetPropertyQuery();
   const dispatch = useDispatch();
@@ -40,7 +43,9 @@ export const useProperty = () => {
     try {
       dispatch(setSelectedPropertyPreview(property));
       const propertyData: AnalyzedProperty = await getProperty(
-        property.source_id,
+        buybox
+          ? { buybox_id: buybox.id, property_id: property.source_id }
+          : skipToken,
       )
         .unwrap();
       if (propertyData) {

@@ -37,6 +37,7 @@ interface CompData {
   full_bathrooms: number;
   half_bathrooms: number;
   total_bathrooms: number;
+  is_arv_25th: boolean;
 }
 
 interface FilteredComp extends CompData {

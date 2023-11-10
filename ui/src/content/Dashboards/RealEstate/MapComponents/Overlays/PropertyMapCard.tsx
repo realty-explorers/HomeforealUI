@@ -93,6 +93,9 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
     )
     : 0;
 
+  const arvDiscount = `ARV ↓${arvPercentage.toFixed()}%`;
+  const compsDiscount = `Comps ↓${compsPercentage.toFixed()}%`;
+  const seperator = " ● ";
   const discounts =
     `ARV ↓${arvPercentage.toFixed()}% ● Comps ↓${compsPercentage.toFixed()}%`;
 
@@ -158,7 +161,19 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
         <div className="flex items-center mt-2 w-full">
           <AssessmentIcon fontSize="small" />
           <Typography className="text-xs ml-2 font-poppins text-center">
-            {discounts}
+            {/* {discounts} */}
+          </Typography>
+
+          <Typography className="text-[0.7rem] font-poppins text-center flex bg-arv  text-white font-semibold rounded px-1">
+            {arvDiscount}
+          </Typography>
+
+          {/* <Typography className="text-xs  font-poppins text-center mx-1"> */}
+          {/*   {seperator} */}
+          {/* </Typography> */}
+
+          <Typography className="ml-2 text-[0.7rem]  font-poppins text-center bg-secondary text-white font-semibold rounded px-1">
+            {compsDiscount}
           </Typography>
         </div>
 

@@ -1,6 +1,12 @@
 import React, { useEffect, useMemo, useState } from "react";
 import {
+  Autocomplete,
+  FormControl,
   Grid,
+  InputLabel,
+  MenuItem,
+  OutlinedInput,
+  Select,
   styled,
   Switch,
   ToggleButton,
@@ -20,6 +26,7 @@ import SliderField from "./SliderField";
 import {
   selectFilter,
   setArvMargin,
+  setBuybox,
   setCompsMargin,
   setFilteredProperties,
   setMaxBaths,
@@ -40,8 +47,14 @@ import PropertyTypeFilter from "./PropertyTypeFilter";
 import AnalyzedProperty from "@/models/analyzedProperty";
 import { locationApiEndpoints } from "@/store/services/locationApiService";
 import { selectLocation } from "@/store/slices/locationSlice";
-import { propertiesApiEndpoints } from "@/store/services/propertiesApiService";
+import {
+  propertiesApiEndpoints,
+  useGetPropertiesPreviewsQuery,
+} from "@/store/services/propertiesApiService";
 import PropertyPreview from "@/models/propertyPreview";
+import { useLazyGetBuyBoxesQuery } from "@/store/services/buyboxApiService";
+import { useSnackbar } from "notistack";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 const filterFieldNames = [
   "arv_price",
@@ -56,15 +69,7 @@ type MainControlsProps = {};
 const MainControls: React.FC<MainControlsProps> = (
   props: MainControlsProps,
 ) => {
-  const dispatch = useDispatch();
-
-  const { suggestion } = useSelector(selectLocation);
-  const propertiesState = propertiesApiEndpoints.getPropertiesPreviews
-    .useQueryState(
-      suggestion,
-    );
-  locationApiEndpoints.getLocationData.useQuerySubscription(suggestion);
-  propertiesApiEndpoints.getPropertiesPreviews.useQuerySubscription(suggestion);
+  const { enqueueSnackbar } = useSnackbar();
 
   const {
     arvMargin,
@@ -79,7 +84,24 @@ const MainControls: React.FC<MainControlsProps> = (
     maxSqft,
     propertyTypes,
     filteredProperties,
+    buybox,
   } = useSelector(selectFilter);
+
+  const dispatch = useDispatch();
+  const { suggestion } = useSelector(selectLocation);
+
+  const [getBuyBoxes, buyBoxesState] = useLazyGetBuyBoxesQuery();
+  // const propertiesState = propertiesApiEndpoints.getPropertiesPreviews
+  //   .useQueryState(
+  //     suggestion && buybox ? { suggestion, buybox_id: buybox.id } : skipToken,
+  //   );
+  const propertiesQuery = useGetPropertiesPreviewsQuery(
+    suggestion && buybox ? { suggestion, buybox_id: buybox.id } : skipToken,
+  );
+  locationApiEndpoints.getLocationData.useQuerySubscription(suggestion);
+  // propertiesApiEndpoints.getPropertiesPreviews.useQuerySubscription(
+  //   suggestion && buybox ? { suggestion, buybox_id: buybox.id } : skipToken,
+  // );
 
   const [arv, setArv] = useState(0);
   const [price, setPrice] = useState([0, 1000000]);
@@ -89,9 +111,22 @@ const MainControls: React.FC<MainControlsProps> = (
   const [baths, setBaths] = useState([0, 9]);
 
   useEffect(() => {
+    const getBuyBoxesData = async () => {
+      try {
+        const data = await getBuyBoxes("1", true).unwrap();
+      } catch (error) {
+        enqueueSnackbar(`${error.error}`, {
+          variant: "error",
+        });
+      }
+    };
+    getBuyBoxesData();
+  }, []);
+
+  useEffect(() => {
     filterPropertiesByValue(0, "", strategy);
     // dispatch(setFilteredProperties(propertiesState.data));
-  }, [propertiesState.data]);
+  }, [propertiesQuery.data]);
 
   const updateArv = (value: number) => {
     setArv(value);
@@ -164,7 +199,7 @@ const MainControls: React.FC<MainControlsProps> = (
     updatedFieldName: string,
     strategy?: string,
   ) => {
-    const filteredProperties = propertiesState.data?.filter(
+    const filteredProperties = propertiesQuery.data?.filter(
       (property: PropertyPreview) => {
         for (const fieldName of filterFieldNames) {
           const filterValue = getFilterValue(
@@ -241,12 +276,38 @@ const MainControls: React.FC<MainControlsProps> = (
       dispatch(setStrategyMode(newStrategy));
     }
   };
+  const handleBuyBoxChange = (e) => {
+    const value = e.target.value;
+    dispatch(setBuybox(value));
+  };
 
   return (
     <div>
       <div className="absolute top-2 right-4 font-poppins font-bold">
         {filteredProperties?.length} found
       </div>
+      {buyBoxesState.isFetching
+        ? <div>loading...</div>
+        : (buyBoxesState.data && (
+          <FormControl fullWidth size="small" className="mb-2">
+            <InputLabel>BuyBox</InputLabel>
+            <Select
+              value={buybox || {}}
+              label="BuyBox"
+              onChange={handleBuyBoxChange}
+            >
+              {buyBoxesState.data?.map((buybox) => (
+                <MenuItem
+                  key={buybox.id}
+                  value={buybox}
+                >
+                  {buybox.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        ))}
+
       <div className="flex w-full justify-center items-center mb-4">
         <ToggleButtonGroup
           color="primary"
@@ -258,6 +319,11 @@ const MainControls: React.FC<MainControlsProps> = (
           <ToggleButton
             value="ARV"
             className="flex items-center justify-center h-8"
+            sx={{
+              "&.Mui-selected": {
+                backgroundColor: "#77d077",
+              },
+            }}
           >
             <Tooltip title="Choose ARV as margin filtering" enterDelay={700}>
               <Typography className="font-poppins font-semibold">
@@ -285,7 +351,7 @@ const MainControls: React.FC<MainControlsProps> = (
       {strategy === "ARV"
         ? (
           <SliderField
-            fieldName="ARV Margin"
+            fieldName="Min ARV Margin %"
             tooltip="Percentage under estimated market ARV"
           >
             <SliderInput
@@ -310,7 +376,7 @@ const MainControls: React.FC<MainControlsProps> = (
         )
         : (
           <SliderField
-            fieldName="Sales Comps Margin"
+            fieldName="Min Sales Comps Margin %"
             tooltip="Percentage under market sales comps"
           >
             <SliderInput

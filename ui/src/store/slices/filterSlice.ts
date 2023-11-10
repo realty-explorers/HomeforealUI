@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppState } from "../store";
 import Property, { PropertyType } from "@/models/property";
 import PropertyPreview from "@/models/propertyPreview";
+import BuyBox from "@/models/buybox";
 
 // Type for our state
 export interface Filter {
@@ -18,6 +19,7 @@ export interface Filter {
   propertyTypes: PropertyType[];
   filteredProperties: PropertyPreview[];
   strategyMode: string;
+  buybox: BuyBox;
 }
 
 // Initial state
@@ -39,6 +41,7 @@ const initialState: Filter = {
   ],
   filteredProperties: [],
   strategyMode: "ARV",
+  buybox: undefined,
 };
 
 // Actual Slice
@@ -86,6 +89,9 @@ export const filterSlice = createSlice({
     setStrategyMode(state, action: PayloadAction<string>) {
       state.strategyMode = action.payload;
     },
+    setBuybox(state, action: PayloadAction<BuyBox>) {
+      state.buybox = action.payload;
+    },
   },
 });
 
@@ -104,6 +110,7 @@ export const {
   setPropertyTypes,
   setFilteredProperties,
   setStrategyMode,
+  setBuybox,
 } = filterSlice.actions;
 export const selectFilter: (state: AppState) => Filter = (state: AppState) =>
   state.filter;

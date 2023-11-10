@@ -7,7 +7,7 @@ import {
   Typography,
 } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { RangeField } from "./RangeField";
+import RangeField from "@/components/Form/RangeField";
 import styles from "./CompsSection.module.scss";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -36,6 +36,8 @@ const rangeFields = [
     min: defaults.listingPrice.min,
     max: defaults.listingPrice.max,
     step: defaults.listingPrice.step,
+    formatLabelAsNumber: true,
+    prefix: "$",
   },
   {
     label: "Bedrooms",
@@ -61,6 +63,7 @@ const rangeFields = [
     min: defaults.lotSize.min,
     max: defaults.lotSize.max,
     step: defaults.lotSize.step,
+    formatLabelAsNumber: true,
   },
   {
     label: "Building Sqft",
@@ -69,6 +72,7 @@ const rangeFields = [
     min: defaults.area.min,
     max: defaults.area.max,
     step: defaults.area.step,
+    formatLabelAsNumber: true,
   },
   {
     label: "Year Built",
@@ -93,6 +97,8 @@ const rangeFields = [
     min: defaults.soldPrice.min,
     max: defaults.soldPrice.max,
     step: defaults.soldPrice.step,
+    formatLabelAsNumber: true,
+    prefix: "$",
   },
 
   {
@@ -102,6 +108,8 @@ const rangeFields = [
     min: defaults.pricePerSqft.min,
     max: defaults.pricePerSqft.max,
     step: defaults.pricePerSqft.step,
+    formatLabelAsNumber: true,
+    prefix: "$",
   },
   {
     label: "Max Distance",
@@ -246,7 +254,7 @@ const CompsFilter = (
         </Typography>
       </DialogTitle>
       <form onSubmit={handleSubmit(onSubmit)} className="w-full py-4">
-        <div className="grid grid-cols-[2fr_1fr_1fr_1fr] w-full pr-16 pb-4 gap-y-4 mb-4">
+        <div className="grid grid-cols-[1fr_1fr_4fr] w-full pr-16 pb-4 gap-y-4 mb-4">
           <Typography className={clsx([styles.compsFilterHeader])}>
             Characteristics
           </Typography>
@@ -254,13 +262,10 @@ const CompsFilter = (
             Subject Prop.
           </Typography>
           <Typography className={clsx([styles.compsFilterHeader])}>
-            Min
-          </Typography>
-          <Typography className={clsx([styles.compsFilterHeader])}>
-            Max
+            Comps Range
           </Typography>
         </div>
-        <div className="grid grid-cols-[2fr_1fr_1fr_1fr] w-full gap-y-4 pr-16 ">
+        <div className="grid grid-cols-[1fr_1fr_4fr] w-full gap-y-4 pr-16 ">
           {rangeFields.map((field, index) => (
             <React.Fragment key={index}>
               <div className="flex items-center ">
@@ -277,10 +282,23 @@ const CompsFilter = (
                   {selectedProperty[field.subjectFieldName]}
                 </Typography>
               </div>
-              <CompsFilterField
-                field={field}
-                getValues={getValues}
+              {/* <CompsFilterField */}
+              {/*   field={field} */}
+              {/*   getValues={getValues} */}
+              {/*   setValue={setValue} */}
+              {/* /> */}
+
+              <RangeField
+                key={index}
+                min={field.min}
+                max={field.max}
+                step={field.step}
+                prefix={field.prefix}
+                postfix={field.postfix}
+                formatLabelAsNumber={field.formatLabelAsNumber}
+                fieldName={`${field.fieldName}`}
                 setValue={setValue}
+                getValues={getValues}
               />
             </React.Fragment>
           ))}

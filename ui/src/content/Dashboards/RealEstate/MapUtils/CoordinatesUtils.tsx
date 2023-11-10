@@ -37,6 +37,7 @@ const generateCompsGeoJson = (comp: FilteredComp) => {
     properties: {
       id: comp.source_id, // Generate a random ID
       index: comp.index + 1,
+      isARVCalculated: comp.is_arv_25th,
     },
     geometry: {
       type: "Point",

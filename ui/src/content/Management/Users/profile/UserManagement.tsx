@@ -30,36 +30,36 @@ const UserManagement = () => {
           <Typography>Roles: {user?.user_roles}</Typography>
         </AccordionSection>
         <hr className="border-t border-black mx-4 my-2" />
-        <AccordionSection
-          name="password"
-          title="Password"
-          description={`Your email address is ${user?.email}`}
-          expanded={expanded}
-          handleChange={handleChange}
-        >
-          <Typography>meow</Typography>
-        </AccordionSection>
-        <hr className="border-t border-black mx-4 my-2" />
-
-        <AccordionSection
-          name="notifications"
-          title="Notifications"
-          description="Rateit will send you notifications"
-          expanded={expanded}
-          handleChange={handleChange}
-        >
-          <Typography>meow</Typography>
-        </AccordionSection>
-        <hr className="border-t border-black mx-4 my-2" />
-        <AccordionSection
-          name="deactivate"
-          title="Deactivate Account"
-          description="If you no longer want to receive* emails"
-          expanded={expanded}
-          handleChange={handleChange}
-        >
-          <Typography>meow</Typography>
-        </AccordionSection>
+        {/* <AccordionSection */}
+        {/*   name="password" */}
+        {/*   title="Password" */}
+        {/*   description={`Your email address is ${user?.email}`} */}
+        {/*   expanded={expanded} */}
+        {/*   handleChange={handleChange} */}
+        {/* > */}
+        {/*   <Typography>meow</Typography> */}
+        {/* </AccordionSection> */}
+        {/* <hr className="border-t border-black mx-4 my-2" /> */}
+        {/**/}
+        {/* <AccordionSection */}
+        {/*   name="notifications" */}
+        {/*   title="Notifications" */}
+        {/*   description="Rateit will send you notifications" */}
+        {/*   expanded={expanded} */}
+        {/*   handleChange={handleChange} */}
+        {/* > */}
+        {/*   <Typography>meow</Typography> */}
+        {/* </AccordionSection> */}
+        {/* <hr className="border-t border-black mx-4 my-2" /> */}
+        {/* <AccordionSection */}
+        {/*   name="deactivate" */}
+        {/*   title="Deactivate Account" */}
+        {/*   description="If you no longer want to receive* emails" */}
+        {/*   expanded={expanded} */}
+        {/*   handleChange={handleChange} */}
+        {/* > */}
+        {/*   <Typography>meow</Typography> */}
+        {/* </AccordionSection> */}
       </div>
     </div>
   );

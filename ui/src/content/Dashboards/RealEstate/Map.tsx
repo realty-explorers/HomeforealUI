@@ -59,6 +59,7 @@ import RentalsSource from "./MapComponents/Sources/RentalsSource";
 import { useLazyGetLocationsQuery } from "@/store/services/dataApiService";
 import PropertyLocationBoundsSource from "./MapComponents/Sources/PropertyLocationBoundsSource";
 import useProperty from "@/hooks/useProperty";
+import { skipToken } from "@reduxjs/toolkit/query";
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
@@ -89,7 +90,9 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
-  const { filteredProperties, strategyMode } = useSelector(selectFilter);
+  const { filteredProperties, strategyMode, buybox } = useSelector(
+    selectFilter,
+  );
   const {
     selectedPropertyPreview,
     selectedComps,
@@ -108,7 +111,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const propertiesState = propertiesApiEndpoints.getPropertiesPreviews
     .useQueryState(
-      suggestion,
+      suggestion && buybox ? { suggestion, buybox_id: buybox?.id } : skipToken,
     );
 
   const handleDeselectProperty = () => {

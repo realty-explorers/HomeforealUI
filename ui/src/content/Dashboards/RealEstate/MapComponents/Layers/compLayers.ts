@@ -7,8 +7,21 @@ export const compsLayer: LayerProps = {
   paint: {
     "circle-color": "#590D82",
     "circle-radius": 10,
-    "circle-stroke-width": 1,
-    "circle-stroke-color": "#fff",
+    "circle-stroke-width": [
+      "case",
+      ["to-boolean", ["get", "isARVCalculated"]],
+      4,
+      1,
+    ],
+
+    // "circle-stroke-color": "#fff",
+    "circle-stroke-color": [
+      "case",
+      ["to-boolean", ["get", "isARVCalculated"]],
+      "#77d077",
+      "#fff",
+    ],
+    // "circle-blur": 0.2,
   },
 };
 

@@ -16,9 +16,9 @@ const Buybox = () => {
 
   return (
     <div className="flex flex-col w-full items-stretch">
-      <div className="">
-        <BuyboxStatus />
-      </div>
+      {/* <div className=""> */}
+      {/*   <BuyboxStatus /> */}
+      {/* </div> */}
       <div className="h-full overflow-y-auto">
         <BuyboxList editBuyBox={editBuyBox} />
       </div>

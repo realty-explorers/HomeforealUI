@@ -35,14 +35,14 @@ const Subscriptions = () => {
           <Typography className="text-xl text-black my-4">
             Trial ends in: {daysLeft} days
           </Typography>
-          <div className="flex gap-x-4 mb-4">
-            <Button className="bg-[#590D82] hover:bg-[#ac37eb] text-white px-4 py-2 text-[1rem]">
-              Upgrade Plan
-            </Button>
-            <Button className="border border-solid border-[#590D82] text-[#590D82] bg-transparent px-4 py-2 text-[1rem]">
-              Cancel Plan
-            </Button>
-          </div>
+          {/* <div className="flex gap-x-4 mb-4"> */}
+          {/*   <Button className="bg-[#590D82] hover:bg-[#ac37eb] text-white px-4 py-2 text-[1rem]"> */}
+          {/*     Upgrade Plan */}
+          {/*   </Button> */}
+          {/*   <Button className="border border-solid border-[#590D82] text-[#590D82] bg-transparent px-4 py-2 text-[1rem]"> */}
+          {/*     Cancel Plan */}
+          {/*   </Button> */}
+          {/* </div> */}
           <Typography>Your plan will expire on {trialEndsIn}</Typography>
         </div>
       </div>

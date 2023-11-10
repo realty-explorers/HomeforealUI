@@ -22,8 +22,11 @@ export const propertiesApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl }),
   endpoints: (builder) => ({
     getPropertiesPreviews: builder.query({
-      query: ({ type, state, city, zipCode, neighborhood }) => {
+      query: (
+        { suggestion: { type, state, city, zipCode, neighborhood }, buybox_id },
+      ) => {
         // `loc_properties?buybox_id=${GENERAL_BUYBOX_ID}&city=${city}&neighborhood=${"Central southwest"}`,
+        console.log("buybox_id", buybox_id);
         let queryUrl = "";
         switch (type) {
           case "city":
@@ -41,7 +44,7 @@ export const propertiesApi = createApi({
             queryUrl = "";
             break;
         }
-        return `preview?buybox_id=${GENERAL_BUYBOX_ID}&${queryUrl}`;
+        return `preview?buybox_id=${buybox_id}&${queryUrl}`;
       },
       transformResponse: (response: PropertyPreview[]) => {
         try {
@@ -109,8 +112,8 @@ export const propertiesApi = createApi({
     }),
 
     getProperty: builder.query({
-      query: (id) => {
-        return `lead?buybox_id=${GENERAL_BUYBOX_ID}&source_id=${id}`;
+      query: ({ buybox_id, property_id }) => {
+        return `lead?buybox_id=${buybox_id}&source_id=${property_id}`;
       },
       transformResponse: (response: AnalyzedProperty) => {
         try {
@@ -139,5 +142,6 @@ export const {
   useLazyGetPropertyQuery,
 
   useLazyGetPropertiesPreviewsQuery,
+  useGetPropertiesPreviewsQuery,
   // useLazyGetDealsQuery,
 } = propertiesApi;

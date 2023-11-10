@@ -7,7 +7,7 @@ import { useLazyGetLocationDataQuery } from "@/store/services/locationApiService
 import {
   useLazyGetPropertiesPreviewsQuery,
 } from "@/store/services/propertiesApiService";
-import { Button, Collapse } from "@mui/material";
+import { Autocomplete, Button, Collapse, TextField } from "@mui/material";
 import TuneIcon from "@mui/icons-material/Tune";
 import clsx from "clsx";
 import { memo, useEffect, useState } from "react";
@@ -16,6 +16,9 @@ import {
   setFilteredProperties,
 } from "@/store/slices/filterSlice";
 import { selectProperties } from "@/store/slices/propertiesSlice";
+import { useLazyGetBuyBoxesQuery } from "@/store/services/buyboxApiService";
+import { useSnackbar } from "notistack";
+import BuyBox from "@/models/buybox";
 
 type MapControlPanelProps = {};
 const MapControlPanel = (props: MapControlPanelProps) => {
@@ -23,8 +26,6 @@ const MapControlPanel = (props: MapControlPanelProps) => {
   const { suggestion } = useSelector(selectLocation);
   const { selectedPropertyPreview } = useSelector(selectProperties);
   // const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
-  const [getPropertiesPreviews, propertiesPreviewsState] =
-    useLazyGetPropertiesPreviewsQuery();
   const [filtersOpen, setFiltersOpen] = useState(true);
   const { filteredProperties } = useSelector(selectFilter);
   const [notSelected, setNotSelected] = useState(true);
@@ -40,6 +41,10 @@ const MapControlPanel = (props: MapControlPanelProps) => {
     }
   }, [selectedPropertyPreview]);
 
+  const handleSelectBuyBox = (event: any, value: any) => {
+    alert(value);
+  };
+
   return (
     <div className="absolute left-0 top-0 flex p-4 pointer-events-none">
       <div className="flex flex-col">
@@ -51,7 +56,7 @@ const MapControlPanel = (props: MapControlPanelProps) => {
                 dispatch(setSuggestion(location))}
             />
           </div>
-          <div className="w-40 flex justify-center items-center">
+          <div className="ml-6 flex justify-center items-center">
             <Button
               onClick={() => setFiltersOpen(!filtersOpen)}
               startIcon={<TuneIcon />}

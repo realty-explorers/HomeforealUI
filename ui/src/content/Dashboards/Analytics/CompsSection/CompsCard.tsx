@@ -1,4 +1,11 @@
-import { Card, Checkbox, Divider, Grid, Typography } from "@mui/material";
+import {
+  Card,
+  Checkbox,
+  Divider,
+  Grid,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import GridTableField from "@/components/Grid/GridTableField";
 import Image from "next/image";
 import analyticsStyles from "../Analytics.module.scss";
@@ -8,6 +15,7 @@ import { priceFormatter, validateValue } from "@/utils/converters";
 import clsx from "clsx";
 import React, { useState } from "react";
 import { CompData } from "@/models/analyzedProperty";
+import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 
 const CheckBoxWhite = styled(Checkbox)(({ theme }) => ({
   color: "white",
@@ -111,6 +119,7 @@ const CompsCard = (props: CompsCardProps) => {
         justifyContent="center"
         alignItems="center"
         sx={{ height: "4rem" }}
+        className="relative"
       >
         <CheckBoxWhite
           title="Select this property"
@@ -120,6 +129,14 @@ const CompsCard = (props: CompsCardProps) => {
         <Typography className={styles.propertyHeader}>
           Comp {props.index + 1}
         </Typography>
+        {props.compsProperty.is_arv_25th && (
+          <Tooltip title="Included in 25th ARV Calculation">
+            <CurrencyExchangeIcon
+              htmlColor="white"
+              className="absolute right-0 top-0"
+            />
+          </Tooltip>
+        )}
       </Grid>
       <Grid
         container
@@ -137,11 +154,17 @@ const CompsCard = (props: CompsCardProps) => {
           {/*   fill */}
           {/*   className="h-44 ascpect-ratio object-cover object-center  rounded-xl" */}
           {/* /> */}
+
           <img
-            src={cardImage}
-            className="h-44 ascpect-ratio object-cover object-center  rounded-xl"
-            onError={() => setCardImage(defaultImage)}
+            src={cardImage ||
+              "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q="}
+            className="h-44 rounded-lg aspect-video object-cover"
           />
+          {/* <img */}
+          {/*   src={cardImage} */}
+          {/*   className="h-44 ascpect-ratio object-cover object-center  rounded-xl" */}
+          {/*   onError={() => setCardImage(defaultImage)} */}
+          {/* /> */}
         </div>
         {/* <img */}
         {/*   // src={props.compsProperty.images?.[0] || ""} */}
@@ -158,7 +181,7 @@ const CompsCard = (props: CompsCardProps) => {
         </div>
         <div>
           <Typography className={styles.propertyTableHeader}>
-            Subject
+            Comp {props.index + 1}
           </Typography>
         </div>
         {gridRows(props.compsProperty).map((property, index) => {

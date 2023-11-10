@@ -131,7 +131,12 @@ const PropertyCard: React.FC<PropertyCardProps> = (
             ],
           }}
         >
-          <div className="flex bg-secondary absolute top-1 left-1 z-[1] rounded-lg px-2 py-0.5 items-center">
+          <div
+            className={clsx([
+              "flex  absolute top-1 left-1 z-[1] rounded-lg px-2 py-0.5 items-center",
+              strategyMode === "ARV" ? "bg-arv" : "bg-secondary",
+            ])}
+          >
             <ArrowCircleDownIcon className="text-white text-[1rem]" />
             <Typography className="font-poppins font-semibold text-white">
               {getStrategyValue().toFixed()}%

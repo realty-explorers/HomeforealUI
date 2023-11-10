@@ -49,9 +49,11 @@ type CompsFilterFieldProps = {
   getValues: any;
   setValue: any;
   field: any;
+  prefix?: string;
+  postfix?: string;
 };
 const CompsFilterField = (
-  { field, getValues, setValue }: CompsFilterFieldProps,
+  { field, getValues, setValue, prefix, postfix }: CompsFilterFieldProps,
 ) => {
   const [values, setValues] = React.useState(getValues(field.fieldName));
 
@@ -74,17 +76,28 @@ const CompsFilterField = (
     <React.Fragment>
       <div className="flex justify-center items-center">
         <TextField
-          type="number"
-          variant="standard"
+          label="Min"
+          size="small"
           className="w-24 flex justify-center text-center ml-4"
+          value={values?.[0]}
           onChange={handleNumberInputChangeMin}
-          value={values?.[0] || 0}
+          id="formatted-numberformat-input"
           inputProps={{
             className: styles.compsFilterField,
-            min: field.min,
-            max: values?.[1] || field.max,
-            step: field.step,
+            // min: field.min,
+            // max: values?.[1] || field.max,
+            // step: field.step,
           }}
+          InputProps={{
+            inputComponent: NumericField as any,
+            startAdornment: prefix && (
+              <InputAdornment position="start">{prefix}</InputAdornment>
+            ),
+            endAdornment: postfix && (
+              <InputAdornment position="end">{postfix}</InputAdornment>
+            ),
+          }}
+          variant="standard"
         />
       </div>
       <div className="flex justify-center items-center ml-4">
