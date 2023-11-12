@@ -99,7 +99,12 @@ function Logo() {
     <Link href="/">
       <div className="flex items-center h-full">
         <div className="flex items-center justify-center w-8 ml-2 mr-1">
-          <Image src="/favicon.ico" alt="logo" width={50} height={50} />
+          <Image
+            src="/static/images/logo/hlogo.png"
+            alt="logo"
+            width={50}
+            height={50}
+          />
         </div>
         <Typography className={styles.logoText}>
           Homeforeal

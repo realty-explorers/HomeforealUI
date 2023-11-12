@@ -95,6 +95,7 @@ type SliderRangeInputProps = {
     scale: (number: number) => number;
     reverseScale: (number: number) => number;
   };
+  format: (value: any) => string;
 };
 const SliderRangeInputV2: React.FC<SliderRangeInputProps> = (
   props: SliderRangeInputProps,
@@ -116,8 +117,8 @@ const SliderRangeInputV2: React.FC<SliderRangeInputProps> = (
         props.scale ? props.scale.reverseScale(props.value[1]) : props.value[1],
       ]}
       scale={props.scale?.scale}
-      getAriaValueText={props.inputProps.format}
-      valueLabelFormat={props.inputProps.format}
+      getAriaValueText={props.format}
+      valueLabelFormat={props.format}
       onChange={handleChange}
       orientation="horizontal"
       valueLabelDisplay="auto"

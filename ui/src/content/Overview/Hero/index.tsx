@@ -12,12 +12,14 @@ import Image from "next/image";
 function Hero() {
   return (
     <div className="flex flex-col items-center h-full w-full bg-off-white">
-      <div className="lg:flex flex-col justify-center items-center bg-off-white">
+      <div className="lg:flex flex-col justify-center items-center bg-off-white h-screen">
         <HeroSection />
-        <SearchSection />
-        <HowItWorksSection />
-        <LearnMoreSection />
-        <TestimonialsComponent />
+        {/* <SearchSection /> */}
+        {/* <HowItWorksSection /> */}
+        {/* <LearnMoreSection /> */}
+        {/* <TestimonialsComponent /> */}
+      </div>
+      <div>
         <ContactUsComponent />
         <Footer />
       </div>

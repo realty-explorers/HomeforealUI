@@ -13,7 +13,7 @@ import styles from "./CompsSection.module.scss";
 import styled from "@emotion/styled";
 import { priceFormatter, validateValue } from "@/utils/converters";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { CompData } from "@/models/analyzedProperty";
 import CurrencyExchangeIcon from "@mui/icons-material/CurrencyExchange";
 
@@ -112,6 +112,9 @@ const CompsCard = (props: CompsCardProps) => {
   const [cardImage, setCardImage] = useState(
     props.compsProperty.primary_image || defaultImage,
   );
+  useEffect(() => {
+    setCardImage(props.compsProperty.primary_image || defaultImage);
+  }, [props.compsProperty.primary_image]);
   return (
     <Card className={props.className}>
       <Grid

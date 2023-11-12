@@ -98,7 +98,9 @@ const MainControls: React.FC<MainControlsProps> = (
   const propertiesQuery = useGetPropertiesPreviewsQuery(
     suggestion && buybox ? { suggestion, buybox_id: buybox.id } : skipToken,
   );
-  locationApiEndpoints.getLocationData.useQuerySubscription(suggestion);
+  locationApiEndpoints.getLocationData.useQuerySubscription(
+    suggestion || skipToken,
+  );
   // propertiesApiEndpoints.getPropertiesPreviews.useQuerySubscription(
   //   suggestion && buybox ? { suggestion, buybox_id: buybox.id } : skipToken,
   // );
@@ -113,11 +115,20 @@ const MainControls: React.FC<MainControlsProps> = (
   useEffect(() => {
     const getBuyBoxesData = async () => {
       try {
-        const data = await getBuyBoxes("1", true).unwrap();
+        const data = await getBuyBoxes("", true).unwrap();
+        if (data && data.length > 0) {
+          dispatch(setBuybox(data[0]));
+        }
       } catch (error) {
-        enqueueSnackbar(`${error.error}`, {
-          variant: "error",
-        });
+        if (error.status === "FETCH_ERROR") {
+          enqueueSnackbar(`Connection failed, try again later`, {
+            variant: "error",
+          });
+        } else {
+          enqueueSnackbar(`${error.error}`, {
+            variant: "error",
+          });
+        }
       }
     };
     getBuyBoxesData();
@@ -292,7 +303,7 @@ const MainControls: React.FC<MainControlsProps> = (
           <FormControl fullWidth size="small" className="mb-2">
             <InputLabel>BuyBox</InputLabel>
             <Select
-              value={buybox || {}}
+              value={buybox || ""}
               label="BuyBox"
               onChange={handleBuyBoxChange}
             >
@@ -407,9 +418,9 @@ const MainControls: React.FC<MainControlsProps> = (
             min: 0,
             max: 60,
             step: 1,
-            format: priceFormatter,
           }}
           value={price}
+          format={priceFormatter}
           updateValue={(value) =>
             setValue(
               () => setPrice(value),

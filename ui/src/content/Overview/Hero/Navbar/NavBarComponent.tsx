@@ -14,7 +14,8 @@ import MenuItem from "@mui/material/MenuItem";
 import AdbIcon from "@mui/icons-material/Adb";
 import Image from "@/components/Photos/Image";
 
-const pages = ["Products", "Pricing", "Blog"];
+// const pages = ["Products", "Pricing", "Blog"];
+const pages = [];
 const settings = ["Profile", "Account", "Dashboard", "Logout"];
 
 function ResponsiveAppBar() {
@@ -43,17 +44,17 @@ function ResponsiveAppBar() {
   return (
     <AppBar
       position="fixed"
-      className="bg-off-white color-black shadow-none "
+      className="bg-off-white color-black shadow-none h-20 flex items-center justify-center"
     >
       <Container maxWidth="xl">
         <Toolbar disableGutters>
-          <div className="w-8 h-8">
+          <div className="w-12 h-12">
             <Image
-              src="/static/images/logo/logo-symbol.png"
+              src="/static/images/logo/hlogo.png"
               alt="logo"
             />
           </div>
-          <Typography className="font-poppins text-black text-lg">
+          <Typography className="font-poppins text-black text-2xl">
             Homeforeal
           </Typography>
 
@@ -126,11 +127,11 @@ function ResponsiveAppBar() {
 
           <Box sx={{ flexGrow: 0 }}>
             <Button
-              className="bg-black hover:bg-secondary transition-all duration-500 text-white text-lg rounded-3xl px-4 py-2"
+              className="bg-black hover:bg-secondary transition-all duration-500 text-white rounded-3xl px-4 py-1"
               component="a"
               href="/dashboards/real-estate"
             >
-              Get Started
+              Sign In
             </Button>
           </Box>
         </Toolbar>

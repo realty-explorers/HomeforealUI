@@ -159,10 +159,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
         </div>
 
         <div className="flex items-center mt-2 w-full">
-          <AssessmentIcon fontSize="small" />
-          <Typography className="text-xs ml-2 font-poppins text-center">
-            {/* {discounts} */}
-          </Typography>
+          {/* <AssessmentIcon fontSize="small" /> */}
 
           <Typography className="text-[0.7rem] font-poppins text-center flex bg-arv  text-white font-semibold rounded px-1">
             {arvDiscount}

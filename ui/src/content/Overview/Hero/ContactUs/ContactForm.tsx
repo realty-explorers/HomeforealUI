@@ -78,7 +78,7 @@ export default function ContactForm() {
     <>
       {isClient &&
         (
-          <div className="h-full w-full min-h[full]  m-12 bg-white rounded">
+          <div className="h-full w-full min-h[full]  m-12 bg-white rounded shadow">
             <div className="flex flex-col m-10">
               {!sent
                 ? (

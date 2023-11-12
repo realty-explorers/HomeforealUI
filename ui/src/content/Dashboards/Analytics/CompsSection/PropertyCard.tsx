@@ -6,7 +6,7 @@ import styles from "./CompsSection.module.scss";
 import AnalyzedProperty, { CompData } from "@/models/analyzedProperty";
 import { priceFormatter } from "@/utils/converters";
 import clsx from "clsx";
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 const gridRows = (property: AnalyzedProperty) => [
   {
@@ -68,12 +68,22 @@ const gridRows = (property: AnalyzedProperty) => [
   },
 ];
 
+const defaultImage =
+  "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
+
 type PropertyCardProps = {
   property: AnalyzedProperty;
   compsProperties: CompData[];
 };
 
 const PropertyCard = (props: PropertyCardProps) => {
+  const [cardImage, setCardImage] = useState(
+    props.property.primary_image || defaultImage,
+  );
+
+  useEffect(() => {
+    setCardImage(props.property.primary_image || defaultImage);
+  }, [props.property.primary_image]);
   const calcCompsAverage = (propertyName: string) => {
     if (!props.compsProperties || props.compsProperties.length < 1) return "";
     const propertyType = typeof props.compsProperties[0]?.[propertyName];
@@ -117,9 +127,10 @@ const PropertyCard = (props: PropertyCardProps) => {
         marginBottom={"2rem"}
       >
         <img
-          src={props.property.images[0] ||
+          src={cardImage ||
             "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q="}
           className="h-44 rounded-lg aspect-video object-cover"
+          onError={() => setCardImage(defaultImage)}
         />
       </Grid>
       <div className="grid grid-cols-3 gap-y-4">

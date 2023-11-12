@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { styled } from "@mui/system";
 import clsx from "clsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NumericField from "./NumericField";
 
 const StyledSlider = styled(Slider)({
@@ -50,9 +50,6 @@ const RangeField = (
   }: RangeFieldProps,
 ) => {
   const [values, setValues] = React.useState(getValues(fieldName));
-  const [meow, setMeow] = useState({
-    numberformat: "1320",
-  });
   const handleNumberInputChangeMin = (
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -95,6 +92,7 @@ const RangeField = (
   const formatLabel = (value: any) => {
     return `${prefix ? prefix : ""} ${value} ${postfix ? postfix : ""}`;
   };
+
   return (
     <div className="grid grid-cols-[1fr_3fr_1fr] w-full gap-x-4 items-center">
       <TextField
@@ -105,6 +103,11 @@ const RangeField = (
         id="formatted-numberformat-input"
         InputProps={{
           inputComponent: NumericField as any,
+          inputProps: {
+            min: min,
+            max: max,
+            formatLabelAsNumber: formatLabelAsNumber,
+          },
           startAdornment: prefix && (
             <InputAdornment position="start">{prefix}</InputAdornment>
           ),
@@ -142,6 +145,11 @@ const RangeField = (
           id="formatted-numberformat-input"
           InputProps={{
             inputComponent: NumericField as any,
+            inputProps: {
+              min: min,
+              max: max,
+              formatLabelAsNumber: formatLabelAsNumber,
+            },
             startAdornment: prefix && (
               <InputAdornment position="start">{prefix}</InputAdornment>
             ),

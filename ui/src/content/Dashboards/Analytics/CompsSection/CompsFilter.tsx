@@ -13,7 +13,7 @@ import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { defaults } from "@/schemas/defaults";
 import SwitchField from "@/components/Form/SwitchField";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { CompData, FilteredComp } from "@/models/analyzedProperty";
 import {
   selectProperties,
@@ -27,12 +27,23 @@ import ModeEditOutlinedIcon from "@mui/icons-material/ModeEditOutlined";
 import { ModeEdit } from "@mui/icons-material";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import CompsFilterField from "./CompsFilterField";
+import FormRangeField from "@/models/formRangeField";
 
-const rangeFields = [
+const defaultRangeFields: FormRangeField[] = [
   {
-    label: "Price",
+    label: "Sold Price",
     fieldName: "sales_closing_price",
-    subjectFieldName: "listing_price",
+    subjectFieldName: "sales_closing_price",
+    min: defaults.soldPrice.min,
+    max: defaults.soldPrice.max,
+    step: defaults.soldPrice.step,
+    formatLabelAsNumber: true,
+    prefix: "$",
+  },
+  {
+    label: "Asked Price",
+    fieldName: "sales_listing_price",
+    subjectFieldName: "sales_listing_price",
     min: defaults.listingPrice.min,
     max: defaults.listingPrice.max,
     step: defaults.listingPrice.step,
@@ -81,36 +92,19 @@ const rangeFields = [
     min: defaults.yearBuilt.min,
     max: defaults.yearBuilt.max,
     step: defaults.yearBuilt.step,
-  },
-  {
-    label: "Garages",
-    fieldName: "garages",
-    subjectFieldName: "garages",
-    min: defaults.garages.min,
-    max: defaults.garages.max,
-    step: defaults.garages.step,
-  },
-  {
-    label: "Sold Price",
-    fieldName: "sales_closing_price",
-    subjectFieldName: "sales_closing_price",
-    min: defaults.soldPrice.min,
-    max: defaults.soldPrice.max,
-    step: defaults.soldPrice.step,
-    formatLabelAsNumber: true,
-    prefix: "$",
+    formatLabelAsNumber: false,
   },
 
-  {
-    label: "Price/Sqft",
-    fieldName: "pricePerSqft",
-    subjectFieldName: "pricePerSqft",
-    min: defaults.pricePerSqft.min,
-    max: defaults.pricePerSqft.max,
-    step: defaults.pricePerSqft.step,
-    formatLabelAsNumber: true,
-    prefix: "$",
-  },
+  // {
+  //   label: "Price/Sqft",
+  //   fieldName: "pricePerSqft",
+  //   subjectFieldName: "pricePerSqft",
+  //   min: defaults.pricePerSqft.min,
+  //   max: defaults.pricePerSqft.max,
+  //   step: defaults.pricePerSqft.step,
+  //   formatLabelAsNumber: true,
+  //   prefix: "$",
+  // },
   {
     label: "Max Distance",
     fieldName: "distance",
@@ -118,6 +112,7 @@ const rangeFields = [
     min: defaults.distance.min,
     max: defaults.distance.max,
     step: defaults.distance.step,
+    postfix: "mi",
   },
 ];
 
@@ -149,16 +144,16 @@ const compsFiltersSchema = z.object({
   year_built: z.array(
     z.number().min(defaults.yearBuilt.min).max(defaults.yearBuilt.max),
   ).default(defaults.yearBuilt.default),
-  garages: z.array(
-    z.number().min(defaults.garages.min).max(defaults.garages.max),
-  ).default(defaults.garages.default),
   pool: z.boolean().default(false),
   sales_closing_price: z.array(
     z.number().min(defaults.soldPrice.min).max(defaults.soldPrice.max),
   ).default(defaults.soldPrice.default),
-  pricePerSqft: z.array(
-    z.number().min(defaults.pricePerSqft.min).max(defaults.pricePerSqft.max),
-  ).default(defaults.pricePerSqft.default),
+  sales_listing_price: z.array(
+    z.number().min(defaults.listingPrice.min).max(defaults.listingPrice.max),
+  ).default(defaults.listingPrice.default),
+  // pricePerSqft: z.array(
+  //   z.number().min(defaults.pricePerSqft.min).max(defaults.pricePerSqft.max),
+  // ).default(defaults.pricePerSqft.default),
   distance: z.array(
     z.number().min(defaults.distance.min).max(defaults.distance.max),
   ).default(defaults.distance.default),
@@ -179,6 +174,10 @@ const CompsFilter = (
   { open, setOpen, setSelectedComps, selectedComps }: CompsFilterProps,
 ) => {
   const { selectedProperty } = useSelector(selectProperties);
+
+  const [rangeFields, setRangeFields] = useState<FormRangeField[]>(
+    defaultRangeFields,
+  );
 
   function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
     return Object.fromEntries(
@@ -239,6 +238,47 @@ const CompsFilter = (
     setSelectedComps(filteredComps);
     handleClose();
   };
+
+  const findRangeLimits = (
+    rangeFields: FormRangeField[],
+    comps: CompData[],
+  ) => {
+    if (comps.length === 0) return rangeFields;
+    for (const rangeField of rangeFields) {
+      rangeField.min = comps[0][rangeField.fieldName];
+      rangeField.max = comps[0][rangeField.fieldName];
+    }
+    for (let i = 1; i < comps.length; i++) {
+      const comp = comps[i];
+      for (const rangeField of rangeFields) {
+        if (comp[rangeField.fieldName] < rangeField.min) {
+          rangeField.min = comp[rangeField.fieldName];
+        }
+        if (comp[rangeField.fieldName] > rangeField.max) {
+          rangeField.max = comp[rangeField.fieldName];
+        }
+      }
+    }
+    return rangeFields;
+  };
+
+  useEffect(() => {
+    const limitedRangeFields = findRangeLimits(
+      rangeFields,
+      selectedProperty?.sales_comps?.data,
+    );
+    setRangeFields(limitedRangeFields);
+  }, [selectedProperty]);
+
+  useEffect(() => {
+    const limitedRangeFields = findRangeLimits(
+      JSON.parse(JSON.stringify(rangeFields)),
+      selectedComps,
+    );
+    for (const rangeField of limitedRangeFields) {
+      setValue(rangeField.fieldName, [rangeField.min, rangeField.max]);
+    }
+  }, [selectedComps]);
 
   return (
     <Dialog

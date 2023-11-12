@@ -14,7 +14,7 @@ type PropertyLocationBoundsSourceProps = {
 const PropertyLocationBoundsSource = (
   { show, data, map }: PropertyLocationBoundsSourceProps,
 ) => {
-  return (
+  return data && (
     <Source
       id="property-bounds"
       type="geojson"

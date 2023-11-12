@@ -386,7 +386,8 @@
   color: #3c3c3c;
 }
 .contactsUsSection {
-  background-color: #f8f0d3;
+  @apply bg-off-white;
+  // background-color: #f8f0d3;
   display: flex;
   flex-direction: column;
   justify-content: center;

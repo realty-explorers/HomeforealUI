@@ -10,7 +10,7 @@ type PropertiesSourceProps = {
   data: any;
 };
 const PropertiesSource = ({ show, data }: PropertiesSourceProps) => {
-  return (
+  return data && (
     <Source
       id="properties"
       type="geojson"

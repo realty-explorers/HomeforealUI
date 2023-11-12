@@ -6,7 +6,7 @@ type CompsSourceProps = {
   data: any;
 };
 const CompsSource = ({ show, data }: CompsSourceProps) => {
-  return (
+  return data && (
     <Source
       id="comps"
       type="geojson"

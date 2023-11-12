@@ -41,7 +41,7 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
           <Image
             src={validateValue(props.photos[0], "string", "")}
             alt=""
-            className="rounded"
+            className="rounded-lg"
             onClick={() => setOpen(!open)}
             defaultSrc={defaultImage}
           />
@@ -69,7 +69,7 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
 
           <Image
             src={validateValue(props.photos[1], "string", "")}
-            className="rounded"
+            className="rounded-lg"
             alt=""
             onClick={() => setOpen(!open)}
             defaultSrc={defaultImage}
@@ -84,7 +84,7 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
         >
           <Image
             src={validateValue(props.photos[2], "string", "")}
-            className="rounded"
+            className="rounded-lg"
             alt=""
             onClick={() => setOpen(!open)}
             defaultSrc={defaultImage}

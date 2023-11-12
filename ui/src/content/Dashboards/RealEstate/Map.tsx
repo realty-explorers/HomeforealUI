@@ -106,7 +106,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const [getProperty, propertyState] = useLazyGetPropertyQuery();
   const locationState = locationApiEndpoints.getLocationData.useQueryState(
-    suggestion,
+    suggestion || skipToken,
   );
 
   const propertiesState = propertiesApiEndpoints.getPropertiesPreviews
@@ -260,7 +260,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   };
 
   const handleRender = () => {
-    if (!mapRef.current?.isSourceLoaded("properties")) return;
+    // if (!mapRef.current?.isSourceLoaded("properties")) return;
   };
 
   const centerMap = () => {

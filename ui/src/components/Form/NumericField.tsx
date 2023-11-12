@@ -6,6 +6,7 @@ interface CustomProps {
   name: string;
   min: number;
   max: number;
+  formatLabelAsNumber?: boolean;
 }
 
 const NumericField = forwardRef<NumericFormatProps, CustomProps>(
@@ -13,20 +14,24 @@ const NumericField = forwardRef<NumericFormatProps, CustomProps>(
     const { onChange, ...other } = props;
 
     return (
-      <NumericFormat
-        {...other}
-        getInputRef={ref}
-        onValueChange={(values) => {
-          onChange({
-            target: {
-              name: props.name,
-              value: values.value,
-            },
-          });
-        }}
-        thousandSeparator
-        valueIsNumericString
-      />
+      <>
+        <NumericFormat
+          {...other}
+          getInputRef={ref}
+          onValueChange={(values) => {
+            onChange({
+              target: {
+                name: props.name,
+                value: values.value,
+              },
+            });
+          }}
+          thousandSeparator={props.formatLabelAsNumber}
+          min={props.min}
+          max={props.max}
+          valueIsNumericString
+        />
+      </>
     );
   },
 );

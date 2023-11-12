@@ -33,7 +33,7 @@ function Overview() {
       </Head>
 
       <NavBarComponent />
-      <div className="h-16" />
+      {/* <div className="h-16" /> */}
       <Hero />
     </div>
   );

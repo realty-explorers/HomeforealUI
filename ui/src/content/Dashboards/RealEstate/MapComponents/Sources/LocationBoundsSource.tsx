@@ -8,7 +8,7 @@ type LocationBoundsSourceProps = {
 const LocationBoundsSource = (
   { show, data }: LocationBoundsSourceProps,
 ) => {
-  return (
+  return data && (
     <Source
       id="bounds"
       type="geojson"

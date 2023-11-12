@@ -27,12 +27,12 @@ const MoreDetails = (
     ? (
       <>
         <PropertyHeader property={selectedProperty} />
-        <PropertyFacts property={selectedProperty} />
         {/* <PropertyFeatures property={selectedProperty} /> */}
         {/* <EnvironmentalIndicators property={selectedProperty} /> */}
         {/* <OwnershipInfo property={selectedProperty} /> */}
-        <div className="mt-8 relative">
+        <div className="mt-4 relative">
           <SaleComparableIndicators property={selectedProperty} />
+          <PropertyFacts property={selectedProperty} />
           <SaleComparable property={selectedProperty} />
           <SalesComps />
         </div>

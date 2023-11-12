@@ -6,6 +6,7 @@ import ThemedButton from "@/components/Buttons/ThemedButton";
 import ModalComponent from "@/components/Modals/ModalComponent";
 import { useState } from "react";
 import AnalyzedProperty from "@/models/analyzedProperty";
+import { numberFormatter } from "@/utils/converters";
 
 type PropertyFactsProps = {
   property: AnalyzedProperty;
@@ -14,7 +15,7 @@ const PropertyFacts = (props: PropertyFactsProps) => {
   const [open, setOpen] = useState<boolean>(false);
   return (
     <Grid
-      className={`${analyticsStyles.yellowSection} ${analyticsStyles.sectionContainer}`}
+      className={`${analyticsStyles.yellowSection} ${analyticsStyles.sectionContainer} mt-4`}
     >
       <ModalComponent open={open} setOpen={setOpen} propertySection="facts" />
       <h1 className={analyticsStyles.sectionHeader}>Property Facts</h1>
@@ -27,25 +28,29 @@ const PropertyFacts = (props: PropertyFactsProps) => {
           label="Bathrooms"
           value={props.property.full_bathrooms}
         />
-        <GridField label="Bedrooms" value={props.property.bedrooms} />
         <GridField
           label="YearBuilt"
           value={typeof props.property?.year_built === "string"
             ? props.property.year_built.slice(0, 4)
             : props.property.year_built}
         />
+        <GridField label="Bedrooms" value={props.property.bedrooms} />
         <GridField
           label="Half Bathrooms"
           value={props.property.half_bathrooms}
         />
-        <GridField label="Lot Size" value={props.property.lot_size} />
-        <GridField label="Mls" value="" />
+        <GridField
+          label="Lot Size"
+          value={`${numberFormatter(props.property.lot_size)} Sqft`}
+        />
+        <GridField
+          label="Floors"
+          value={props.property.floors}
+        />
         <GridField
           label="Building Size"
-          value={props.property.building_area}
+          value={`${numberFormatter(props.property.building_area)} Sqft`}
         />
-        <GridField label="Zoning" value="" />
-        <GridField label="Floors" value={props.property.floors} />
       </Grid>
       {/* <Grid container justifyContent="flex-end"> */}
       {/*   <ThemedButton text="More" onClick={() => setOpen(!open)} /> */}

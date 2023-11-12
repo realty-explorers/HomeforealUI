@@ -6,7 +6,7 @@ type RentalsSourceProps = {
   data: any;
 };
 const RentalsSource = ({ show, data }: RentalsSourceProps) => {
-  return (
+  return data && (
     <Source
       id="rentals"
       type="geojson"

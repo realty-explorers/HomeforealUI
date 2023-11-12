@@ -68,7 +68,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     setCardImage(
       validateValue(props.property?.primary_image, "string", defaultImage),
     );
-    console.log("rerender property card");
+    // console.log("rerender property card");
   }, [props.property]);
 
   const arvPercentage =

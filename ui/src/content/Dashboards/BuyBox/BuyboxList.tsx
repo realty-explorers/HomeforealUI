@@ -129,11 +129,17 @@ const BuyboxList = (props: BuyboxListProps) => {
   useEffect(() => {
     const getBuyBoxesData = async () => {
       try {
-        const data = await getBuyBoxes("1", true).unwrap();
+        const data = await getBuyBoxes("", true).unwrap();
       } catch (error) {
-        enqueueSnackbar(`${error.error}`, {
-          variant: "error",
-        });
+        if (error.status === "FETCH_ERROR") {
+          enqueueSnackbar(`Connection failed, try again later`, {
+            variant: "error",
+          });
+        } else {
+          enqueueSnackbar(`${error.error}`, {
+            variant: "error",
+          });
+        }
       }
     };
     getBuyBoxesData();

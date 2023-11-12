@@ -69,7 +69,7 @@ const similarityFields = [
     min: defaultSimilarityFields.area.min,
     max: defaultSimilarityFields.area.max,
     step: defaultSimilarityFields.area.step,
-    formatLabelAsNumber: true,
+    postfix: "%",
   },
   {
     fieldName: "Year Built",
@@ -85,6 +85,7 @@ const similarityFields = [
     max: defaultSimilarityFields.lotSize.max,
     step: defaultSimilarityFields.lotSize.step,
     formatLabelAsNumber: true,
+    postfix: "%",
   },
   {
     fieldName: "Garages",
@@ -107,7 +108,7 @@ const similarityFields = [
     min: defaultSimilarityFields.saleDate.min,
     max: defaultSimilarityFields.saleDate.max,
     step: defaultSimilarityFields.saleDate.step,
-    postfix: "days",
+    postfix: "months",
   },
 ];
 

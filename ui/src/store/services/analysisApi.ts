@@ -53,14 +53,14 @@ export const analysisApi = createApi({
   endpoints: (builder) => ({
     getLeads: builder.query({
       query: ({ id, skip, limit }) => ({
-        url: `summary?buybox_id=${id}&skip=${skip}&limit=${limit}`,
+        url: `summary/?buybox_id=${id}&skip=${skip}&limit=${limit}`,
       }),
       transformResponse: (response: any) => response,
       providesTags: ["BuyBoxLeads"],
     }),
     getLeadsCount: builder.query({
       query: (id) => ({
-        url: `count?buybox_id=${id}`,
+        url: `count/?buybox_id=${id}`,
       }),
       transformResponse: (response: any) => response,
       providesTags: ["BuyBoxLeadsCount"],

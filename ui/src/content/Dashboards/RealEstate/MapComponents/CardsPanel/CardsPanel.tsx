@@ -101,7 +101,7 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   const [notSelected, setNotSelected] = useState(true);
 
   useEffect(() => {
-    console.log("rerender cards panel2");
+    // console.log("rerender cards panel");
     if (selectedPropertyPreview) {
       const selectedPropertyIndex = filteredProperties?.findIndex((property) =>
         property.source_id === selectedPropertyPreview.source_id
@@ -119,9 +119,7 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
 
   useEffect(() => {
     const element = document.querySelector("#list-container > div > div");
-    console.log("element", element);
     if (element) {
-      console.log("meow");
       const onwheel = (e) => {
         if (e.deltaY == 0) return;
         element.scrollTo({

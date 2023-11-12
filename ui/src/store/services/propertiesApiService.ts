@@ -26,7 +26,6 @@ export const propertiesApi = createApi({
         { suggestion: { type, state, city, zipCode, neighborhood }, buybox_id },
       ) => {
         // `loc_properties?buybox_id=${GENERAL_BUYBOX_ID}&city=${city}&neighborhood=${"Central southwest"}`,
-        console.log("buybox_id", buybox_id);
         let queryUrl = "";
         switch (type) {
           case "city":
@@ -44,7 +43,7 @@ export const propertiesApi = createApi({
             queryUrl = "";
             break;
         }
-        return `preview?buybox_id=${buybox_id}&${queryUrl}`;
+        return `preview/?buybox_id=${buybox_id}&${queryUrl}`;
       },
       transformResponse: (response: PropertyPreview[]) => {
         try {
@@ -81,7 +80,7 @@ export const propertiesApi = createApi({
             queryUrl = "";
             break;
         }
-        return `leads?buybox_id=${GENERAL_BUYBOX_ID}&${queryUrl}`;
+        return `leads/?buybox_id=${GENERAL_BUYBOX_ID}&${queryUrl}`;
       },
       transformResponse: (response: AnalyzedProperty[]) => {
         try {
@@ -113,7 +112,7 @@ export const propertiesApi = createApi({
 
     getProperty: builder.query({
       query: ({ buybox_id, property_id }) => {
-        return `lead?buybox_id=${buybox_id}&source_id=${property_id}`;
+        return `lead/?buybox_id=${buybox_id}&source_id=${property_id}`;
       },
       transformResponse: (response: AnalyzedProperty) => {
         try {

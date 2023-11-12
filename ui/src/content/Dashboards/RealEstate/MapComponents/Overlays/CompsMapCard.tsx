@@ -61,7 +61,7 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
 
   const locationStats = `${
     props.property.distance.toFixed(2)
-  } Miles ● ${props.property.sales_days_on_market} Days Old`;
+  } Miles ● ${props.property.sales_days_on_market} Days Ago`;
 
   return (
     <div className="flex rounded-xl bg-white w-80 h-40">
@@ -128,7 +128,7 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
         <div className="flex items-center mt-2 w-full">
           <LocalOfferOutlinedIcon fontSize="small" />
           <Typography className="text-xs ml-2 font-poppins text-center">
-            {priceFormatter(props.property?.sales_listing_price)}
+            {priceFormatter(props.property?.sales_closing_price)}
           </Typography>
         </div>
 

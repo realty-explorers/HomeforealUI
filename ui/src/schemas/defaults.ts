@@ -62,7 +62,7 @@ const defaults = {
   distance: {
     min: 0,
     max: 10,
-    step: 0.25,
+    step: 0.001,
     default: [0, 10],
   },
 

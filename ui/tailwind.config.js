@@ -27,6 +27,7 @@ module.exports = {
         secondary: "#9B51E0",
         arv: "#77d077",
         "off-white": "#f2f5f9",
+        // "off-white": "#FCFBFE",
         // primary: '#1E1E1E',
         // secondary: '#9B51E0'
       },

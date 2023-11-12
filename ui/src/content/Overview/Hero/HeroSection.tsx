@@ -1,17 +1,18 @@
 /* eslint-disable react/jsx-no-undef */
 import ThemedButton from "@/components/Buttons/ThemedButton";
-import { Link, Typography } from "@mui/material";
 import clsx from "clsx";
 import styles from "./LandingPage.module.scss";
 import PropertiesExample from "./PropertiesExample";
 import { TypeAnimation } from "react-type-animation";
+import Link from "next/link";
+import { Typography } from "@mui/material";
 
 const HeroSection = () => {
   return (
-    <div className="max-w-[85%] mt-10">
-      <div className="flex wrap gap-8 justify-center">
-        <div className="flex flex-wrap w-[60rem] xl:w-[35rem]">
-          <div className="flex w-full justify-between items-center gap-2">
+    <div className="max-w-[100%] mt-10">
+      <div className="flex wrap gap-0 justify-center">
+        <div className="flex flex-col justify-center w-[60rem] xl:w-[35rem]">
+          <div className="flex w-full  items-center gap-2">
             <Typography className={styles.header_1}>
               find untapped
               <div className={styles.ball}>
@@ -53,34 +54,51 @@ const HeroSection = () => {
               />
             </Typography>
           </div>
-          <div className="flex items-center mt-4">
-            <a href="#contactUs">
-              <ThemedButton text="Chat With Us" />
+          <div className="flex items-center mt-8">
+            <a
+              href="#contactUs"
+              className="rounded-3xl font-poppins capitalize bg-white text-black font-bold px-4 py-2 text-lg shadow hover:ring transition-all"
+              onClick={(e) => {
+                e.preventDefault();
+                document.querySelector("#contactUs").scrollIntoView({
+                  behavior: "smooth",
+                });
+              }}
+            >
+              {/* <ThemedButton text="Chat With Us" /> */}
+              Chat With Us
             </a>
-            <div className={`${styles.findOpportunitiesDiv}`}>
+            {/* <div className={`${styles.findOpportunitiesDiv}`}> */}
+            <div>
               <div>
-                <Link className={clsx([styles.cardInfoValue, "ml-4 mr-4"])}>
-                  Find Opportunities Now
+                <Link
+                  className={clsx([
+                    // styles.cardInfoValue,
+                    "text-white bg-black px-4 py-2 rounded-3xl font-poppins font-bold capitalize mx-4 text-lg hover:ring transition-all no-underline",
+                  ])}
+                  href="/dashboards/real-estate"
+                >
+                  Get Started
                 </Link>
               </div>
-              <div className="flex items-center">
-                <svg
-                  width="34"
-                  height="9"
-                  viewBox="0 0 34 9"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M33.3536 4.85355C33.5488 4.65829 33.5488 4.34171 33.3536 4.14645L30.1716 0.964466C29.9763 0.769204 29.6597 0.769204 29.4645 0.964466C29.2692 1.15973 29.2692 1.47631 29.4645 1.67157L32.2929 4.5L29.4645 7.32843C29.2692 7.52369 29.2692 7.84027 29.4645 8.03553C29.6597 8.2308 29.9763 8.2308 30.1716 8.03553L33.3536 4.85355ZM0 5H33V4H0V5Z"
-                    fill="black"
-                  />
-                </svg>
-              </div>
+              {/* <div className="flex items-center"> */}
+              {/*   <svg */}
+              {/*     width="34" */}
+              {/*     height="9" */}
+              {/*     viewBox="0 0 34 9" */}
+              {/*     fill="none" */}
+              {/*     xmlns="http://www.w3.org/2000/svg" */}
+              {/*   > */}
+              {/*     <path */}
+              {/*       d="M33.3536 4.85355C33.5488 4.65829 33.5488 4.34171 33.3536 4.14645L30.1716 0.964466C29.9763 0.769204 29.6597 0.769204 29.4645 0.964466C29.2692 1.15973 29.2692 1.47631 29.4645 1.67157L32.2929 4.5L29.4645 7.32843C29.2692 7.52369 29.2692 7.84027 29.4645 8.03553C29.6597 8.2308 29.9763 8.2308 30.1716 8.03553L33.3536 4.85355ZM0 5H33V4H0V5Z" */}
+              {/*       fill="black" */}
+              {/*     /> */}
+              {/*   </svg> */}
+              {/* </div> */}
             </div>
           </div>
         </div>
-        <div className="flex grow max-w-[50%]">
+        <div className="flex grow max-w-[50%] pl-16">
           <PropertiesExample />
         </div>
       </div>
