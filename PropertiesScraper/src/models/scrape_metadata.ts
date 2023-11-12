@@ -1,9 +1,8 @@
-import RegionProperties from "./region_properties";
+import RegionFilter from "./region_filter";
 
 interface ScrapeMetadata {
-    totalPages: number;
-    regionProperties: RegionProperties;
-    extra?: any;
+  totalPages: number;
+  metadata: any;
 }
 
 export default ScrapeMetadata;

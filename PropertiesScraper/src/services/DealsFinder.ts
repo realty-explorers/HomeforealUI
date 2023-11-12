@@ -1,13 +1,12 @@
 import Property from "../models/property";
 import AxiosDataFetcher from "./AxiosDataFetcher";
 import DealsEngine from "./DealsEngine";
-import ZillowScraper from "./Scrapers/ZillowScraper";
 import {
   constructRegionId,
   ISODifferenceToDays,
   saveData,
 } from "../utils/utils";
-import RegionProperties from "../models/region_properties";
+import RegionFilter from "../models/region_filter";
 import PropertyScraper from "./PropertyScraper";
 import RealtorScraper from "./Scrapers/Realtor/RealtorScraper";
 import PropertyRepository from "../data/db";
@@ -25,11 +24,10 @@ export default class DealsFinder {
   constructor() {
     this.dataFetcher = new AxiosDataFetcher();
     this.dealsFinder = new DealsEngine();
-    const zillowScraper = new ZillowScraper();
     const realtorScraper = new RealtorScraper();
-    this.propertyScrapers = [zillowScraper, realtorScraper];
+    this.propertyScrapers = [realtorScraper];
     // this.propertyRepository = new PropertyRepository();
-    this.init();
+    // this.init();
     this.scrapingManager = new ScrapingManager();
   }
 
@@ -45,7 +43,7 @@ export default class DealsFinder {
     return difference / daysToMilliseconds;
   };
 
-  public findProperties = async (regionProperties: RegionProperties) => {
+  public findProperties = async (regionFilter: RegionFilter) => {
     const properties = [];
     // const regionStatus = await this.propertyRepository.getRegionStatus(
     //   regionProperties.city,
@@ -62,20 +60,21 @@ export default class DealsFinder {
     //     regionProperties.soldPropertiesMaxAge = updateTimeFrame;
     //     console.log(`Finding new properties in timeframe: ${updateTimeFrame} days`);
     // }
-    const updatedRegionStatus: RegionStatus = {
-      id: constructRegionId(regionProperties.city, regionProperties.state),
-      city: regionProperties.city,
-      state: regionProperties.state,
-      lastUpdated: new Date().toISOString(),
-    };
+    // const updatedRegionStatus: RegionStatus = {
+    //   id: constructRegionId(regionProperties.city, regionProperties.state),
+    //   city: regionProperties.city,
+    //   state: regionProperties.state,
+    //   lastUpdated: new Date().toISOString(),
+    // };
 
     const foundProperties = await this.scrapingManager.scrapeProperties(
-      regionProperties,
+      regionFilter,
     );
-    // await this.propertyRepository.saveProperties(
+    // const response = await this.propertyRepository.saveProperties(
     //   foundProperties,
-    //   regionProperties.state,
+    //   regionFilter.state,
     // );
+    // console.log(response);
     // await this.propertyRepository.updateRegionStatus(updatedRegionStatus);
 
     properties.push(...foundProperties);

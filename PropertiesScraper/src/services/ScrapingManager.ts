@@ -1,14 +1,12 @@
 import Property from "../models/property";
-import RegionProperties from "../models/region_properties";
+import RegionFilter from "../models/region_filter";
 import ScrapeMetadata from "../models/scrape_metadata";
 import AxiosDataFetcher from "./AxiosDataFetcher";
 import DataFetcher from "./DataFetcher";
 import PropertyScraper from "./PropertyScraper";
 import RealtorScraper from "./Scrapers/Realtor/RealtorScraper";
-import ZillowScraper from "./Scrapers/ZillowScraper";
 
 enum Scraper {
-  Zillow,
   Realtor,
 }
 
@@ -18,16 +16,15 @@ export class ScrapingManager {
 
   constructor() {
     this.propertyScrapers = {
-      [Scraper.Zillow]: new ZillowScraper(),
       [Scraper.Realtor]: new RealtorScraper(),
     };
     this.dataFetcher = new AxiosDataFetcher();
   }
 
   private constructScrapersRegionProperties = (
-    regionProperties: RegionProperties
+    regionProperties: RegionFilter,
   ) => {
-    const scrapersRegionProperties: RegionProperties[] = [];
+    const scrapersRegionProperties: RegionFilter[] = [];
     // const forSaleRegionProperties = { ...regionProperties, isForSale: true };
     // const soldRegionProperties: RegionProperties = { ...regionProperties, isForSale: false };
     // scrapersRegionProperties.push(forSaleRegionProperties);
@@ -37,17 +34,12 @@ export class ScrapingManager {
   };
 
   private scrapeMetadata = async (
-    scrapersRegionProperties: RegionProperties[]
+    regionFilter: RegionFilter,
   ) => {
-    const scrapeMetadataTasks: Promise<ScrapeMetadata>[] = [];
     console.log("scraping metadata");
-    for (const regionProperties of scrapersRegionProperties) {
-      const scrapeMetadataTask = this.propertyScrapers[
-        Scraper.Realtor
-      ].scrapeMetadata(regionProperties, this.dataFetcher);
-      scrapeMetadataTasks.push(scrapeMetadataTask);
-    }
-    const scrapersMetadataResults = await Promise.all(scrapeMetadataTasks);
+    const scrapersMetadataResults = await this.propertyScrapers[
+      Scraper.Realtor
+    ].scrapeMetadata(regionFilter, this.dataFetcher);
     return scrapersMetadataResults;
   };
 
@@ -55,18 +47,19 @@ export class ScrapingManager {
     const MAX_PAGES = 50;
     console.log(`page: ${scrapersMetadata[0].totalPages}`);
     for (const scraperMetadata of scrapersMetadata) {
-      if (scraperMetadata.totalPages > MAX_PAGES)
-        throw Error(`Too much results: ${scraperMetadata.totalPages}`);
+      if (scraperMetadata.totalPages > MAX_PAGES) {
+        // throw Error(`Too much results: ${scraperMetadata.totalPages}`);
+      }
     }
   };
 
-  public scrapeProperties = async (regionProperties: RegionProperties) => {
-    if (regionProperties.type === "address")
-      return await this.getAddressProperties(regionProperties);
-    const scrapersRegionProperties =
-      this.constructScrapersRegionProperties(regionProperties);
+  public scrapeProperties = async (regionFilter: RegionFilter) => {
+    // if (regionProperties.type === "address") {
+    //   return await this.getAddressProperties(regionProperties);
+    // }
+
     const scrapersMetadataResults = await this.scrapeMetadata(
-      scrapersRegionProperties
+      regionFilter,
     );
     console.log("after metadata");
 
@@ -88,24 +81,25 @@ export class ScrapingManager {
     return properties;
   };
 
-  private getAddressProperties = async (regionProperties: RegionProperties) => {
-    console.log("scraping address");
-    const property = await this.propertyScrapers[
-      Scraper.Realtor
-    ].scrapeProperty(regionProperties.display, this.dataFetcher);
-    regionProperties.isForSale = false;
-    if (property.neighborhood) {
-      regionProperties.type = "neighborhood";
-      regionProperties.display = `${property.neighborhood}, ${property.city}, ${property.state}`;
-    } else {
-      regionProperties.type = "city";
-      regionProperties.display = `${property.city}, ${property.state}`;
-    }
-    const scrapeMetadata = await this.scrapeMetadata([regionProperties]);
-    console.log(`Scraping ${scrapeMetadata[0].totalPages} pages`);
-    const soldProperties = await this.propertyScrapers[
-      Scraper.Realtor
-    ].scrapeProperties(scrapeMetadata[0], this.dataFetcher);
-    return [property, ...soldProperties];
-  };
+  // private getAddressProperties = async (regionFilter: RegionFilter) => {
+  //   console.log("scraping address");
+  //   const property = await this.propertyScrapers[
+  //     Scraper.Realtor
+  //   ].scrapeProperty(regionFilter.display, this.dataFetcher);
+  //   regionProperties.isForSale = false;
+  //   if (property.neighborhood) {
+  //     regionProperties.type = "neighborhood";
+  //     regionProperties.display =
+  //       `${property.neighborhood}, ${property.city}, ${property.state}`;
+  //   } else {
+  //     regionProperties.type = "city";
+  //     regionProperties.display = `${property.city}, ${property.state}`;
+  //   }
+  //   const scrapeMetadata = await this.scrapeMetadata([regionProperties]);
+  //   console.log(`Scraping ${scrapeMetadata[0].totalPages} pages`);
+  //   const soldProperties = await this.propertyScrapers[
+  //     Scraper.Realtor
+  //   ].scrapeProperties(scrapeMetadata[0], this.dataFetcher);
+  //   return [property, ...soldProperties];
+  // };
 }

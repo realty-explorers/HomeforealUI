@@ -17,6 +17,7 @@ export default class LocationController {
     next: NextFunction,
   ) => {
     try {
+      console.log("hi");
       const searchTerm = req.query["searchTerm"] as string;
       const response = await this.locationService.getLocationSuggestions(
         searchTerm,
@@ -38,11 +39,13 @@ export default class LocationController {
       const city = req.query["city"] as string;
       const state = req.query["state"] as string;
       const neighborhood = req.query["neighborhood"] as string;
+      const zipcode = req.query["zipcode"] as string;
       const response = await this.locationService.getLocationData(
         type,
         state,
         city,
         neighborhood,
+        zipcode,
       );
       res.json(response);
     } catch (error: any) {

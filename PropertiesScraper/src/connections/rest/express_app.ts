@@ -56,18 +56,19 @@ class App {
     this.app.use(
       cors(
         {
-          // origin: '*',
-          origin: [
-            `https://${process.env.HOST}`,
-            "https://localhost",
-            "https://localhost:3000",
-            "http://localhost:3000",
-            "http://localhost:",
-            "http://18.188.195.163:3000",
-            "http://18.188.195.163",
-            "http://20.42.85.234:3000",
-            "http://20.42.85.234",
-          ],
+          origin: "*",
+          // origin: [
+          //   `https://${process.env.HOST}`,
+          //   "https://localhost",
+          //   "https://localhost:3000",
+          //   "http://localhost:3000",
+          //   "http://localhost:",
+          //   "http://18.188.195.163:3000",
+          //   "http://18.188.195.163",
+          //   "http://20.42.85.234:3000",
+          //   "http://20.42.85.234",
+          //   "https://app.homeforeal.com/",
+          // ],
           credentials: true,
         },
       ),

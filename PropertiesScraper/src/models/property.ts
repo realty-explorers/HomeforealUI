@@ -40,6 +40,7 @@ interface RealProperty {
   building_area: string;
   lot_size?: string;
   year_built: string;
+  description: string;
   bedrooms: string;
   full_bathrooms?: string;
   half_bathrooms?: string;
@@ -61,6 +62,7 @@ interface RealProperty {
   longitude?: string;
   flood_zone: string;
   neighborhood?: string;
+  list_date: string;
 }
 
 enum PropertyType {

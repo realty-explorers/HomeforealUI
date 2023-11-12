@@ -12,7 +12,7 @@ import RequestParameters from "../../../models/request_parameters";
 import DataFetcher from "../../DataFetcher";
 import PropertyScraper from "../../PropertyScraper";
 import Property, { PropertyType, RealProperty } from "../../../models/property";
-import RegionProperties from "../../../models/region_properties";
+import RegionFilter from "../../../models/region_filter";
 import RealtorProperty from "../../../models/realtorProperty";
 import { addressToGeolocation } from "../../location_helper";
 import states from "../../../states.json";
@@ -23,7 +23,7 @@ export default class RealtorScraper implements PropertyScraper {
   private readonly rootUrl =
     "https://www.realtor.com/api/v1/hulk_main_srp?schema=vesta";
   private readonly defaultQuery =
-    "query ConsumerSearchMainQuery($query: HomeSearchCriteria!, $limit: Int, $offset: Int, $sort: [SearchAPISort], $sort_type: SearchSortType, $client_data: JSON, $bucket: SearchAPIBucket) {home_search: home_search(query: $query, sort: $sort, limit: $limit, offset: $offset, sort_type: $sort_type, client_data: $client_data, bucket: $bucket, ){count total results {property_id list_price rent_to_own{rent right_to_purchase provider} primary_photo (https: true){href} listing_id status permalink price_reduced_amount description{beds baths baths_full baths_half baths_1qtr baths_3qtr garage stories type sub_type lot_sqft sqft year_built sold_price sold_date name} location{address{line postal_code state state_code city coordinate {lat lon}} neighborhoods {name level} county {name fips_code}} flags{is_coming_soon is_pending is_foreclosure is_contingent is_new_construction is_new_listing (days: 14) is_price_reduced (days: 30) is_plan is_subdivision} list_date last_update_date coming_soon_date photos(limit: 5, https: true){href}}}}";
+    "query ConsumerSearchMainQuery($query: HomeSearchCriteria!, $limit: Int, $offset: Int, $sort: [SearchAPISort], $sort_type: SearchSortType, $client_data: JSON, $bucket: SearchAPIBucket) {home_search: home_search(query: $query, sort: $sort, limit: $limit, offset: $offset, sort_type: $sort_type, client_data: $client_data, bucket: $bucket, ){count total results {property_id list_price rent_to_own{rent right_to_purchase provider} primary_photo (https: true){href} listing_id status permalink price_reduced_amount description{text beds baths baths_full baths_half baths_1qtr baths_3qtr garage stories type sub_type lot_sqft sqft year_built sold_price sold_date name} location{address{line postal_code state state_code city coordinate {lat lon}} neighborhoods {name level} county {name fips_code}} flags{is_coming_soon is_pending is_foreclosure is_contingent is_new_construction is_new_listing (days: 14) is_price_reduced (days: 30) is_plan is_subdivision} list_date last_update_date coming_soon_date photos(limit: 5, https: true){href}}}}";
   private readonly defaultRequestJson: any = {
     query: this.defaultQuery,
     variables: {
@@ -53,6 +53,7 @@ export default class RealtorScraper implements PropertyScraper {
       by_prop_type: ["home"],
     },
   };
+
   private states: { [state: string]: string };
   private addressScraper: RealtorAddressScraper;
 
@@ -62,41 +63,80 @@ export default class RealtorScraper implements PropertyScraper {
   }
 
   public scrapeMetadata = async (
-    regionProperties: RegionProperties,
+    regionFilter: RegionFilter,
     dataFetcher: DataFetcher,
   ) => {
-    const initRequestParameters = this.getRequestParameters(regionProperties);
+    const currentDate = new Date();
+    const minDate = new Date(currentDate);
+    minDate.setFullYear(currentDate.getFullYear() - 1);
+    // minDate.setDate(currentDate.getDate() - 6);
+    // minDate.setMonth(currentDate.getMonth() - 6);
+
+    const newRegionFilter = {
+      ...regionFilter,
+      minDate: minDate.toISOString(),
+    };
+    const initRequestParameters = this.getRequestParameters(newRegionFilter);
+
     const maxTries = 25;
-    const responseData = await dataFetcher.tryFetch(
-      initRequestParameters,
-      this.validateData,
-      maxTries,
-    );
-    const scrapingInfo = this.extractScrapingInfo(
-      responseData,
-      regionProperties,
-    );
-    return scrapingInfo;
+    const requests = [];
+    while (currentDate > minDate) {
+      const maxDate = currentDate;
+      const minDate = new Date(maxDate);
+      minDate.setDate(minDate.getDate() - 1);
+      const listDate = {
+        min: minDate.toISOString(),
+        max: maxDate.toISOString(),
+      };
+      currentDate.setDate(currentDate.getDate() - 1);
+      const newRegionFilter = {
+        ...regionFilter,
+        minDate: listDate.min,
+        maxDate: listDate.max,
+      };
+      console.log(listDate);
+      const requestParameters = this.getRequestParameters(
+        newRegionFilter,
+      );
+      const request = dataFetcher.tryFetch(
+        requestParameters,
+        this.validateData,
+        maxTries,
+        { ...newRegionFilter },
+      );
+      requests.push(request);
+    }
+    const results = await Promise.all(requests);
+    console.log(results);
+
+    const fullScrapingInfo = [];
+    for (const result of results) {
+      const scrapingInfo = this.extractScrapingInfo(result);
+      fullScrapingInfo.push(scrapingInfo);
+      console.log(scrapingInfo);
+    }
+
+    return fullScrapingInfo;
   };
 
   private extractScrapingInfo = (
     scrapingData: any,
-    regionProperties: RegionProperties,
   ) => {
     if (!scrapingData) throw Error("No data found");
-    const totalProperties = scrapingData["data"]["home_search"]["total"];
+    const totalProperties = scrapingData.data["data"]["home_search"]["total"];
     console.log(`Total properties to scrape: ${totalProperties}`);
     const totalPages = Math.ceil(totalProperties / 200);
     const scrapingInfo: ScrapeMetadata = {
       totalPages,
-      regionProperties,
+      metadata: scrapingData.metadata,
     };
     return scrapingInfo;
   };
 
-  public scrapeProperty = async (display: string, dataFetcher: DataFetcher) => {
-    const data = await this.addressScraper.getAddressData(display, dataFetcher);
-    return data;
+  public scrapeProperty = async (dataFetcher: DataFetcher) => {
+    // const data = await this.addressScraper.getAddressData(display, dataFetcher);
+    // return data;
+    return {} as Property;
   };
 
   public scrapeProperties = async (
@@ -106,18 +146,43 @@ export default class RealtorScraper implements PropertyScraper {
     const maxTries = 25;
     const requestsParameters = this.getFullRequestParameters(scrapeInfo);
     let requests: Promise<any>[] = [];
+    let batchSize = 0;
     for (const requestParameters of requestsParameters) {
+      batchSize += 200;
+      const offset = requestParameters.body["variables"]["offset"];
+      // if (batchSize >= 10000) {
+      //   console.log(`sleeping for 60 seconds`);
+      //   for (let i = 12; i > 0; i -= 1) {
+      //     console.log(`${i * 10} seconds left`);
+      //     await sleep(10000);
+      //   }
+      //   batchSize = 0;
+      // }
+      // await sleep(1000);
+
+      // const request = dataFetcher.tryFetch(
+      //   requestParameters,
+      //   this.validateData,
+      //   maxTries,
+      // );
+      console.log(`scraping ${offset}`);
+
       const request = dataFetcher.tryFetch(
         requestParameters,
         this.validateData,
         maxTries,
       );
+      // const propertiesResults = await this.parseProperties([request.data]);
+      // properties.push(...propertiesResults);
+      // request.finally(() => {
+      //   const offset = requestParameters.body["variables"]["offset"];
+      //   console.log(`finished scraping ${offset}`);
+      // });
       requests.push(request);
     }
     const propertiesResults = await Promise.all(requests);
     const properties = await this.parseProperties(
       [...propertiesResults],
-      scrapeInfo.regionProperties,
     );
     return properties as any;
   };
@@ -125,15 +190,17 @@ export default class RealtorScraper implements PropertyScraper {
   private validateData = (data: any) => {
     try {
       const parsedData: any = data["data"]["home_search"]["results"];
-      return parsedData !== undefined;
+      return parsedData && parsedData.length > 0;
     } catch (error) {
       // throw Error('No data found');
     }
     return false;
   };
 
-  private constructQuery = (regionProperties: RegionProperties) => {
-    const requestQuery = this.defaultRequestJson;
+  private constructQuery = (
+    regionFilter: RegionFilter,
+    requestQuery = this.defaultRequestJson,
+  ) => {
     // if (regionProperties.isForSale) {
     //   requestQuery.variables.query.status[0] = "for_sale";
     //   if (regionProperties.forSalePropertiesMaxAge)
@@ -149,41 +216,62 @@ export default class RealtorScraper implements PropertyScraper {
     //       min: calcDaysDifferenceToISO(regionProperties.soldPropertiesMaxAge),
     //     };
     // }
-    if (regionProperties.forSalePropertiesMaxAge) {
-      requestQuery.variables.query["list_date"] = {
-        min: calcDaysDifferenceToISO(regionProperties.forSalePropertiesMaxAge),
-      };
+    // if (regionFilter.daysOnMarket) {
+    //   requestQuery.variables.query["list_date"] = {
+    //     min: calcDaysDifferenceToISO(regionFilter.daysOnMarket),
+    //   };
+    //   console.log(requestQuery.variables.query["list_date"]);
+    // }
+
+    if (regionFilter.minDate || regionFilter.maxDate) {
+      requestQuery.variables.query["list_date"] = {};
+      if (regionFilter.minDate) {
+        requestQuery.variables.query["list_date"].min = regionFilter.minDate;
+      }
+      if (regionFilter.maxDate) {
+        requestQuery.variables.query["list_date"].max = regionFilter.maxDate;
+      }
     }
     requestQuery.variables.query.search_location.location = this
       .regionToAddress(
-        regionProperties.display,
-        regionProperties.type,
-        regionProperties.city,
-        regionProperties.state,
+        regionFilter.type,
+        regionFilter.state,
+        regionFilter.city,
+        regionFilter.zipcode,
+        regionFilter.neighborhood,
       );
     return requestQuery;
   };
 
   private regionToAddress = (
-    display: string,
     type: string,
-    city: string,
     state: string,
+    city?: string,
+    zipcode?: string,
+    neighborhood?: string,
   ) => {
     if (type === "neighborhood") {
-      const neighborhoodName = display.substring(0, display.indexOf(","));
+      const neighborhoodName = neighborhood?.toLowerCase();
       const address = `${neighborhoodName} ${city}, ${this.states[state]}`;
       return address;
     } else if (type === "zipcode") {
-      const address = `${display}, ${city}, ${this.states[state]}`;
+      const address = `${zipcode}, ${city}, ${this.states[state]}`;
+      return address;
+    } else if (type === "city") {
+      const address = `${city}, ${this.states[state]}`;
+      return address;
+    } else if (type === "state") {
+      const address = state;
       return address;
     }
-    const address = `${city}, ${this.states[state]}`;
-    return address;
+    return "";
   };
 
-  private getRequestParameters = (regionProperties: RegionProperties) => {
-    const requestQuery = this.constructQuery(regionProperties);
+  private getRequestParameters = (
+    regionFilter: RegionFilter,
+    requestQueryJson = this.defaultRequestJson,
+  ) => {
+    const requestQuery = this.constructQuery(regionFilter, requestQueryJson);
     const requestParameters = {
       method: "POST",
       url: this.rootUrl,
@@ -199,7 +287,7 @@ export default class RealtorScraper implements PropertyScraper {
     let currentCount = 0;
     while (currentCount < totalPages * perPage) {
       const defaultRequestParameters = this.getRequestParameters(
-        scrapeInfo.regionProperties,
+        scrapeInfo.metadata,
       );
       const requestParameters = this.paginate(
         defaultRequestParameters,
@@ -215,17 +303,18 @@ export default class RealtorScraper implements PropertyScraper {
     requestParameters: RequestParameters,
     startFrom: number,
   ) => {
+    requestParameters.body["variables"]["limit"] = 200;
     requestParameters.body["variables"]["offset"] = startFrom;
     return requestParameters;
   };
 
   private parseProperties = async (
     propertiesResults: any,
-    regionProperties: RegionProperties,
   ) => {
     const properties: RealProperty[] = [];
     for (const propertiesResult of propertiesResults) {
-      const results = propertiesResult["data"]["home_search"]["results"];
+      if (!propertiesResult) continue;
+      const results = propertiesResult.data["data"]["home_search"]["results"];
       // for (const propertyResult of results as RealtorProperty[]) {
       for (const propertyResult of results) {
         try {
@@ -251,6 +340,7 @@ export default class RealtorScraper implements PropertyScraper {
             lot_size: propertyResult.description.lot_sqft,
             year_built: propertyResult.description.year_built,
             bedrooms: propertyResult.description.beds,
+            description: propertyResult.description.text,
             full_bathrooms: propertyResult.description.baths_full,
             half_bathrooms: propertyResult.description.baths_half,
             address: propertyResult.location.address.line,
@@ -270,11 +360,12 @@ export default class RealtorScraper implements PropertyScraper {
             longitude: propertyResult.location.address.coordinate?.lon,
             flood_zone: "",
             neighborhood: propertyResult?.location?.neighborhoods?.[0].name,
+            list_date: propertyResult?.list_date,
           };
-          // if (!propertyResult.location?.address?.line) {
-          //     // console.log(propertyResult.location);
-          //     continue;
-          // }
+          if (!propertyResult.location?.address?.line) {
+            console.log(propertyResult);
+            continue;
+          }
           // const nullableParameters = await this.fillNullableParameters(propertyResult);
           // const property: Property | any = {
           //     forSale: regionProperties.isForSale,

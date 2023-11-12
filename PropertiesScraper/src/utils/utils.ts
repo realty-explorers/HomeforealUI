@@ -7,6 +7,12 @@ const calcDaysDifferenceToISO = (maxAge: number) => {
   return ISODate;
 };
 
+const convertISODates = (minDate: Date, maxDate: Date) => {
+  const minDateISO = minDate.toISOString();
+  const maxDateISO = maxDate.toISOString();
+  return { minDateISO, maxDateISO };
+};
+
 const ISODifferenceToDays = (isoString: string) => {
   const date = new Date(isoString);
   const difference = Date.now() - date.getTime();
@@ -27,7 +33,7 @@ const saveData = (allItems: any, fileName: string) => {
     JSON.stringify(allItems) + "\n\n",
     function (err) {
       if (err) return console.log(err);
-    }
+    },
   );
   // allItems.forEach(async ad => {
   //     var x = await client.index({
@@ -43,10 +49,17 @@ const constructPropertyId = (
   address: string,
   city: string,
   state: string,
-  zipCode: string
+  zipCode: string,
 ) => {
-  const id = `${address}-${city}-${state}-${zipCode}`;
-  return id;
+  try {
+    const id =
+      `${address.toLowerCase()}-${city.toLowerCase()}-${state.toLowerCase()}-${zipCode}`;
+    return id;
+  } catch (err) {
+    throw new Error(
+      `Error constructing property id: ${err}, address: ${address}, city: ${city}, state: ${state}, zipCode: ${zipCode}`,
+    );
+  }
 };
 
 const constructRegionId = (city: string, state: string) => {
@@ -55,10 +68,10 @@ const constructRegionId = (city: string, state: string) => {
 };
 
 export {
-  sleep,
-  saveData,
   calcDaysDifferenceToISO,
   constructPropertyId,
   constructRegionId,
   ISODifferenceToDays,
+  saveData,
+  sleep,
 };

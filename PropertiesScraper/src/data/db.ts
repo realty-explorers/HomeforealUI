@@ -24,7 +24,7 @@ export default class PropertyRepository {
         //apiKey: process.env.ELASTIC_API_KEY!,
       },
       tls: {
-        ca: readFileSync(process.env.ELASTICSEARCH_CA_PATH!),
+        ca: readFileSync(`${__dirname}/../certs/ca.crt`),
         rejectUnauthorized: false,
       },
     };
@@ -246,6 +246,7 @@ export default class PropertyRepository {
   public testData = async (city: string, state: string) => {
     try {
       const results = await this.client?.cat.indices({ format: "json" });
+      console.log(results);
 
       const chosenIndex = "properties_texas";
       // const aggregationOptions = {
@@ -342,17 +343,33 @@ export default class PropertyRepository {
   public saveProperties = async (properties: Property[], state: string) => {
     if (properties.length == 0) return;
     const index = this.getIndexByState(state);
-    const operations = properties.flatMap((doc) => [
-      { index: { _index: index, _id: doc.id } },
-      doc,
-    ]);
-    const bulkResponse = await this.client!.bulk({ refresh: true, operations });
-    this.handleErrors(operations, bulkResponse);
+    let propertiesLeftToIndex = properties.length;
+    while (propertiesLeftToIndex > 0) {
+      const propertiesToIndex = properties.splice(0, 10000);
+      const operations = propertiesToIndex.flatMap((doc) => [
+        { index: { _index: index, _id: doc.id } },
+        doc,
+      ]);
+      const bulkResponse = await this.client!.bulk({
+        refresh: true,
+        operations,
+      });
+      console.log(bulkResponse);
+      this.handleErrors(operations, bulkResponse);
+      propertiesLeftToIndex -= 10000;
+    }
+    // const operations = properties.flatMap((doc) => [
+    //   { index: { _index: index, _id: doc.id } },
+    //   doc,
+    // ]);
+    // const bulkResponse = await this.client!.bulk({ refresh: true, operations });
+    // this.handleErrors(operations, bulkResponse);
     const count = await this.client!.count({ index: index });
     console.log(`Count: ${count.count}`);
     // const a = await this.getProperties('homewood', 'alabama');
     // console.log(a);
-    return bulkResponse;
+    return;
+    // return bulkResponse;
   };
 
   private handleErrors = (operations: any, bulkResponse: BulkResponse) => {

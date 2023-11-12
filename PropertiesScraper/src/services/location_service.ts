@@ -43,7 +43,7 @@ export default class LocationService {
       requestParameters,
       this.validateSuggestionsData,
     );
-    const suggestions = await this.extractSuggestionsData(urlData);
+    const suggestions = await this.extractSuggestionsData(urlData?.data);
     return suggestions;
   };
 
@@ -52,19 +52,21 @@ export default class LocationService {
     city: string,
     state: string,
     neighborhood: string,
+    zipcode: string,
   ) => {
     const requestParameters = await this.getRequestParameters(
       type,
       city,
       state,
       neighborhood,
+      zipcode,
     );
     console.log(`url: ${requestParameters?.url}`);
     const urlData = await this.dataFetcher.tryFetch(
       requestParameters!,
       this.validateLocationData,
     );
-    const locationData = await this.extractLocationData(urlData);
+    const locationData = await this.extractLocationData(urlData?.data);
     const location = {
       city,
       state,
@@ -78,18 +80,32 @@ export default class LocationService {
     state: string,
     city: string,
     neighborhood: string,
+    zipcode: string,
   ) => {
-    const stateAbbreviation = this.states[state!];
+    switch (type) {
+      case "city":
+        return this.getCityRequestParameters(city!, state);
+        break;
+      case "neighborhood":
+        return this.getNeighborhoodRequestParameters(
+          city!,
+          neighborhood!,
+          state,
+        );
+        break;
+      case "zipcode":
+        return this.getZipCodeRequestParameters(zipcode!, state);
+    }
     if (type === "city") {
       return this.getCityRequestParameters(
         city,
-        stateAbbreviation,
+        state,
       );
     } else if (type === "neighborhood") {
       return this.getNeighborhoodRequestParameters(
         city!,
         neighborhood!,
-        stateAbbreviation,
+        state,
       );
     }
   };
@@ -125,8 +141,7 @@ export default class LocationService {
           const neighborhood = locationSuggestion.neighborhood;
           const addressLine = locationSuggestion.line;
           const zipCode = locationSuggestion.postal_code;
-          const state =
-            this.states_abbreviations[locationSuggestion.state_code];
+          const state = locationSuggestion.state_code;
           const locationParts = [
             addressLine,
             neighborhood,
@@ -177,6 +192,7 @@ export default class LocationService {
   private parseBounds = (bounds: any) => {
     const type = bounds["type"];
     const boundsData = bounds["coordinates"];
+    return boundsData;
     if (type === "MultiPolygon") {
       console.log(boundsData);
       const polygons = this.parseMultiPolygon(boundsData as MultiPolygon);
@@ -211,51 +227,66 @@ export default class LocationService {
     });
     return parsedBoundary;
   };
-  private getAddressRequestParameters = async (
-    display: string,
+  // private getAddressRequestParameters = async (
+  //   display: string,
+  //   state_code: string,
+  // ) => {
+  //   const propertyData = await this.propertyScraper.scrapeProperty(
+  //     display,
+  //     this.dataFetcher,
+  //   );
+  //   if (propertyData.neighborhood) {
+  //     console.log("neighborhood: " + propertyData.neighborhood);
+  //     const display = propertyData.neighborhood + ", " + propertyData.city;
+  //     return this.getNeighborhoodRequestParameters(
+  //       propertyData.city,
+  //       display,
+  //       state_code,
+  //     );
+  //   } else {
+  //     return this.getCityRequestParameters(
+  //       propertyData.city,
+  //       state_code,
+  //     );
+  //   }
+  // };
+
+  private getZipCodeRequestParameters(
+    zipcode: string,
     stateAbbreviation: string,
-  ) => {
-    const propertyData = await this.propertyScraper.scrapeProperty(
-      display,
-      this.dataFetcher,
-    );
-    if (propertyData.neighborhood) {
-      console.log("neighborhood: " + propertyData.neighborhood);
-      const display = propertyData.neighborhood + ", " + propertyData.city;
-      return this.getNeighborhoodRequestParameters(
-        propertyData.city,
-        display,
-        stateAbbreviation,
-      );
-    } else {
-      return this.getCityRequestParameters(
-        propertyData.city,
-        stateAbbreviation,
-      );
-    }
-  };
+  ) {
+    // const cityName = city.replace(" ", "-");
+    // const neighborhoodName = neighborhood.replace(" ", "-");
+    // const urlParameters = "?area_type=neighborhood&slug_id=";
+    // const url =
+    //   `${this.LOCATION_SERVICE_URL}${urlParameters}${neighborhoodName}_${cityName}_${stateAbbreviation}`;
+    // return {
+    //   method: "GET",
+    //   url: url,
+    // };
+  }
 
   private getNeighborhoodRequestParameters(
     city: string,
     neighborhood: string,
-    stateAbbreviation: string,
+    state_code: string,
   ) {
     const cityName = city.replace(" ", "-");
-    const neighborhoodName = neighborhood.replace(" ", "-");
-    const urlParameters = "?area_type=neighborhood&slug_id=";
-    const url =
-      `${this.LOCATION_SERVICE_URL}${urlParameters}${neighborhoodName}_${cityName}_${stateAbbreviation}`;
+    const neighborhoodName = neighborhood.replaceAll(" ", "-");
+    const urlParameters =
+      `?area_type=neighborhood&slug_id=${neighborhoodName}_${cityName}_${state_code}`;
+    const url = `${this.LOCATION_SERVICE_URL}${urlParameters}`;
     return {
       method: "GET",
       url: url,
     };
   }
 
-  private getCityRequestParameters(city: string, stateAbbreviation: string) {
+  private getCityRequestParameters(city: string, state_code: string) {
     const cityName = city.replace(" ", "-");
     const urlParameters = "?area_type=city&slug_id=";
     const url =
-      `${this.LOCATION_SERVICE_URL}${urlParameters}${cityName}_${stateAbbreviation}`;
+      `${this.LOCATION_SERVICE_URL}${urlParameters}${cityName}_${state_code}`;
     return {
       method: "GET",
       url: url,
