@@ -184,6 +184,7 @@ const MainControls: React.FC<MainControlsProps> = (
   };
 
   const getFilterValue = (fieldName, updatedFieldName, updatedValue) => {
+    console.log("field naem: ", fieldName);
     if (fieldName === "arv_price") {
       return updatedFieldName === "arv_price" ? updatedValue : arv;
     }
@@ -436,33 +437,49 @@ const MainControls: React.FC<MainControlsProps> = (
       </SliderField>
 
       <SliderField fieldName="Baths">
-        <SliderRangeInput
+        <SliderRangeInputV2
           inputProps={{
-            title: "Baths",
+            title: "Bathrooms",
             name: "baths",
             min: 1,
             max: 9,
             step: 1,
           }}
-          minValue={minBaths}
-          maxValue={maxBaths}
-          updateMinValue={(value) => dispatch(setMinBaths(value))}
-          updateMaxValue={(value) => dispatch(setMaxBaths(value))}
+          value={baths}
+          updateValue={(value) =>
+            setValue(
+              () => setBaths(value),
+              () => {
+                dispatch(setMinBaths(value[0]));
+                dispatch(setMaxBaths(value[1]));
+              },
+              value,
+              "total_bathrooms",
+            )}
         />
       </SliderField>
       <SliderField fieldName="Beds">
-        <SliderRangeInput
+        <SliderRangeInputV2
           inputProps={{
-            title: "Beds",
+            title: "Bedrooms",
             name: "beds",
             min: 1,
             max: 9,
             step: 1,
           }}
-          minValue={minBeds}
-          maxValue={maxBeds}
-          updateMinValue={(value) => dispatch(setMinBeds(value))}
-          updateMaxValue={(value) => dispatch(setMaxBeds(value))}
+          value={beds}
+          updateValue={(value) =>
+            setValue(
+              () => setBeds(value),
+              () => {
+                dispatch(setMinBeds(value[0]));
+                dispatch(setMaxBeds(value[1]));
+              },
+              value,
+              "bedrooms",
+            )}
+          // updateMinValue={(value) => dispatch(setMinBeds(value))}
+          // updateMaxValue={(value) => dispatch(setMaxBeds(value))}
         />
       </SliderField>
       <SliderField fieldName="Building Sqft">
