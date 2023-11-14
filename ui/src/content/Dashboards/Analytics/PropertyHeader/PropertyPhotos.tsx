@@ -9,6 +9,7 @@ import "yet-another-react-lightbox/plugins/thumbnails.css";
 import clsx from "clsx";
 import { validateValue } from "@/utils/converters";
 import Image from "@/components/Photos/Image";
+import { Typography } from "@mui/material";
 
 const defaultImage =
   "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
@@ -92,14 +93,17 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
           {props.photos.length > 3 && (
             <ThemedButton
               onClick={() => setOpen(!open)}
-              text="See More"
               sx={{
                 position: "absolute",
                 top: "50%",
                 left: "50%",
                 transform: "translate(-50%, -50%)",
               }}
-            />
+            >
+              <Typography className="text-white font-poppins">
+                See More
+              </Typography>
+            </ThemedButton>
           )}
         </div>
       </div>

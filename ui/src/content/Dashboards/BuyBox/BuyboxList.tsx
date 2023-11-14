@@ -30,6 +30,7 @@ import { motion, Variants } from "framer-motion";
 import Lottie from "lottie-react";
 import searchingDocumentsAnimation from "@/static/animations/loading/searchingDocumentsAnimation.json";
 import { useRouter } from "next/router";
+import ThemedButton from "@/components/Buttons/ThemedButton";
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -147,11 +148,11 @@ const BuyboxList = (props: BuyboxListProps) => {
 
   return (
     <div className="flex w-full h-full">
-      <div className="relative w-full bg-white m-4 rounded-lg">
+      <div className="relative w-full p-4 rounded-lg">
         {state.isFetching && <LoadingImage />}
         <motion.div
           initial={false}
-          animate={!state.isFetching ? "open" : "closed"}
+          animate={state.data?.length > 0 ? "open" : "closed"}
           className="w-full"
         >
           <motion.div
@@ -172,17 +173,14 @@ const BuyboxList = (props: BuyboxListProps) => {
             ))}
 
             <motion.div variants={itemVariants}>
-              <StyledAccordion sx={{ width: "100%" }}>
-                <StyledAccordionSummary
-                  expandIcon={<AddCircleOutlineIcon />}
-                >
-                  <Button
-                    onClick={() => props.editBuyBox()}
-                  >
-                    <Typography>New Buybox</Typography>
-                  </Button>
-                </StyledAccordionSummary>
-              </StyledAccordion>
+              <ThemedButton
+                onClick={() => props.editBuyBox()}
+              >
+                <AddCircleOutlineIcon className="mr-2" htmlColor="white" />
+                <Typography className="text-white font-poppins">
+                  New Buybox
+                </Typography>
+              </ThemedButton>
             </motion.div>
           </motion.div>
         </motion.div>

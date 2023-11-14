@@ -31,7 +31,8 @@ const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
 ))(({}) => ({
   // border: `1px solid ${theme.palette.divider}`,
-  borderRadius: 0,
+  borderRadius: "0px",
+  backgroundColor: "transparent",
   "&:not(:last-child)": {
     borderBottom: 0,
   },
@@ -46,8 +47,10 @@ const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
     {...props}
   />
 ))(({ theme }) => ({
-  borderRadius: 0,
-  backgroundColor: theme.palette.mode === "dark" ? "#2d3748" : "#f5f5f5",
+  borderRadius: "2rem",
+  marginBottom: "1rem",
+  backgroundColor: "white",
+  boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
   flexDirection: "row-reverse",
   "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
     transform: "rotate(90deg)",
@@ -56,6 +59,8 @@ const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
     marginLeft: theme.spacing(1),
   },
 }));
+
+const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({}));
 
 type BuyboxItemProps = {
   buybox: BuyBox;
@@ -109,14 +114,14 @@ const BuyboxItem = (props: BuyboxItemProps) => {
               startIcon={allowedToEdit
                 ? <SettingsOutlinedIcon className="className" />
                 : null}
-              className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-lg p-2 font-poppins font-semibold  "
+              className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
               onClick={handleEditBuyBox}
             >
               {allowedToEdit ? "Edit" : "View"} BuyBox
             </Button>
           </div>
         </StyledAccordionSummary>
-        <AccordionDetails>
+        <StyledAccordionDetails>
           <BuyBoxLeads
             buybox={props.buybox}
             open={expanded}
@@ -125,7 +130,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
             setPage={setPage}
             setPageSize={setPageSize}
           />
-        </AccordionDetails>
+        </StyledAccordionDetails>
       </StyledAccordion>
       {/* <DataGrid */}
       {/*   sx={{ */}

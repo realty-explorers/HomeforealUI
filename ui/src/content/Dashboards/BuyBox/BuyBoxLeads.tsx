@@ -222,6 +222,26 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
         fontFamily: "var(--font-poppins)",
       },
     },
+    muiTableContainerProps: {
+      sx: {
+        backgroundColor: "white",
+      },
+    },
+    muiTableBodyRowProps: {
+      sx: {
+        backgroundColor: "white",
+      },
+    },
+    muiTableHeadRowProps: {
+      sx: {
+        backgroundColor: "white",
+      },
+    },
+    muiTopToolbarProps: {
+      sx: {
+        backgroundColor: "white",
+      },
+    },
     renderRowActionMenuItems: ({ closeMenu, row }) => [
       <MenuItem
         key={1}
