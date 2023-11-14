@@ -35,6 +35,7 @@ const FinancingExpenses = (props: FinancingExpensesProps) => {
   const priceTypes = [
     { label: "ARV", value: props.property?.arv_price },
     { label: "Listing Price", value: props.property?.listing_price || 0 },
+    // { label: "Loan Amount", value: },
   ];
 
   const defaultLoanAmount = {

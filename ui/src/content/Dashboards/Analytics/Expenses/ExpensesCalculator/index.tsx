@@ -1,45 +1,23 @@
 import { useEffect, useState } from "react";
-import Property from "@/models/property";
-import {
-  Button,
-  Checkbox,
-  FormControl,
-  Grid,
-  InputAdornment,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  Paper,
-  Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from "@mui/material";
-import GridField from "@/components/Grid/GridField";
+import { Grid, TableCell } from "@mui/material";
 import ValueCard from "@/components/Cards/ValueCard";
-import styled from "@emotion/styled";
 import analyticsStyles from "../../Analytics.module.scss";
-import styles from "./ExpensesCalculator.module.scss";
-import ExpensesRow from "../ExpensesRow";
 import InitialInvestment from "./InitialInvestment";
 import FinancingExpenses from "./FinancingExpenses";
-import { set } from "nprogress";
 import AnalyzedProperty from "@/models/analyzedProperty";
 import { priceFormatter } from "@/utils/converters";
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: "none",
-}));
+import { useDispatch } from "react-redux";
+import {
+  setFinancingCosts,
+  setInitialInvestment,
+} from "@/store/slices/expensesSlice";
 
 type ExpensesCalculatorProps = {
   property: AnalyzedProperty;
 };
-const ExpensesCalculator = (props: ExpansesCalculatorProps) => {
-  const [initialInvestmentExpenses, setInitialInvestmentExpanses] = useState<
+const ExpensesCalculator = (props: ExpensesCalculatorProps) => {
+  const dispatch = useDispatch();
+  const [initialInvestmentExpenses, setInitialInvestmentExpenses] = useState<
     number
   >(0);
   const [financingExpenses, setFinancingExpenses] = useState<number>(0);
@@ -47,6 +25,32 @@ const ExpensesCalculator = (props: ExpansesCalculatorProps) => {
   const [financingExpensesActive, setFinancingExpensesActive] = useState(
     false,
   );
+
+  const handleChangeInitialInvestmentExpenses = (value: number) => {
+    setInitialInvestmentExpenses(value);
+    dispatch(setInitialInvestment(value));
+  };
+
+  const handleChangeFinancingExpenses = (value: number) => {
+    setFinancingExpenses(value);
+    dispatch(setFinancingCosts(value));
+  };
+
+  const handleChangeInitialInvestmentActive = () => {
+    setInitialInvestmentActive((prev) => !prev);
+    dispatch(
+      setInitialInvestment(
+        initialInvestmentActive ? 0 : initialInvestmentExpenses,
+      ),
+    );
+  };
+
+  const handleChangeFinancingExpensesActive = () => {
+    setFinancingExpensesActive((prev) => !prev);
+    dispatch(
+      setFinancingCosts(financingExpensesActive ? 0 : financingExpenses),
+    );
+  };
 
   const totalExpenses =
     (initialInvestmentActive ? initialInvestmentExpenses : 0) +
@@ -76,15 +80,15 @@ const ExpensesCalculator = (props: ExpansesCalculatorProps) => {
           </Grid>
           <InitialInvestment
             property={props.property}
-            setExpenses={setInitialInvestmentExpanses}
+            setExpenses={handleChangeInitialInvestmentExpenses}
             active={initialInvestmentActive}
-            toggleActive={() => setInitialInvestmentActive((prev) => !prev)}
+            toggleActive={handleChangeInitialInvestmentActive}
           />
           <FinancingExpenses
             property={props.property}
-            setExpenses={setFinancingExpenses}
+            setExpenses={handleChangeFinancingExpenses}
             active={financingExpensesActive}
-            toggleActive={() => setFinancingExpensesActive((prev) => !prev)}
+            toggleActive={handleChangeFinancingExpensesActive}
           />
         </Grid>
       </Grid>

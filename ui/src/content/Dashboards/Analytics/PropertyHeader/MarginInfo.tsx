@@ -11,6 +11,7 @@ import {
   calculateArvPercentage,
   calculateMarginPercentage,
 } from "@/utils/calculationUtils";
+import { selectExpenses } from "@/store/slices/expensesSlice";
 
 //bg-green-200
 //bg-purple-200
@@ -76,6 +77,9 @@ const MarginInfo = (props: MarginInfoProps) => {
     useSelector(
       selectProperties,
     );
+
+  const { initialInvestment, financingCosts } = useSelector(selectExpenses);
+  const totalExpenses = initialInvestment + financingCosts;
   // const profitMargin = props.property?.listing_price > 0
   //   ? (props.property?.arv_price -
   //     props.property?.listing_price - 0) / props.property?.listing_price * 100
@@ -103,7 +107,7 @@ const MarginInfo = (props: MarginInfoProps) => {
           margin={calculateMarginPercentage(
             saleCalculatedProperty?.sales_comps_price,
             saleCalculatedProperty?.listing_price,
-            1000,
+            totalExpenses,
           ).toFixed()}
           color="purple"
           name="Under Comps"
@@ -125,7 +129,7 @@ const MarginInfo = (props: MarginInfoProps) => {
           margin={calculateMarginPercentage(
             saleCalculatedProperty?.arv_price,
             saleCalculatedProperty?.listing_price,
-            1000,
+            totalExpenses,
           ).toFixed()}
           color="green"
           name="Under ARV"

@@ -45,8 +45,9 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
       },
       {
         id: uuidv4(),
-        label: "Closing Free",
-        value: props.property?.expenses?.closing_fee?.expense_amount || 0,
+        label: "Closing Fee",
+        // value: props.property?.expenses?.closing_fee?.expense_amount || 0,
+        value: 1000,
         priceType: props.property.expenses?.closing_fee?.expense_ref === "arv"
           ? priceTypes[0]
           : priceTypes[1],
@@ -54,7 +55,8 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
       {
         id: uuidv4(),
         label: "Selling Fee",
-        value: props.property?.expenses?.selling_fee?.expense_amount || 0,
+        // value: props.property?.expenses?.selling_fee?.expense_amount || 0,
+        value: props.property?.arv_price * 0.03,
         priceType: props.property.expenses?.selling_fee?.expense_ref === "arv"
           ? priceTypes[0]
           : priceTypes[1],

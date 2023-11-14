@@ -1,9 +1,8 @@
 import { Action, configureStore, ThunkAction } from "@reduxjs/toolkit";
-import { searchSlice } from "./slices/searchSlice";
 import { locationReducer } from "./slices/locationSlice";
 import { filterReducer } from "./slices/filterSlice";
 import { propertiesReducer } from "./slices/propertiesSlice";
-import { createWrapper } from "next-redux-wrapper";
+import { expensesReducer } from "./slices/expensesSlice";
 import { locationApi } from "./services/locationApiService";
 import { propertiesApi } from "./services/propertiesApiService";
 import { buyBoxApi } from "./services/buyboxApiService";
@@ -21,6 +20,7 @@ export const store = configureStore({
     auth: authReducer,
     buyBoxes: buyBoxesReducer,
     map: mapReducer,
+    expenses: expensesReducer,
     [locationApi.reducerPath]: locationApi.reducer,
     [propertiesApi.reducerPath]: propertiesApi.reducer,
     [buyBoxApi.reducerPath]: buyBoxApi.reducer,

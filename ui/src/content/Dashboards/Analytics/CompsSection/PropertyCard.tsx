@@ -47,9 +47,9 @@ const gridRows = (property: AnalyzedProperty) => [
   },
   {
     label: "Year Built",
-    value: typeof property["year_built"] === "string"
-      ? property["year_built"].slice(0, 4)
-      : 0,
+    value: typeof property.year_built === "string"
+      ? property.year_built.slice(0, 4)
+      : property.year_built,
   },
   // {
   //   label: "Neighborhood",

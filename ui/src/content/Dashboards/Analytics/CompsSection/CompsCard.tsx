@@ -52,7 +52,9 @@ const gridRows = (property: CompData) => [
   },
   {
     label: "Year Built",
-    value: validateValue(property.year_built, "string", "").slice(0, 4),
+    value: typeof property.year_built === "string"
+      ? property.year_built.slice(0, 4)
+      : property.year_built,
   },
   {
     label: "Hood",
@@ -134,10 +136,9 @@ const CompsCard = (props: CompsCardProps) => {
         </Typography>
         {props.compsProperty.is_arv_25th && (
           <Tooltip title="Included in 25th ARV Calculation">
-            <CurrencyExchangeIcon
-              htmlColor="white"
-              className="absolute right-0 top-0"
-            />
+            <div className="font-poppins font-semibold text-white bg-arv px-2 rounded-lg absolute top-0 right-0">
+              25th ARV
+            </div>
           </Tooltip>
         )}
       </Grid>
