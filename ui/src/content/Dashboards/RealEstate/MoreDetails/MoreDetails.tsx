@@ -1,13 +1,13 @@
 import { useDispatch } from "react-redux";
 import RentComps from "../../Analytics/CompsSection/RentComps";
 import SalesComps from "../../Analytics/CompsSection/SalesComps";
-import ExpansesCalculator from "../../Analytics/Expanses/ExpansesCalculator";
+import ExpensesCalculator from "../../Analytics/Expenses/ExpensesCalculator";
 import PropertyFacts from "../../Analytics/PropertyFacts";
 import PropertyHeader from "../../Analytics/PropertyHeader";
 import RentComparable from "../../Analytics/RentComparable";
 import SaleComparable from "../../Analytics/SaleComparable";
 import SaleComparableIndicators from "../../Analytics/SaleComparableIndicators";
-import OperationalExpanses from "@/content/Dashboards/Analytics/Expanses/OperationalExpenses";
+import OperationalExpenses from "@/content/Dashboards/Analytics/Expenses/OperationalExpenses";
 
 type MoreDetailsProps = {
   selectedProperty: any;
@@ -31,17 +31,17 @@ const MoreDetails = (
         {/* <EnvironmentalIndicators property={selectedProperty} /> */}
         {/* <OwnershipInfo property={selectedProperty} /> */}
         <div className="mt-4 relative">
-          <SaleComparableIndicators property={selectedProperty} />
+          {/* <SaleComparableIndicators property={selectedProperty} /> */}
           <PropertyFacts property={selectedProperty} />
           <SaleComparable property={selectedProperty} />
           <SalesComps />
         </div>
-        <ExpansesCalculator property={selectedProperty} />
+        <ExpensesCalculator property={selectedProperty} />
         <div className="mt-8">
           <RentComparable property={selectedProperty} />
           <RentComps />
         </div>
-        <OperationalExpanses property={selectedProperty} />
+        <OperationalExpenses property={selectedProperty} />
       </>
     )
     : <></>;

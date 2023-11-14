@@ -11,18 +11,15 @@ const PropertyMainInfo = (props: PropertyMainInfoProps) => {
     <>
       <Grid container rowGap={1}>
         <Grid container item xs={12}>
-          <Typography
-            className={styles.infoHeader}
-            sx={{ marginRight: "2rem" }}
-          >
-            Listing Price
-          </Typography>
+          {/* <Typography */}
+          {/*   className={styles.infoHeader} */}
+          {/*   sx={{ marginRight: "2rem" }} */}
+          {/* > */}
+          {/*   Listing Price */}
+          {/* </Typography> */}
           <Typography className={styles.infoHeader}>
             {priceFormatter(props.property.listing_price)}
           </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Chip label="Active" color="success" size="small" />
         </Grid>
         <Grid item xs={12}>
           <Typography className={styles.infoDescription}>

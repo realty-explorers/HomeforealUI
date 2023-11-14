@@ -23,10 +23,10 @@ import GridField from "@/components/Grid/GridField";
 import ValueCard from "@/components/Cards/ValueCard";
 import styled from "@emotion/styled";
 import analyticsStyles from "../../Analytics.module.scss";
-import styles from "./ExpansesCalculator.module.scss";
-import ExpansesRow from "../ExpansesRow";
+import styles from "./ExpensesCalculator.module.scss";
+import ExpensesRow from "../ExpensesRow";
 import InitialInvestment from "./InitialInvestment";
-import FinancingExpanses from "./FinancingExpanses";
+import FinancingExpenses from "./FinancingExpenses";
 import { set } from "nprogress";
 import AnalyzedProperty from "@/models/analyzedProperty";
 import { priceFormatter } from "@/utils/converters";
@@ -35,26 +35,26 @@ const StyledTableCell = styled(TableCell)(({ theme }) => ({
   borderBottom: "none",
 }));
 
-type ExpansesCalculatorProps = {
+type ExpensesCalculatorProps = {
   property: AnalyzedProperty;
 };
-const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
-  const [initialInvestmentExpanses, setInitialInvestmentExpanses] = useState<
+const ExpensesCalculator = (props: ExpansesCalculatorProps) => {
+  const [initialInvestmentExpenses, setInitialInvestmentExpanses] = useState<
     number
   >(0);
-  const [financingExpanses, setFinancingExpanses] = useState<number>(0);
+  const [financingExpenses, setFinancingExpenses] = useState<number>(0);
   const [initialInvestmentActive, setInitialInvestmentActive] = useState(true);
-  const [financingExpansesActive, setFinancingExpansesActive] = useState(
+  const [financingExpensesActive, setFinancingExpensesActive] = useState(
     false,
   );
 
-  const totalExpanses =
-    (initialInvestmentActive ? initialInvestmentExpanses : 0) +
-    (financingExpansesActive ? financingExpanses : 0);
+  const totalExpenses =
+    (initialInvestmentActive ? initialInvestmentExpenses : 0) +
+    (financingExpensesActive ? financingExpenses : 0);
 
   useEffect(() => {
     setInitialInvestmentActive(true);
-    setFinancingExpansesActive(false);
+    setFinancingExpensesActive(false);
   }, [props.property]);
 
   return (
@@ -65,26 +65,26 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
         <Grid container justifyContent="center" rowGap={3}>
           <Grid item xs={6}>
             <h1 className={analyticsStyles.sectionHeader}>
-              Expanses Calculator
+              Expenses Calculator
             </h1>
           </Grid>
           <Grid item xs={6} className="sticky top-0 z-[2]">
             <ValueCard
-              title="Estimated Expanses"
-              value={priceFormatter(totalExpanses.toFixed())}
+              title="Estimated Expenses"
+              value={priceFormatter(totalExpenses.toFixed())}
             />
           </Grid>
           <InitialInvestment
             property={props.property}
-            setExpanses={setInitialInvestmentExpanses}
+            setExpenses={setInitialInvestmentExpanses}
             active={initialInvestmentActive}
             toggleActive={() => setInitialInvestmentActive((prev) => !prev)}
           />
-          <FinancingExpanses
+          <FinancingExpenses
             property={props.property}
-            setExpanses={setFinancingExpanses}
-            active={financingExpansesActive}
-            toggleActive={() => setFinancingExpansesActive((prev) => !prev)}
+            setExpenses={setFinancingExpenses}
+            active={financingExpensesActive}
+            toggleActive={() => setFinancingExpensesActive((prev) => !prev)}
           />
         </Grid>
       </Grid>
@@ -92,4 +92,4 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
   );
 };
 
-export default ExpansesCalculator;
+export default ExpensesCalculator;

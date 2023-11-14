@@ -229,6 +229,16 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       (property) => property.index === feature.properties.index - 1,
     );
     setHoveredComp(hoveredProperty);
+
+    // const angle = Math.atan2(
+    //   hoveredProperty.longitude - selectedPropertyPreview.longitude,
+    //   hoveredProperty.latitude - selectedPropertyPreview.latitude,
+    // ) *
+    //   (180 / Math.PI);
+    // alert(angle);
+    // mapRef.current?.rotateTo(-angle, {
+    //   duration: 1000,
+    // });
   };
 
   const handleMouseLeaveComps = (

@@ -72,7 +72,7 @@ const DashboardRealEstate = (props: any) => {
             }}
             className={clsx([
               styles.moreDetailsPanel,
-              "w-1/2 overflow-y-auto absolute h-full",
+              "w-1/2 overflow-y-auto absolute h-full bg-off-white",
             ])}
           >
             {(selectedPropertyState.isFetching || selecting)

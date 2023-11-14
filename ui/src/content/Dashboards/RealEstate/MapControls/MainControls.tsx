@@ -333,7 +333,7 @@ const MainControls: React.FC<MainControlsProps> = (
             className="flex items-center justify-center h-8"
             sx={{
               "&.Mui-selected": {
-                backgroundColor: "#77d077",
+                backgroundColor: "#22c55e",
               },
             }}
           >

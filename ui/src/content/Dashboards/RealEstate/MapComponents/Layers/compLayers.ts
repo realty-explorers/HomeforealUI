@@ -18,7 +18,7 @@ export const compsLayer: LayerProps = {
     "circle-stroke-color": [
       "case",
       ["to-boolean", ["get", "isARVCalculated"]],
-      "#77d077",
+      "#22c55e",
       "#fff",
     ],
     // "circle-blur": 0.2,

@@ -17,21 +17,21 @@ import {
   OutlinedInput,
   Typography,
 } from "@mui/material";
-import ExpansesRow, { Expanse } from "../ExpansesRow";
-import styles from "../ExpansesCalculator.module.scss";
+import ExpensesRow, { Expense } from "../ExpensesRow";
+import styles from "../ExpensesCalculator.module.scss";
 import { TransitionGroup } from "react-transition-group";
 import AnalyzedProperty from "@/models/analyzedProperty";
 import { priceFormatter } from "@/utils/converters";
 import clsx from "clsx";
 
-type FinancingExpansesProps = {
+type FinancingExpensesProps = {
   property: AnalyzedProperty;
-  setExpanses: (value: number) => void;
+  setExpenses: (value: number) => void;
   active: boolean;
   toggleActive: () => void;
 };
 
-const FinancingExpanses = (props: FinancingExpansesProps) => {
+const FinancingExpenses = (props: FinancingExpensesProps) => {
   const priceTypes = [
     { label: "ARV", value: props.property?.arv_price },
     { label: "Listing Price", value: props.property?.listing_price || 0 },
@@ -67,29 +67,29 @@ const FinancingExpanses = (props: FinancingExpansesProps) => {
   const defaultInterestRate = props.property?.loan?.interest_rate || 0;
   const defaultMonths = props.property?.loan?.duration || 0;
 
-  const [downPayment, setDownPayment] = useState<Expanse>({
+  const [downPayment, setDownPayment] = useState<Expense>({
     ...defaultDownPayment,
   });
-  const [loanAmount, setLoanAmount] = useState<Expanse>({
+  const [loanAmount, setLoanAmount] = useState<Expense>({
     ...defaultLoanAmount,
   });
-  const [originationFee, setOriginationFee] = useState<Expanse>({
+  const [originationFee, setOriginationFee] = useState<Expense>({
     ...defaultOriginationFee,
   });
-  const [expanses, setExpanses] = useState<Expanse[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
   const [months, setMonths] = useState<number>(defaultMonths);
   const [interestRate, setInterestRate] = useState<number>(defaultInterestRate);
 
   useEffect(() => {
-    const defaultExpanses = [{ ...defaultOriginationFee }];
-    setExpanses(defaultExpanses);
+    const defaultExpenses = [{ ...defaultOriginationFee }];
+    setExpenses(defaultExpenses);
     setMonths(defaultMonths);
     setInterestRate(defaultInterestRate);
     setDownPayment({ ...defaultDownPayment });
     setLoanAmount({ ...defaultLoanAmount });
-    props.setExpanses(
-      totalExpanses(
-        defaultExpanses,
+    props.setExpenses(
+      totalExpenses(
+        defaultExpenses,
         defaultLoanAmount.value,
         defaultInterestRate,
         defaultMonths,
@@ -97,84 +97,84 @@ const FinancingExpanses = (props: FinancingExpansesProps) => {
     );
   }, [props.property]);
 
-  const handleChangeExpanses = (changedExpanse: Expanse) => {
-    const expanseIndex = expanses.findIndex(
-      (expanse) => expanse.id === changedExpanse.id,
+  const handleChangeExpenses = (changedExpense: Expense) => {
+    const expenseIndex = expenses.findIndex(
+      (expense) => expense.id === changedExpense.id,
     );
-    if (expanseIndex === -1) return;
-    expanses[expanseIndex] = changedExpanse;
-    setExpanses([...expanses]);
-    props.setExpanses(totalExpanses(expanses));
+    if (expenseIndex === -1) return;
+    expenses[expenseIndex] = changedExpense;
+    setExpenses([...expenses]);
+    props.setExpenses(totalExpenses(expenses));
   };
 
-  const handleChangeDownPayment = (changedExpanse: Expanse) => {
-    setDownPayment(changedExpanse);
-    const loanAmountValue = changedExpanse.priceType.value -
-      changedExpanse.value;
+  const handleChangeDownPayment = (changedExpense: Expense) => {
+    setDownPayment(changedExpense);
+    const loanAmountValue = changedExpense.priceType.value -
+      changedExpense.value;
     setLoanAmount({
       ...loanAmount,
-      priceType: changedExpanse.priceType,
+      priceType: changedExpense.priceType,
       value: loanAmountValue,
     });
-    props.setExpanses(totalExpanses(expanses, loanAmountValue));
+    props.setExpenses(totalExpenses(expenses, loanAmountValue));
   };
 
-  const handleChangeLoanAmount = (changedExpanse: Expanse) => {
-    setLoanAmount(changedExpanse);
-    const loanAmountValue = changedExpanse.priceType.value -
-      changedExpanse.value;
+  const handleChangeLoanAmount = (changedExpense: Expense) => {
+    setLoanAmount(changedExpense);
+    const loanAmountValue = changedExpense.priceType.value -
+      changedExpense.value;
     setDownPayment({
       ...downPayment,
-      priceType: changedExpanse.priceType,
+      priceType: changedExpense.priceType,
       value: loanAmountValue,
     });
-    props.setExpanses(totalExpanses(expanses, changedExpanse.value));
+    props.setExpenses(totalExpenses(expenses, changedExpense.value));
   };
 
   const handleChangeInterestRate = (value: number) => {
     setInterestRate(value);
-    props.setExpanses(totalExpanses(expanses, undefined, value));
+    props.setExpenses(totalExpenses(expenses, undefined, value));
   };
 
   const handleChangeMonths = (value: number) => {
     setMonths(value);
-    props.setExpanses(totalExpanses(expanses, undefined, undefined, value));
+    props.setExpenses(totalExpenses(expenses, undefined, undefined, value));
   };
 
-  const totalExpanses = (
-    expanses: Expanse[],
+  const totalExpenses = (
+    Expenses: Expense[],
     totalLoan?: number,
     interest?: number,
     duration?: number,
   ) => {
-    const expansesSum = expanses.reduce(
-      (acc, expanse) => acc + Math.round(expanse.value),
+    const ExpensesSum = expenses.reduce(
+      (acc, expense) => acc + Math.round(expense.value),
       0,
     );
-    const loanExpanse = (totalLoan ?? loanAmount.value) *
+    const loanExpense = (totalLoan ?? loanAmount.value) *
       (interest ?? interestRate) / 100 *
       (duration ?? months) / 12;
-    return expansesSum + loanExpanse;
+    return ExpensesSum + loanExpense;
   };
 
-  const handleAddExpanse = () => {
-    setExpanses([
-      ...expanses,
+  const handleAddExpense = () => {
+    setExpenses([
+      ...expenses,
       {
         id: uuidv4(),
-        label: `New Expanse`,
+        label: `New Expense`,
         value: 0,
         priceType: priceTypes[0],
       },
     ]);
   };
 
-  const handleRemoveExpanse = (id) => {
-    const updatedExpanses = expanses.filter(
-      (expanse) => expanse.id !== id,
+  const handleRemoveExpense = (id) => {
+    const updatedExpenses = expenses.filter(
+      (expense) => expense.id !== id,
     );
-    setExpanses(updatedExpanses);
-    props.setExpanses(totalExpanses(updatedExpanses));
+    setExpenses(updatedExpenses);
+    props.setExpenses(totalExpenses(updatedExpenses));
   };
 
   return (
@@ -186,32 +186,32 @@ const FinancingExpanses = (props: FinancingExpansesProps) => {
           onChange={props.toggleActive}
         />
         <Typography className={styles.checkboxLabel}>
-          Financing Expanses
+          Financing Expenses
         </Typography>
       </Grid>
       <Grid item container xs={6} justifyContent="center">
-        <Typography className={styles.totalExpansesLabel}>
+        <Typography className={styles.totalExpensesLabel}>
           {priceFormatter(
-            Math.round(totalExpanses(expanses)),
+            Math.round(totalExpenses(expenses)),
           )}
         </Typography>
       </Grid>
       <List className="w-full">
-        <ExpansesRow
-          expanse={downPayment}
-          setExpanse={(expanse) => handleChangeDownPayment(expanse)}
+        <ExpensesRow
+          expense={downPayment}
+          setExpense={(expense) => handleChangeDownPayment(expense)}
           priceTypes={priceTypes}
         />
 
-        <ExpansesRow
-          expanse={loanAmount}
-          setExpanse={(expanse) => handleChangeLoanAmount(expanse)}
+        <ExpensesRow
+          expense={loanAmount}
+          setExpense={(expense) => handleChangeLoanAmount(expense)}
           priceTypes={priceTypes}
         />
 
-        <ExpansesRow
-          expanse={expanses[0]}
-          setExpanse={(expanse) => handleChangeExpanses(expanse)}
+        <ExpensesRow
+          expense={expenses[0]}
+          setExpense={(expense) => handleChangeExpenses(expense)}
           priceTypes={priceTypes}
         />
         <div className="flex py-2">
@@ -267,12 +267,12 @@ const FinancingExpanses = (props: FinancingExpansesProps) => {
       </List>
 
       <Grid item xs={12} justifyContent="flex-start">
-        <Button className={styles.addButton} onClick={handleAddExpanse}>
-          <Typography className={styles.buttonText}>Add Expanses</Typography>
+        <Button className={styles.addButton} onClick={handleAddExpense}>
+          <Typography className={styles.buttonText}>Add Expenses</Typography>
         </Button>
       </Grid>
     </Grid>
   );
 };
 
-export default FinancingExpanses;
+export default FinancingExpenses;

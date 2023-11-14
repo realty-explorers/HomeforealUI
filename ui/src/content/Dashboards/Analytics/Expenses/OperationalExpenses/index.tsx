@@ -1,27 +1,24 @@
 import { useEffect, useState } from "react";
 import { Grid, TableCell } from "@mui/material";
 import ValueCard from "@/components/Cards/ValueCard";
-import styled from "@emotion/styled";
 import analyticsStyles from "../../Analytics.module.scss";
-import styles from "./ExpansesCalculator.module.scss";
-import ExpansesRow from "../ExpansesRow";
-import MonthlyExpanses from "./MonthlyExpanses";
+import MonthlyExpenses from "./MonthlyExpenses";
 import AnalyzedProperty from "@/models/analyzedProperty";
 import { priceFormatter } from "@/utils/converters";
 
-type ExpansesCalculatorProps = {
+type ExpensesCalculatorProps = {
   property: AnalyzedProperty;
 };
-const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
-  const [monthlyExpanses, setMonthlyExpanses] = useState<
+const ExpensesCalculator = (props: ExpensesCalculatorProps) => {
+  const [monthlyExpenses, setMonthlyExpenses] = useState<
     number
   >(0);
-  const [monthlyExpansesActive, setMonthlyExpansesActive] = useState(true);
+  const [monthlyExpensesActive, setMonthlyExpensesActive] = useState(true);
 
-  const totalExpanses = monthlyExpansesActive ? monthlyExpanses : 0;
+  const totalExpenses = monthlyExpensesActive ? monthlyExpenses : 0;
 
   useEffect(() => {
-    setMonthlyExpansesActive(true);
+    setMonthlyExpensesActive(true);
   }, [props.property]);
 
   return (props.property?.rents_comps?.data?.length > 0 &&
@@ -33,20 +30,20 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
           <Grid container justifyContent="center" rowGap={3}>
             <Grid item xs={6}>
               <h1 className={analyticsStyles.sectionHeader}>
-                Expanses Calculator
+                Expenses Calculator
               </h1>
             </Grid>
             <Grid item xs={6} className="sticky top-0 z-[2]">
               <ValueCard
-                title="Annual Expanses"
-                value={priceFormatter(totalExpanses.toFixed())}
+                title="Annual Expenses"
+                value={priceFormatter(totalExpenses.toFixed())}
               />
             </Grid>
-            <MonthlyExpanses
+            <MonthlyExpenses
               property={props.property}
-              setExpanses={setMonthlyExpanses}
-              active={monthlyExpansesActive}
-              toggleActive={() => setMonthlyExpansesActive((prev) => !prev)}
+              setExpenses={setMonthlyExpenses}
+              active={monthlyExpensesActive}
+              toggleActive={() => setMonthlyExpensesActive((prev) => !prev)}
             />
           </Grid>
         </Grid>
@@ -54,4 +51,4 @@ const ExpansesCalculator = (props: ExpansesCalculatorProps) => {
     ));
 };
 
-export default ExpansesCalculator;
+export default ExpensesCalculator;

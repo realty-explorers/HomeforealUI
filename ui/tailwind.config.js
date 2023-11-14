@@ -25,15 +25,19 @@ module.exports = {
       colors: {
         primary: "#590D82",
         secondary: "#9B51E0",
-        arv: "#77d077",
-        "off-white": "#f2f5f9",
-        // "off-white": "#FCFBFE",
+        // arv: "#77d077",
+        arv: "#22c55e",
+        // "off-white": "#f2f5f9",
+        "off-white": "#F8F9FA",
         // primary: '#1E1E1E',
         // secondary: '#9B51E0'
       },
       animation: {
         fadeDelayed: "fadeOut 0s 0.5s ease-in-out forwards",
         fade: "fadeOut 0.3s ease-in-out forwards",
+      },
+      gradients: {
+        "purple-pink": ["45deg", "#3023AE 0%", "#FF0099 100%"],
       },
 
       // that is actual animation

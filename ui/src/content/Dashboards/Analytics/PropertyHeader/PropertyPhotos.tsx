@@ -34,14 +34,14 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
       >
         <div
           className={clsx([
-            "row-span-2 flex items-center justify-center cursor-pointer",
+            "row-span-2 flex items-center justify-center cursor-pointer overflow-hidden rounded-lg",
             props.photos.length == 1 ? "col-span-2" : "col-span-1",
           ])}
         >
           <Image
             src={validateValue(props.photos[0], "string", "")}
             alt=""
-            className="rounded-lg"
+            className="rounded-lg zoom-effect"
             onClick={() => setOpen(!open)}
             defaultSrc={defaultImage}
           />
@@ -54,7 +54,7 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
         </div>
         <div
           className={clsx([
-            "h-full justify-center items-center cursor-pointer ",
+            "h-full justify-center items-center cursor-pointer overflow-hidden rounded-lg",
             props.photos.length < 2 ? "hidden" : "xl:flex",
             props.photos.length == 2
               ? "row-span-2"
@@ -69,7 +69,7 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
 
           <Image
             src={validateValue(props.photos[1], "string", "")}
-            className="rounded-lg"
+            className="rounded-lg zoom-effect"
             alt=""
             onClick={() => setOpen(!open)}
             defaultSrc={defaultImage}
@@ -78,27 +78,29 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
         </div>
         <div
           className={clsx([
-            "h-full justify-center items-center relative",
+            "h-full justify-center items-center cursor-pointer relative overflow-hidden rounded-lg",
             props.photos.length < 3 ? "hidden" : "hidden xl:flex",
           ])}
         >
           <Image
             src={validateValue(props.photos[2], "string", "")}
-            className="rounded-lg"
+            className="rounded-lg zoom-effect"
             alt=""
             onClick={() => setOpen(!open)}
             defaultSrc={defaultImage}
           />
-          <ThemedButton
-            onClick={() => setOpen(!open)}
-            text="See More"
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-            }}
-          />
+          {props.photos.length > 3 && (
+            <ThemedButton
+              onClick={() => setOpen(!open)}
+              text="See More"
+              sx={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+              }}
+            />
+          )}
         </div>
       </div>
 

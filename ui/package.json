@@ -52,6 +52,7 @@
     "numeral": "2.0.6",
     "postcss": "^8.4.28",
     "react": "^18.2.0",
+    "react-countup": "^6.5.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.46.1",
     "react-map-gl": "^7.1.6",

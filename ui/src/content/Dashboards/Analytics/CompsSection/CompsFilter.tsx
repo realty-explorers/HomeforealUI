@@ -28,6 +28,7 @@ import { ModeEdit } from "@mui/icons-material";
 import TuneOutlinedIcon from "@mui/icons-material/TuneOutlined";
 import CompsFilterField from "./CompsFilterField";
 import FormRangeField from "@/models/formRangeField";
+import { numberFormatter } from "@/utils/converters";
 
 const defaultRangeFields: FormRangeField[] = [
   {
@@ -116,6 +117,17 @@ const defaultRangeFields: FormRangeField[] = [
   },
 ];
 
+const customRangeFields = [
+  {
+    label: "Max Sold Date",
+    fieldName: "sold_date",
+    min: defaults.soldMonths.min,
+    max: defaults.soldMonths.max,
+    step: defaults.soldMonths.step,
+    postfix: "months",
+  },
+];
+
 const booleanFields = [
   {
     label: "Pool",
@@ -157,6 +169,9 @@ const compsFiltersSchema = z.object({
   distance: z.array(
     z.number().min(defaults.distance.min).max(defaults.distance.max),
   ).default(defaults.distance.default),
+  sold_date: z.number().min(defaults.soldMonths.min).max(
+    defaults.soldMonths.max,
+  ).default(defaults.soldMonths.default),
 });
 
 const validateComps = () => {
@@ -231,6 +246,24 @@ const CompsFilter = (
           console.log("no field ", field.fieldName);
         }
       }
+      try {
+        const field = customRangeFields[0];
+        if (comp["sales_date"] !== undefined) {
+          const value = data[field.fieldName];
+          const currentDate = new Date();
+          const date = new Date(comp["sales_date"]);
+          const diff = currentDate - date;
+          const diffMonths = Math.ceil(diff / (1000 * 60 * 60 * 24 * 30));
+          console.log(diffMonths);
+          if (value < diffMonths) {
+            add = false;
+          }
+        } else {
+          console.log("no field ", field.fieldName);
+        }
+      } catch (e) {
+        console.log(e);
+      }
       if (add) {
         filteredComps.push({ ...comp, index: i });
       }
@@ -248,6 +281,16 @@ const CompsFilter = (
       rangeField.min = comps[0][rangeField.fieldName];
       rangeField.max = comps[0][rangeField.fieldName];
     }
+    // try {
+    //   const currentDate = new Date();
+    //   const date = new Date(comp.sales_date);
+    //   const diff = currentDate - date;
+    //   const diffDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
+    //   customRangeFields[0].max = diffDays;
+    // } catch (e) {
+    //   console.log(e);
+    // }
+
     for (let i = 1; i < comps.length; i++) {
       const comp = comps[i];
       for (const rangeField of rangeFields) {
@@ -258,6 +301,18 @@ const CompsFilter = (
           rangeField.max = comp[rangeField.fieldName];
         }
       }
+      // try {
+      //   const currentDate = new Date();
+      //   const date = new Date(comp.sales_date);
+      //   const diff = currentDate - date;
+      //   const diffDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
+      //   if (diff > customRangeFields[0].max) {
+      //     customRangeFields[0].max = diffDays;
+      //   }
+      //   console.log(Math.floor(diff / (1000 * 60 * 60 * 24)));
+      // } catch (e) {
+      //   console.log(e);
+      // }
     }
     return rangeFields;
   };
@@ -319,15 +374,11 @@ const CompsFilter = (
                 <Typography
                   className={clsx([styles.compsFilterField, "text-center"])}
                 >
-                  {selectedProperty[field.subjectFieldName]}
+                  {field.formatLabelAsNumber
+                    ? numberFormatter(selectedProperty[field.subjectFieldName])
+                    : selectedProperty[field.subjectFieldName]}
                 </Typography>
               </div>
-              {/* <CompsFilterField */}
-              {/*   field={field} */}
-              {/*   getValues={getValues} */}
-              {/*   setValue={setValue} */}
-              {/* /> */}
-
               <RangeField
                 key={index}
                 min={field.min}
@@ -342,6 +393,38 @@ const CompsFilter = (
               />
             </React.Fragment>
           ))}
+          {customRangeFields.map((field, index) => {
+            return (
+              <React.Fragment key={index}>
+                <div className="flex items-center ">
+                  <Typography
+                    className={clsx([styles.compsFilterLabel, "ml-[30%]"])}
+                  >
+                    {field.label}
+                  </Typography>
+                </div>
+                <div className="flex items-center justify-center">
+                  <Typography
+                    className={clsx([styles.compsFilterField, "text-center"])}
+                  >
+                    {selectedProperty[field.fieldName]}
+                  </Typography>
+                </div>
+                <RangeField
+                  key={index}
+                  min={field.min}
+                  max={field.max}
+                  step={field.step}
+                  prefix={field.prefix}
+                  postfix={field.postfix}
+                  formatLabelAsNumber={field.formatLabelAsNumber}
+                  fieldName={`${field.fieldName}`}
+                  setValue={setValue}
+                  getValues={getValues}
+                />
+              </React.Fragment>
+            );
+          })}
         </div>
         {
           //show errors
@@ -353,23 +436,6 @@ const CompsFilter = (
             </div>
           )
         }
-        {/* <div className="mt-8 ml-16"> */}
-        {/*   {booleanFields.map((field, index) => ( */}
-        {/*     <div */}
-        {/*       key={index} */}
-        {/*       className="flex gap-x-4 items-center" */}
-        {/*     > */}
-        {/*       <SwitchField */}
-        {/*         control={control} */}
-        {/*         fieldName={field.fieldName} */}
-        {/*         className="ml-[-12px]" */}
-        {/*       /> */}
-        {/*       <Typography className={styles.compsFilterLabel}> */}
-        {/*         {field.label} */}
-        {/*       </Typography> */}
-        {/*     </div> */}
-        {/*   ))} */}
-        {/* </div> */}
 
         <Button
           className="bg-[#590D82] hover:bg-[#b958ee] text-white px-4 mx-4 mt-6"

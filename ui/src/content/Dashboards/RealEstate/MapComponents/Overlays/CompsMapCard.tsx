@@ -17,6 +17,7 @@ import TodayIcon from "@mui/icons-material/Today";
 import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
 import SettingsEthernetIcon from "@mui/icons-material/SettingsEthernet";
 import clsx from "clsx";
+import { readableDateDiff } from "@/utils/dateUtils";
 
 const defaultImage =
   "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
@@ -59,9 +60,9 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
   const stats =
     `${props.property?.bedrooms} Beds ● ${props.property?.total_bathrooms} Baths ● ${props.property?.building_area} Sqft`;
 
-  const locationStats = `${
-    props.property.distance.toFixed(2)
-  } Miles ● ${props.property.sales_days_on_market} Days Ago`;
+  const locationStats = `${props.property.distance.toFixed(2)} Miles ● ${
+    readableDateDiff(props.property.sales_date)
+  }`;
 
   return (
     <div className="flex rounded-xl bg-white w-80 h-40">

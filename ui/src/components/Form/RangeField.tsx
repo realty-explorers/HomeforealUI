@@ -96,7 +96,7 @@ const RangeField = (
   return (
     <div className="grid grid-cols-[1fr_3fr_1fr] w-full gap-x-4 items-center">
       <TextField
-        label="Min"
+        label={typeof values === "object" ? "Min" : ""}
         size="small"
         value={typeof values !== "object" ? values : values?.[0]}
         onChange={handleNumberInputChangeMin}

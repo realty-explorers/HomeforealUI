@@ -1,7 +1,7 @@
 .infoHeader {
   color: #000;
   @apply font-poppins;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-style: normal;
   font-weight: 700;
   line-height: normal;
@@ -56,5 +56,16 @@
     font-style: normal;
     line-height: 159.5%; /* 0.99688rem */
     text-transform: capitalize;
+  }
+}
+
+.marginInfoIndicator {
+  width: 0;
+  animation: expandWidth 1s forwards;
+}
+
+@keyframes expandWidth {
+  to {
+    width: 8rem;
   }
 }

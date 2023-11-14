@@ -13,19 +13,19 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import ExpansesRow, { Expanse } from "../ExpansesRow";
-import styles from "../ExpansesCalculator.module.scss";
+import ExpensesRow, { Expense } from "../ExpensesRow";
+import styles from "../ExpensesCalculator.module.scss";
 import { TransitionGroup } from "react-transition-group";
 import AnalyzedProperty from "@/models/analyzedProperty";
 import { priceFormatter } from "@/utils/converters";
 
-type MonthlyExpansesProps = {
+type MonthlyExpensesProps = {
   property: AnalyzedProperty;
-  setExpanses: (value: number) => void;
+  setExpenses: (value: number) => void;
   active: boolean;
   toggleActive: () => void;
 };
-const MonthlyExpanses = (props: MonthlyExpansesProps) => {
+const MonthlyExpenses = (props: MonthlyExpensesProps) => {
   const priceTypes = [
     { label: "ARV", value: props.property?.arv_price },
     { label: "Listing Price", value: props.property?.listing_price || 0 },
@@ -37,10 +37,10 @@ const MonthlyExpanses = (props: MonthlyExpansesProps) => {
     // },
   ];
 
-  const [expanses, setExpanses] = useState<Expanse[]>([]);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
 
   useEffect(() => {
-    const defaultExpanses = [
+    const defaultExpenses = [
       {
         id: uuidv4(),
         label: "Property Tax",
@@ -59,7 +59,7 @@ const MonthlyExpanses = (props: MonthlyExpansesProps) => {
         value:
           props.property?.operational_expenses?.insurance?.expense_amount || 0,
         priceType:
-          props.property.expenses?.operational_expenses?.insurance === "arv"
+          props.property?.operational_expenses?.insurance?.expense_ref === "arv"
             ? priceTypes[0]
             : priceTypes[1],
       },
@@ -96,41 +96,41 @@ const MonthlyExpanses = (props: MonthlyExpansesProps) => {
             : priceTypes[1],
       },
     ];
-    setExpanses(defaultExpanses);
-    props.setExpanses(totalExpanses(defaultExpanses));
+    setExpenses(defaultExpenses);
+    props.setExpenses(totalExpenses(defaultExpenses));
   }, [props.property]);
 
-  const handleChangeExpanses = (changedExpanse: Expanse) => {
-    const expanseIndex = expanses.findIndex(
-      (expanse) => expanse.id === changedExpanse.id,
+  const handleChangeExpenses = (changedExpense: Expense) => {
+    const expenseIndex = expenses.findIndex(
+      (expense) => expense.id === changedExpense.id,
     );
-    if (expanseIndex === -1) return;
-    expanses[expanseIndex] = changedExpanse;
-    setExpanses([...expanses]);
-    props.setExpanses(totalExpanses(expanses));
+    if (expenseIndex === -1) return;
+    expenses[expenseIndex] = changedExpense;
+    setExpenses([...expenses]);
+    props.setExpenses(totalExpenses(expenses));
   };
 
-  const totalExpanses = (expanses) =>
-    expanses.reduce((acc, expanse) => acc + Math.round(expanse.value), 0);
+  const totalExpenses = (expenses) =>
+    expenses.reduce((acc, expense) => acc + Math.round(expense.value), 0);
 
-  const handleAddExpanse = () => {
-    setExpanses([
-      ...expanses,
+  const handleAddExpense = () => {
+    setExpenses([
+      ...expenses,
       {
         id: uuidv4(),
-        label: `New Expanse`,
+        label: `New Expense`,
         value: 0,
         priceType: priceTypes[0],
       },
     ]);
   };
 
-  const handleRemoveExpanse = (id) => {
-    const updatedExpanses = expanses.filter(
+  const handleRemoveExpense = (id) => {
+    const updatedExpenses = expenses.filter(
       (expanse) => expanse.id !== id,
     );
-    setExpanses(updatedExpanses);
-    props.setExpanses(totalExpanses(updatedExpanses));
+    setExpenses(updatedExpenses);
+    props.setExpenses(totalExpenses(updatedExpenses));
   };
 
   return (
@@ -146,18 +146,18 @@ const MonthlyExpanses = (props: MonthlyExpansesProps) => {
         </Typography>
       </Grid>
       <Grid item container xs={6} justifyContent="center">
-        <Typography className={styles.totalExpansesLabel}>
-          {priceFormatter(Math.round(totalExpanses(expanses) / 12))}/Monthly
+        <Typography className={styles.totalExpensesLabel}>
+          {priceFormatter(Math.round(totalExpenses(expenses) / 12))}/Monthly
         </Typography>
       </Grid>
       <List className="w-full">
         <TransitionGroup>
-          {expanses.map((expanse, index) => (
-            <Collapse key={expanse.id}>
-              <ExpansesRow
-                expanse={expanse}
-                removeExpanse={handleRemoveExpanse}
-                setExpanse={(expanse) => handleChangeExpanses(expanse)}
+          {expenses.map((expense, index) => (
+            <Collapse key={expense.id}>
+              <ExpensesRow
+                expense={expense}
+                removeExpense={handleRemoveExpense}
+                setExpense={(expense) => handleChangeExpenses(expense)}
                 priceTypes={priceTypes}
               />
             </Collapse>
@@ -166,12 +166,12 @@ const MonthlyExpanses = (props: MonthlyExpansesProps) => {
       </List>
 
       <Grid item xs={12} justifyContent="flex-start">
-        <Button className={styles.addButton} onClick={handleAddExpanse}>
-          <Typography className={styles.buttonText}>Add Expanses</Typography>
+        <Button className={styles.addButton} onClick={handleAddExpense}>
+          <Typography className={styles.buttonText}>Add Expenses</Typography>
         </Button>
       </Grid>
     </Grid>
   );
 };
 
-export default MonthlyExpanses;
+export default MonthlyExpenses;

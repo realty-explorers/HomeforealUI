@@ -65,6 +65,12 @@ const defaults = {
     step: 0.001,
     default: [0, 10],
   },
+  soldMonths: {
+    min: 0,
+    max: 36,
+    step: 1,
+    default: 36,
+  },
 
   //Need to fix names, temporary
   full_bathrooms: {

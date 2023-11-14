@@ -10,10 +10,10 @@ import {
   Typography,
 } from "@mui/material";
 import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
-import styles from "./ExpansesCalculator.module.scss";
+import styles from "./ExpensesCalculator.module.scss";
 import { useEffect, useState } from "react";
 
-type Expanse = {
+type Expense = {
   id: string;
   label: string;
   value: number;
@@ -21,38 +21,38 @@ type Expanse = {
 };
 
 type ExpansesRowProps = {
-  expanse: Expanse;
-  setExpanse: (expanse: Expanse) => void;
-  removeExpanse?: (id: string) => void;
+  expense: Expense;
+  setExpense: (expanse: Expense) => void;
+  removeExpense?: (id: string) => void;
   priceTypes: { label: string; value: number }[];
 };
 const ExpansesRow = (props: ExpansesRowProps) => {
-  const [expanse, setExpanse] = useState<Expanse>(props.expanse);
+  const [expanse, setExpanse] = useState<Expense>(props.expense);
   const handleChangeType = (event) => {
     const priceType = props.priceTypes.find(
       (type) => type.label === event.target.value,
     );
     expanse.priceType = priceType;
-    props.setExpanse(expanse);
+    props.setExpense(expanse);
     setExpanse(expanse);
   };
 
   const handleChangeAmount = (event) => {
     const value = event.target.value;
     expanse.value = parseFloat(value);
-    props.setExpanse(expanse);
+    props.setExpense(expanse);
   };
 
   const handleChangePercentage = (event) => {
     const value = event.target.value;
     const currentExpanse = expanse.priceType.value;
     expanse.value = (value * currentExpanse) / 100;
-    props.setExpanse(expanse);
+    props.setExpense(expanse);
   };
 
   useEffect(() => {
-    setExpanse(props.expanse);
-  }, [props.expanse]);
+    setExpanse(props.expense);
+  }, [props.expense]);
 
   return (
     expanse
@@ -129,11 +129,11 @@ const ExpansesRow = (props: ExpansesRowProps) => {
             </FormControl>
           </Grid>
           <Grid item xs={1}>
-            {props.removeExpanse && (
+            {props.removeExpense && (
               <Grid container justifyContent="center">
                 <IconButton
                   onClick={() => {
-                    props.removeExpanse(props.expanse.id);
+                    props.removeExpense(props.expense.id);
                   }}
                 >
                   <RemoveCircleOutlineIcon />
@@ -148,4 +148,4 @@ const ExpansesRow = (props: ExpansesRowProps) => {
 };
 
 export default ExpansesRow;
-export type { Expanse };
+export type { Expense };

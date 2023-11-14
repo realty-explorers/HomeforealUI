@@ -6,6 +6,11 @@ import { useSelector } from "react-redux";
 import styles from "./PropertyHeaderStyles.module.scss";
 import HelpIcon from "@mui/icons-material/Help";
 import clsx from "clsx";
+import CountUp from "react-countup";
+import {
+  calculateArvPercentage,
+  calculateMarginPercentage,
+} from "@/utils/calculationUtils";
 
 //bg-green-200
 //bg-purple-200
@@ -24,7 +29,12 @@ const MarginInfoChips = (
           `bg-${color}-200`,
         ])}
       >
-        <Typography className=" font-poppins font-bold text-xl flex justify-center w-32">
+        <Typography
+          className={clsx([
+            " font-poppins font-bold text-xl flex justify-center transition-all overflow-clip",
+            styles.marginInfoIndicator,
+          ])}
+        >
           {priceFormatter(amount.toFixed())}
         </Typography>
       </div>
@@ -35,7 +45,7 @@ const MarginInfoChips = (
         ])}
       >
         <Typography className=" font-poppins font-bold ">
-          {percent}%
+          <CountUp end={percent} duration={3} />%
         </Typography>
 
         <Typography className=" font-poppins font-bold text-[0.5rem]">
@@ -84,8 +94,17 @@ const MarginInfo = (props: MarginInfoProps) => {
         </Typography>
         <MarginInfoChips
           amount={saleCalculatedProperty?.sales_comps_price}
-          percent={saleCalculatedProperty?.sales_comps_percentage.toFixed()}
-          margin={saleCalculatedProperty.margin_percentage.toFixed()}
+          // percent={saleCalculatedProperty?.sales_comps_percentage.toFixed()}
+          // margin={0}
+          percent={calculateArvPercentage(
+            saleCalculatedProperty?.sales_comps_price,
+            saleCalculatedProperty?.listing_price,
+          ).toFixed()}
+          margin={calculateMarginPercentage(
+            saleCalculatedProperty?.sales_comps_price,
+            saleCalculatedProperty?.listing_price,
+            1000,
+          ).toFixed()}
           color="purple"
           name="Under Comps"
         />
@@ -96,8 +115,18 @@ const MarginInfo = (props: MarginInfoProps) => {
 
         <MarginInfoChips
           amount={saleCalculatedProperty?.arv_price}
-          percent={saleCalculatedProperty?.arv_percentage.toFixed()}
-          margin={saleCalculatedProperty.margin_percentage.toFixed()}
+          // percent={saleCalculatedProperty?.arv_percentage.toFixed()}
+          // margin={0}
+
+          percent={calculateArvPercentage(
+            saleCalculatedProperty?.arv_price,
+            saleCalculatedProperty?.listing_price,
+          ).toFixed()}
+          margin={calculateMarginPercentage(
+            saleCalculatedProperty?.arv_price,
+            saleCalculatedProperty?.listing_price,
+            1000,
+          ).toFixed()}
           color="green"
           name="Under ARV"
         />

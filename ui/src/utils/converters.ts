@@ -1,5 +1,5 @@
 const priceFormatter = (value: number | string) =>
-  `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  `$${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 
 const numberFormatter = (value: number | string) =>
   `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",");

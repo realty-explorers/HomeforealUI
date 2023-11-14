@@ -41,7 +41,7 @@ const HeroSection = () => {
                   2000, // Waits 2s
                   "Analyzing with Insight", // Types 'Three' without deleting 'Two'
                   2000, // Waits 2s
-                  "Unlock Opportunities", // Types 'Three' without deleting 'Two'
+                  "Unlocking Opportunities", // Types 'Three' without deleting 'Two'
                   2000, // Waits 2s
                   () => {
                     console.log("Sequence completed");
