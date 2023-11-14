@@ -259,7 +259,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
               <div className="flex gap-x-4">
                 <Button
                   variant="outlined"
-                  className="mt-12  w-40"
+                  className="mt-12 w-20 bg-purple-500 text-white hover:bg-purple-400"
+                  style={{ border: "none" }}
                   onClick={() => {
                     reset(props.buybox?.data || getDefaults(buyboxSchema));
                   }}
@@ -270,7 +271,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
                 <LoadingButton
                   type="submit"
                   variant="outlined"
-                  className="mt-12  w-40"
+                  className="mt-12 w-20 bg-purple-500 text-white hover:bg-purple-400"
+                  style={{ border: "none" }}
                   loading={isSubmitting}
                 >
                   {props.buybox ? "Save" : "Create"}

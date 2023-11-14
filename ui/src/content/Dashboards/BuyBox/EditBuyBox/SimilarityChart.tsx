@@ -12,7 +12,7 @@ import {
   useWatch,
 } from "react-hook-form";
 import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
-import CheckIcon from "@mui/icons-material/Check";
+import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 import styles from "./EditBuyBoxDialog.module.scss";
 import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
@@ -27,11 +27,11 @@ const FieldValue = ({ index, value, className }: any) => {
     >
       <div
         className={clsx([
-          "flex items-center h-full border-b border-slate-200 dark:border-slate-700 py-2 text-slate-600 dark:text-slate-400 ",
+          "flex items-center h-full border-b border-white py-2 text-white",
           className,
         ])}
       >
-        <span className="font-semibold text-[rgba(208,208,208)]">
+        <span className="font-semibold text-white">
           {value}
         </span>
       </div>
@@ -65,20 +65,23 @@ const SimilarityChart = (
           : `${value[1][0]} - ${value[1][1]}`)
         : "All";
     }
-    return value
-      ? <CheckIcon color="success" />
-      : <DoNotDisturbIcon color="error" />;
+    return value ? <CheckCircleOutlineRoundedIcon htmlColor="white" /> : "Any";
   };
 
   return (
     <div className="col-span-2 mt-12">
-      <div className="max-w-sm mx-auto md:max-w-none grid md:grid-cols-5 md:-mx-6 text-sm bg-slate-900 rounded-md">
+      <div
+        className={clsx([
+          "max-w-sm mx-auto md:max-w-none grid md:grid-cols-5 md:-mx-6 text-sm  rounded-md",
+          "bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700",
+        ])}
+      >
         <section className="">
           <div
             className=" px-6 flex flex-col justify-end max-md:hidden md:order-1"
             aria-hidden="true"
           >
-            <div className="py-2 text-emerald-50 font-semibold text-lg mt-4 mb-4 text-center">
+            <div className="py-2 text-white font-semibold text-lg mt-4 mb-4 text-center">
               Group
             </div>
           </div>
@@ -92,7 +95,7 @@ const SimilarityChart = (
             className=" px-6 flex flex-col justify-end max-md:hidden md:order-1"
             aria-hidden="true"
           >
-            <div className="py-2 text-[rgb(43,205,43)] font-semibold text-lg mt-4 mb-4 text-center shadow-[0_0_8px_0_rgb(43,205,43)] rounded-md">
+            <div className="py-2 text-green-300 font-semibold text-lg mt-4 mb-4 text-center shadow rounded-md">
               Green
             </div>
           </div>
@@ -114,7 +117,7 @@ const SimilarityChart = (
             className=" px-6 flex flex-col justify-end max-md:hidden md:order-1"
             aria-hidden="true"
           >
-            <div className="py-2 text-[rgb(214,207,23)] font-semibold text-lg mt-4 mb-4 text-center shadow-[0_0_8px_0_rgb(214,207,23)] rounded-md">
+            <div className="py-2 text-yellow-400 font-semibold text-lg mt-4 mb-4 text-center shadow rounded-md">
               Yellow
             </div>
           </div>
@@ -135,7 +138,7 @@ const SimilarityChart = (
             className=" px-6 flex flex-col justify-end max-md:hidden md:order-1"
             aria-hidden="true"
           >
-            <div className="py-2 text-[rgb(255,107,4)] font-semibold text-lg mt-4 mb-4 text-center shadow-[0_0_8px_0_rgb(255,107,4)] rounded-md ">
+            <div className="py-2 text-orange-400 font-semibold text-lg mt-4 mb-4 text-center shadow rounded-md ">
               Orange
             </div>
           </div>
@@ -155,7 +158,7 @@ const SimilarityChart = (
             className=" px-6 flex flex-col justify-end max-md:hidden md:order-1"
             aria-hidden="true"
           >
-            <div className="py-2 text-[rgb(255,0,0)] font-semibold text-lg mt-4 mb-4 text-center shadow-[0_0_8px_0_rgb(255,0,0)] rounded-md">
+            <div className="py-2 text-[red] font-semibold text-lg mt-4 mb-4 text-center shadow rounded-md">
               Red
             </div>
           </div>
