@@ -28,12 +28,16 @@ const ExpensesCalculator = (props: ExpensesCalculatorProps) => {
 
   const handleChangeInitialInvestmentExpenses = (value: number) => {
     setInitialInvestmentExpenses(value);
-    dispatch(setInitialInvestment(value));
+    if (initialInvestmentActive) {
+      dispatch(setInitialInvestment(value));
+    }
   };
 
   const handleChangeFinancingExpenses = (value: number) => {
     setFinancingExpenses(value);
-    dispatch(setFinancingCosts(value));
+    if (financingExpensesActive) {
+      dispatch(setFinancingCosts(value));
+    }
   };
 
   const handleChangeInitialInvestmentActive = () => {
