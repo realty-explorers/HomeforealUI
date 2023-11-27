@@ -1,10 +1,8 @@
-import AnalyzedProperty from "@/models/analyzedProperty";
 import { selectProperties } from "@/store/slices/propertiesSlice";
 import { priceFormatter } from "@/utils/converters";
 import { Tooltip, Typography } from "@mui/material";
 import { useSelector } from "react-redux";
 import styles from "./PropertyHeaderStyles.module.scss";
-import HelpIcon from "@mui/icons-material/Help";
 import clsx from "clsx";
 import CountUp from "react-countup";
 import {
@@ -73,26 +71,15 @@ const MarginInfoChips = (
 
 type MarginInfoProps = {};
 const MarginInfo = (props: MarginInfoProps) => {
-  const { selectedProperty, selectedComps, saleCalculatedProperty } =
-    useSelector(
-      selectProperties,
-    );
+  const { saleCalculatedProperty } = useSelector(
+    selectProperties,
+  );
 
   const { initialInvestment, financingCosts } = useSelector(selectExpenses);
   const totalExpenses = initialInvestment + financingCosts;
-  // const profitMargin = props.property?.listing_price > 0
-  //   ? (props.property?.arv_price -
-  //     props.property?.listing_price - 0) / props.property?.listing_price * 100
-  //   : null;
-  // const compsMargin = props.property?.listing_price > 0
-  //   ? (props.property?.sales_comps_price -
-  //     props.property?.listing_price - 0) / props.property?.sales_comps_price * 100
-  //   : null;
-  //
-  // const profitMargin = props.property?.margin_percentage;
   return (saleCalculatedProperty?.sales_comps?.data?.length > 0 &&
     (
-      <div className="grid grid-cols-[auto_1fr] grid-rows-2 gap-y-4 mt-8 items-center">
+      <div className="grid grid-cols-[auto_1fr] grid-rows-2 gap-y-4 mt-4 items-center sticky top-0 z-[2] bg-off-white pb-4 px-4">
         <Typography className="font-poppins text-2xl">
           Sale Comparable
         </Typography>

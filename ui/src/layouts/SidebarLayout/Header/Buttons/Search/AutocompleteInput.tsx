@@ -24,6 +24,8 @@ import { borderRadius, styled } from "@mui/system";
 import styles from "./AutoComplete.module.scss";
 import locations from "./locations.json";
 import Fuse from "fuse.js";
+import { useDispatch } from "react-redux";
+import { setSelectedPropertyPreview } from "@/store/slices/propertiesSlice";
 
 const SuggestionsContainer = (props) => {
   return (
@@ -36,6 +38,7 @@ const SuggestionsContainer = (props) => {
 };
 
 function StyledInput({ searching, params, value }) {
+  const dispatch = useDispatch();
   return (
     <form className="flex items-center bg-white rounded-3xl px-4 py-0  font-poppins shadow-xl border-2 border-transparent focus-within:border-[rgba(155,81,224,0.5)] hover:border-[rgba(155,81,224,0.5)] transition-all">
       <InputBase
@@ -45,7 +48,12 @@ function StyledInput({ searching, params, value }) {
         endAdornment={
           <div className="absolute -right-4">
             <InputAdornment position="start">
-              <IconButton disabled={searching}>
+              <IconButton
+                disabled={searching}
+                onClick={() => {
+                  dispatch(setSelectedPropertyPreview(null));
+                }}
+              >
                 {searching
                   ? (
                     <CircularProgress

@@ -55,6 +55,8 @@ import PropertyPreview from "@/models/propertyPreview";
 import { useLazyGetBuyBoxesQuery } from "@/store/services/buyboxApiService";
 import { useSnackbar } from "notistack";
 import { skipToken } from "@reduxjs/toolkit/query";
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/router";
 
 const filterFieldNames = [
   "arv_price",
@@ -112,12 +114,39 @@ const MainControls: React.FC<MainControlsProps> = (
   const [beds, setBeds] = useState([0, 9]);
   const [baths, setBaths] = useState([0, 9]);
 
+  const searchParams = useSearchParams();
+  const selectedBuyBoxId = searchParams.get("buybox_id");
+  const router = useRouter();
+
   useEffect(() => {
     const getBuyBoxesData = async () => {
       try {
         const data = await getBuyBoxes("", true).unwrap();
         if (data && data.length > 0) {
-          dispatch(setBuybox(data[0]));
+          if (selectedBuyBoxId) {
+            const selectedBuyBox = data.find((buybox) =>
+              buybox.id === selectedBuyBoxId
+            );
+            if (selectedBuyBox) {
+              dispatch(setBuybox(selectedBuyBox));
+            } else {
+              enqueueSnackbar(`BuyBox not found in your allowed BuyBoxes`, {
+                variant: "warning",
+              });
+            }
+          } else {
+            router.push(
+              {
+                pathname: router.pathname,
+                query: {
+                  buybox_id: data[0].id,
+                },
+              },
+              undefined,
+              { shallow: true },
+            );
+            dispatch(setBuybox(data[0]));
+          }
         }
       } catch (error) {
         if (error.status === "FETCH_ERROR") {
@@ -184,7 +213,6 @@ const MainControls: React.FC<MainControlsProps> = (
   };
 
   const getFilterValue = (fieldName, updatedFieldName, updatedValue) => {
-    console.log("field naem: ", fieldName);
     if (fieldName === "arv_price") {
       return updatedFieldName === "arv_price" ? updatedValue : arv;
     }
@@ -291,6 +319,12 @@ const MainControls: React.FC<MainControlsProps> = (
   const handleBuyBoxChange = (e) => {
     const value = e.target.value;
     dispatch(setBuybox(value));
+    router.push({
+      pathname: router.pathname,
+      query: {
+        buybox_id: value.id,
+      },
+    });
   };
 
   return (

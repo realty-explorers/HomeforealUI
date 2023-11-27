@@ -28,12 +28,6 @@ const PropertyHeader = (props: PropertyHeaderProps) => {
       <PropertyMainInfo
         property={props.property || ({} as AnalyzedProperty)}
       />
-      <div className="flex">
-        <MarginInfo />
-        {/* <PropertyDetails */}
-        {/*   property={props.property || ({} as AnalyzedProperty)} */}
-        {/* /> */}
-      </div>
     </div>
   );
 };

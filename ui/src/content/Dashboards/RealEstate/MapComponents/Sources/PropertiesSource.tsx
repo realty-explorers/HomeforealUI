@@ -16,7 +16,7 @@ const PropertiesSource = ({ show, data }: PropertiesSourceProps) => {
       type="geojson"
       data={data}
       cluster={true}
-      clusterMaxZoom={14}
+      // clusterMaxZoom={14}
       clusterRadius={50}
       clusterMinPoints={5}
     >

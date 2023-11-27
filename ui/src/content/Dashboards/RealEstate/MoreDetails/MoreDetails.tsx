@@ -8,6 +8,7 @@ import RentComparable from "../../Analytics/RentComparable";
 import SaleComparable from "../../Analytics/SaleComparable";
 import SaleComparableIndicators from "../../Analytics/SaleComparableIndicators";
 import OperationalExpenses from "@/content/Dashboards/Analytics/Expenses/OperationalExpenses";
+import MarginInfo from "../../Analytics/PropertyHeader/MarginInfo";
 
 type MoreDetailsProps = {
   selectedProperty: any;
@@ -31,6 +32,10 @@ const MoreDetails = (
         {/* <EnvironmentalIndicators property={selectedProperty} /> */}
         {/* <OwnershipInfo property={selectedProperty} /> */}
         <div className="mt-4 relative">
+          <MarginInfo />
+          {/* <PropertyDetails */}
+          {/*   property={props.property || ({} as AnalyzedProperty)} */}
+          {/* /> */}
           {/* <SaleComparableIndicators property={selectedProperty} /> */}
           <PropertyFacts property={selectedProperty} />
           <SaleComparable property={selectedProperty} />

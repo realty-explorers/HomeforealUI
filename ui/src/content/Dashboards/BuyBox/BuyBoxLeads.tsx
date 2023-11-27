@@ -4,7 +4,6 @@ import {
   useGetLeadsQuery,
   useLazyGetLeadsQuery,
 } from "@/store/services/analysisApi";
-import { useRouter } from "next/navigation";
 import { useLazyGetPropertyQuery } from "@/store/services/propertiesApiService";
 import {
   setSelectedComps,
@@ -16,6 +15,9 @@ import { Button, ListItemIcon, MenuItem, Typography } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import BookmarkIcon from "@mui/icons-material/Bookmark";
 import AnalyticsIcon from "@mui/icons-material/Analytics";
+import Lead from "@/models/lead";
+
+import { useSearchParams } from "next/navigation";
 
 import {
   DataGrid,
@@ -35,45 +37,26 @@ import {
   MRT_PaginationState,
   useMaterialReactTable,
 } from "material-react-table";
+import { priceFormatter } from "@/utils/converters";
+import ThemedButton from "@/components/Buttons/ThemedButton";
+import { useRouter } from "next/router";
 
 type BuyBoxLeadsProps = {
   open: boolean;
-  page: number;
+  setPage: (page: number, pageSize: number) => void;
   pageSize: number;
-  setPage: (page: number) => void;
-  setPageSize: (pageSize: number) => void;
+  page: number;
   buybox: BuyBox;
 };
 
 const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
-  const [getProperty, propertyState] = useLazyGetPropertyQuery();
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: props.page,
     pageSize: props.pageSize,
   });
+
   const dispatch = useDispatch();
   const router = useRouter();
-  const handleAnalysis = async (id: string) => {
-    const source_id = data?.[id]?.source_id;
-    const propertyData = await getProperty(source_id).unwrap();
-    // dispatch(setSelectedComps(propertyData?.sales_comps?.data));
-    dispatch(setSelectedRentalComps(propertyData?.rents_comps?.data));
-    dispatch(setSelectedProperty(propertyData));
-    dispatch(
-      setSelectedPropertyPreview(
-        {
-          ...propertyData,
-          sales_listing_price: propertyData.listing_price,
-        } as PropertyPreview,
-      ),
-    );
-    const propertyPreview = {
-      ...propertyData,
-      sales_listing_price: propertyData?.listing_price,
-    } as PropertyPreview;
-    dispatch(setSelectedPropertyPreview(propertyPreview));
-    router.push("/dashboards/real-estate");
-  };
 
   const countQuery = useGetLeadsCountQuery(
     props.open && props.buybox ? props.buybox?.id : skipToken,
@@ -92,13 +75,18 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
   const rows = data?.map((lead: Lead, index) => {
     return {
       id: index,
+      sourceId: lead.source_id,
       image: lead.primary_image ?? "",
       address: lead.address,
       opportunity: lead.opportunities.join(","),
-      askingPrice: lead.listing_price,
-      ARV: lead.arv_price,
-      NOI: lead.noi,
-      capRate: lead.cap_rate,
+      askingPrice: priceFormatter(lead.listing_price),
+      ARV: parseFloat(lead.arv_price)
+        ? priceFormatter(parseFloat(lead.arv_price))
+        : "-",
+      NOI: parseFloat(lead.noi) ? priceFormatter(parseFloat(lead.noi)) : "-",
+      capRate: parseFloat(lead.cap_rate)
+        ? `${parseFloat(lead.cap_rate).toFixed(2)}%`
+        : "-",
       zipCode: lead.zipcode,
       note: "",
     };
@@ -157,42 +145,47 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
         size: 150,
       },
       {
-        accessorKey: "note",
-        header: "Note",
+        accessorKey: "sourceId",
+        // filterVariant: 'range', //if not using filter modes feature, use this instead of filterFn
+        header: "Analysis",
         size: 150,
+        //custom conditional format and styling
+        Cell: ({ cell }) => (
+          <Button // startIcon={}
+            // href=`/dashboards/real-estate?buybox_id=${props.buybox.id}&property_id=${data?.[cell.row.id]?.source_id}`
+            href={`/dashboards/real-estate?buybox_id=${props.buybox.id}&property_id=${cell.row.original.sourceId}`}
+            startIcon={<AnalyticsIcon />}
+            className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  " // onClick={handleEditBuyBox}
+          >
+            Analysis
+          </Button>
+        ),
       },
     ],
     [],
   );
 
   useEffect(() => {
-    props.setPage(pagination.pageIndex);
-    props.setPageSize(pagination.pageSize);
+    props.setPage(pagination.pageIndex, pagination.pageSize);
   }, [pagination.pageIndex]);
 
-  const fuzzySearch = () => {
-    // const location = locations[0];
-    const fuseOptions = {
-      // isCaseSensitive: false,
-      // includeScore: false,
-      // shouldSort: true,
-      // includeMatches: false,
-      // findAllMatches: false,
-      // minMatchCharLength: 1,
-      // location: 0,
-      // threshold: 0.6,
-      // distance: 100,
-      // useExtendedSearch: false,
-      // ignoreLocation: false,
-      // ignoreFieldNorm: false,
-      // fieldNormWeight: 1,
-      keys: [
-        "name",
-      ],
-    };
-    // const fuse = new Fuse(locations, fuseOptions);
-    // const matches = fuse.search(searchTerm);
-    // const newOptions = matches.map((match) => match.item.name);
+  const handleChangePagination = (pagination) => {
+    // console.log(pagination);
+
+    // setPagination(pagination);
+    //
+    // router.push(
+    //   {
+    //     pathname: router.pathname,
+    //     query: {
+    //       ...router.query,
+    //       page: pagination.pageIndex,
+    //       pageSize: pagination.pageSize,
+    //     },
+    //   },
+    //   undefined,
+    //   { shallow: true },
+    // );
   };
 
   const table = useMaterialReactTable({
@@ -200,7 +193,7 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
     data: rows,
     enableSorting: false,
     enableFilters: false,
-    enableRowActions: true,
+    // enableRowActions: true,
     rowCount: countQuery.data?.count || 0,
     manualPagination: true,
     onPaginationChange: setPagination,
@@ -246,7 +239,7 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
       <MenuItem
         key={1}
         onClick={() => {
-          handleAnalysis(row.original.id);
+          // handleAnalysis(row.original.id);
         }}
         sx={{ m: 0 }}
       >

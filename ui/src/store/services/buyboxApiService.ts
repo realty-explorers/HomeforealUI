@@ -53,13 +53,13 @@ export const buyBoxApi = createApi({
   tagTypes: ["BuyBox"],
   endpoints: (builder) => ({
     getBuyBoxes: builder.query({
-      query: () => ({ url: "all" }),
+      query: () => ({ url: "/all" }),
       transformResponse: (response: any) => response,
       providesTags: ["BuyBox"],
     }),
     createBuyBox: builder.mutation({
       query: (body) => ({
-        url: "",
+        url: "/",
         method: "POST",
         body: { "json_params": body },
       }),
@@ -68,7 +68,7 @@ export const buyBoxApi = createApi({
     }),
     updateBuyBox: builder.mutation({
       query: (body) => ({
-        url: ``,
+        url: `/`,
         method: "PUT",
         body: { "json_params": body.data, "buybox_id": body.id },
       }),
@@ -105,7 +105,7 @@ export const buyBoxApi = createApi({
     }),
     deleteBuyBox: builder.mutation({
       query: (id) => ({
-        url: `?buybox_id=${id}`,
+        url: `/?buybox_id=${id}`,
         method: "DELETE",
       }),
       transformResponse: (response: any) => response,

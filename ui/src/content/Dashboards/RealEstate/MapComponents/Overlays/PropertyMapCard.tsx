@@ -36,6 +36,7 @@ import StraightenIcon from "@mui/icons-material/Straighten";
 import LocalOfferIcon from "@mui/icons-material/LocalOffer";
 import TodayIcon from "@mui/icons-material/Today";
 import AssessmentIcon from "@mui/icons-material/Assessment";
+import { calculateArvPercentage } from "@/utils/calculationUtils";
 
 const AddressLink = styled("h3")(({ theme }) => ({
   padding: 0,
@@ -73,26 +74,14 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   const stats =
     `${props.property?.bedrooms} Beds ● ${props.property?.total_bathrooms} Baths ● ${props.property?.building_area} Sqft`;
 
-  const arvPercentage = typeof props.property?.arv_price === "number"
-    ? (
-      props.property?.arv_price > 0
-        ? (
-          props.property.arv_price - props.property.sales_listing_price
-        ) / props.property.arv_price * 100
-        : 0
-    )
-    : 0;
-
-  const compsPercentage = typeof props.property?.sales_comps_price === "number"
-    ? (
-      props.property?.sales_comps_price > 0
-        ? (
-          props.property.sales_comps_price - props.property.sales_listing_price
-        ) / props.property.sales_comps_price * 100
-        : 0
-    )
-    : 0;
-
+  const arvPercentage = calculateArvPercentage(
+    props.property.arv_price,
+    props.property.sales_listing_price,
+  );
+  const compsPercentage = calculateArvPercentage(
+    props.property.sales_comps_price,
+    props.property.sales_listing_price,
+  );
   const arvDiscount = `ARV ↓${arvPercentage.toFixed()}%`;
   const compsDiscount = `Comps ↓${compsPercentage.toFixed()}%`;
   const seperator = " ● ";

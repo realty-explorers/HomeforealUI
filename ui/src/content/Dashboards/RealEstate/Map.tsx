@@ -60,9 +60,14 @@ import { useLazyGetLocationsQuery } from "@/store/services/dataApiService";
 import PropertyLocationBoundsSource from "./MapComponents/Sources/PropertyLocationBoundsSource";
 import useProperty from "@/hooks/useProperty";
 import { skipToken } from "@reduxjs/toolkit/query";
+import { useSearchParams } from "next/navigation";
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
+  const searchParams = useSearchParams();
+  const selectedBuyBoxId = searchParams.get("buybox_id");
+  const selectedPropertyId = searchParams.get("property_id");
+
   const mapRef = useRef<MapRef>(null);
   const [loading, setLoading] = useState(true);
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
@@ -102,7 +107,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     selecting,
   } = useSelector(selectProperties);
 
-  const { selectProperty, deselectProperty } = useProperty();
+  const { selectProperty, deselectProperty, selectPropertyId } = useProperty();
 
   const [getProperty, propertyState] = useLazyGetPropertyQuery();
   const locationState = locationApiEndpoints.getLocationData.useQueryState(
@@ -299,6 +304,13 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   function enableLineAnimation() {
     alert(mapRef?.current);
   }
+
+  useEffect(() => {
+    //TODO: check auth
+    if (selectedBuyBoxId && selectedPropertyId) {
+      selectPropertyId(selectedBuyBoxId, selectedPropertyId);
+    }
+  }, []);
 
   useEffect(() => {
     // if (mapRef.current?.getLayer("property-bounds-line")) {

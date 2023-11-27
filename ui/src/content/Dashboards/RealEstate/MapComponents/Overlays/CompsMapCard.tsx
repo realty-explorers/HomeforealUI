@@ -142,7 +142,7 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
               getColorClass(props.property.similarity_color),
             ])}
           >
-            {props.property.similarity_score * 100}% Similarity
+            {Math.round(props.property.similarity_score * 100)}% Similarity
           </Typography>
         </div>
         {props.property.is_arv_25th && (

@@ -5,7 +5,7 @@ import {
   useEffect,
   useState,
 } from "react";
-import Lottie from "lottie-react";
+// import Lottie from "lottie-react";
 import mapLoadingAnimation from "@/static/animations/loading/mapLoadingAnimation.json";
 import clsx from "clsx";
 
@@ -51,10 +51,10 @@ const Image = (
               !loading ? "hidden" : "flex",
             ])}
           >
-            <Lottie
-              animationData={mapLoadingAnimation}
-              className="h-full aspect-square z-[3]"
-            />
+            {/* <Lottie */}
+            {/*   animationData={mapLoadingAnimation} */}
+            {/*   className="h-full aspect-square z-[3]" */}
+            {/* /> */}
           </div>
         )}
 

@@ -55,3 +55,5 @@ type Lead = {
   half_bathrooms: number;
   total_bathrooms: number;
 };
+
+export default Lead;

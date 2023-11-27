@@ -15,7 +15,11 @@ import {
   selectFilter,
   setFilteredProperties,
 } from "@/store/slices/filterSlice";
-import { selectProperties } from "@/store/slices/propertiesSlice";
+import {
+  selectProperties,
+  setSelectedProperty,
+  setSelectedPropertyPreview,
+} from "@/store/slices/propertiesSlice";
 import { useLazyGetBuyBoxesQuery } from "@/store/services/buyboxApiService";
 import { useSnackbar } from "notistack";
 import BuyBox from "@/models/buybox";
@@ -45,6 +49,11 @@ const MapControlPanel = (props: MapControlPanelProps) => {
     alert(value);
   };
 
+  const handleSetLocation = (location: LocationSuggestion) => {
+    dispatch(setSelectedPropertyPreview(null));
+    dispatch(setSuggestion(location));
+  };
+
   return (
     <div className="absolute left-0 top-0 flex p-4 pointer-events-none">
       <div className="flex flex-col">
@@ -52,8 +61,7 @@ const MapControlPanel = (props: MapControlPanelProps) => {
           <div className="w-80">
             <AutocompleteInput
               location={suggestion}
-              setLocation={(location: LocationSuggestion) =>
-                dispatch(setSuggestion(location))}
+              setLocation={handleSetLocation}
             />
           </div>
           <div className="ml-6 flex justify-center items-center">

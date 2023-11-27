@@ -26,6 +26,8 @@ import {
   setBuyBoxPage,
   setBuyBoxPageSize,
 } from "@/store/slices/buyBoxesSlice";
+import { useRouter } from "next/router";
+import { useSearchParams } from "next/navigation";
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -65,15 +67,15 @@ const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({}));
 type BuyboxItemProps = {
   buybox: BuyBox;
   editBuyBox: (buybox: BuyBox) => void;
+  setBuyBoxId: (buybox_id: string) => void;
+  setPage: (page: number, pageSize: number) => void;
+  buyboxId: string;
+  page: number;
+  pageSize: number;
   // setOpenBuyBoxes: (buyboxState: {buybox_id: string, page: number}) => void;
 };
 
 const BuyboxItem = (props: BuyboxItemProps) => {
-  const dispatch = useDispatch();
-  const { buyboxes } = useSelector(selectBuyBoxes);
-
-  const expanded = buyboxes[props.buybox.id]?.open === true;
-
   const handleEditBuyBox = (e) => {
     e.stopPropagation();
     props.editBuyBox(props.buybox);
@@ -83,25 +85,26 @@ const BuyboxItem = (props: BuyboxItemProps) => {
 
   const handleClick = () => {
     if (expanded) {
-      dispatch(setBuyBoxOpen({ buybox_id: props.buybox.id, open: false }));
-      return;
+      props.setBuyBoxId("");
+    } else {
+      props.setBuyBoxId(props.buybox.id);
     }
-    dispatch(setBuyBoxOpen({ buybox_id: props.buybox.id, open: true }));
   };
 
-  const setPage = (page: number) => {
-    dispatch(setBuyBoxPage({ buybox_id: props.buybox.id, page: page }));
+  const handleChangePagination = (page: number, pageSize: number) => {
+    if (props.buyboxId === props.buybox.id) {
+      props.setPage(page, pageSize);
+    }
   };
 
-  const setPageSize = (pageSize: number) => {
-    dispatch(
-      setBuyBoxPageSize({ buybox_id: props.buybox.id, pageSize: pageSize }),
-    );
-  };
+  const expanded = props.buyboxId === props.buybox.id;
 
   return (
     <>
-      <StyledAccordion expanded={expanded} onChange={handleClick}>
+      <StyledAccordion
+        expanded={expanded}
+        onChange={handleClick}
+      >
         <StyledAccordionSummary
           expandIcon={<ExpandMoreIcon className="-rotate-90" />}
           className="flex-row-reverse"
@@ -125,41 +128,12 @@ const BuyboxItem = (props: BuyboxItemProps) => {
           <BuyBoxLeads
             buybox={props.buybox}
             open={expanded}
-            page={buyboxes[props.buybox.id]?.page || 0}
-            pageSize={buyboxes[props.buybox.id]?.pageSize || 5}
-            setPage={setPage}
-            setPageSize={setPageSize}
+            setPage={handleChangePagination}
+            page={props.page}
+            pageSize={props.pageSize}
           />
         </StyledAccordionDetails>
       </StyledAccordion>
-      {/* <DataGrid */}
-      {/*   sx={{ */}
-      {/*     "*": { */}
-      {/*       ".MuiDataGrid-cell": { */}
-      {/*         outline: "none", */}
-      {/*         "&:focus": { */}
-      {/*           outline: "none", */}
-      {/*         }, */}
-      {/*         "&:focus-within": { */}
-      {/*           outline: "none", */}
-      {/*         }, */}
-      {/*       }, */}
-      {/*     }, */}
-      {/*   }} */}
-      {/*   rows={rows} */}
-      {/*   columns={columns} */}
-      {/*   rowHeight={100} */}
-      {/*   initialState={{ */}
-      {/*     pagination: { */}
-      {/*       paginationModel: { */}
-      {/*         pageSize: 5, */}
-      {/*       }, */}
-      {/*     }, */}
-      {/*   }} */}
-      {/*   pageSizeOptions={[5]} */}
-      {/*   checkboxSelection */}
-      {/*   disableRowSelectionOnClick */}
-      {/* /> */}
     </>
   );
 };

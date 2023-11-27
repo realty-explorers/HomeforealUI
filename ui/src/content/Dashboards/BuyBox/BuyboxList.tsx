@@ -10,6 +10,7 @@ import {
   Card,
   CardContent,
   Grid,
+  Skeleton,
   styled,
   Typography,
 } from "@mui/material";
@@ -22,15 +23,15 @@ import {
   useLazyGetBuyBoxesQuery,
 } from "@/store/services/buyboxApiService";
 import BuyBox from "@/models/buybox";
-import { useEffect } from "react";
+import { lazy, useEffect } from "react";
 import { skipToken } from "@reduxjs/toolkit/dist/query";
 import Image from "next/image";
 import { useSnackbar, VariantType } from "notistack";
 import { motion, Variants } from "framer-motion";
-import Lottie from "lottie-react";
 import searchingDocumentsAnimation from "@/static/animations/loading/searchingDocumentsAnimation.json";
 import { useRouter } from "next/router";
 import ThemedButton from "@/components/Buttons/ThemedButton";
+import { useSearchParams } from "next/navigation";
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -104,9 +105,22 @@ const containerVariants: Variants = {
 };
 
 const LoadingImage = () => {
+  const Lottie = lazy(() => import("lottie-react"));
   return (
-    <div className="absolute left-1/2 top-0 -translate-x-1/2">
-      <Lottie animationData={searchingDocumentsAnimation} className="w-80" />
+    <div className="w-full p-4">
+      {Array.from(Array(5).keys()).map((index) => (
+        <motion.div
+          key={index}
+          variants={itemVariants}
+        >
+          <Skeleton
+            variant="rounded"
+            className="w-full h-16 mb-4"
+            style={{ borderRadius: "2rem" }}
+          />
+        </motion.div>
+      ))}
+      {/* <Lottie animationData={searchingDocumentsAnimation} className="w-80" /> */}
       {/* <Image */}
       {/*   src={"/static/images/placeholders/searchingAnimation.gif"} */}
       {/*   alt="loading" */}
@@ -123,6 +137,11 @@ type BuyboxListProps = {
 };
 
 const BuyboxList = (props: BuyboxListProps) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const buyboxId = searchParams.get("buybox_id");
+  const selectedPage = searchParams.get("page");
+  const selectedPageSize = searchParams.get("pageSize");
   // const {data , isFetching } = useGetBuyBoxesIdsQuery(1);
   const [getBuyBoxes, state] = useLazyGetBuyBoxesQuery();
   const { enqueueSnackbar } = useSnackbar();
@@ -146,44 +165,72 @@ const BuyboxList = (props: BuyboxListProps) => {
     getBuyBoxesData();
   }, [state.data]);
 
+  const setBuyBoxId = (buyboxId: string) => {
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { buybox_id: buyboxId },
+      },
+      undefined,
+      { shallow: true },
+    );
+  };
+
+  const setPage = (page: number, pageSize: number) => {
+    router.push(
+      {
+        pathname: router.pathname,
+        query: { ...router.query, page: page, pageSize: pageSize },
+      },
+      undefined,
+      { shallow: true },
+    );
+  };
+
   return (
     <div className="flex w-full h-full">
       <div className="relative w-full p-4 rounded-lg">
-        {state.isFetching && <LoadingImage />}
-        <motion.div
-          initial={false}
-          animate={state.data?.length > 0 ? "open" : "closed"}
-          className="w-full"
-        >
+        {state.isFetching ? <LoadingImage /> : (
           <motion.div
-            variants={containerVariants}
+            initial={false}
+            animate={state.data?.length > 0 ? "open" : "closed"}
+            className="w-full"
           >
-            {(state.data as BuyBox[])?.map((buybox, index) => (
-              <motion.div
-                key={index}
-                variants={itemVariants}
-              >
-                <BuyboxItem
+            <motion.div
+              variants={containerVariants}
+            >
+              {(state.data as BuyBox[])?.map((buybox, index) => (
+                <motion.div
                   key={index}
-                  buybox={buybox}
-                  editBuyBox={props.editBuyBox}
-                  // setOpenBuyBoxes={setOpenBuyBoxes}
-                />
-              </motion.div>
-            ))}
+                  variants={itemVariants}
+                >
+                  <BuyboxItem
+                    key={index}
+                    buybox={buybox}
+                    editBuyBox={props.editBuyBox}
+                    setBuyBoxId={setBuyBoxId}
+                    setPage={setPage}
+                    buyboxId={buyboxId}
+                    page={selectedPage ? parseInt(selectedPage) : 0}
+                    pageSize={selectedPageSize ? parseInt(selectedPageSize) : 5}
+                    // setOpenBuyBoxes={setOpenBuyBoxes}
+                  />
+                </motion.div>
+              ))}
 
-            <motion.div variants={itemVariants}>
-              <ThemedButton
-                onClick={() => props.editBuyBox()}
-              >
-                <AddCircleOutlineIcon className="mr-2" htmlColor="white" />
-                <Typography className="text-white font-poppins">
-                  New Buybox
-                </Typography>
-              </ThemedButton>
+              <motion.div variants={itemVariants}>
+                <ThemedButton
+                  onClick={() => props.editBuyBox()}
+                >
+                  <AddCircleOutlineIcon className="mr-2" htmlColor="white" />
+                  <Typography className="text-white font-poppins">
+                    New Buybox
+                  </Typography>
+                </ThemedButton>
+              </motion.div>
             </motion.div>
           </motion.div>
-        </motion.div>
+        )}
       </div>
     </div>
   );
