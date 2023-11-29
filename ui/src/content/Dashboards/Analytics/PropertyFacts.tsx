@@ -83,7 +83,7 @@ const PropertyFacts = (props: PropertyFactsProps) => {
           { label: "Built", value: props.property.year_built },
           {
             label: "DOM",
-            value: (props.property.sales_days_on_market),
+            value: (readableDateDiff(props.property?.list_date)),
           },
         ]}
       />

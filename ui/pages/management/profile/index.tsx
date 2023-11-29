@@ -81,10 +81,10 @@ const ManagementUserProfile = () => {
           />
         </div>
         <div className="flex justify-center grow">
-          <Lottie
-            animationData={profileAnimation}
-            className="w-80"
-          />
+          {/* <Lottie */}
+          {/*   animationData={profileAnimation} */}
+          {/*   className="w-80" */}
+          {/* /> */}
         </div>
       </div>
       <div className="bg-[#F5F6FA] rounded-lg">

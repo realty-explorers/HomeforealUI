@@ -9,24 +9,11 @@ import { logout } from "../slices/authSlice";
 
 const baseUrl = process.env.NEXT_PUBLIC_DATA_API_URL;
 
+const API_KEY = "o63cMy45PuLH8sRs8iEP";
 const baseQuery = fetchBaseQuery({
   baseUrl,
   prepareHeaders: async (headers, { getState }) => {
-    let token = (getState() as RootState).auth.token;
-
-    if (!token) {
-      try {
-        const request = await fetch("/api/protected");
-        token = (await request.json()).accessToken;
-      } catch (e) {
-        console.log(e);
-      }
-    }
-
-    // If we have a token set in state, let's assume that we should be passing it.
-    if (token) {
-      headers.set("authorization", `Bearer ${token}`);
-    }
+    headers.set("API-Key", API_KEY);
 
     return headers;
   },

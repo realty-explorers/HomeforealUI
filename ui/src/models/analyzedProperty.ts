@@ -38,6 +38,7 @@ interface CompData {
   half_bathrooms: number;
   total_bathrooms: number;
   is_arv_25th: boolean;
+  list_date: Date;
 }
 
 interface FilteredComp extends CompData {
@@ -126,6 +127,7 @@ interface AnalyzedProperty {
     management: ExpensesData;
     vacancy: ExpensesData;
   };
+  list_date: string;
 }
 
 export default AnalyzedProperty;

@@ -13,13 +13,13 @@ const dateDaysDiff = (date: string) => {
 const readableDateDiff = (date: string) => {
   const diffDays = dateDaysDiff(date);
   if (diffDays < 30) {
-    return `${diffDays} days ago`;
+    return `${diffDays} days`;
   } else if (diffDays < 365) {
     const diffMonths = Math.ceil(diffDays / 30);
-    return `${diffMonths} months ago`;
+    return `${diffMonths} months`;
   } else {
     const diffYears = Math.ceil(diffDays / 365);
-    return `${diffYears} years ago`;
+    return `${diffYears} years`;
   }
 };
 

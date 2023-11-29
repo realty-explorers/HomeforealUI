@@ -1,25 +1,42 @@
 import AnalyzedProperty from "@/models/analyzedProperty";
-import Deal from "@/models/deal";
 import PropertyPreview from "@/models/propertyPreview";
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import data from "./mockData.json";
+import {
+  BaseQueryApi,
+  createApi,
+  FetchArgs,
+  fetchBaseQuery,
+} from "@reduxjs/toolkit/query/react";
 
 const baseUrl = process.env.NEXT_PUBLIC_PROPERTIES_API_URL;
-// const baseUrl = "http://localhost:8000/";
-// const GENERAL_BUYBOX_ID = "1fc03787-65ca-44b2-aec3-f9b707a2748f";
 const GENERAL_BUYBOX_ID = "3dbf8068-bfda-4422-af27-7597045dac6e";
 
-interface LocationFilter {
-  type: string;
-  state: string;
-  city: string;
-  zipCode: string;
-  neighborhood: string;
-}
+const API_KEY = "o63cMy45PuLH8sRs8iEP";
+const baseQuery = fetchBaseQuery({
+  baseUrl,
+  prepareHeaders: async (headers, { getState }) => {
+    headers.set("API-Key", API_KEY);
+
+    return headers;
+  },
+});
+
+const baseQueryWithReauth = async (
+  args: string | FetchArgs,
+  api: BaseQueryApi,
+  extraOptions: any,
+) => {
+  let result = await baseQuery(args, api, extraOptions);
+  if (result?.error?.status === 403) {
+    //TODO: fetch new accessToken using refresh token and update auth state and recall the api
+  } else if (result?.error?.status === 401) {
+    console.log("401");
+  }
+  return result;
+};
 
 export const propertiesApi = createApi({
   reducerPath: "propertiesApi",
-  baseQuery: fetchBaseQuery({ baseUrl }),
+  baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     getPropertiesPreviews: builder.query({
       query: (
