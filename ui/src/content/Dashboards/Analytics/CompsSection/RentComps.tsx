@@ -15,6 +15,7 @@ import {
 } from "@/store/slices/propertiesSlice";
 import { useCalculateCompsMutation } from "@/store/services/analysisApi";
 import CompsSection from "./CompsSection";
+import PropertyCardRental from "./PropertyCardRental";
 
 type RentCompsProps = {};
 const RentComps = () => {
@@ -58,7 +59,7 @@ const RentComps = () => {
         selectedComps={selectedRentalComps}
         setSelectedComps={setNewSelectedComps}
         propertyCard={
-          <PropertyCard
+          <PropertyCardRental
             property={selectedProperty}
             compsProperties={selectedRentalComps}
           />

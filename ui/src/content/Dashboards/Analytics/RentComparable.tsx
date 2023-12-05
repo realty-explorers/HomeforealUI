@@ -39,10 +39,9 @@ type RentComparableProps = {
 const RentComparable = (props: RentComparableProps) => {
   const { selectedRentalComps } = useSelector(selectProperties);
   const area = props.property.building_area;
-  const rentListingPrice =
-    typeof props.property.rents_listing_price === "number"
-      ? props.property.rents_listing_price
-      : 0;
+  const rentListingPrice = typeof props.property.rental_comps_price === "number"
+    ? props.property.rental_comps_price
+    : 0;
   const rentToSqft = area && area > 0 ? rentListingPrice / area : 0;
   const compsRentToSqft = selectedRentalComps
     ? selectedRentalComps.reduce((acc, comp) => {
