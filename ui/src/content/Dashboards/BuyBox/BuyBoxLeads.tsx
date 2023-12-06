@@ -103,7 +103,7 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
               <img
                 src={row.original.image}
                 alt=""
-                className="max-h-full aspect-video rounded-xl"
+                className="max-h-full aspect-video rounded-xl w-full"
               />
             </div>
           </div>

@@ -63,7 +63,7 @@ const gridRows = (property: AnalyzedProperty) => [
   {
     label: "Rent/Sqft",
     value: `${
-      (parseInt(property.rental_comps_price) / property["building_area"])
+      (property.rental_comps_price / property["building_area"])
         .toFixed()
     }`,
   },

@@ -52,7 +52,7 @@ const groups = [
       },
       {
         title: "Cents on $",
-        fieldName: "opp.Fix & Flip.1.Cents on $",
+        fieldName: "opp.Fix & Flip.1.CentsOnDollar",
         type: "range",
         min: defaults.centOnDollar.min,
         max: defaults.centOnDollar.max,

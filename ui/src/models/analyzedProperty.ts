@@ -89,7 +89,7 @@ interface AnalyzedProperty {
   cents_on_dollar: number;
   arv_percentage: number;
   sales_comps_percentage: number;
-  rental_comps_price: string | "N/A";
+  rental_comps_price: number;
   cap_rate: number | "N/A";
   noi: string | "N/A";
   opportunities: any[]; // You may specify a more specific type for 'opportunities'.

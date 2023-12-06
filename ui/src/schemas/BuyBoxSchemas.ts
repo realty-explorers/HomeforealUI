@@ -42,7 +42,7 @@ const oppSchema = z.object({
     z.boolean(),
     z.object({
       "Margin": rangeSchema,
-      "Cent on $": rangeSchema,
+      "CentsOnDollar": rangeSchema,
     }),
   ])),
 
@@ -60,7 +60,7 @@ const defaultOppValues = {
   }],
   "Fix & Flip": [false, {
     "Margin": [false, [defaults.margin.min, defaults.margin.max]],
-    "Cent on $": [false, [
+    "CentsOnDollar": [false, [
       defaults.centOnDollar.min,
       defaults.centOnDollar.max,
     ]],

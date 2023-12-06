@@ -112,7 +112,7 @@ const defaults = {
     step: 1000,
   },
   centOnDollar: {
-    name: "Cent on $",
+    name: "CentsOnDollar",
     type: "range",
     min: 0,
     max: 1,

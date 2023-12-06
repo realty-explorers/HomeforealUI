@@ -29,6 +29,10 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
   const priceTypes = [
     { label: "ARV", value: props.property?.arv_price },
     { label: "Listing Price", value: props.property?.listing_price || 0 },
+    {
+      label: "Annual Rent",
+      value: props.property?.rental_comps_price * 12 || 0,
+    },
     // {
     //   label: "Rental Price",
     //   value: typeof props.property?.rents_listing_price === "number"
@@ -40,6 +44,9 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
   useEffect(() => {
+    const defaultMaintenance = props.property?.rental_comps_price * 12 * 0.08;
+    const defaultManagement = props.property?.rental_comps_price * 12 * 0.1;
+    const defaultVacancy = props.property?.rental_comps_price * 12 * 0.07;
     const defaultExpenses = [
       {
         id: uuidv4(),
@@ -68,7 +75,7 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
         label: "Maintenance",
         value:
           props.property?.operational_expenses?.maintenance?.expense_amount ||
-          0,
+          defaultMaintenance,
         priceType:
           props.property.operational_expenses?.maintenance?.expense_ref ===
               "arv"
@@ -79,17 +86,18 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
         id: uuidv4(),
         label: "Management",
         value:
-          props.property?.operational_expenses?.management?.expense_amount || 0,
+          props.property?.operational_expenses?.management?.expense_amount ||
+          defaultManagement,
         priceType:
           props.property.operational_expenses?.management?.expense_ref === "arv"
             ? priceTypes[0]
-            : priceTypes[1],
+            : priceTypes[2],
       },
       {
         id: uuidv4(),
         label: "Vacancy",
         value: props.property?.operational_expenses?.vacancy?.expense_amount ||
-          0,
+          defaultVacancy,
         priceType:
           props.property.operational_expenses?.vacancy?.expense_ref === "arv"
             ? priceTypes[0]

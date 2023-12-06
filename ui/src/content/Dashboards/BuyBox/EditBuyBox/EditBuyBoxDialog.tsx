@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 
+import _ from "lodash";
 import LoadingButton from "@mui/lab/LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
 import { useEffect, useState } from "react";
@@ -135,12 +136,22 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const [locations, setLocations] = useState([]);
 
   useEffect(() => {
+    handleResetBuyBox();
+  }, [props.buybox]);
+
+  const handleResetBuyBox = () => {
     if (props.buybox) {
-      reset(props.buybox.data);
+      const buyboxData = Object.assign({}, props.buybox.data);
+      const fullData = _.merge(getDefaults(buyboxSchema), buyboxData);
+      fullData.similarity.red = props.buybox.data.similarity.red;
+      fullData.similarity.yellow = props.buybox.data.similarity.yellow;
+      fullData.similarity.orange = props.buybox.data.similarity.orange;
+      fullData.similarity.green = props.buybox.data.similarity.green;
+      reset(fullData);
     } else {
       reset(getDefaults(buyboxSchema));
     }
-  }, [props.buybox]);
+  };
 
   const handleLocationsChanged = (event: any, value: any) => {
     setValue("target_location.locations", value);
@@ -261,9 +272,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
                   variant="outlined"
                   className="mt-12 w-20 bg-purple-500 text-white hover:bg-purple-400"
                   style={{ border: "none" }}
-                  onClick={() => {
-                    reset(props.buybox?.data || getDefaults(buyboxSchema));
-                  }}
+                  onClick={handleResetBuyBox}
                 >
                   Reset
                 </Button>

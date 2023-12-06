@@ -36,7 +36,7 @@
     "Limitations": [false, { "ARV": [false, [50000, 1000000]] }],
     "Fix & Flip": [
       true,
-      { "Margin": [true, [0, 150000]], "Cents on $": [true, [0, 0.98]] }
+      { "Margin": [true, [0, 150000]], "CentsOnDollar": [true, [0, 0.98]] }
     ],
     "Buy & Hold": [true, { "Cap Rate": [true, [0, 15]] }]
   },
