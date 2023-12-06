@@ -1,6 +1,12 @@
 .sectionContainer {
   padding: 1rem;
   padding-top: 0;
+
+  ::-webkit-scrollbar {
+    height: 0.5rem !important;
+    width: 0.3rem;
+    cursor: pointer;
+  }
 }
 
 .sectionHeader {
