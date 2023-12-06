@@ -37,6 +37,7 @@ const baseQueryWithReauth = async (
 export const propertiesApi = createApi({
   reducerPath: "propertiesApi",
   baseQuery: baseQueryWithReauth,
+  tagTypes: ["Previews"],
   endpoints: (builder) => ({
     getPropertiesPreviews: builder.query({
       query: (

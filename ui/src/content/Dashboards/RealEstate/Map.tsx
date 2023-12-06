@@ -419,6 +419,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         features: coordinates,
       };
       setData(newData);
+    } else {
+      setData(null);
     }
   }, [filteredProperties]);
 
