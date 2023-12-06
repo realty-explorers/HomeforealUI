@@ -331,7 +331,10 @@ const CompsFilter = (
       selectedComps,
     );
     for (const rangeField of limitedRangeFields) {
-      setValue(rangeField.fieldName, [rangeField.min, rangeField.max]);
+      setValue(rangeField.fieldName, [
+        Math.floor(rangeField.min * 1000) / 1000,
+        Math.ceil(rangeField.max * 1000) / 1000,
+      ]);
     }
   }, [selectedComps]);
 

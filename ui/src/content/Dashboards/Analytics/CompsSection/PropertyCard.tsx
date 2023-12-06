@@ -50,6 +50,7 @@ const gridRows = (property: AnalyzedProperty) => [
     value: typeof property.year_built === "string"
       ? property.year_built.slice(0, 4)
       : property.year_built,
+    averageProperty: "year_built",
   },
   // {
   //   label: "Neighborhood",
@@ -86,26 +87,15 @@ const PropertyCard = (props: PropertyCardProps) => {
   }, [props.property.primary_image]);
   const calcCompsAverage = (propertyName: string) => {
     if (!props.compsProperties || props.compsProperties.length < 1) return "";
-    const propertyType = typeof props.compsProperties[0]?.[propertyName];
-    if (!propertyType) return "";
-    if (propertyType === "number") {
-      return (props.compsProperties.reduce((acc, comps) => ({
-        [propertyName]: acc[propertyName] + comps[propertyName],
-      }))[propertyName] / props.compsProperties.length).toFixed();
-    }
-    if (propertyName === "year_built") {
-      return props.compsProperties[0][propertyName].slice(0, 4);
-    }
-    return props.compsProperties[0][propertyName];
-    if (typeof (props.compsProperties[0][propertyName] !== "Number")) {
-      return "not number";
-      // return props.compsProperties[0][propertyName];
-    }
-    return "mew";
-    // return props.compsProperties.reduce((acc, comps) => ({
-    //   [propertyName]: acc[propertyName] + comps[propertyName],
-    // }))[propertyName] / props.compsProperties.length;
-    return 0;
+    const values = props.compsProperties.map((comp) => comp[propertyName])
+      .filter(
+        (comp) => typeof comp === "number",
+      );
+    if (values.length < 1) return "";
+    return (values.reduce((
+      acc,
+      curr,
+    ) => acc + curr) / values.length).toFixed();
   };
 
   return (

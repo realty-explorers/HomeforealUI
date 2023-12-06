@@ -30,7 +30,7 @@ const ExpensesCalculator = (props: ExpensesCalculatorProps) => {
           <Grid container justifyContent="center" rowGap={3}>
             <Grid item xs={6}>
               <h1 className={analyticsStyles.sectionHeader}>
-                Expenses Calculator
+                Operational Expenses
               </h1>
             </Grid>
             <Grid item xs={6} className="sticky top-0 z-[2]">

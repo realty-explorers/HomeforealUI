@@ -153,7 +153,7 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
           Monthly Expenses
         </Typography>
       </Grid>
-      <Grid item container xs={6} justifyContent="center">
+      <Grid item container xs={6} justifyContent="center" alignItems="center">
         <Typography className={styles.totalExpensesLabel}>
           {priceFormatter(Math.round(totalExpenses(expenses) / 12))}/Monthly
         </Typography>

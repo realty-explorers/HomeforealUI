@@ -119,7 +119,7 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
           Initial Investment
         </Typography>
       </Grid>
-      <Grid item container xs={6} justifyContent="center">
+      <Grid item container xs={6} justifyContent="center" alignItems="center">
         <Typography className={styles.totalExpensesLabel}>
           {priceFormatter(Math.round(totalExpenses(expenses)))}
         </Typography>
