@@ -38,15 +38,19 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   const { selectProperty, deselectProperty } = useProperty();
 
   const scrollLeft = () => {
-    ref?.scrollTo({
-      left: ref.scrollLeft - ref.offsetWidth,
+    const element = document.querySelector("#list-container > div > div");
+    const width = element.scrollLeft - element.offsetWidth;
+    element.scrollTo({
+      left: width,
       behavior: "smooth",
     });
   };
   //
   const scrollRight = () => {
-    ref?.scrollTo({
-      left: ref.scrollLeft + ref.offsetWidth,
+    const element = document.querySelector("#list-container > div > div");
+    const width = element.scrollLeft + element.offsetWidth;
+    element.scrollTo({
+      left: width,
       behavior: "smooth",
     });
   };
@@ -129,9 +133,8 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
       element.addEventListener("wheel", onwheel);
       return () => element.removeEventListener("wheel", onwheel);
     }
-
     setRef(element);
-  }, [open]);
+  }, []);
 
   let cardsCache = {};
 
