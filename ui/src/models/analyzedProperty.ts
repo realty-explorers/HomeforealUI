@@ -128,6 +128,8 @@ interface AnalyzedProperty {
     vacancy: ExpensesData;
   };
   list_date: string;
+  is_coming_soon: boolean;
+  is_foreclosure: boolean;
 }
 
 export default AnalyzedProperty;
