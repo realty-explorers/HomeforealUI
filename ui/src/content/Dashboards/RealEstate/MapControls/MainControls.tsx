@@ -55,7 +55,7 @@ import PropertyPreview from "@/models/propertyPreview";
 import { useLazyGetBuyBoxesQuery } from "@/store/services/buyboxApiService";
 import { useSnackbar } from "notistack";
 import { skipToken } from "@reduxjs/toolkit/query";
-import { useSearchParams } from "next/navigation";
+import { redirect, useSearchParams } from "next/navigation";
 import { useRouter } from "next/router";
 
 const filterFieldNames = [
@@ -149,15 +149,16 @@ const MainControls: React.FC<MainControlsProps> = (
           }
         }
       } catch (error) {
+        let message = "Something went wrong, try again later :(";
         if (error.status === "FETCH_ERROR") {
-          enqueueSnackbar(`Connection failed, try again later`, {
-            variant: "error",
-          });
-        } else {
-          enqueueSnackbar(`${error.error}`, {
-            variant: "error",
-          });
+          message = `Connection failed, try again later`;
+        } else if (error.status === 401) {
+          message = "You were disconnected, please sign in again";
+          router.push("/api/auth/logout");
         }
+        enqueueSnackbar(message, {
+          variant: "error",
+        });
       }
     };
     getBuyBoxesData();

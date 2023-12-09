@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useState } from "react";
+import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { IconButton } from "@mui/material";
 import ArrowCircleLeftSharpIcon from "@mui/icons-material/ArrowCircleLeftSharp";
 import ArrowCircleRightSharpIcon from "@mui/icons-material/ArrowCircleRightSharp";
@@ -20,14 +20,19 @@ import {
 } from "@/store/slices/propertiesSlice";
 import { useLazyGetPropertyQuery } from "@/store/services/propertiesApiService";
 import useProperty from "@/hooks/useProperty";
+import useHorizontalScroll from "@/hooks/useHorizontalScroll";
 
 type CardsPanelProps = {
   open: boolean;
 };
 
 const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
-  const [ref, setRef] = useState<Element | undefined>();
   const [cardsOpen, setCardsOpen] = useState(false);
+  const listRef = useRef();
+  // const scrollRef = useHorizontalScroll();
+  // const [listRef] = useHookWithRefCallback();
+  const [ref, setRef] = useState<Element | undefined>();
+
   const { filteredProperties, strategyMode } = useSelector(selectFilter);
   const { selectedProperty, selectedPropertyPreview } = useSelector(
     selectProperties,
@@ -122,19 +127,22 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   }, [filteredProperties, selectedPropertyPreview]);
 
   useEffect(() => {
-    const element = document.querySelector("#list-container > div > div");
-    if (element) {
-      const onwheel = (e) => {
-        if (e.deltaY == 0) return;
-        element.scrollTo({
-          left: element.scrollLeft + e.deltaY,
-        });
-      };
-      element.addEventListener("wheel", onwheel);
-      return () => element.removeEventListener("wheel", onwheel);
+    if (!listRef.current) {
+      const element = document.querySelector("#list-container > div > div");
+      if (element) {
+        setRef(element);
+        const onwheel = (e) => {
+          console.log("wheel");
+          if (e.deltaY == 0) return;
+          element?.scrollTo({
+            left: element?.scrollLeft + e.deltaY,
+          });
+        };
+        element.addEventListener("wheel", onwheel);
+        return () => element?.removeEventListener("wheel", onwheel);
+      }
     }
-    setRef(element);
-  }, []);
+  }, [filteredProperties]);
 
   let cardsCache = {};
 
@@ -186,10 +194,14 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
         <IconButton onClick={scrollLeft}>
           <ArrowCircleLeftSharpIcon />
         </IconButton>
-        <div className="w-full h-full" id="list-container" ref={ref}>
+        <div
+          className="w-full h-full"
+          id="list-container"
+        >
           <AutoSizer>
             {({ height, width }) => (
               <FixedSizeList
+                // ref={listRef}
                 className="List"
                 height={height}
                 itemCount={filteredProperties?.length ?? 0}

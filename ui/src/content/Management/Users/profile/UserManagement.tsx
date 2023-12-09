@@ -3,6 +3,7 @@ import { useState } from "react";
 import clsx from "clsx";
 import AccordionSection from "./AccordionSection";
 import { useUser } from "@auth0/nextjs-auth0/client";
+
 import styles from "./Settings.module.scss";
 
 const UserManagement = () => {

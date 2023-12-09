@@ -61,6 +61,7 @@ import PropertyLocationBoundsSource from "./MapComponents/Sources/PropertyLocati
 import useProperty from "@/hooks/useProperty";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useSearchParams } from "next/navigation";
+import { useSnackbar } from "notistack";
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
@@ -69,6 +70,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const selectedPropertyId = searchParams.get("property_id");
 
   const mapRef = useRef<MapRef>(null);
+  const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(true);
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [data, setData] = useState<
@@ -420,6 +422,12 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       };
       setData(newData);
     } else {
+      if (buybox && suggestion) {
+        enqueueSnackbar("No results found", {
+          variant: "default",
+          preventDuplicate: true,
+        });
+      }
       setData(null);
     }
   }, [filteredProperties]);
