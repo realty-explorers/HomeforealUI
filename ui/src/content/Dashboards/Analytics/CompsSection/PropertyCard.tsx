@@ -11,7 +11,7 @@ import React, { useEffect, useState } from "react";
 const gridRows = (property: AnalyzedProperty) => [
   {
     label: "AskedPrice",
-    value: priceFormatter(property.listing_price),
+    value: priceFormatter(property.sales_listing_price),
     averageProperty: "sales_listing_price",
     averageFormatter: priceFormatter,
   },

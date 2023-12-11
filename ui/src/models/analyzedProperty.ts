@@ -71,6 +71,7 @@ interface AnalyzedProperty {
   zipcode: string;
   neighborhood: string;
   listing_price: number;
+  sales_listing_price: number;
   analyzed_date: string;
   sales_comps: { data: CompData[] };
   rents_comps: { data: CompData[] };

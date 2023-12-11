@@ -18,7 +18,7 @@ const PropertyMainInfo = (props: PropertyMainInfoProps) => {
           {/*   Listing Price */}
           {/* </Typography> */}
           <Typography className={styles.infoHeader}>
-            {priceFormatter(props.property.listing_price)}
+            {priceFormatter(props.property.sales_listing_price)}
           </Typography>
         </Grid>
         <Grid item xs={12}>

@@ -89,11 +89,11 @@ const MarginInfo = (props: MarginInfoProps) => {
           // margin={0}
           percent={calculateArvPercentage(
             saleCalculatedProperty?.sales_comps_price,
-            saleCalculatedProperty?.listing_price,
+            saleCalculatedProperty?.sales_listing_price,
           ).toFixed()}
           margin={calculateMarginPercentage(
             saleCalculatedProperty?.sales_comps_price,
-            saleCalculatedProperty?.listing_price,
+            saleCalculatedProperty?.sales_listing_price,
             totalExpenses,
           ).toFixed()}
           color="purple"
@@ -111,11 +111,11 @@ const MarginInfo = (props: MarginInfoProps) => {
 
           percent={calculateArvPercentage(
             saleCalculatedProperty?.arv_price,
-            saleCalculatedProperty?.listing_price,
+            saleCalculatedProperty?.sales_listing_price,
           ).toFixed()}
           margin={calculateMarginPercentage(
             saleCalculatedProperty?.arv_price,
-            saleCalculatedProperty?.listing_price,
+            saleCalculatedProperty?.sales_listing_price,
             totalExpenses,
           ).toFixed()}
           color="green"
