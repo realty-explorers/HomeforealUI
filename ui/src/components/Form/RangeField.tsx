@@ -10,6 +10,7 @@ import {
 import { styled } from "@mui/system";
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
+import { UseFormSetValue } from "react-hook-form";
 import NumericField from "./NumericField";
 
 const StyledSlider = styled(Slider)({
@@ -24,7 +25,7 @@ const StyledSlider = styled(Slider)({
 type RangeFieldProps = {
   min: number;
   max: number;
-  setValue: any;
+  setValue: UseFormSetValue<any>;
   getValues: any;
   fieldName: string;
   prefix?: string;
@@ -61,6 +62,7 @@ const RangeField = (
     setValue(
       typeof values !== "object" ? `${fieldName}` : `${fieldName}.0`,
       value,
+      { shouldDirty: true },
     );
   };
 
@@ -75,6 +77,7 @@ const RangeField = (
     setValue(
       typeof values === "number" ? `${fieldName}` : `${fieldName}.1`,
       value,
+      { shouldDirty: true },
     );
     // setValues([values[0], e.target.valueAsNumber]);
     // setValue(`${fieldName}.1`, e.target.valueAsNumber);
@@ -86,7 +89,7 @@ const RangeField = (
     activeThumb: number,
   ) => {
     setValues(value);
-    setValue(fieldName, value);
+    setValue(fieldName, value, { shouldDirty: true });
   };
 
   const formatLabel = (value: any) => {

@@ -34,7 +34,7 @@ const LocationCoverage = (
   );
   const locationsQuery = useGetLocationsQuery("");
   const handleLocationsChanged = (event: any, value: any) => {
-    setValue("target_location.locations", value);
+    setValue("target_location.locations", value, { shouldDirty: true });
     setLocations(value);
     console.log(getValues("target_location.locations"));
   };

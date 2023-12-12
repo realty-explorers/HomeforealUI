@@ -50,10 +50,10 @@ const InvestmentStrategy = (
   );
   const handleSelectStrategy = (strategy: string) => {
     if (selectedStrategy !== "") {
-      setValue(`opp.${selectedStrategy}.0`, false);
+      setValue(`opp.${selectedStrategy}.0`, false, { shouldDirty: true });
     }
-    setValue(`opp.${strategy}.0`, true);
-    setValue(`opp.strategy`, strategy);
+    setValue(`opp.${strategy}.0`, true, { shouldDirty: true });
+    setValue(`opp.strategy`, strategy, { shouldDirty: true });
     setSelectedStrategy(strategy);
   };
   return (

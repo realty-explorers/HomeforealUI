@@ -11,6 +11,7 @@ import {
 import styles from "../EditBuyBoxDialog.module.scss";
 import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
 import ComparablePreferences from "../ComparablePreferences";
+import SimilarityChart from "../SimilarityChart";
 
 type AdjustComparableProps = {
   register: UseFormRegister<buyboxSchemaType>;
@@ -30,13 +31,22 @@ const AdjustComparable = (
           their similarity to the target property, with four ranks from best
           (green) to less great (red).
         </Typography>
-        <div className="h-80 w-full">
-          <div className="max-h-full w-full grid gap-2 grid-cols-[15rem_1.5fr] px-8 pt-4">
+        <div className="h-80 w-full pr-2">
+          <div className="w-full grid gap-2 grid-cols-[15rem_1.5fr] px-8 pt-4">
             <ComparablePreferences
               register={register}
               control={control}
               watch={watch}
               setValue={setValue}
+              getValues={getValues}
+            />
+          </div>
+
+          <div>
+            <SimilarityChart
+              register={register}
+              control={control}
+              watch={watch}
               getValues={getValues}
             />
           </div>

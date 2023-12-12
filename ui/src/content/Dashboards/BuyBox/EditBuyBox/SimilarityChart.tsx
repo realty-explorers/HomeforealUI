@@ -72,7 +72,7 @@ const SimilarityChart = (
     <div className="col-span-2 mt-12">
       <div
         className={clsx([
-          "max-w-sm mx-auto md:max-w-none grid md:grid-cols-5 md:-mx-6 text-sm  rounded-md",
+          "max-w-sm md:max-w-none grid md:grid-cols-5 text-sm  rounded-md",
           "bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700",
         ])}
       >

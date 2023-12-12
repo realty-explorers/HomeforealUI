@@ -26,6 +26,7 @@ import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
 import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
 import ArrowBackIosOutlinedIcon from "@mui/icons-material/ArrowBackIosOutlined";
 import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
+import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
 import { useEffect, useState } from "react";
 import { Controller, FieldName, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -63,6 +64,7 @@ import {
   ArrowCircleRightOutlined,
   ArrowForwardIos,
   ArrowOutwardOutlined,
+  RestartAltOutlined,
 } from "@mui/icons-material";
 
 interface Location {
@@ -114,10 +116,24 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const [deleteBuyBox, deleteResult] = useDeleteBuyBoxMutation();
   const locationsQuery = useGetLocationsQuery(props.buybox?.id);
 
+  const getDefaultFormValues = () => {
+    if (props.buybox) {
+      const fullData = _.merge(
+        {},
+        getDefaultData(),
+        props.buybox.data,
+      );
+      return fullData;
+    } else {
+      const defaultData = getDefaultData();
+      return defaultData;
+    }
+  };
+
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting },
+    formState: { errors, isSubmitting, isDirty },
     reset,
     setValue,
     getValues,
@@ -127,7 +143,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   } = useForm<buyboxSchemaType>({
     // defaultValues: { emailActive: true, email: "meow@meow.com", name: "" },
     resolver: zodResolver(buyboxSchema),
-    defaultValues: getDefaultData(),
+    defaultValues: getDefaultFormValues(),
+    // defaultValues: getDefaultData(),
   });
 
   const { enqueueSnackbar } = useSnackbar();
@@ -228,23 +245,12 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
 
   useEffect(() => {
     handleResetBuyBox();
-    setActiveStep(0);
   }, [props.buybox]);
 
   const handleResetBuyBox = () => {
-    if (props.buybox) {
-      // const buyboxData = Object.assign(getDefaultData());
-      const fullData = _.merge(
-        {},
-        getDefaultData(),
-        props.buybox.data,
-      );
-      reset(fullData);
-    } else {
-      const defaultData = getDefaultData();
-      console.log(defaultData);
-      reset(getDefaultData());
-    }
+    const defaultData = getDefaultFormValues();
+    reset(defaultData);
+    setActiveStep(0);
   };
 
   const handleLocationsChanged = (event: any, value: any) => {
@@ -264,6 +270,20 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     return uniqueLocations;
   };
 
+  const getStepsErrors = (step: number) => {
+    switch (step) {
+      case 0:
+        return errors?.buybox_name || errors?.description;
+      case 1:
+        return errors?.opp?.strategy || errors?.opp?.fix_and_flip ||
+          errors?.opp?.buy_and_hold;
+      case 2:
+        return errors?.target_location?.locations;
+      default:
+        return null;
+    }
+  };
+
   return (
     <Dialog
       open={props.showEditBuybox}
@@ -272,12 +292,9 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
       maxWidth="lg"
       className={clsx[poppins.variable]}
     >
-      <div className="w-full h-full grid grid-cols-[15rem_1fr]  gap-x-4 overflow-hidden">
-        <div className="col-span-2 w-full flex justify-center items-center">
+      <div className="w-full h-full grid grid-cols-[15rem_1fr]  gap-x-0 overflow-hidden">
+        <div className="col-span-2 w-full flex justify-center items-center shadow">
           <IconButton className="absolute top-0 right-0 w-8 h-8 rounded-3xl">
-            {/* <CloseOutlinedIcon */}
-            {/*   onClick={handleClose} */}
-            {/* /> */}
             <HighlightOffOutlinedIcon
               onClick={handleClose}
             />
@@ -297,26 +314,16 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           >
             {steps.map((step, index) => (
               <Step key={index} className="">
-                {/* <StepButton */}
-                {/*   color="inherit" */}
-                {/*   onClick={() => setActiveStep(index)} */}
-                {/*   className={styles.font_poppins} */}
-                {/* > */}
-                {/*   {step.title} */}
-                {/* </StepButton> */}
                 <StepLabel
-                  className={styles.font_poppins}
+                  className={clsx([styles.font_poppins, "cursor-pointer"])}
+                  error={getStepsErrors(index)}
+                  onClick={() => setActiveStep(index)}
                 >
                   {step.title}
                 </StepLabel>
               </Step>
             ))}
           </Stepper>
-          {/* <Pagination */}
-          {/*   count={steps.length} */}
-          {/*   page={activeStep + 1} */}
-          {/*   color="primary" */}
-          {/* /> */}
         </div>
         <div className="flex flex-col bg-[rgba(151,71,255,0.7)] pb-8">
           {steps.map((step, index) => (
@@ -397,26 +404,30 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
               )}
             </motion.div>
             <div className="w-full flex justify-between py-4 px-4">
-              {/* {Object.keys(errors).length > 0 && ( */}
-              {/*   <div className="col-span-2"> */}
-              {/*     <Typography className="text-red-500"> */}
-              {/*       {JSON.stringify(errors.buybox_name.message)} */}
-              {/*     </Typography> */}
-              {/*   </div> */}
-              {/* )} */}
               <div className="flex gap-x-2">
                 {activeStep === 0 ? <div></div> : (
                   <Button
                     onClick={handleBackStep}
                     className={styles.button}
                   >
-                    <ArrowBackIosOutlinedIcon fontSize="small" />
+                    <ArrowBackIosOutlinedIcon className="h-4 w-4" />
                     Back
                   </Button>
                 )}
               </div>
 
               <div className="flex gap-x-2">
+                {isDirty && (
+                  <Button
+                    onClick={handleResetBuyBox}
+                    className={styles.button}
+                  >
+                    <RestartAltOutlined className="h-4 w-4" />
+                    <Typography className={styles.button_text}>
+                      Reset
+                    </Typography>
+                  </Button>
+                )}
                 {(activeStep === steps.length - 1 || props.buybox) && (
                   <LoadingButton
                     onClick={handleSubmitForm}
@@ -445,128 +456,6 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           </form>
         </div>
       </div>
-      {/* <form */}
-      {/*   onSubmit={handleSubmit(onSubmit)} */}
-      {/*   className="" */}
-      {/*   // className="w-full grid gap-2 grid-cols-[15rem_1.5fr] px-36 py-10" */}
-      {/* > */}
-      {/*   <Typography className={styles.mainLabel}>Name:</Typography> */}
-      {/**/}
-      {/*   <TextField */}
-      {/*     label="Name" */}
-      {/*     variant="outlined" */}
-      {/*     {...register("buybox_name")} */}
-      {/*     className="mb-4" */}
-      {/*   /> */}
-      {/*   <Typography className={styles.mainLabel}>Description:</Typography> */}
-      {/*   <TextField */}
-      {/*     label="Description" */}
-      {/*     placeholder="Description" */}
-      {/*     multiline */}
-      {/*     rows={2} */}
-      {/*     maxRows={4} */}
-      {/*     {...register("description")} */}
-      {/*     className="mb-4" */}
-      {/*   /> */}
-      {/**/}
-      {/*   <Typography className={styles.mainLabel}>Locations:</Typography> */}
-      {/*   <Autocomplete */}
-      {/*     multiple */}
-      {/*     id="tags-outlined" */}
-      {/*     options={getUniqueLocations(locationsQuery.data || [])} */}
-      {/*     loading={locationsQuery.isFetching} */}
-      {/*     getOptionLabel={(option: Location) => String(option.name)} */}
-      {/*     filterSelectedOptions */}
-      {/*     defaultValue={props.buybox?.data?.target_location?.locations || []} */}
-      {/*     // filterSelectedOptions */}
-      {/*     renderInput={(params) => ( */}
-      {/*       <TextField */}
-      {/*         {...params} */}
-      {/*         label="Locations" */}
-      {/*         placeholder="Locations" */}
-      {/*       /> */}
-      {/*     )} */}
-      {/*     onChange={handleLocationsChanged} */}
-      {/*   /> */}
-      {/**/}
-      {/*   <InvestmentCriteria */}
-      {/*     register={register} */}
-      {/*     control={control} */}
-      {/*     watch={watch} */}
-      {/*     setValue={setValue} */}
-      {/*     getValues={getValues} */}
-      {/*   /> */}
-      {/**/}
-      {/*   <PropertyCriteria */}
-      {/*     register={register} */}
-      {/*     control={control} */}
-      {/*     watch={watch} */}
-      {/*     setValue={setValue} */}
-      {/*     getValues={getValues} */}
-      {/*   /> */}
-      {/**/}
-      {/*   <ComparablePreferences */}
-      {/*     register={register} */}
-      {/*     control={control} */}
-      {/*     watch={watch} */}
-      {/*     setValue={setValue} */}
-      {/*     getValues={getValues} */}
-      {/*   /> */}
-      {/**/}
-      {/*   <SimilarityChart */}
-      {/*     register={register} */}
-      {/*     control={control} */}
-      {/*     watch={watch} */}
-      {/*   /> */}
-      {/**/}
-      {/*   {Object.keys(errors).length > 0 && ( */}
-      {/*     <div className="col-span-2"> */}
-      {/*       <Typography className="text-red-500"> */}
-      {/*         {JSON.stringify(errors)} */}
-      {/*       </Typography> */}
-      {/*     </div> */}
-      {/*   )} */}
-      {/**/}
-      {/*   <div className=" col-span-2 flex flex-row-reverse justify-between"> */}
-      {/*     {(props.buybox && props.buybox.permissions.includes("edit")) || */}
-      {/*         !props.buybox */}
-      {/*       ? ( */}
-      {/*         <div className="flex gap-x-4"> */}
-      {/*           <Button */}
-      {/*             variant="outlined" */}
-      {/*             className="mt-12 w-20 bg-purple-500 text-white hover:bg-purple-400" */}
-      {/*             style={{ border: "none" }} */}
-      {/*             onClick={handleResetBuyBox} */}
-      {/*           > */}
-      {/*             Reset */}
-      {/*           </Button> */}
-      {/**/}
-      {/*           <LoadingButton */}
-      {/*             type="submit" */}
-      {/*             variant="outlined" */}
-      {/*             className="mt-12 w-20 bg-purple-500 text-white hover:bg-purple-400" */}
-      {/*             style={{ border: "none" }} */}
-      {/*             loading={isSubmitting} */}
-      {/*           > */}
-      {/*             {props.buybox ? "Save" : "Create"} */}
-      {/*           </LoadingButton> */}
-      {/*         </div> */}
-      {/*       ) */}
-      {/*       : <></>} */}
-      {/**/}
-      {/*     {props.buybox?.permissions.includes("edit") && ( */}
-      {/*       <LoadingButton */}
-      {/*         variant="contained" */}
-      {/*         color="error" */}
-      {/*         className="mt-12  w-20 bg-red-500" */}
-      {/*         loading={deleteResult.isLoading} */}
-      {/*         onClick={handleDelete} */}
-      {/*       > */}
-      {/*         Delete */}
-      {/*       </LoadingButton> */}
-      {/*     )} */}
-      {/*   </div> */}
-      {/* </form> */}
     </Dialog>
   );
 };

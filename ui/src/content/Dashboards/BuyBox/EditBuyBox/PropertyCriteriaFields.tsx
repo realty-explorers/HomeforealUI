@@ -17,14 +17,6 @@ import RangeField from "@/components/Form/RangeField";
 import clsx from "clsx";
 import AutocompleteField from "@/components/Form/AutocompleteField";
 
-type PropertyCriteriaFieldsProps = {
-  register: UseFormRegister<buyboxSchemaType>;
-  control: Control<buyboxSchemaType>;
-  watch: UseFormWatch<buyboxSchemaType>;
-  setValue: UseFormSetValue<buyboxSchemaType>;
-  getValues: UseFormGetValues<buyboxSchemaType>;
-};
-
 const fields = [
   {
     title: "Property Types",
@@ -110,6 +102,15 @@ const fields = [
   //   formatLabelAsNumber: true,
   // },
 ];
+
+type PropertyCriteriaFieldsProps = {
+  register: UseFormRegister<buyboxSchemaType>;
+  control: Control<buyboxSchemaType>;
+  watch: UseFormWatch<buyboxSchemaType>;
+  setValue: UseFormSetValue<buyboxSchemaType>;
+  getValues: UseFormGetValues<buyboxSchemaType>;
+};
+
 const PropertyCriteriaFields = (
   { register, control, watch, setValue, getValues }:
     PropertyCriteriaFieldsProps,
