@@ -25,7 +25,7 @@ const defaultPropertyValues = {
   "Year Built": [false, [defaults.yearBuilt.min, defaults.yearBuilt.max]],
   "Pool": [false, "With"],
   "Garages": [false, [defaults.garages.min, defaults.garages.max]],
-  "Listing Price": [false, [
+  "Listing Price": [true, [
     defaults.listingPrice.min,
     defaults.listingPrice.max,
   ]],

@@ -22,6 +22,10 @@ import _ from "lodash";
 import { poppins } from "@/components/Fonts";
 import LoadingButton from "@mui/lab/LoadingButton";
 import CloseIcon from "@mui/icons-material/Close";
+import HighlightOffOutlinedIcon from "@mui/icons-material/HighlightOffOutlined";
+import CloseOutlinedIcon from "@mui/icons-material/CloseOutlined";
+import ArrowBackIosOutlinedIcon from "@mui/icons-material/ArrowBackIosOutlined";
+import ArrowForwardIosOutlinedIcon from "@mui/icons-material/ArrowForwardIosOutlined";
 import { useEffect, useState } from "react";
 import { Controller, FieldName, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -54,6 +58,12 @@ import InvestmentStrategy from "./Sections/InvestmentStrategy";
 import LocationCoverage from "./Sections/LocationCoverage";
 import AdjustComparable from "./Sections/AdjustComparable";
 import PropertyCriteria from "./Sections/PropertyCriteria";
+import {
+  ArrowCircleLeftOutlined,
+  ArrowCircleRightOutlined,
+  ArrowForwardIos,
+  ArrowOutwardOutlined,
+} from "@mui/icons-material";
 
 interface Location {
   "type": string;
@@ -264,6 +274,14 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     >
       <div className="w-full h-full grid grid-cols-[15rem_1fr]  gap-x-4 overflow-hidden">
         <div className="col-span-2 w-full flex justify-center items-center">
+          <IconButton className="absolute top-0 right-0 w-8 h-8 rounded-3xl">
+            {/* <CloseOutlinedIcon */}
+            {/*   onClick={handleClose} */}
+            {/* /> */}
+            <HighlightOffOutlinedIcon
+              onClick={handleClose}
+            />
+          </IconButton>
           <DialogTitle
             className={clsx([
               " text-2xl font-bold ",
@@ -386,31 +404,41 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
               {/*     </Typography> */}
               {/*   </div> */}
               {/* )} */}
-              {activeStep === 0 ? <div></div> : (
-                <Button
-                  onClick={handleBackStep}
-                  className={styles.button}
-                >
-                  Back
-                </Button>
-              )}
+              <div className="flex gap-x-2">
+                {activeStep === 0 ? <div></div> : (
+                  <Button
+                    onClick={handleBackStep}
+                    className={styles.button}
+                  >
+                    <ArrowBackIosOutlinedIcon fontSize="small" />
+                    Back
+                  </Button>
+                )}
+              </div>
 
               <div className="flex gap-x-2">
-                <LoadingButton
-                  onClick={handleNextStep}
-                  className={styles.button}
-                  loading={isSubmitting}
-                >
-                  {activeStep < steps.length - 1 ? "Next" : "Finish"}
-                </LoadingButton>
-                {activeStep < steps.length - 1 && props.buybox && (
+                {(activeStep === steps.length - 1 || props.buybox) && (
                   <LoadingButton
                     onClick={handleSubmitForm}
                     className={styles.button}
                     loading={isSubmitting}
                   >
-                    Save & Finish
+                    <Typography className={styles.button_text}>
+                      {props.buybox ? "Save & Finish" : "Finish"}
+                    </Typography>
                   </LoadingButton>
+                )}
+
+                {activeStep < steps.length - 1 && (
+                  <Button
+                    onClick={handleNextStep}
+                    className={styles.button}
+                  >
+                    <Typography className={styles.button_text}>
+                      Next
+                    </Typography>
+                    <ArrowForwardIos className="h-4 w-4" />
+                  </Button>
                 )}
               </div>
             </div>

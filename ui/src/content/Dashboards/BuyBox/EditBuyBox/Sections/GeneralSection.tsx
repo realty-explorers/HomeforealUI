@@ -25,7 +25,7 @@ const GeneralSection = (
     GeneralSectionProps,
 ) => {
   return (
-    <div className={clsx(["flex justify-center px-4 pt-8 h-full gap-x-4"])}>
+    <div className={clsx(["flex justify-center px-4 pt-8 grow gap-x-4"])}>
       <div className="flex flex-col  h-full w-1/2">
         <Typography className={clsx([styles.header, "mb-12"])}>
           Let’s build your Buy Box preferences

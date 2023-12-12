@@ -50,5 +50,10 @@
 
 .button {
   font-family: 'Poppins', sans-serif;
-  @apply ring-1 ring-secondary hover:bg-secondary hover:text-white;
+  @apply ring-1 ring-secondary hover:bg-secondary hover:text-white flex items-center;
+}
+
+.button_text {
+  font-family: 'Poppins', sans-serif;
+  @apply font-semibold;
 }

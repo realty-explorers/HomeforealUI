@@ -99,16 +99,16 @@ const fields = [
     max: defaults.garages.max,
     step: defaults.garages.step,
   },
-  {
-    title: "Listing Price",
-    fieldName: "property.Listing Price",
-    type: "range",
-    min: defaults.listingPrice.min,
-    max: defaults.listingPrice.max,
-    step: defaults.listingPrice.step,
-    prefix: "$",
-    formatLabelAsNumber: true,
-  },
+  // {
+  //   title: "Listing Price",
+  //   fieldName: "property.Listing Price",
+  //   type: "range",
+  //   min: defaults.listingPrice.min,
+  //   max: defaults.listingPrice.max,
+  //   step: defaults.listingPrice.step,
+  //   prefix: "$",
+  //   formatLabelAsNumber: true,
+  // },
 ];
 const PropertyCriteriaFields = (
   { register, control, watch, setValue, getValues }:

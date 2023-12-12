@@ -78,7 +78,6 @@ const FixAndFlip = (
           fieldName={`${field.fieldName}.1`}
           setValue={setValue}
           getValues={getValues}
-          disabled={!watch(`${field.fieldName}.0`)}
         />
       </div>
       <div className="flex items">
