@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 .label {
   @apply font-poppins font-semibold flex items-center;
 }
@@ -8,4 +10,45 @@
 
 .sectionLabel {
   @apply font-poppins font-bold text-2xl col-span-2 mt-6 mb-4;
+}
+
+.font_poppins {
+  font-family: 'Poppins', sans-serif;
+  * {
+    font-family: 'Poppins', sans-serif;
+  }
+}
+
+.header {
+  font-family: 'Poppins', sans-serif;
+  @apply font-bold text-xl;
+}
+
+.header2 {
+  font-family: 'Poppins', sans-serif;
+  @apply font-bold text-[1rem] flex items-center;
+}
+
+.subheader {
+  font-family: 'Poppins', sans-serif;
+  @apply text-lg;
+}
+
+.helper_text {
+  font-family: 'Poppins', sans-serif;
+  @apply text-lg px-2;
+}
+
+.helper_text2 {
+  font-family: 'Poppins', sans-serif;
+  @apply text-[1rem];
+}
+
+.highlighted {
+  @apply text-secondary font-bold;
+}
+
+.button {
+  font-family: 'Poppins', sans-serif;
+  @apply ring-1 ring-secondary hover:bg-secondary hover:text-white;
 }

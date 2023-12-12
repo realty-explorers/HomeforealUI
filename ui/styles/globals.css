@@ -8,6 +8,13 @@
   }
 }
 
+:root {
+  --color-primary: #590d82;
+  --color-secondary: #9b51e0;
+  --color-arv: #22c55e;
+  --color-off-white: #f8f9fa;
+}
+
 /* Map styles */
 @keyframes fadeIn {
   0% {

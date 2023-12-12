@@ -17,7 +17,7 @@ import RangeField from "@/components/Form/RangeField";
 import clsx from "clsx";
 import AutocompleteField from "@/components/Form/AutocompleteField";
 
-type PropertyCriteriaProps = {
+type PropertyCriteriaFieldsProps = {
   register: UseFormRegister<buyboxSchemaType>;
   control: Control<buyboxSchemaType>;
   watch: UseFormWatch<buyboxSchemaType>;
@@ -110,14 +110,12 @@ const fields = [
     formatLabelAsNumber: true,
   },
 ];
-const PropertyCriteria = (
-  { register, control, watch, setValue, getValues }: PropertyCriteriaProps,
+const PropertyCriteriaFields = (
+  { register, control, watch, setValue, getValues }:
+    PropertyCriteriaFieldsProps,
 ) => {
   return (
     <>
-      <Typography className={styles.sectionLabel}>
-        Property Criteria
-      </Typography>
       {fields.map((field, index) => {
         if (field.type === "range") {
           return (
@@ -178,4 +176,4 @@ const PropertyCriteria = (
   );
 };
 
-export default PropertyCriteria;
+export default PropertyCriteriaFields;

@@ -3,6 +3,7 @@ import { TextField, Typography } from "@mui/material";
 import clsx from "clsx";
 import {
   Control,
+  FieldErrors,
   UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
@@ -17,18 +18,20 @@ type GeneralSectionProps = {
   watch: UseFormWatch<buyboxSchemaType>;
   setValue: UseFormSetValue<buyboxSchemaType>;
   getValues: UseFormGetValues<buyboxSchemaType>;
+  errors: FieldErrors<buyboxSchemaType>;
 };
 const GeneralSection = (
-  { register, control, watch, setValue, getValues }: GeneralSectionProps,
+  { register, control, watch, setValue, getValues, errors }:
+    GeneralSectionProps,
 ) => {
   return (
-    <div className={clsx(["flex justify-center px-4 pt-12 h-full gap-x-4"])}>
+    <div className={clsx(["flex justify-center px-4 pt-8 h-full gap-x-4"])}>
       <div className="flex flex-col  h-full w-1/2">
         <Typography className={clsx([styles.header, "mb-12"])}>
           Let’s build your Buy Box preferences
         </Typography>
 
-        <Typography className={styles.subheader}>
+        <Typography className={clsx([styles.subheader, "mb-4"])}>
           Step 1: Choose your buy box name
         </Typography>
 
@@ -37,9 +40,11 @@ const GeneralSection = (
           variant="outlined"
           {...register("buybox_name")}
           className="mb-4"
+          helperText={errors?.buybox_name?.message}
+          error={!!errors?.buybox_name}
         />
 
-        <Typography className={styles.subheader}>
+        <Typography className={clsx([styles.subheader, "mb-4"])}>
           Please add important notes
         </Typography>
         <TextField

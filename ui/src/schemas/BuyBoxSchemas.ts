@@ -2,6 +2,7 @@ import z from "zod";
 import { defaults, defaultSimilarityFields } from "./defaults";
 
 const rangeSchema = z.array(z.union([z.boolean(), z.array(z.number())]));
+const minSchema = z.array(z.union([z.boolean(), z.number()]));
 
 const propertySchema = z.object({
   "Property Types": z.array(z.union([z.boolean(), z.array(z.string())])),
@@ -31,42 +32,33 @@ const defaultPropertyValues = {
 };
 
 const oppSchema = z.object({
-  "Limitations": z.array(z.union([
+  "strategy": z.string().min(1, "Please select a strategy"),
+  "fix_and_flip": z.array(z.union([
     z.boolean(),
     z.object({
-      "ARV": rangeSchema,
+      "arv": minSchema,
+      "margin": minSchema,
     }),
   ])),
 
-  "Fix & Flip": z.array(z.union([
+  "buy_and_hold": z.array(z.union([
     z.boolean(),
     z.object({
-      "Margin": rangeSchema,
-      "CentsOnDollar": rangeSchema,
-    }),
-  ])),
-
-  "Buy & Hold": z.array(z.union([
-    z.boolean(),
-    z.object({
-      "Cap Rate": rangeSchema,
+      "gross_yield": minSchema,
+      "cap_rate": minSchema,
     }),
   ])),
 });
 
 const defaultOppValues = {
-  "Limitations": [false, {
-    "ARV": [false, [defaults.arv.min, defaults.arv.max]],
+  "strategy": "",
+  "fix_and_flip": [false, {
+    "arv": [false, defaults.arv.default],
+    "margin": [false, defaults.margin.default],
   }],
-  "Fix & Flip": [false, {
-    "Margin": [false, [defaults.margin.min, defaults.margin.max]],
-    "CentsOnDollar": [false, [
-      defaults.centOnDollar.min,
-      defaults.centOnDollar.max,
-    ]],
-  }],
-  "Buy & Hold": [false, {
-    "Cap Rate": [false, [defaults.capRate.min, defaults.capRate.max]],
+  "buy_and_hold": [false, {
+    "gross_yield": [false, defaults.grossYield.default],
+    "cap_rate": [false, defaults.capRate.default],
   }],
 };
 
@@ -165,7 +157,8 @@ const defaultLocationValues = {
 };
 
 const buyboxSchema = z.object({
-  "buybox_name": z.string().default(""),
+  "buybox_name": z.string().min(3, "Name must be at least 3 characters long")
+    .default(""),
   "description": z.string().optional(),
   // locations: z.array(z.string()).optional(),
   "target_location": locationSchema.default(defaultLocationValues),
@@ -251,17 +244,34 @@ const buyboxSchemaV2 = z.object({
 });
 
 function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
-  return Object.fromEntries(
+  const data = Object.fromEntries(
     Object.entries(schema.shape).map(([key, value]) => {
       if (value instanceof z.ZodDefault) {
+        console.log(key, value._def.defaultValue());
         return [key, value._def.defaultValue()];
       }
       return [key, undefined];
     }),
   );
+  console.log(data);
+  return data;
 }
+
+const getDefaultData = () => {
+  const defaultData = {
+    "buybox_name": "",
+    "description": "",
+    // locations: z.array(z.string()).optional(),
+    "target_location": Object.assign(defaultLocationValues),
+    property: Object.assign(defaultPropertyValues),
+    opp: Object.assign(defaultOppValues),
+    similarity: defaultSimilarityFullValues,
+    "similarity_weights": defaultSimilarityWeights,
+  };
+  return defaultData;
+};
 
 type buyboxSchemaType = z.infer<typeof buyboxSchema>;
 
-export { buyboxSchema, getDefaults };
+export { buyboxSchema, getDefaultData, getDefaults };
 export type { buyboxSchemaType };

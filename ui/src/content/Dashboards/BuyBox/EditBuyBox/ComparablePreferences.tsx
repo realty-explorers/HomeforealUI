@@ -46,9 +46,9 @@ const TabPanel = (props: TabPanelProps) => {
 
 const similarityTypes = ["green", "yellow", "orange", "red"];
 const similarityFields = [
-  { fieldName: "Same Neighborhood", type: "boolean" },
-  { fieldName: "Same Property Type", type: "boolean" },
-  { fieldName: "Same Pool Status", type: "boolean" },
+  // { fieldName: "Same Neighborhood", type: "boolean" },
+  // { fieldName: "Same Property Type", type: "boolean" },
+  // { fieldName: "Same Pool Status", type: "boolean" },
   {
     fieldName: "Bedrooms",
     type: "range",
@@ -129,9 +129,6 @@ const ComparablePreferences = (
   };
   return (
     <>
-      <Typography className={styles.sectionLabel}>
-        Comparable Preferences
-      </Typography>
       <div className="col-span-2">
         <Tabs
           value={tab}

@@ -55,7 +55,7 @@ const LocationCoverage = (
     setLocations(getValues("target_location.locations"));
   }, []);
   return (
-    <div className={clsx(["flex flex-col px-4 pt-12 h-full gap-x-4"])}>
+    <div className={clsx(["flex flex-col px-4 pt-8 h-full gap-x-4 w-full"])}>
       <Typography className={clsx([styles.header, "mb-12"])}>
         Please indicate your location coverage area
       </Typography>
@@ -65,7 +65,8 @@ const LocationCoverage = (
         id="tags-outlined"
         options={getUniqueLocations(locationsQuery.data || [])}
         loading={locationsQuery.isFetching}
-        getOptionLabel={(option: Location) => String(option.name)}
+        getOptionLabel={(option: Location) =>
+          String(option.name)}
         filterSelectedOptions
         defaultValue={locations}
         // filterSelectedOptions

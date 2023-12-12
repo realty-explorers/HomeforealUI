@@ -41,12 +41,6 @@ const defaults = {
     step: 1000,
     default: [0, 10000000],
   },
-  arv: {
-    min: 0,
-    max: 10000000,
-    step: 1000,
-    default: [0, 10000000],
-  },
   soldPrice: {
     min: 0,
     max: 10000000,
@@ -104,19 +98,21 @@ const defaults = {
     default: [0, 10000000],
   },
 
+  arv: {
+    name: "ARV",
+    type: "range",
+    min: 0,
+    max: 100,
+    step: 1,
+    default: 0,
+  },
   margin: {
     name: "Margin",
     type: "range",
     min: 0,
-    max: 1000000,
-    step: 1000,
-  },
-  centOnDollar: {
-    name: "CentsOnDollar",
-    type: "range",
-    min: 0,
-    max: 1,
-    step: 0.01,
+    max: 100,
+    step: 1,
+    default: 0,
   },
   capRate: {
     name: "Cap Rate",
@@ -124,6 +120,15 @@ const defaults = {
     min: 0,
     max: 100,
     step: 1,
+    default: 0,
+  },
+  grossYield: {
+    name: "Gross Yield",
+    type: "range",
+    min: 0,
+    max: 100,
+    step: 1,
+    default: 0,
   },
   propertyTypes: {
     name: "Property Types",
