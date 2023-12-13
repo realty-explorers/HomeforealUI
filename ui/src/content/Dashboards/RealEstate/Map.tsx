@@ -62,6 +62,7 @@ import useProperty from "@/hooks/useProperty";
 import { skipToken } from "@reduxjs/toolkit/query";
 import { useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
+import { setMapLoading } from "@/store/slices/mapSlice";
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
@@ -518,6 +519,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const handleLoad = () => {
     setLoading(false);
+    dispatch(setMapLoading(false));
     mapRef?.current?.loadImage(
       "/static/images/pins/marker-label.png",
       (error, image) => {

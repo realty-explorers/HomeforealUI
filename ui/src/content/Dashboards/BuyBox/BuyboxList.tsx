@@ -85,7 +85,7 @@ const itemVariants: Variants = {
 
 const containerVariants: Variants = {
   open: {
-    display: "block",
+    // display: "block",
     transition: {
       type: "spring",
       bounce: 0,
@@ -95,7 +95,7 @@ const containerVariants: Variants = {
     },
   },
   closed: {
-    display: "none",
+    // display: "none",
     transition: {
       type: "spring",
       bounce: 0,
@@ -109,16 +109,13 @@ const LoadingImage = () => {
   return (
     <div className="w-full p-4">
       {Array.from(Array(5).keys()).map((index) => (
-        <motion.div
-          key={index}
-          variants={itemVariants}
-        >
+        <div key={index}>
           <Skeleton
             variant="rounded"
             className="w-full h-16 mb-4"
             style={{ borderRadius: "2rem" }}
           />
-        </motion.div>
+        </div>
       ))}
       {/* <Lottie animationData={searchingDocumentsAnimation} className="w-80" /> */}
       {/* <Image */}
@@ -192,7 +189,7 @@ const BuyboxList = (props: BuyboxListProps) => {
       <div className="relative w-full p-4 rounded-lg">
         {state.isFetching ? <LoadingImage /> : (
           <motion.div
-            initial={false}
+            initial={"closed"}
             animate={state.data?.length > 0 ? "open" : "closed"}
             className="w-full"
           >
@@ -218,7 +215,9 @@ const BuyboxList = (props: BuyboxListProps) => {
                 </motion.div>
               ))}
 
-              <motion.div variants={itemVariants}>
+              <motion.div
+                variants={itemVariants}
+              >
                 <ThemedButton
                   onClick={() => props.editBuyBox()}
                 >

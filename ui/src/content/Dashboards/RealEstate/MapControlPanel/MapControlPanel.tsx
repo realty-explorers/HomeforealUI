@@ -64,18 +64,20 @@ const MapControlPanel = (props: MapControlPanelProps) => {
               setLocation={handleSetLocation}
             />
           </div>
-          <div className="ml-6 flex justify-center items-center">
-            <Button
-              onClick={() => setFiltersOpen(!filtersOpen)}
-              startIcon={<TuneIcon />}
-              className="text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl px-4"
-            >
-              Filters
-            </Button>
-          </div>
+          {suggestion && (
+            <div className="ml-6 flex justify-center items-center">
+              <Button
+                onClick={() => setFiltersOpen(!filtersOpen)}
+                startIcon={<TuneIcon />}
+                className="text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl px-4"
+              >
+                Filters
+              </Button>
+            </div>
+          )}
         </div>
 
-        <Collapse in={filtersOpen}>
+        <Collapse in={filtersOpen && suggestion}>
           <div
             className={clsx([
               "p-10 bg-white/[.8] rounded-md mt-4 w-80 relative pointer-events-auto",

@@ -7,12 +7,14 @@ import PropertyPreview from "@/models/propertyPreview";
 export interface MapState {
   hoveredProperty?: PropertyPreview;
   hoveredMarker?: any;
+  mapLoading: boolean;
 }
 
 // Initial state
 const initialState: MapState = {
   hoveredProperty: undefined,
   hoveredMarker: undefined,
+  mapLoading: true,
 };
 
 // Actual Slice
@@ -28,6 +30,9 @@ export const mapSlice = createSlice({
     setHoveredMarker(state, action: PayloadAction<any>) {
       state.hoveredMarker = action.payload;
     },
+    setMapLoading(state, action: PayloadAction<boolean>) {
+      state.mapLoading = action.payload;
+    },
   },
 });
 
@@ -35,6 +40,7 @@ export const mapReducer = mapSlice.reducer;
 export const {
   setHoveredProperty,
   setHoveredMarker,
+  setMapLoading,
 } = mapSlice.actions;
 export const selectMap: (state: AppState) => MapState = (
   state: AppState,

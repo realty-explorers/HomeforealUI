@@ -26,6 +26,7 @@ import locations from "./locations.json";
 import Fuse from "fuse.js";
 import { useDispatch } from "react-redux";
 import { setSelectedPropertyPreview } from "@/store/slices/propertiesSlice";
+import clsx from "clsx";
 
 const SuggestionsContainer = (props) => {
   return (
@@ -40,7 +41,13 @@ const SuggestionsContainer = (props) => {
 function StyledInput({ searching, params, value }) {
   const dispatch = useDispatch();
   return (
-    <form className="flex items-center bg-white rounded-3xl px-4 py-0  font-poppins shadow-xl border-2 border-transparent focus-within:border-[rgba(155,81,224,0.5)] hover:border-[rgba(155,81,224,0.5)] transition-all">
+    <form
+      id="search-bar"
+      className={clsx([
+        "flex items-center bg-white rounded-3xl px-4 py-0  font-poppins shadow-xl border-2 border-transparent focus-within:border-[rgba(155,81,224,0.5)] hover:border-[rgba(155,81,224,0.5)] transition-all",
+        !value && "ring-4",
+      ])}
+    >
       <InputBase
         {...params.InputProps}
         {...params}

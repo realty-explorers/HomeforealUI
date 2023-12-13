@@ -10,7 +10,9 @@ import {
   AccordionSummaryProps,
   Button,
   Grid,
+  IconButton,
   styled,
+  Tooltip,
   Typography,
 } from "@mui/material";
 import styles from "./BuyboxItem.module.scss";
@@ -18,6 +20,7 @@ import clsx from "clsx";
 import BuyBox from "@/models/buybox";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
+import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import BuyBoxLeads from "./BuyBoxLeads";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -28,6 +31,8 @@ import {
 } from "@/store/slices/buyBoxesSlice";
 import { useRouter } from "next/router";
 import { useSearchParams } from "next/navigation";
+import { useDeleteBuyBoxMutation } from "@/store/services/buyboxApiService";
+import { useSnackbar } from "notistack";
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -76,6 +81,28 @@ type BuyboxItemProps = {
 };
 
 const BuyboxItem = (props: BuyboxItemProps) => {
+  const { enqueueSnackbar } = useSnackbar();
+  const [deleteBuyBox, deleteResult] = useDeleteBuyBoxMutation();
+
+  const handleDelete = async (e) => {
+    try {
+      e.stopPropagation();
+      await deleteBuyBox(props.buybox.id).unwrap();
+      enqueueSnackbar(`BuyBox Deleted`, {
+        variant: "success",
+      });
+    } catch (error) {
+      if (error.status === "FETCH_ERROR") {
+        enqueueSnackbar(`Connection error - please try again later`, {
+          variant: "error",
+        });
+      } else {
+        enqueueSnackbar(`Error: ${error.data?.message || error.error}`, {
+          variant: "error",
+        });
+      }
+    }
+  };
   const handleEditBuyBox = (e) => {
     e.stopPropagation();
     props.editBuyBox(props.buybox);
@@ -104,6 +131,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
       <StyledAccordion
         expanded={expanded}
         onChange={handleClick}
+        disabled={deleteResult.isLoading}
       >
         <StyledAccordionSummary
           expandIcon={<ExpandMoreIcon className="-rotate-90" />}
@@ -113,15 +141,27 @@ const BuyboxItem = (props: BuyboxItemProps) => {
             <Typography className="flex items-center">
               {props.buybox.data.buybox_name}
             </Typography>
-            <Button
-              startIcon={allowedToEdit
-                ? <SettingsOutlinedIcon className="className" />
-                : null}
-              className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
-              onClick={handleEditBuyBox}
-            >
-              {allowedToEdit ? "Edit" : "View"} BuyBox
-            </Button>
+            <div className="flex gap-x-1">
+              <Button
+                startIcon={allowedToEdit
+                  ? <SettingsOutlinedIcon className="className" />
+                  : null}
+                className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
+                onClick={handleEditBuyBox}
+              >
+                {allowedToEdit ? "Edit" : "View"} BuyBox
+              </Button>
+              {allowedToEdit && (
+                <Tooltip title="Delete BuyBox">
+                  <IconButton
+                    className="rounded-3xl"
+                    color="error"
+                  >
+                    <DeleteForeverIcon onClick={handleDelete} />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </div>
           </div>
         </StyledAccordionSummary>
         <StyledAccordionDetails>
