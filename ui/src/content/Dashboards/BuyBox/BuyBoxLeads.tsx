@@ -77,17 +77,17 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
       id: index,
       sourceId: lead.source_id,
       image: lead.primary_image ?? "",
-      address: lead.address,
+      address: `${lead.address}, ${lead.city}, ${lead.zipcode}`,
       opportunity: lead.opportunities.join(","),
-      askingPrice: priceFormatter(lead.listing_price),
-      ARV: parseFloat(lead.arv_price)
-        ? priceFormatter(parseFloat(lead.arv_price))
+      askingPrice: priceFormatter(lead.sales_listing_price),
+      ARV: parseFloat(lead.sales_comps_price)
+        ? priceFormatter(parseFloat(lead.sales_comps_price))
         : "-",
+      underARV: `${lead.sales_comps_percentage}%`,
       NOI: parseFloat(lead.noi) ? priceFormatter(parseFloat(lead.noi)) : "-",
       capRate: parseFloat(lead.cap_rate)
         ? `${parseFloat(lead.cap_rate).toFixed(2)}%`
         : "-",
-      zipCode: lead.zipcode,
       note: "",
     };
   }) ?? [];
@@ -124,9 +124,15 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
         header: "Asking Price",
         size: 150,
       },
+
       {
         accessorKey: "ARV",
         header: "ARV",
+        size: 150,
+      },
+      {
+        accessorKey: "underARV",
+        header: "Under ARV",
         size: 150,
       },
       {
@@ -137,11 +143,6 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
       {
         accessorKey: "capRate",
         header: "Cap Rate",
-        size: 150,
-      },
-      {
-        accessorKey: "zipCode",
-        header: "Zip Code",
         size: 150,
       },
       {

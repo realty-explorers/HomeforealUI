@@ -1,9 +1,16 @@
-import BuyboxList from "@/content/Dashboards/BuyBox/BuyboxList";
 import BuyboxStatus from "@/content/Dashboards/BuyBox/BuyboxStatus";
 import EditBuyBoxDialog from "@/content/Dashboards/BuyBox/EditBuyBox/EditBuyBoxDialog";
 import SidebarLayout from "@/layouts/SidebarLayout";
 import { Grid } from "@mui/material";
+import dynamic from "next/dynamic";
 import { useState } from "react";
+
+const BuyboxList = dynamic(
+  () => import("@/content/Dashboards/BuyBox/BuyboxList"),
+  {
+    ssr: false,
+  },
+);
 
 const Buybox = () => {
   const [showEditBuyBox, setShowEditBuyBox] = useState(false);

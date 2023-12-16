@@ -1,7 +1,4 @@
 import * as React from "react";
-import Box from "@mui/material/Box";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
-import Image from "@/components/Photos/Image";
 import {
   Accordion,
   AccordionDetails,
@@ -9,35 +6,38 @@ import {
   AccordionSummary,
   AccordionSummaryProps,
   Button,
-  Grid,
   IconButton,
   styled,
   Tooltip,
   Typography,
 } from "@mui/material";
+
+import LinearProgress from "@mui/material/LinearProgress";
 import styles from "./BuyboxItem.module.scss";
 import clsx from "clsx";
 import BuyBox from "@/models/buybox";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import StopCircleIcon from "@mui/icons-material/StopCircle";
 import BuyBoxLeads from "./BuyBoxLeads";
-import { useDispatch, useSelector } from "react-redux";
 import {
-  selectBuyBoxes,
-  setBuyBoxOpen,
-  setBuyBoxPage,
-  setBuyBoxPageSize,
-} from "@/store/slices/buyBoxesSlice";
-import { useRouter } from "next/router";
-import { useSearchParams } from "next/navigation";
-import { useDeleteBuyBoxMutation } from "@/store/services/buyboxApiService";
+  buyBoxApi,
+  useDeleteBuyBoxMutation,
+} from "@/store/services/buyboxApiService";
 import { useSnackbar } from "notistack";
+import ConfirmDialog from "@/components/Modals/Alerts/ConfirmDialog";
+import { useState } from "react";
+import { useAnalyzeBuyBoxMutation } from "@/store/services/buyboxAnalysisApi";
+import { useDispatch } from "react-redux";
+import { analysisApi } from "@/store/services/analysisApi";
+import { timeSince } from "@/utils/dateUtils";
+import { useUser } from "@auth0/nextjs-auth0/client";
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
 ))(({}) => ({
-  // border: `1px solid ${theme.palette.divider}`,
   borderRadius: "0px",
   backgroundColor: "transparent",
   "&:not(:last-child)": {
@@ -77,17 +77,40 @@ type BuyboxItemProps = {
   buyboxId: string;
   page: number;
   pageSize: number;
-  // setOpenBuyBoxes: (buyboxState: {buybox_id: string, page: number}) => void;
 };
 
 const BuyboxItem = (props: BuyboxItemProps) => {
   const { enqueueSnackbar } = useSnackbar();
+  const dispatch = useDispatch<any>();
   const [deleteBuyBox, deleteResult] = useDeleteBuyBoxMutation();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [running, setRunning] = useState(false);
 
-  const handleDelete = async (e) => {
+  const { user } = useUser();
+
+  const [analyzeBuyBox, analysisResult] = useAnalyzeBuyBoxMutation();
+
+  const handleDeleteClick = (e) => {
+    e.stopPropagation();
+    setDialogOpen(true);
+  };
+
+  const handleDelete = async () => {
     try {
-      e.stopPropagation();
       await deleteBuyBox(props.buybox.id).unwrap();
+
+      const patchCollection = dispatch(
+        buyBoxApi.util.updateQueryData(
+          "getBuyBoxes",
+          "",
+          (buyBoxes: BuyBox[]) => {
+            buyBoxes = buyBoxes.filter((buybox) =>
+              buybox.id !== props.buybox.id
+            );
+            return buyBoxes;
+          },
+        ),
+      );
       enqueueSnackbar(`BuyBox Deleted`, {
         variant: "success",
       });
@@ -106,6 +129,51 @@ const BuyboxItem = (props: BuyboxItemProps) => {
   const handleEditBuyBox = (e) => {
     e.stopPropagation();
     props.editBuyBox(props.buybox);
+  };
+
+  const handleAnalyzeBuyBoxClick = (e) => {
+    e.stopPropagation();
+    handleAnalyzeBuyBox();
+  };
+
+  const handleAnalyzeBuyBox = async () => {
+    try {
+      setRunning(true);
+      await analyzeBuyBox(props.buybox.id).unwrap();
+      dispatch(
+        analysisApi.util.invalidateTags(["BuyBoxLeads", "BuyBoxLeadsCount"]),
+      );
+      const patchCollection = dispatch(
+        buyBoxApi.util.updateQueryData(
+          "getBuyBoxes",
+          "",
+          (buyBoxes: BuyBox[]) => {
+            const updatedBuyBox = buyBoxes.find((buybox) =>
+              buybox.id === props.buybox.id
+            );
+            if (updatedBuyBox) {
+              updatedBuyBox.execute_date = new Date();
+            }
+            return buyBoxes;
+          },
+        ),
+      );
+      enqueueSnackbar(`Analysis Complete`, {
+        variant: "success",
+      });
+    } catch (error) {
+      if (error.status === "FETCH_ERROR") {
+        enqueueSnackbar(`Connection error - please try again later`, {
+          variant: "error",
+        });
+      } else {
+        enqueueSnackbar(`Error: ${error.data?.message || error.error}`, {
+          variant: "error",
+        });
+      }
+    } finally {
+      setRunning(false);
+    }
   };
 
   const allowedToEdit = props.buybox.permissions.includes("edit");
@@ -138,29 +206,90 @@ const BuyboxItem = (props: BuyboxItemProps) => {
           className="flex-row-reverse"
         >
           <div className="flex justify-between w-full">
-            <Typography className="flex items-center">
-              {props.buybox.data.buybox_name}
-            </Typography>
-            <div className="flex gap-x-1">
-              <Button
-                startIcon={allowedToEdit
-                  ? <SettingsOutlinedIcon className="className" />
-                  : null}
-                className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
-                onClick={handleEditBuyBox}
-              >
-                {allowedToEdit ? "Edit" : "View"} BuyBox
-              </Button>
-              {allowedToEdit && (
-                <Tooltip title="Delete BuyBox">
-                  <IconButton
-                    className="rounded-3xl"
-                    color="error"
-                  >
-                    <DeleteForeverIcon onClick={handleDelete} />
-                  </IconButton>
-                </Tooltip>
+            <div className="flex items-center ">
+              <Typography className="flex items-center w-40 text-ellipsis overflow-hidden">
+                {props.buybox.data.buybox_name}
+              </Typography>
+              {!running && props.buybox?.execute_date && (
+                <div className="flex items-center gap-x-4">
+                  <Typography className="text-gray-500">
+                    updated {timeSince(props?.buybox?.execute_date)}
+                  </Typography>
+                </div>
               )}
+            </div>
+
+            {running
+              ? (
+                <div className="flex grow items-center px-36 gap-x-4">
+                  <div className="grow relative flex items-center gap-x-2">
+                    <div className="absolute z-[1] top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex">
+                      <Typography
+                        className={clsx([
+                          " text-white font-poppins font-bold",
+                        ])}
+                      >
+                        Analyzing BuyBox
+                      </Typography>
+                      <SettingsOutlinedIcon
+                        fontSize="small"
+                        className={clsx([styles.loading, "text-white mx-2"])}
+                      />
+                    </div>
+
+                    <LinearProgress
+                      variant="indeterminate"
+                      className="grow h-6 rounded-3xl"
+                      // value={30}
+                      // valueBuffer={30}
+                    />
+                    {/* <Typography>30%</Typography> */}
+                  </div>
+                </div>
+              )
+              : <div></div>}
+            <div className="flex gap-x-2">
+              {allowedToEdit && !running && (
+                <Button
+                  startIcon={<DeleteForeverIcon />}
+                  className="bg-red-500 hover:bg-red-700 text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
+                  onClick={handleDeleteClick}
+                >
+                  Remove
+                </Button>
+              )}
+              {!running && (
+                <Button
+                  startIcon={allowedToEdit
+                    ? <SettingsOutlinedIcon className="className" />
+                    : null}
+                  className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
+                  onClick={handleEditBuyBox}
+                >
+                  {allowedToEdit ? "Configure" : "View"}
+                </Button>
+              )}
+
+              {allowedToEdit && user?.user_roles?.includes("admin") && (running
+                ? (
+                  <Button
+                    startIcon={<StopCircleIcon />}
+                    className="bg-red-500 hover:bg-red-700 text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
+                    onClick={handleEditBuyBox}
+                    disabled
+                  >
+                    Cancel
+                  </Button>
+                )
+                : (
+                  <Button
+                    startIcon={<PlayCircleIcon />}
+                    className="bg-green-500 hover:bg-green-700 text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
+                    onClick={handleAnalyzeBuyBoxClick}
+                  >
+                    Run
+                  </Button>
+                ))}
             </div>
           </div>
         </StyledAccordionSummary>
@@ -174,6 +303,13 @@ const BuyboxItem = (props: BuyboxItemProps) => {
           />
         </StyledAccordionDetails>
       </StyledAccordion>
+      <ConfirmDialog
+        title="Delete BuyBox"
+        description={`Are you sure you want to delete ${props.buybox?.name} BuyBox?`}
+        open={dialogOpen}
+        setOpen={setDialogOpen}
+        onConfirm={handleDelete}
+      />
     </>
   );
 };

@@ -4,8 +4,10 @@ const US_BOUNDS = [
 ];
 
 const INITIAL_VIEW_STATE = {
-  latitude: 40.67,
-  longitude: -103.59,
+  // latitude: 40.67,
+  // longitude: -103.59,
+  latitude: 39.68,
+  longitude: -97.96,
   zoom: 5,
 };
 

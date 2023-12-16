@@ -6,7 +6,7 @@ import {
 } from "@reduxjs/toolkit/query/react";
 import { logout } from "../slices/authSlice";
 
-const baseUrl = process.env.NEXT_PUBLIC_OLD_API_URL;
+const baseUrl = process.env.NEXT_PUBLIC_ANALYSIS_API_URL;
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
@@ -44,47 +44,22 @@ const baseQueryWithReauth = async (
   return result;
 };
 
-export const analysisApi = createApi({
-  reducerPath: "analysisApi",
+export const buyboxAnalysisApi = createApi({
+  reducerPath: "buyboxAnalysisApi",
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["BuyBoxLeads", "BuyBoxLeadsCount", "SelectedComps"],
   endpoints: (builder) => ({
-    getLeads: builder.query({
-      query: ({ id, skip, limit }) => ({
-        url: `summary/?buybox_id=${id}&skip=${skip}&limit=${limit}`,
-      }),
-      transformResponse: (response: any) => response,
-      providesTags: ["BuyBoxLeads"],
-    }),
-    getLeadsCount: builder.query({
-      query: (id) => ({
-        url: `count/?buybox_id=${id}`,
-      }),
-      transformResponse: (response: any) => response,
-      providesTags: ["BuyBoxLeadsCount"],
-    }),
-    calculateComps: builder.mutation({
-      query: ({ buybox_id, source_id, list_of_comps, analysis_comp_name }) => ({
-        url: "edit-comps",
+    analyzeBuyBox: builder.mutation({
+      query: (buybox_id) => ({
+        url: `/Analyze?buyboxId=${buybox_id}`,
         method: "POST",
-        body: {
-          "buybox_id": buybox_id,
-          "source_id": source_id,
-          "list_of_comps": list_of_comps,
-          "analysis_comp_name": analysis_comp_name,
-        },
       }),
       transformResponse: (response: any) => response,
-      invalidatesTags: ["SelectedComps"],
     }),
   }),
 });
 
-export const analysisApiEndpoints = analysisApi.endpoints;
+export const buyboxAnalysisApiEndpoints = buyboxAnalysisApi.endpoints;
 
 export const {
-  useGetLeadsQuery,
-  useLazyGetLeadsQuery,
-  useGetLeadsCountQuery,
-  useCalculateCompsMutation,
-} = analysisApi;
+  useAnalyzeBuyBoxMutation,
+} = buyboxAnalysisApi;

@@ -44,6 +44,7 @@ import {
 } from "@/schemas/BuyBoxSchemas";
 import BuyBox from "@/models/buybox";
 import {
+  buyBoxApi,
   useCreateBuyBoxMutation,
   useDeleteBuyBoxMutation,
   useUpdateBuyBoxMutation,
@@ -66,6 +67,7 @@ import {
   ArrowOutwardOutlined,
   RestartAltOutlined,
 } from "@mui/icons-material";
+import { useDispatch } from "react-redux";
 
 interface Location {
   "type": string;
@@ -115,6 +117,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const [updateBuyBox, updateResult] = useUpdateBuyBoxMutation();
   const [deleteBuyBox, deleteResult] = useDeleteBuyBoxMutation();
   const locationsQuery = useGetLocationsQuery(props.buybox?.id);
+  const dispatch = useDispatch<any>();
 
   const getDefaultFormValues = () => {
     if (props.buybox) {
@@ -202,7 +205,23 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           variant: "success",
         });
       } else {
-        await createBuyBox(data).unwrap();
+        const result = await createBuyBox(data).unwrap();
+        console.log(result);
+
+        const patchCollection = dispatch(
+          buyBoxApi.util.updateQueryData(
+            "getBuyBoxes",
+            "",
+            (buyBoxes: BuyBox[]) => {
+              buyBoxes.push({
+                ...data,
+                permissions: ["edit", "view"],
+                buybox_name: data.buybox_name,
+              });
+              return buyBoxes;
+            },
+          ),
+        );
         enqueueSnackbar(`BuyBox Created`, {
           variant: "success",
         });
@@ -224,6 +243,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const handleDelete = async () => {
     try {
       await deleteBuyBox(props.buybox.id).unwrap();
+
       enqueueSnackbar(`BuyBox Deleted`, {
         variant: "success",
       });
@@ -428,17 +448,29 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
                     </Typography>
                   </Button>
                 )}
-                {(activeStep === steps.length - 1 || props.buybox) && (
+                {(activeStep === steps.length - 1 && !props.buybox) && (
                   <LoadingButton
                     onClick={handleSubmitForm}
                     className={styles.button}
                     loading={isSubmitting}
                   >
                     <Typography className={styles.button_text}>
-                      {props.buybox ? "Save & Finish" : "Finish"}
+                      Finish
                     </Typography>
                   </LoadingButton>
                 )}
+                {(props.buybox && props.buybox?.permissions.includes("edit")) &&
+                  (
+                    <LoadingButton
+                      onClick={handleSubmitForm}
+                      className={styles.button}
+                      loading={isSubmitting}
+                    >
+                      <Typography className={styles.button_text}>
+                        {props.buybox ? "Save & Finish" : "Finish"}
+                      </Typography>
+                    </LoadingButton>
+                  )}
 
                 {activeStep < steps.length - 1 && (
                   <Button

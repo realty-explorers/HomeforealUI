@@ -82,44 +82,13 @@ const FixAndFlip = (
       </div>
       <div className="flex items">
         <SwitchField
-          fieldName={`${marginField.fieldName}.0`}
+          fieldName={`${arvField.fieldName}.0`}
           control={control}
           // disabled={!watch(`${group.fieldName}`)}
         />
         <Typography className={styles.header2}>
           Choose the minimum desired margin between the listed price and
           comparable ARV
-        </Typography>
-      </div>
-
-      <div className={clsx(["flex my-2"])}>
-        <RangeField
-          min={marginField.min}
-          max={marginField.max}
-          step={marginField.step}
-          prefix={marginField.prefix}
-          postfix={marginField.postfix}
-          formatLabelAsNumber={marginField.formatLabelAsNumber}
-          fieldName={`${marginField.fieldName}.1`}
-          setValue={setValue}
-          getValues={getValues}
-          disabled={!watch(`${marginField.fieldName}.0`)}
-        />
-      </div>
-
-      <div className="flex items-center">
-        <SwitchField
-          fieldName={`${arvField.fieldName}.0`}
-          control={control}
-          // disabled={!watch(`${group.fieldName}`)}
-        />
-        <Typography className={styles.header2}>
-          Or choose by net profit margin (after estimated expenses){" "}
-          <Chip
-            background="var(--color-secondary)"
-            color="white"
-            label="Beta"
-          />
         </Typography>
       </div>
 
@@ -135,6 +104,37 @@ const FixAndFlip = (
           setValue={setValue}
           getValues={getValues}
           disabled={!watch(`${arvField.fieldName}.0`)}
+        />
+      </div>
+
+      <div className="flex items-center">
+        <SwitchField
+          fieldName={`${marginField.fieldName}.0`}
+          control={control}
+          // disabled={!watch(`${group.fieldName}`)}
+        />
+        <Typography className={styles.header2}>
+          Or choose by net profit margin (after estimated expenses){" "}
+          <Chip
+            background="var(--color-secondary)"
+            color="white"
+            label="Beta"
+          />
+        </Typography>
+      </div>
+
+      <div className={clsx(["flex my-2"])}>
+        <RangeField
+          min={marginField.min}
+          max={marginField.max}
+          step={marginField.step}
+          prefix={marginField.prefix}
+          postfix={marginField.postfix}
+          formatLabelAsNumber={marginField.formatLabelAsNumber}
+          fieldName={`${marginField.fieldName}.1`}
+          setValue={setValue}
+          getValues={getValues}
+          disabled={!watch(`${marginField.fieldName}.0`)}
         />
       </div>
     </div>

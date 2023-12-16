@@ -7,3 +7,16 @@
   line-height: 159.5%; /* 1.79438rem */
   text-transform: capitalize;
 }
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.loading {
+  animation: rotate 2s linear infinite;
+}

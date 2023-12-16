@@ -1,3 +1,4 @@
+import BuyBox from "@/models/buybox";
 import {
   BaseQueryApi,
   createApi,
@@ -52,7 +53,7 @@ export const buyBoxApi = createApi({
   baseQuery: baseQueryWithReauth,
   tagTypes: ["BuyBox"],
   endpoints: (builder) => ({
-    getBuyBoxes: builder.query({
+    getBuyBoxes: builder.query<BuyBox[], any>({
       query: () => ({ url: "/all" }),
       transformResponse: (response: any) => response,
       providesTags: ["BuyBox"],
@@ -109,7 +110,7 @@ export const buyBoxApi = createApi({
         method: "DELETE",
       }),
       transformResponse: (response: any) => response,
-      invalidatesTags: (result, error, arg) => [{ type: "BuyBox", id: arg.id }],
+      // invalidatesTags: (result, error, arg) => [{ type: "BuyBox", id: arg.id }],
     }),
 
     getLeads: builder.query({
