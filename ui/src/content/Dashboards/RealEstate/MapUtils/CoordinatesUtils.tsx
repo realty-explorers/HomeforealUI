@@ -7,7 +7,7 @@ import { string } from "zod";
 const marginPercentage = (property: PropertyPreview, strategyMode: string) => {
   const fieldName = strategyMode === "ARV" ? "arv_price" : "sales_comps_price";
   return (property?.[fieldName] > 0 &&
-    property[fieldName] - property.sales_listing_price) /
+    property[fieldName] - property.listing_price) /
     property[fieldName] * 100;
 };
 

@@ -1,12 +1,12 @@
 interface LocationSuggestion {
   display: string;
   type: string;
-  addressLine?: string;
+  address?: string;
   street?: string;
   neighborhood?: string;
   city?: string;
   state?: string;
-  zipCode?: string;
+  zipcode?: string;
   latitude?: number;
   longitude?: number;
 }

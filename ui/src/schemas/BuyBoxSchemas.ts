@@ -138,10 +138,22 @@ const defaultSimilarityWeights = {
 
 const locationSchema = z.object({
   "locations": z.array(
+    // z.object({
+    //   "type": z.string(),
+    //   "name": z.string(),
+    //   "identifier": z.string(),
+    // }),
     z.object({
-      "type": z.string(),
-      "name": z.string(),
-      "identifier": z.string(),
+      display: z.string(),
+      type: z.string(),
+      address: z.string().optional(),
+      street: z.string().optional(),
+      neighborhood: z.string().optional(),
+      city: z.string().optional(),
+      state: z.string().optional(),
+      zipcode: z.string().optional(),
+      latitude: z.number().optional(),
+      longitude: z.number().optional(),
     }),
   ),
   "area": z.object({

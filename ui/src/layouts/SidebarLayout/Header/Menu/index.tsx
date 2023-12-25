@@ -1,15 +1,18 @@
 import {
   Box,
+  IconButton,
   List,
   ListItem,
   ListItemText,
   Menu,
   MenuItem,
   styled,
+  Typography,
 } from "@mui/material";
 import { useRef, useState } from "react";
 // import Link from "src/components/Link";
 import Link from "next/link";
+import MenuIcon from "@mui/icons-material/Menu";
 
 import ExpandMoreTwoToneIcon from "@mui/icons-material/ExpandMoreTwoTone";
 import Logo from "@/components/Logo";
@@ -67,9 +70,21 @@ const ListWrapper = styled(Box)(
 `,
 );
 
+const pages = [
+  {
+    title: "Search",
+    href: "/dashboards/real-estate",
+  },
+  {
+    title: "BuyBox",
+    href: "/dashboards/buybox",
+  },
+];
+
 function HeaderMenu() {
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
+  const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const pathname = usePathname();
 
   const handleOpen = (): void => {
@@ -81,57 +96,77 @@ function HeaderMenu() {
   };
 
   return (
-    <>
+    <div>
       <ListWrapper
-        sx={{
-          display: {
-            xs: "none",
-            md: "block",
-          },
-        }}
+        className="hidden md:flex"
+        ref={ref}
       >
         <List disablePadding component={Box} display="flex">
           <Logo />
-          <ListItem
-            classes={{ root: "MuiListItem-indicators" }}
-            className={clsx([
-              pathname === "/dashboards/real-estate" && "active",
-            ])}
-            component={Link}
-            button
-            href="/dashboards/real-estate"
-          >
-            <ListItemText
-              primaryTypographyProps={{
-                noWrap: true,
-                fontFamily: "var(--font-poppins)",
-              }}
-              primary="Search"
-            />
-          </ListItem>
-          <ListItem
-            classes={{ root: "MuiListItem-indicators" }}
-            className={clsx([pathname === "/dashboards/buybox" && "active"])}
-            component={Link}
-            button
-            href="/dashboards/buybox"
-          >
-            <ListItemText
-              primaryTypographyProps={{
-                noWrap: true,
-                fontFamily: "var(--font-poppins)",
-              }}
-              primary="BuyBox"
-            />
-          </ListItem>
+          {pages.map((page, index) => (
+            <ListItem
+              key={index}
+              classes={{ root: "MuiListItem-indicators" }}
+              className={clsx([
+                pathname === page.href && "active",
+              ])}
+              component={Link}
+              button
+              href={page.href}
+            >
+              <ListItemText
+                primaryTypographyProps={{
+                  noWrap: true,
+                  fontFamily: "var(--font-poppins)",
+                }}
+                primary={page.title}
+              />
+            </ListItem>
+          ))}
         </List>
       </ListWrapper>
-      <Menu anchorEl={ref.current} onClose={handleClose} open={isOpen}>
-        <MenuItem sx={{ px: 3 }} component={Link} href="/">
-          Overview
-        </MenuItem>
-      </Menu>
-    </>
+      <Box className="grow flex md:hidden">
+        <IconButton
+          size="large"
+          aria-label="account of current user"
+          aria-controls="menu-appbar"
+          aria-haspopup="true"
+          onClick={() => setMenuOpen(!menuOpen)}
+          color="inherit"
+        >
+          <MenuIcon />
+        </IconButton>
+        <Menu
+          id="menu-appbar"
+          anchorEl={ref.current}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          keepMounted
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          open={menuOpen}
+          onClose={() => setMenuOpen(false)}
+          sx={{
+            display: { xs: "block", md: "none" },
+          }}
+        >
+          {pages.map((page, index) => (
+            <MenuItem
+              key={index}
+              href={page.href}
+              component={Link}
+              onClick={() => setMenuOpen(false)}
+            >
+              <Typography textAlign="center">{page.title}</Typography>
+            </MenuItem>
+          ))}
+        </Menu>
+      </Box>
+    </div>
   );
 }
 

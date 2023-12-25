@@ -76,18 +76,24 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
     return {
       id: index,
       sourceId: lead.source_id,
-      image: lead.primary_image ?? "",
+      image: {
+        image: lead.image,
+        new: lead.analysis_status === "new",
+      },
       address: `${lead.address}, ${lead.city}, ${lead.zipcode}`,
       opportunity: lead.opportunities.join(","),
-      askingPrice: priceFormatter(lead.sales_listing_price),
+      askingPrice: priceFormatter(lead.listing_price),
       ARV: parseFloat(lead.sales_comps_price)
         ? priceFormatter(parseFloat(lead.sales_comps_price))
         : "-",
-      underARV: `${lead.sales_comps_percentage}%`,
+      underARV: parseFloat(lead.sales_comps_percentage)
+        ? `${parseFloat(lead.sales_comps_percentage).toFixed()}%`
+        : `0%`,
       NOI: parseFloat(lead.noi) ? priceFormatter(parseFloat(lead.noi)) : "-",
       capRate: parseFloat(lead.cap_rate)
         ? `${parseFloat(lead.cap_rate).toFixed(2)}%`
         : "-",
+      analysisStatus: lead.analysis_status,
       note: "",
     };
   }) ?? [];
@@ -99,9 +105,14 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
         header: "Image",
         Cell: ({ renderedCellValue, row }) => (
           <div className="flex flex-1 h-full grow items-center rounded-md">
-            <div className="w-full h-full  flex align-center justify-center">
+            <div className="w-full h-full  flex align-center justify-center relative">
+              {row.original.image.new && (
+                <div className="absolute top-1 left-1 bg-secondary text-white font-semibold font-poppins px-1 rounded-md">
+                  new
+                </div>
+              )}
               <img
-                src={row.original.image}
+                src={row.original.image.image}
                 alt=""
                 className="max-h-full aspect-video rounded-xl w-full"
               />
@@ -145,6 +156,7 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
         header: "Cap Rate",
         size: 150,
       },
+
       {
         accessorKey: "sourceId",
         // filterVariant: 'range', //if not using filter modes feature, use this instead of filterFn
@@ -279,7 +291,7 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
   });
 
   return (
-    <div>
+    <div className="">
       <MaterialReactTable table={table} />
     </div>
   );

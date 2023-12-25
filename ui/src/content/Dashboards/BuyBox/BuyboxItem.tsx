@@ -8,6 +8,8 @@ import {
   Button,
   IconButton,
   styled,
+  Tab,
+  Tabs,
   Tooltip,
   Typography,
 } from "@mui/material";
@@ -21,6 +23,9 @@ import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import StopCircleIcon from "@mui/icons-material/StopCircle";
+import BallotIcon from "@mui/icons-material/Ballot";
+import AnalyticsIcon from "@mui/icons-material/Analytics";
+import InsightsIcon from "@mui/icons-material/Insights";
 import BuyBoxLeads from "./BuyBoxLeads";
 import {
   buyBoxApi,
@@ -34,6 +39,8 @@ import { useDispatch } from "react-redux";
 import { analysisApi } from "@/store/services/analysisApi";
 import { timeSince } from "@/utils/dateUtils";
 import { useUser } from "@auth0/nextjs-auth0/client";
+import Chip from "@/components/Chip";
+import BuyBoxStatistics from "./BuyBoxStatistics";
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -66,8 +73,6 @@ const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
     marginLeft: theme.spacing(1),
   },
 }));
-
-const StyledAccordionDetails = styled(AccordionDetails)(({ theme }) => ({}));
 
 type BuyboxItemProps = {
   buybox: BuyBox;
@@ -143,21 +148,24 @@ const BuyboxItem = (props: BuyboxItemProps) => {
       dispatch(
         analysisApi.util.invalidateTags(["BuyBoxLeads", "BuyBoxLeadsCount"]),
       );
-      const patchCollection = dispatch(
-        buyBoxApi.util.updateQueryData(
-          "getBuyBoxes",
-          "",
-          (buyBoxes: BuyBox[]) => {
-            const updatedBuyBox = buyBoxes.find((buybox) =>
-              buybox.id === props.buybox.id
-            );
-            if (updatedBuyBox) {
-              updatedBuyBox.execute_date = new Date();
-            }
-            return buyBoxes;
-          },
-        ),
+      dispatch(
+        buyBoxApi.util.invalidateTags(["BuyBox"]),
       );
+      // const patchCollection = dispatch(
+      //   buyBoxApi.util.updateQueryData(
+      //     "getBuyBoxes",
+      //     "",
+      //     (buyBoxes: BuyBox[]) => {
+      //       const updatedBuyBox = buyBoxes.find((buybox) =>
+      //         buybox.id === props.buybox.id
+      //       );
+      //       if (updatedBuyBox) {
+      //         updatedBuyBox.execute_date = new Date();
+      //       }
+      //       return buyBoxes;
+      //     },
+      //   ),
+      // );
       enqueueSnackbar(`Analysis Complete`, {
         variant: "success",
       });
@@ -194,6 +202,11 @@ const BuyboxItem = (props: BuyboxItemProps) => {
 
   const expanded = props.buyboxId === props.buybox.id;
 
+  const [value, setValue] = useState(0);
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setValue(newValue);
+  };
+
   return (
     <>
       <StyledAccordion
@@ -211,10 +224,23 @@ const BuyboxItem = (props: BuyboxItemProps) => {
                 {props.buybox.data.buybox_name}
               </Typography>
               {!running && props.buybox?.execute_date && (
-                <div className="flex items-center gap-x-4">
-                  <Typography className="text-gray-500">
-                    updated {timeSince(props?.buybox?.execute_date)}
-                  </Typography>
+                <div className="flex gap-x-4">
+                  <div className="flex items-center gap-x-4">
+                    <Typography className="text-gray-500">
+                      updated {timeSince(props?.buybox?.execute_date)}
+                    </Typography>
+                  </div>
+                  {props.buybox?.new_deals > 0 && (
+                    <Tooltip
+                      title={`New leads since ${
+                        timeSince(props?.buybox?.execute_date)
+                      }`}
+                    >
+                      <div className="flex bg-secondary px-2 py-[0.2rem] rounded-3xl font-poppins font-semibold text-white text-xs ">
+                        {props.buybox?.new_deals} new leads
+                      </div>
+                    </Tooltip>
+                  )}
                 </div>
               )}
             </div>
@@ -293,19 +319,43 @@ const BuyboxItem = (props: BuyboxItemProps) => {
             </div>
           </div>
         </StyledAccordionSummary>
-        <StyledAccordionDetails>
-          <BuyBoxLeads
-            buybox={props.buybox}
-            open={expanded}
-            setPage={handleChangePagination}
-            page={props.page}
-            pageSize={props.pageSize}
-          />
-        </StyledAccordionDetails>
+        <AccordionDetails>
+          <div className="bg-white rounded-lg h-full w-full">
+            <Tabs
+              value={value}
+              onChange={handleTabChange}
+              aria-label="icon label tabs example"
+              className="w-full"
+              centered
+            >
+              <Tab
+                icon={<BallotIcon />}
+                iconPosition="start"
+                label="Leads"
+                className=""
+              />
+              <Tab
+                icon={<InsightsIcon />}
+                iconPosition="start"
+                label="Insights"
+              />
+            </Tabs>
+            {value === 0 && (
+              <BuyBoxLeads
+                buybox={props.buybox}
+                open={expanded}
+                setPage={handleChangePagination}
+                page={props.page}
+                pageSize={props.pageSize}
+              />
+            )}
+            {value === 1 && <BuyBoxStatistics />}
+          </div>
+        </AccordionDetails>
       </StyledAccordion>
       <ConfirmDialog
         title="Delete BuyBox"
-        description={`Are you sure you want to delete ${props.buybox?.name} BuyBox?`}
+        description={`Are you sure you want to delete "${props.buybox?.name}"?`}
         open={dialogOpen}
         setOpen={setDialogOpen}
         onConfirm={handleDelete}

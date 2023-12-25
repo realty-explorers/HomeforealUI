@@ -15,16 +15,23 @@ import { clusterLayer } from "./MapComponents/Layers/layers";
 import MapControlPanel from "./MapControlPanel/MapControlPanel";
 import { FeatureCollection, Geometry } from "@turf/turf";
 import mapboxgl from "mapbox-gl";
-import { locationApiEndpoints } from "@/store/services/locationApiService";
+import {
+  locationApi,
+  locationApiEndpoints,
+} from "@/store/services/locationApiService";
 import {
   propertiesApiEndpoints,
   useLazyGetPropertyQuery,
 } from "@/store/services/propertiesApiService";
 import { useDispatch, useSelector } from "react-redux";
-import { selectLocation } from "@/store/slices/locationSlice";
+import { selectLocation, setSuggestion } from "@/store/slices/locationSlice";
 import PropertyPreview from "@/models/propertyPreview";
 import CardsPanel from "./MapComponents/CardsPanel/CardsPanel";
-import { selectFilter, setPropertyTypes } from "@/store/slices/filterSlice";
+import {
+  selectFilter,
+  setBuybox,
+  setPropertyTypes,
+} from "@/store/slices/filterSlice";
 import {
   selectProperties,
   setRentalCalculatedProperty,
@@ -63,6 +70,7 @@ import { skipToken } from "@reduxjs/toolkit/query";
 import { useSearchParams } from "next/navigation";
 import { useSnackbar } from "notistack";
 import { setMapLoading } from "@/store/slices/mapSlice";
+import styles from "./Map.module.scss";
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
@@ -312,6 +320,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     //TODO: check auth
     if (selectedBuyBoxId && selectedPropertyId) {
       selectPropertyId(selectedBuyBoxId, selectedPropertyId);
+    } else {
+      dispatch(setSelectedPropertyPreview(null));
+      mapRef.current?.setPitch(0);
+      dispatch(locationApi.util.invalidateTags(["Suggestion", "LocationData"]));
+      dispatch(setSuggestion(null));
     }
   }, []);
 
@@ -556,8 +569,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         initialViewState={INITIAL_VIEW_STATE}
         {...viewState}
       >
-        <FullscreenControl />
-        <NavigationControl visualizePitch={true} />
+        <FullscreenControl style={{ display: "var(--controls-display)" }} />
+        <NavigationControl
+          visualizePitch={true}
+          style={{ display: "var(--controls-display)" }}
+        />
         <LoadingSpinner
           loading={propertiesState.isFetching || locationState.isFetching}
         />
@@ -568,7 +584,9 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           selectedProperty={selectedPropertyPreview}
         />
 
-        <CardsPanel open={Boolean(propertiesState.data)} />
+        <CardsPanel
+          open={Boolean(propertiesState.data)}
+        />
         <PropertyLocationBoundsSource
           show={!selecting && Boolean(selectedPropertyPreview)}
           data={propertyBoundsData}

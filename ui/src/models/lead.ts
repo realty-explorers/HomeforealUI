@@ -26,7 +26,7 @@ type Lead = {
   rental_comps_price: string;
   cap_rate: string;
   noi: string;
-  primary_image: any[]; // You can specify a more specific type for primary_image if needed
+  image: any[]; // You can specify a more specific type for primary_image if needed
   images: any[]; // You can specify a more specific type for images if needed
   sales_status: string;
   sales_listing_price: number;
@@ -54,6 +54,7 @@ type Lead = {
   full_bathrooms: number;
   half_bathrooms: number;
   total_bathrooms: number;
+  analysis_status?: string;
 };
 
 export default Lead;

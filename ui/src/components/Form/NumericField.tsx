@@ -27,6 +27,7 @@ const NumericField = forwardRef<NumericFormatProps, CustomProps>(
             });
           }}
           thousandSeparator={props.formatLabelAsNumber}
+          allowNegative={true}
           min={props.min}
           max={props.max}
           valueIsNumericString

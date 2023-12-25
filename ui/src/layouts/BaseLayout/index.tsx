@@ -1,6 +1,6 @@
-import { FC, ReactNode } from 'react';
-import PropTypes from 'prop-types';
-import { Box } from '@mui/material';
+import { FC, ReactNode } from "react";
+import PropTypes from "prop-types";
+import { Box } from "@mui/material";
 
 interface BaseLayoutProps {
   children?: ReactNode;
@@ -8,20 +8,14 @@ interface BaseLayoutProps {
 
 const BaseLayout: FC<BaseLayoutProps> = ({ children }) => {
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        flex: 1,
-        height: '100%'
-      }}
-    >
+    <div className="flex flex-1 h-[100dvh]">
       {children}
-    </Box>
+    </div>
   );
 };
 
 BaseLayout.propTypes = {
-  children: PropTypes.node
+  children: PropTypes.node,
 };
 
 export default BaseLayout;

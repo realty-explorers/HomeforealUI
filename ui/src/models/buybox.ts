@@ -6,6 +6,8 @@ interface BuyBox {
   name: string;
   data: buyboxSchemaType;
   permissions: string[];
+  total_deals?: number;
+  new_deals?: number;
 }
 
 export default BuyBox;

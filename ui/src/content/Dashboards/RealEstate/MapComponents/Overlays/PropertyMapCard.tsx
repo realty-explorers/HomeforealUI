@@ -58,7 +58,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   const defaultImage =
     "/static/images/placeholders/covers/house_placeholder.jpg";
   const [cardImage, setCardImage] = useState(
-    props.property?.primary_image || defaultImage,
+    props.property?.image || defaultImage,
   );
 
   const showDistance = () => {
@@ -76,11 +76,11 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
 
   const arvPercentage = calculateArvPercentage(
     props.property.arv_price,
-    props.property.sales_listing_price,
+    props.property.listing_price,
   );
   const compsPercentage = calculateArvPercentage(
     props.property.sales_comps_price,
-    props.property.sales_listing_price,
+    props.property.listing_price,
   );
   const arvDiscount = `ARV ↓${arvPercentage.toFixed()}%`;
   const compsDiscount = `Comps ↓${compsPercentage.toFixed()}%`;
@@ -143,7 +143,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
         <div className="flex items-center mt-2 w-full">
           <LocalOfferIcon fontSize="small" />
           <Typography className="text-xs ml-2 font-poppins text-center">
-            {priceFormatter(props.property?.sales_listing_price)}
+            {priceFormatter(props.property?.listing_price)}
           </Typography>
         </div>
 

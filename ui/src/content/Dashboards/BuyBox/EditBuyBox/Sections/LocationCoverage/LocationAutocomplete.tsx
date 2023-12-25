@@ -2,6 +2,7 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import {
   Box,
+  Chip,
   CircularProgress,
   debounce,
   Grid,
@@ -21,30 +22,36 @@ import {
   useLazyGetLocationSuggestionQuery,
 } from "@/store/services/locationApiService";
 import { borderRadius, styled } from "@mui/system";
-import styles from "./AutoComplete.module.scss";
-import locations from "./locations.json";
 import Fuse from "fuse.js";
 import { useDispatch } from "react-redux";
 import { setSelectedPropertyPreview } from "@/store/slices/propertiesSlice";
 import clsx from "clsx";
 
+interface TargetLocation {
+  "display": string;
+  "type": string;
+  "state": string;
+  "city": string;
+  "neighborhood": string;
+  "zipCode": string;
+}
+
 const SuggestionsContainer = (props) => {
   return (
     <div
       {...props}
-      className={styles.suggestionsContainer}
+      className="shadow rounded-xl mt-4"
     >
     </div>
   );
 };
 
 function StyledInput({ searching, params, value }) {
-  const dispatch = useDispatch();
   return (
     <form
       id="search-bar"
       className={clsx([
-        "flex items-center bg-white rounded-3xl px-4 py-0  font-poppins shadow-xl border-2 border-transparent focus-within:border-[rgba(155,81,224,0.5)] hover:border-[rgba(155,81,224,0.5)] transition-all",
+        "ring-1 ring-[rgba(155,81,224,0.5)] hover:ring-0 flex items-center bg-white rounded-3xl px-4 py-0  font-poppins border-2 border-transparent focus-within:border-[rgba(155,81,224,0.5)] focus-within:ring-0 hover:border-[rgba(155,81,224,0.5)] transition-all",
         !value && "ring-4",
       ])}
     >
@@ -57,37 +64,31 @@ function StyledInput({ searching, params, value }) {
             <InputAdornment position="start">
               <IconButton
                 disabled={searching}
-                onClick={() => {
-                  dispatch(setSelectedPropertyPreview(null));
-                }}
               >
-                {searching
-                  ? (
+                {searching &&
+                  (
                     <CircularProgress
                       size={24}
                     />
-                  )
-                  : <SearchTwoToneIcon htmlColor="#70757a" />}
+                  )}
               </IconButton>
             </InputAdornment>
           </div>
         }
-        // }}
         placeholder="Search Locations"
-        style={{ padding: "0.2rem 0rem" }}
+        style={{ padding: "0.5rem 0rem" }}
         className="font-poppins text-lg"
       />
     </form>
   );
 }
 
-type AutocompleteInputProps = {
-  // setValue: UseFormSetValue<any>;
-  setLocation: (location: LocationSuggestion) => void;
-  location: LocationSuggestion;
+type LocationAutocompleteProps = {
+  setLocations: (locations: LocationSuggestion[]) => void;
+  locations: LocationSuggestion[];
 };
-const AutocompleteInput: React.FC<AutocompleteInputProps> = (
-  props: AutocompleteInputProps,
+const LocationAutocomplete: React.FC<LocationAutocompleteProps> = (
+  props: LocationAutocompleteProps,
 ) => {
   const [searchTerm, setSearchTerm] = useState("");
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 500);
@@ -104,7 +105,6 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
             searchTerm,
             true,
           ).unwrap();
-          console.log(response);
           const allowedTypes = ["city", "state", "neighborhood", "postal_code"];
           const allowedStates = ["FL", "AL"];
           const relevantResultOptions = response.filter((option) =>
@@ -120,7 +120,7 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
             (error.response.status === 400 || error.response.status === 401)
           ) {
             alert("Unauthorized");
-            signOut();
+            // signOut();
           } else alert(error);
         }
       }, 400),
@@ -133,18 +133,21 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
     }
   };
 
+  const [locations, setLocations] = useState<LocationSuggestion[] | []>([]);
+
   return (
     <Autocomplete
-      value={props.location || null}
-      blurOnSelect
+      selectOnFocus
+      handleHomeEndKeys
       clearOnBlur
-      clearOnEscape
-      filterOptions={(x) => x}
-      onChange={(event: any, newValue: LocationSuggestion | null) => {
-        setOptions(newValue ? [newValue, ...options] : options);
-        props.setLocation(newValue);
+      multiple
+      isOptionEqualToValue={(option, value) => option.display === value.display}
+      value={props.locations || []}
+      // filterOptions={(x) => x}
+      onChange={(event: any, newValue: LocationSuggestion[] | []) => {
+        props.setLocations(newValue);
       }}
-      options={options ?? []}
+      options={options}
       getOptionLabel={(option?: LocationSuggestion) => option.display ?? ""}
       onInputChange={handleInputChange}
       PaperComponent={(props) => <SuggestionsContainer {...props} />}
@@ -152,9 +155,24 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
         <StyledInput
           params={params}
           searching={searching || state.isFetching}
-          value={props.location?.display}
+          value={locations?.map((location) => location.display) || []}
         />
+        // <TextField
+        //   {...params}
+        //   label="Locations"
+        //   placeholder="Locations"
+        // />
       )}
+      renderTags={(value: readonly LocationSuggestion[], getTagProps) =>
+        value.map((option: LocationSuggestion, index: number) => (
+          <Chip
+            key={index}
+            // variant="outlined"
+            label={option.display}
+            style={{ marginRight: "0.5rem" }}
+            {...getTagProps({ index })}
+          />
+        ))}
       renderOption={(props, option) => {
         return (
           <li
@@ -168,9 +186,10 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
                 item
                 sx={{ width: "calc(100% - 44px)", wordWrap: "break-word" }}
               >
-                <Typography className={styles.suggestion}>
+                <Typography className="">
                   {option?.display}
                 </Typography>
+
                 <span className="text-gray-400 capitalize">
                   {option?.type}
                 </span>
@@ -183,4 +202,4 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
   );
 };
 
-export default AutocompleteInput;
+export default LocationAutocomplete;

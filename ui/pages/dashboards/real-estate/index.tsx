@@ -23,6 +23,7 @@ import Joyride from "react-joyride";
 import { selectMap } from "@/store/slices/mapSlice";
 import { map } from "lodash";
 import PageTourModal from "@/components/JoyRide/ToolTips/PageTourModal";
+import { ACTIONS, EVENTS } from "react-joyride";
 import { selectLocation } from "@/store/slices/locationSlice";
 
 const JoyRideNoSSR = dynamic(
@@ -36,11 +37,67 @@ const steps = [
     content:
       "Search for a location to get started. Search by zip code, neighborhood or city. Currently, we only support Alabama and Florida.",
     locale: { skip: <strong aria-label="skip">SKIP</strong> },
+    disableBeacon: true,
     styles: {
       spotlight: {
         borderRadius: "3rem",
         padding: 0,
         margin: 0,
+      },
+    },
+  },
+
+  {
+    target: "#buybox_combobox",
+    content:
+      "Select a buy box to get started. You can create a new buy box by visiting the buy box page.",
+    locale: { skip: <strong aria-label="skip">SKIP</strong> },
+    disableBeacon: true,
+    styles: {
+      spotlight: {
+        borderRadius: "1rem",
+        padding: 0,
+        margin: 0,
+      },
+    },
+  },
+
+  {
+    target: "#strategy_toggle",
+    content: "Select an investment strategy",
+    locale: { skip: <strong aria-label="skip">SKIP</strong> },
+    disableBeacon: true,
+    styles: {
+      spotlight: {
+        borderRadius: "1rem",
+        padding: 0,
+        margin: 0,
+      },
+    },
+  },
+
+  {
+    target: "#filters",
+    content: "Apply filters to narrow down your search.",
+    locale: { skip: <strong aria-label="skip">SKIP</strong> },
+    disableBeacon: true,
+    styles: {
+      spotlight: {
+        borderRadius: "1rem",
+        padding: 0,
+        margin: 0,
+      },
+    },
+  },
+
+  {
+    target: "#buybox-page",
+    content: "Build new buyboxes",
+    locale: { skip: <strong aria-label="skip">SKIP</strong> },
+    disableBeacon: true,
+    styles: {
+      spotlight: {
+        borderRadius: "1rem",
       },
     },
   },
@@ -58,6 +115,9 @@ const DashboardRealEstate = (props: any) => {
   } = useSelector(
     selectProperties,
   );
+  const [showGuide, setShowGuide] = useState(false);
+  const [stepIndex, setStepIndex] = useState(0);
+  const [step2ready, setStep2Ready] = useState(false);
 
   const { suggestion } = useSelector(selectLocation);
   const openMoreDetails = selectedPropertyPreview;
@@ -79,6 +139,13 @@ const DashboardRealEstate = (props: any) => {
   const { mapLoading } = useSelector(selectMap);
 
   useEffect(() => {
+    const tourDelay = setTimeout(() => {
+      setShowGuide(true);
+    }, 1000);
+    return () => clearTimeout(tourDelay);
+  });
+
+  useEffect(() => {
     if (typeof window !== "undefined" && window.localStorage) {
       const tourValue = localStorage.getItem("tour");
       if (!tourValue) {
@@ -92,14 +159,45 @@ const DashboardRealEstate = (props: any) => {
     }
   }, []);
 
+  const windowWidth = typeof window !== "undefined" ? window.innerWidth : 0;
+
   return (
-    <div className="flex w-full h-full relative overflow-hidden">
+    <div className="flex w-full h-full relative overflow-hidden" id="map">
       <JoyRideNoSSR
         tooltipComponent={(props) => <PageTourModal {...props} />}
         steps={steps}
+        continuous
         showProgress={true}
         showSkipButton={true}
-        run={!mapLoading && !suggestion && tour}
+        run={!mapLoading && tour && showGuide && windowWidth > 768}
+        callback={(data) => {
+          const { status, index, type, action } = data;
+          // console.log(
+          //   `Step ${index}, ${status} ${type}, ${stepIndex}, ${action}, ${typeof status}`,
+          // );
+          if (
+            index > 0 && type === EVENTS.STEP_AFTER && action === ACTIONS.NEXT
+          ) {
+            setStepIndex(index + 1);
+          }
+          if (stepIndex === 0 && step2ready) {
+            setStepIndex(1);
+          } else if (index === 0 && type === "step:after") {
+            if (suggestion) {
+              setStep2Ready(true);
+            }
+            setStepIndex(1);
+          } else if (index === 1 && type === "error:target_not_found") {
+            setShowGuide(false);
+            setStepIndex(1);
+            if (!suggestion) {
+              setTimeout(() => {
+                setShowGuide(true);
+                setStepIndex(1);
+              }, 1000);
+            }
+          }
+        }}
         styles={{
           options: {
             // arrowColor: "#eee",
@@ -108,6 +206,7 @@ const DashboardRealEstate = (props: any) => {
             textColor: "#000",
           },
         }}
+        stepIndex={stepIndex}
       />
       {openMoreDetails && (
         <>
@@ -180,4 +279,4 @@ DashboardRealEstate.getLayout = (page) => <SidebarLayout>{page}</SidebarLayout>;
 
 // export default withPageAuthRequired(DashboardRealEstate, { returnTo: '' });
 export default DashboardRealEstate;
-export const getServerSideProps = withPageAuthRequired();
+// export const getServerSideProps = withPageAuthRequired();

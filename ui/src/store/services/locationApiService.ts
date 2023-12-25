@@ -18,11 +18,14 @@ export const locationApi = createApi({
       return headers;
     },
   }),
+
+  tagTypes: ["Suggestion", "LocationData"],
   endpoints: (builder) => ({
     getLocationSuggestion: builder.query({
       // query: ({ searchTerm }) => ({ url: "suggest", params: { searchTerm } }),
       query: (searchTerm) => `suggest?searchTerm=${searchTerm}`,
       transformResponse: (response: any) => response,
+      providesTags: ["Suggestion"],
     }),
     getLocationData: builder.query({
       // query: ({ display, type, city, state }) => ({ url: "data", params: { display, type, city, state } }),
@@ -44,6 +47,7 @@ export const locationApi = createApi({
         // return `data?display=&type=${type}&city=${city}&state=${state}`;
       },
       transformResponse: (response: any) => response,
+      providesTags: ["LocationData"],
     }),
   }),
 });

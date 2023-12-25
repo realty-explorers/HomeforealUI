@@ -13,6 +13,12 @@
   --color-secondary: #9b51e0;
   --color-arv: #22c55e;
   --color-off-white: #f8f9fa;
+
+  --controls-display: none;
+
+  @media only screen and (min-width: 768px) {
+    --controls-display: block;
+  }
 }
 
 /* Map styles */

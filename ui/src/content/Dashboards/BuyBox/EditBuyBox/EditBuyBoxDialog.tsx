@@ -57,7 +57,7 @@ import {
 import clsx from "clsx";
 import GeneralSection from "./Sections/GeneralSection";
 import InvestmentStrategy from "./Sections/InvestmentStrategy";
-import LocationCoverage from "./Sections/LocationCoverage";
+import LocationCoverage from "./Sections/LocationCoverage/LocationCoverage";
 import AdjustComparable from "./Sections/AdjustComparable";
 import PropertyCriteria from "./Sections/PropertyCriteria";
 import {
@@ -314,10 +314,11 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     >
       <div className="w-full h-full grid grid-cols-[15rem_1fr]  gap-x-0 overflow-hidden">
         <div className="col-span-2 w-full flex justify-center items-center shadow">
-          <IconButton className="absolute top-0 right-0 w-8 h-8 rounded-3xl">
-            <HighlightOffOutlinedIcon
-              onClick={handleClose}
-            />
+          <IconButton
+            className="absolute top-0 right-0 w-8 h-8 rounded-3xl"
+            onClick={handleClose}
+          >
+            <HighlightOffOutlinedIcon />
           </IconButton>
           <DialogTitle
             className={clsx([
@@ -401,6 +402,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
                   watch={watch}
                   setValue={setValue}
                   getValues={getValues}
+                  errors={errors}
                 />
               )}
 

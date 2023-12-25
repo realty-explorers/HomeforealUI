@@ -5,43 +5,40 @@ import styles from "./LandingPage.module.scss";
 import PropertiesExample from "./PropertiesExample";
 import { TypeAnimation } from "react-type-animation";
 import Link from "next/link";
-import { Typography } from "@mui/material";
+import { Button, Typography } from "@mui/material";
 
 const HeroSection = () => {
   return (
-    <div className="max-w-[100%] mt-10">
-      <div className="flex wrap gap-0 justify-center">
-        <div className="flex flex-col justify-center w-[60rem] xl:w-[35rem]">
-          <div className="flex w-full  items-center gap-2">
-            <Typography className={styles.header_1}>
+    // <div className="max-w-[100%] h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 ">
+    <div className="max-w-[100%] h-full bg-[url('https://miro.medium.com/v2/resize:fit:10000/1*PK-uDYbGaV4WNtGCIZjOyQ.jpeg')] bg-cover bg-center lg:bg-none">
+      <div className="flex justify-center h-full backdrop-brightness-50 lg:backdrop-brightness-100 lg:px-8">
+        <div className="flex flex-col h-[100dvh] lg:pt-32 justify-center lg:justify-start pb-20 lg:pb-0 lg:items-center lg:px-16 lg:gap-y-8">
+          <div className="flex w-full items-center ">
+            <Typography
+              className={clsx([
+                "font-playfair text-[3rem] lg:text-[3.5rem] capitalize font-bold w-full  lg:text-left mb-4 text-white lg:text-black text-center",
+              ])}
+            >
               find untapped
-              <div className={styles.ball}>
+              <div className={clsx([styles.ball, "hidden lg:inline-flex"])}>
               </div>
               <br /> Investments
             </Typography>
           </div>
-          {/* <div className="flex w-full"> */}
-          {/*   <Typography className={styles.header_1}> */}
-          {/*     Investments */}
-          {/*   </Typography> */}
-          {/* </div> */}
 
-          <div className="flex mt-8">
-            <Typography className={styles.header_2}>
-              {/* Home for real is a platform that helps leading real estate agents */}
-              {/* find, match and analyze real estate. unlock hidden real estate */}
-              {/* opportunists */}
-              Discover Real Estate Opportunities with HomeForReal. <br />
-              HomeForReal is a platform <br /> for{"  "}
+          <div className="flex px-4 ">
+            <Typography className="font-poppins font-semibold lg:font-normal text-[1.5rem] lg:text-[2rem] text-white lg:text-black text-center lg:text-left">
+              Discover Real Estate Opportunities with Homeforeal.{" "}
+              <br />Let us do the work for you.<br />
               <TypeAnimation
                 sequence={[
-                  "Finding hidden Gems", // Types 'One'
+                  "Customize your deals", // Types 'One'
                   2000, // Waits 1s
-                  "Matching with Precision", // Deletes 'One' and types 'Two'
+                  "Save time", // Deletes 'One' and types 'Two'
                   2000, // Waits 2s
-                  "Analyzing with Insight", // Types 'Three' without deleting 'Two'
+                  "Analyze with Insight", // Types 'Three' without deleting 'Two'
                   2000, // Waits 2s
-                  "Unlocking Opportunities", // Types 'Three' without deleting 'Two'
+                  "Unlock Opportunities", // Types 'Three' without deleting 'Two'
                   2000, // Waits 2s
                   () => {
                     console.log("Sequence completed");
@@ -50,14 +47,14 @@ const HeroSection = () => {
                 wrapper="span"
                 cursor={true}
                 repeat={Infinity}
-                className="text-[2rem] underline text-primary"
+                className="text-[1.5rem] lg:text-[2rem] underline text-secondary "
               />
             </Typography>
           </div>
-          <div className="flex items-center mt-8">
-            <a
+          <div className="flex justify-center lg:justify-start absolute left-0 w-full bottom-8 lg:static">
+            <Button
               href="#contactUs"
-              className="rounded-3xl font-poppins capitalize bg-white text-black font-bold px-4 py-2 text-lg shadow hover:ring transition-all"
+              className="rounded-3xl font-poppins capitalize bg-white text-black font-bold px-4 py-2 text-lg shadow hover:ring transition-all hidden lg:flex"
               onClick={(e) => {
                 e.preventDefault();
                 document.querySelector("#contactUs").scrollIntoView({
@@ -65,41 +62,23 @@ const HeroSection = () => {
                 });
               }}
             >
-              {/* <ThemedButton text="Chat With Us" /> */}
               Chat With Us
-            </a>
-            {/* <div className={`${styles.findOpportunitiesDiv}`}> */}
-            <div>
-              <div>
-                <Link
-                  className={clsx([
-                    // styles.cardInfoValue,
-                    "text-white bg-black px-4 py-2 rounded-3xl font-poppins font-bold capitalize mx-4 text-lg hover:ring transition-all no-underline",
-                  ])}
-                  href="/dashboards/real-estate"
-                >
-                  Get Started
-                </Link>
-              </div>
-              {/* <div className="flex items-center"> */}
-              {/*   <svg */}
-              {/*     width="34" */}
-              {/*     height="9" */}
-              {/*     viewBox="0 0 34 9" */}
-              {/*     fill="none" */}
-              {/*     xmlns="http://www.w3.org/2000/svg" */}
-              {/*   > */}
-              {/*     <path */}
-              {/*       d="M33.3536 4.85355C33.5488 4.65829 33.5488 4.34171 33.3536 4.14645L30.1716 0.964466C29.9763 0.769204 29.6597 0.769204 29.4645 0.964466C29.2692 1.15973 29.2692 1.47631 29.4645 1.67157L32.2929 4.5L29.4645 7.32843C29.2692 7.52369 29.2692 7.84027 29.4645 8.03553C29.6597 8.2308 29.9763 8.2308 30.1716 8.03553L33.3536 4.85355ZM0 5H33V4H0V5Z" */}
-              {/*       fill="black" */}
-              {/*     /> */}
-              {/*   </svg> */}
-              {/* </div> */}
-            </div>
+            </Button>
+            <Button
+              className={clsx([
+                // styles.cardInfoValue,
+                "text-white bg-secondary lg:bg-black lg:hover:bg-black px-4 py-2 rounded-3xl font-poppins font-bold capitalize mx-4 text-lg hover:ring transition-all no-underline w-full lg:w-auto",
+              ])}
+              href="/dashboards/real-estate"
+            >
+              Get Started
+            </Button>
           </div>
         </div>
-        <div className="flex grow max-w-[50%] pl-16">
-          <PropertiesExample />
+        <div className="hidden lg:flex  max-w-[50%] h-full items-center">
+          <div className="flex h-3/4">
+            <PropertiesExample />
+          </div>
         </div>
       </div>
     </div>

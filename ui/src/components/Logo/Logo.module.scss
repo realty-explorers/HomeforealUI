@@ -1,5 +1,5 @@
 .logoText {
-  @apply font-poppins font-bold text-xl;
+  @apply font-poppins font-bold text-xl text-gray-500;
   &:hover {
     -webkit-animation: pulsate-fwd 0.5s ease-in-out both;
     animation: pulsate-fwd 0.5s ease-in-out both;

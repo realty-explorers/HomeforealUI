@@ -388,7 +388,9 @@ export const PureLightTheme = createTheme({
         },
         "*::-webkit-scrollbar-thumb": {
           borderRadius: "10px",
-          backgroundColor: "rgba(0,0,0,1)",
+          // backgroundColor: "rgba(0,0,0,0.3)",
+          backgroundColor: "darkgrey",
+          outline: "1px solid slategrey",
         },
         ".child-popover .MuiPaper-root .MuiList-root": {
           flexDirection: "column",
@@ -839,13 +841,9 @@ export const PureLightTheme = createTheme({
     MuiTabs: {
       styleOverrides: {
         root: {
-          height: 38,
-          minHeight: 38,
           overflow: "visible",
         },
         indicator: {
-          height: 38,
-          minHeight: 38,
           borderRadius: 6,
           border: "1px solid " + colors.primary.dark,
           boxShadow: "0px 2px 10px " + colors.primary.light,
@@ -859,8 +857,6 @@ export const PureLightTheme = createTheme({
       styleOverrides: {
         root: {
           padding: 0,
-          height: 38,
-          minHeight: 38,
           borderRadius: 6,
           transition: "color .2s",
           textTransform: "capitalize",
@@ -872,7 +868,7 @@ export const PureLightTheme = createTheme({
             marginRight: 4,
           },
           "&.Mui-selected, &.Mui-selected:hover": {
-            color: colors.alpha.white[100],
+            color: colors.primary.main,
             zIndex: 5,
           },
           "&:hover": {

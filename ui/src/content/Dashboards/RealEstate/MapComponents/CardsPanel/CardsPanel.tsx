@@ -21,12 +21,15 @@ import {
 import { useLazyGetPropertyQuery } from "@/store/services/propertiesApiService";
 import useProperty from "@/hooks/useProperty";
 import useHorizontalScroll from "@/hooks/useHorizontalScroll";
+import MobilePanel from "./MobilePanel";
 
 type CardsPanelProps = {
   open: boolean;
 };
 
-const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
+const CardsPanel: React.FC<CardsPanelProps> = (
+  { open }: CardsPanelProps,
+) => {
   const [cardsOpen, setCardsOpen] = useState(false);
   const listRef = useRef();
   // const scrollRef = useHorizontalScroll();
@@ -76,9 +79,9 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
       if (!validValue(a[fieldName]) && validValue(b[fieldName])) return 1;
       if (validValue(a[fieldName]) && !validValue(b[fieldName])) return -1;
       // if (a[fieldName] && b.arv_price) {
-      const arvPercentageA = (a[fieldName] - a.sales_listing_price) /
+      const arvPercentageA = (a[fieldName] - a.listing_price) /
         a[fieldName];
-      const arvPercentageB = (b[fieldName] - b.sales_listing_price) /
+      const arvPercentageB = (b[fieldName] - b.listing_price) /
         b[fieldName];
       return arvPercentageB - arvPercentageA;
       // }
@@ -165,61 +168,64 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   };
 
   return (
-    <div
-      id="cards_panel"
-      className={clsx([
-        "absolute bottom-0 w-full h-52 transition-[margin] duration-300",
-        !cardsOpen && "-mb-44",
-      ])}
-    >
+    <div className="">
       <div
+        id="cards_panel"
         className={clsx([
-          "relative flex w-full h-full",
+          "absolute bottom-0 w-full h-52 transition-[margin] duration-300 hidden md:flex",
+          !cardsOpen && "-mb-44",
         ])}
       >
-        {filteredProperties?.length > 0 && (
-          <IconButton
-            className="absolute top-0 left-1/2 -translate-y-full -translate-x-1/2 bg-white w-12 h-4 border border-black"
-            style={{ border: "1px dashed black" }}
-            onClick={() => setCardsOpen(!cardsOpen)}
-          >
-            <ExpandMoreIcon
-              className={clsx([
-                "transition-all",
-                cardsOpen ? "" : "rotate-180",
-              ])}
-            />
-          </IconButton>
-        )}
-
-        <IconButton onClick={scrollLeft}>
-          <ArrowCircleLeftSharpIcon />
-        </IconButton>
         <div
-          className="w-full h-full"
-          id="list-container"
+          className={clsx([
+            "relative flex w-full h-full",
+          ])}
         >
-          <AutoSizer>
-            {({ height, width }) => (
-              <FixedSizeList
-                // ref={listRef}
-                className="List"
-                height={height}
-                itemCount={filteredProperties?.length ?? 0}
-                itemSize={230}
-                layout="horizontal"
-                width={width}
-              >
-                {Column}
-              </FixedSizeList>
-            )}
-          </AutoSizer>
-        </div>
+          {filteredProperties?.length > 0 && (
+            <IconButton
+              className="absolute top-0 left-1/2 -translate-y-full -translate-x-1/2 bg-white w-12 h-4 border border-black"
+              style={{ border: "1px dashed black" }}
+              onClick={() => setCardsOpen(!cardsOpen)}
+            >
+              <ExpandMoreIcon
+                className={clsx([
+                  "transition-all",
+                  cardsOpen ? "" : "rotate-180",
+                ])}
+              />
+            </IconButton>
+          )}
 
-        <IconButton onClick={scrollRight}>
-          <ArrowCircleRightSharpIcon />
-        </IconButton>
+          <IconButton onClick={scrollLeft}>
+            <ArrowCircleLeftSharpIcon />
+          </IconButton>
+          <div
+            className="w-full h-full"
+            id="list-container"
+          >
+            <AutoSizer>
+              {({ height, width }) => (
+                <FixedSizeList
+                  // ref={listRef}
+                  className="List"
+                  height={height}
+                  itemCount={filteredProperties?.length ?? 0}
+                  itemSize={230}
+                  layout="horizontal"
+                  width={width}
+                >
+                  {Column}
+                </FixedSizeList>
+              )}
+            </AutoSizer>
+          </div>
+
+          <IconButton onClick={scrollRight}>
+            <ArrowCircleRightSharpIcon />
+          </IconButton>
+        </div>
       </div>
+      <MobilePanel />
     </div>
   );
 };

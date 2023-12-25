@@ -1,5 +1,13 @@
 import { sliderClasses } from "@mui/base";
-import { Checkbox, Slider, Switch, Tab, Tabs, Typography } from "@mui/material";
+import {
+  Button,
+  Checkbox,
+  Slider,
+  Switch,
+  Tab,
+  Tabs,
+  Typography,
+} from "@mui/material";
 import clsx from "clsx";
 import React, { useState } from "react";
 import {
@@ -18,31 +26,14 @@ import RangeField from "@/components/Form/RangeField";
 import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
 import { defaultSimilarityFields } from "@/schemas/defaults";
 import SwitchField from "@/components/Form/SwitchField";
+import ArticleIcon from "@mui/icons-material/Article";
+import { styled } from "@mui/system";
 
-type TabPanelProps = {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-};
-const TabPanel = (props: TabPanelProps) => {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}
-    >
-      {value === index && (
-        <div>
-          <Typography>{children}</Typography>
-        </div>
-      )}
-    </div>
-  );
-};
+const StyledTab = styled(Tab)(({ theme }) => ({
+  "&.Mui-selected, &.Mui-selected:hover": {
+    color: "white",
+  },
+}));
 
 const similarityTypes = ["green", "yellow", "orange", "red"];
 const similarityFields = [
@@ -112,6 +103,11 @@ const similarityFields = [
   },
 ];
 
+//bg-red-500
+//bg-orange-500
+//bg-yellow-500
+//bg-green-500
+
 type ComparablePreferencesProps = {
   register: UseFormRegister<buyboxSchemaType>;
   control: Control<buyboxSchemaType>;
@@ -127,6 +123,10 @@ const ComparablePreferences = (
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
   };
+
+  const handleUseTemplate = () => {
+  };
+
   return (
     <>
       <div className="col-span-2">
@@ -134,12 +134,45 @@ const ComparablePreferences = (
           value={tab}
           onChange={handleChange}
           centered
+          TabIndicatorProps={{
+            sx: {
+              // borderRadius: "10rem",
+              border: `0.2rem solid ${
+                tab === 0
+                  ? "green"
+                  : tab === 1
+                  ? "yellow"
+                  : tab === 2
+                  ? "orange"
+                  : "red"
+              }`,
+            },
+          }}
         >
-          <Tab label="Green" />
-          <Tab label="Yellow" />
-          <Tab label="Orange" />
-          <Tab label="Red" />
+          <StyledTab
+            label="Green"
+            className={clsx([tab === 0 && "bg-green-500 text-white"])}
+          />
+          <StyledTab
+            label="Yellow"
+            className={clsx([tab === 1 && "bg-yellow-500"])}
+          />
+          <StyledTab
+            label="Orange"
+            className={clsx([tab === 2 && "bg-orange-500"])}
+          />
+          <StyledTab
+            label="Red"
+            className={clsx([tab === 3 && "bg-red-500"])}
+          />
         </Tabs>
+        {/* <Button */}
+        {/*   startIcon={<ArticleIcon />} */}
+        {/*   className="bg-secondary text-white hover:ring-4 hover:bg-secondary px-4" */}
+        {/*   onClick={handleUseTemplate} */}
+        {/* > */}
+        {/*   Use Template */}
+        {/* </Button> */}
       </div>
       {similarityTypes.map((similarityType, index) => {
         return (

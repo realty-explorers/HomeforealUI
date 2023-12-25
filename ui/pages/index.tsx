@@ -32,7 +32,9 @@ function Overview() {
         <title>HomeFoReal App</title>
       </Head>
 
-      <NavBarComponent />
+      <div className="hidden lg:flex">
+        <NavBarComponent />
+      </div>
       {/* <div className="h-16" /> */}
       <Hero />
     </div>

@@ -61,7 +61,7 @@ import { useRouter } from "next/router";
 const filterFieldNames = [
   "arv_price",
   "sales_comps_price",
-  "sales_listing_price",
+  "listing_price",
   "building_area",
   "bedrooms",
   "total_bathrooms",
@@ -135,17 +135,20 @@ const MainControls: React.FC<MainControlsProps> = (
               });
             }
           } else {
+            const defaultBuyBox = data.find((buybox) =>
+              buybox.name === "General Buybox"
+            );
             router.push(
               {
                 pathname: router.pathname,
                 query: {
-                  buybox_id: data[0].id,
+                  buybox_id: defaultBuyBox.id,
                 },
               },
               undefined,
               { shallow: true },
             );
-            dispatch(setBuybox(data[0]));
+            dispatch(setBuybox(defaultBuyBox));
           }
         }
       } catch (error) {
@@ -203,7 +206,7 @@ const MainControls: React.FC<MainControlsProps> = (
         return false;
       }
       const percentage = propertyValue > 0
-        ? (propertyValue - property.sales_listing_price) / propertyValue * 100
+        ? (propertyValue - property.listing_price) / propertyValue * 100
         : 0;
 
       if (filterValue > percentage) {
@@ -220,8 +223,8 @@ const MainControls: React.FC<MainControlsProps> = (
     if (fieldName === "sales_comps_price") {
       return updatedFieldName === "sales_comps_price" ? updatedValue : comps;
     }
-    if (fieldName === "sales_listing_price") {
-      return updatedFieldName === "sales_listing_price" ? updatedValue : price;
+    if (fieldName === "listing_price") {
+      return updatedFieldName === "listing_price" ? updatedValue : price;
     }
     if (fieldName === "building_area") {
       return updatedFieldName === "building_area" ? updatedValue : area;
@@ -336,7 +339,12 @@ const MainControls: React.FC<MainControlsProps> = (
       {buyBoxesState.isFetching
         ? <div>loading...</div>
         : (buyBoxesState.data && (
-          <FormControl fullWidth size="small" className="mb-2">
+          <FormControl
+            fullWidth
+            size="small"
+            className="mb-2"
+            id="buybox_combobox"
+          >
             <InputLabel>BuyBox</InputLabel>
             <Select
               value={buybox || ""}
@@ -358,6 +366,7 @@ const MainControls: React.FC<MainControlsProps> = (
       <div className="flex w-full justify-center items-center mb-4">
         <ToggleButtonGroup
           color="primary"
+          id="strategy_toggle"
           value={strategy}
           exclusive
           onChange={handleChange}
@@ -394,160 +403,161 @@ const MainControls: React.FC<MainControlsProps> = (
           </ToggleButton>
         </ToggleButtonGroup>
       </div>
+      <div id="filters">
+        {strategy === "ARV"
+          ? (
+            <SliderField
+              fieldName="Min ARV Margin %"
+              tooltip="Percentage under estimated market ARV"
+            >
+              <SliderInput
+                inputProps={{
+                  title: "ARV Margin",
+                  name: "arvMargin",
+                  min: 0,
+                  max: 100,
+                  step: 1,
+                }}
+                value={arv}
+                // update={(value) => updateArv(value)}
+                update={(value) =>
+                  setValue(
+                    () => setArv(value),
+                    () => dispatch(setArvMargin(value)),
+                    value,
+                    "arv_price",
+                  )}
+              />
+            </SliderField>
+          )
+          : (
+            <SliderField
+              fieldName="Min Sales Comps Margin %"
+              tooltip="Percentage under market sales comps"
+            >
+              <SliderInput
+                inputProps={{
+                  title: "Comps Margin",
+                  name: "underComps",
+                  min: 0,
+                  max: 100,
+                  step: 1,
+                }}
+                value={comps}
+                update={(value) =>
+                  setValue(
+                    () => setComps(value),
+                    () => dispatch(setCompsMargin(value)),
+                    value,
+                    "sales_comps_price",
+                  )}
+              />
+            </SliderField>
+          )}
 
-      {strategy === "ARV"
-        ? (
-          <SliderField
-            fieldName="Min ARV Margin %"
-            tooltip="Percentage under estimated market ARV"
-          >
-            <SliderInput
-              inputProps={{
-                title: "ARV Margin",
-                name: "arvMargin",
-                min: 0,
-                max: 100,
-                step: 1,
-              }}
-              value={arv}
-              // update={(value) => updateArv(value)}
-              update={(value) =>
-                setValue(
-                  () => setArv(value),
-                  () => dispatch(setArvMargin(value)),
-                  value,
-                  "arv_price",
-                )}
-            />
-          </SliderField>
-        )
-        : (
-          <SliderField
-            fieldName="Min Sales Comps Margin %"
-            tooltip="Percentage under market sales comps"
-          >
-            <SliderInput
-              inputProps={{
-                title: "Comps Margin",
-                name: "underComps",
-                min: 0,
-                max: 100,
-                step: 1,
-              }}
-              value={comps}
-              update={(value) =>
-                setValue(
-                  () => setComps(value),
-                  () => dispatch(setCompsMargin(value)),
-                  value,
-                  "sales_comps_price",
-                )}
-            />
-          </SliderField>
-        )}
+        <SliderField fieldName="Listing Price">
+          <SliderRangeInputV2
+            inputProps={{
+              title: "Listing Price",
+              name: "listingPrice",
+              min: 0,
+              max: 60,
+              step: 1,
+            }}
+            value={price}
+            format={priceFormatter}
+            updateValue={(value) =>
+              setValue(
+                () => setPrice(value),
+                () => {
+                  dispatch(setMinListingPrice(value[0]));
+                  dispatch(setMaxListingPrice(value[1]));
+                },
+                value,
+                "listing_price",
+              )}
+            scale={{ scale: priceScale, reverseScale: priceReverseScale }}
+          />
+        </SliderField>
 
-      <SliderField fieldName="Listing Price">
-        <SliderRangeInputV2
-          inputProps={{
-            title: "Listing Price",
-            name: "listingPrice",
-            min: 0,
-            max: 60,
-            step: 1,
-          }}
-          value={price}
-          format={priceFormatter}
-          updateValue={(value) =>
-            setValue(
-              () => setPrice(value),
-              () => {
-                dispatch(setMinListingPrice(value[0]));
-                dispatch(setMaxListingPrice(value[1]));
-              },
-              value,
-              "sales_listing_price",
-            )}
-          scale={{ scale: priceScale, reverseScale: priceReverseScale }}
-        />
-      </SliderField>
-
-      <SliderField fieldName="Baths">
-        <SliderRangeInputV2
-          inputProps={{
-            title: "Bathrooms",
-            name: "baths",
-            min: 1,
-            max: 9,
-            step: 1,
-          }}
-          value={baths}
-          updateValue={(value) =>
-            setValue(
-              () => setBaths(value),
-              () => {
-                dispatch(setMinBaths(value[0]));
-                dispatch(setMaxBaths(value[1]));
-              },
-              value,
-              "total_bathrooms",
-            )}
-        />
-      </SliderField>
-      <SliderField fieldName="Beds">
-        <SliderRangeInputV2
-          inputProps={{
-            title: "Bedrooms",
-            name: "beds",
-            min: 1,
-            max: 9,
-            step: 1,
-          }}
-          value={beds}
-          updateValue={(value) =>
-            setValue(
-              () => setBeds(value),
-              () => {
-                dispatch(setMinBeds(value[0]));
-                dispatch(setMaxBeds(value[1]));
-              },
-              value,
-              "bedrooms",
-            )}
-          // updateMinValue={(value) => dispatch(setMinBeds(value))}
-          // updateMaxValue={(value) => dispatch(setMaxBeds(value))}
-        />
-      </SliderField>
-      <SliderField fieldName="Building Sqft">
-        <SliderRangeInputV2
-          inputProps={{
-            title: "Building Sqft",
-            name: "sqft",
-            min: 0,
-            max: 10000,
-            step: 50,
-          }}
-          // minValue={minArea}
-          // maxValue={maxArea}
-          value={area}
-          updateValue={(value) =>
-            setValue(
-              () => setArea(value),
-              () => {
-                dispatch(setMinSqft(value[0]));
-                dispatch(setMaxSqft(value[1]));
-              },
-              value,
-              "building_area",
-            )}
-          // updateMinValue={(value) => dispatch(setMinSqft(value))}
-          // updateMaxValue={(value) => dispatch(setMaxSqft(value))}
-          // scale={{ scale: priceScale, reverseScale: sqftScale }}
-        />
-      </SliderField>
-      {/* <PropertyTypeFilter */}
-      {/*   propertyTypes={propertyTypes} */}
-      {/*   updateTypes={(value) => dispatch(setPropertyTypes(value))} */}
-      {/* /> */}
+        <SliderField fieldName="Baths">
+          <SliderRangeInputV2
+            inputProps={{
+              title: "Bathrooms",
+              name: "baths",
+              min: 1,
+              max: 9,
+              step: 1,
+            }}
+            value={baths}
+            updateValue={(value) =>
+              setValue(
+                () => setBaths(value),
+                () => {
+                  dispatch(setMinBaths(value[0]));
+                  dispatch(setMaxBaths(value[1]));
+                },
+                value,
+                "total_bathrooms",
+              )}
+          />
+        </SliderField>
+        <SliderField fieldName="Beds">
+          <SliderRangeInputV2
+            inputProps={{
+              title: "Bedrooms",
+              name: "beds",
+              min: 1,
+              max: 9,
+              step: 1,
+            }}
+            value={beds}
+            updateValue={(value) =>
+              setValue(
+                () => setBeds(value),
+                () => {
+                  dispatch(setMinBeds(value[0]));
+                  dispatch(setMaxBeds(value[1]));
+                },
+                value,
+                "bedrooms",
+              )}
+            // updateMinValue={(value) => dispatch(setMinBeds(value))}
+            // updateMaxValue={(value) => dispatch(setMaxBeds(value))}
+          />
+        </SliderField>
+        <SliderField fieldName="Building Sqft">
+          <SliderRangeInputV2
+            inputProps={{
+              title: "Building Sqft",
+              name: "sqft",
+              min: 0,
+              max: 10000,
+              step: 50,
+            }}
+            // minValue={minArea}
+            // maxValue={maxArea}
+            value={area}
+            updateValue={(value) =>
+              setValue(
+                () => setArea(value),
+                () => {
+                  dispatch(setMinSqft(value[0]));
+                  dispatch(setMaxSqft(value[1]));
+                },
+                value,
+                "building_area",
+              )}
+            // updateMinValue={(value) => dispatch(setMinSqft(value))}
+            // updateMaxValue={(value) => dispatch(setMaxSqft(value))}
+            // scale={{ scale: priceScale, reverseScale: sqftScale }}
+          />
+        </SliderField>
+        {/* <PropertyTypeFilter */}
+        {/*   propertyTypes={propertyTypes} */}
+        {/*   updateTypes={(value) => dispatch(setPropertyTypes(value))} */}
+        {/* /> */}
+      </div>
     </div>
   );
 };

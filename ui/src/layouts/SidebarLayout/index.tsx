@@ -6,6 +6,8 @@ import PropTypes from "prop-types";
 
 import Sidebar from "./Sidebar";
 import Header from "./Header";
+import BottomNavigation from "./BottomNavigation";
+import Script from "next/script";
 
 const drawerWidth = 240;
 
@@ -38,12 +40,22 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
   const [open, setOpen] = useState<boolean>(false);
 
   return (
-    <div className="flex flex-col h-screen w-full">
-      {/* <Sidebar open={open} setOpen={setOpen} /> */}
+    <div className="flex flex-col h-[100dvh] w-full">
+      <Script src="https://www.googletagmanager.com/gtag/js?id=G-SP38P408N4" />
+      <Script id="google-analytics">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+ 
+          gtag('config', 'G-SP38P408N4');
+        `}
+      </Script>
       <Header open={open} setOpen={setOpen} />
-      <main className="flex flex-grow w-full">
+      <main className="flex w-full grow z-0">
         {children}
       </main>
+      <BottomNavigation />
     </div>
   );
 };

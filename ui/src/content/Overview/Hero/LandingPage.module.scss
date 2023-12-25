@@ -24,7 +24,6 @@
   -webkit-animation: puff-in-center 1s cubic-bezier(1, 0, 0, 1) both;
   animation: puff-in-center 1s cubic-bezier(1, 0, 0, 1) both;
   animation-delay: 0.3s;
-  display: inline-flex;
   width: 3.5rem;
   height: 3.5rem;
   border-radius: 50%;
@@ -43,17 +42,6 @@
   font-weight: 700;
   line-height: normal;
   text-transform: capitalize;
-}
-
-.header_2 {
-  color: #000;
-  @apply font-poppins;
-  font-size: 2rem;
-  font-style: normal;
-  font-weight: 100;
-  line-height: 159.5%; /* 3.19rem */
-  text-transform: capitalize;
-  text-align: left;
 }
 
 .cardInfoLabel {

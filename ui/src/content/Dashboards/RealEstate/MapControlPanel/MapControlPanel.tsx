@@ -55,10 +55,10 @@ const MapControlPanel = (props: MapControlPanelProps) => {
   };
 
   return (
-    <div className="absolute left-0 top-0 flex p-4 pointer-events-none">
-      <div className="flex flex-col">
+    <div className="absolute left-0 top-0 flex p-4 pointer-events-none w-full">
+      <div className="flex flex-col w-full">
         <div className="flex pointer-events-auto">
-          <div className="w-80">
+          <div className="w-full md:w-80 transition-all duration-500">
             <AutocompleteInput
               location={suggestion}
               setLocation={handleSetLocation}
@@ -80,7 +80,7 @@ const MapControlPanel = (props: MapControlPanelProps) => {
         <Collapse in={filtersOpen && suggestion}>
           <div
             className={clsx([
-              "p-10 bg-white/[.8] rounded-md mt-4 w-80 relative pointer-events-auto",
+              "hidden md:flex p-10 bg-white/[.8] rounded-md mt-4 w-80 relative pointer-events-auto",
             ])}
           >
             <MainControls />
