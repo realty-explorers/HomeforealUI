@@ -63,6 +63,7 @@ const defaultOppValues = {
 };
 
 const similaritySchema = z.object({
+  "active": z.boolean(),
   "Same Property Type": z.boolean(),
   "Same Neighborhood": z.boolean(),
   "Bedrooms": rangeSchema.default([false, [0, 100]]),
@@ -77,6 +78,7 @@ const similaritySchema = z.object({
 });
 
 const defaultSimilarityValues = {
+  "active": true,
   "Same Property Type": false,
   "Same Neighborhood": true,
   "Bedrooms": [false, [
@@ -116,24 +118,24 @@ const similarityFullSchema = z.object({
 });
 
 const defaultSimilarityFullValues = {
-  "red": defaultSimilarityValues,
-  "orange": defaultSimilarityValues,
-  "yellow": defaultSimilarityValues,
   "green": defaultSimilarityValues,
+  "yellow": defaultSimilarityValues,
+  "orange": defaultSimilarityValues,
+  "red": defaultSimilarityValues,
 };
 
 const similarityWeightsSchema = z.object({
-  "red": z.number(),
-  "orange": z.number(),
-  "yellow": z.number(),
   "green": z.number(),
+  "yellow": z.number(),
+  "orange": z.number(),
+  "red": z.number(),
 });
 
 const defaultSimilarityWeights = {
-  "red": 0.1,
-  "orange": 0.3,
-  "yellow": 0.8,
   "green": 1,
+  "yellow": 0.8,
+  "orange": 0.3,
+  "red": 0.1,
 };
 
 const locationSchema = z.object({

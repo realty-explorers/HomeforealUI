@@ -27,6 +27,7 @@ import Fuse from "fuse.js";
 import { useDispatch } from "react-redux";
 import { setSelectedPropertyPreview } from "@/store/slices/propertiesSlice";
 import clsx from "clsx";
+import { redirect } from "next/navigation";
 
 const SuggestionsContainer = (props) => {
   return (
@@ -64,6 +65,7 @@ function StyledInput({ searching, params, value }) {
                 {searching
                   ? (
                     <CircularProgress
+                      className="text-secondary"
                       size={24}
                     />
                   )
@@ -120,8 +122,9 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
             (error.response.status === 400 || error.response.status === 401)
           ) {
             alert("Unauthorized");
-            signOut();
-          } else alert(error);
+            redirect("/api/auth/logout");
+            // signOut();
+          } else console.log(error);
         }
       }, 400),
     [],

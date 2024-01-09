@@ -211,12 +211,12 @@ const DashboardRealEstate = (props: any) => {
       {openMoreDetails && (
         <>
           <IconButton
-            className="absolute top-1/2 left-1/2 -translate-y-full -translate-x-1/2 bg-white w-1 h-10 shadow z-[1] animate-fadeDelayed opacity-0"
+            className="absolute top-1/2 left-full md:left-1/2 -translate-y-full -translate-x-full md:-translate-x-1/2 bg-white w-1 h-10 shadow z-[2] animate-fadeDelayed opacity-0 "
             onClick={handleHidePanel}
           >
             <ExpandMoreIcon
               className={clsx([
-                "transition-all",
+                "transition-all ",
                 openMoreDetails ? "rotate-90" : "-rotate-90",
               ])}
             />
@@ -232,19 +232,11 @@ const DashboardRealEstate = (props: any) => {
             }}
             className={clsx([
               styles.moreDetailsPanel,
-              "w-1/2 overflow-y-auto absolute h-full bg-off-white",
+              "w-full md:w-1/2 overflow-y-auto absolute h-full bg-off-white z-[1]",
             ])}
           >
             {(selectedPropertyState.isFetching || selecting)
-              ? (
-                selectedProperty ? <SkeletonSection /> : (
-                  <CircularProgress
-                    className={clsx([
-                      " h-40 w-40 z-[3] fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2",
-                    ])}
-                  />
-                )
-              )
+              ? <SkeletonSection />
               : (
                 <div
                   className={clsx([
@@ -265,8 +257,10 @@ const DashboardRealEstate = (props: any) => {
 
       <div
         className={clsx([
-          "h-full absolute left-1/2 bg-white transition-transform duration-500 overflow-hidden",
-          openMoreDetails ? "w-1/2 translate-x-0" : "w-full  -translate-x-1/2",
+          "h-full absolute left-0 md:left-1/2 bg-white transition-transform duration-500 overflow-hidden",
+          openMoreDetails
+            ? "w-full md:w-1/2 translate-x-0 md:translate-x-0"
+            : "w-full  translate-x-0 md:-translate-x-1/2",
         ])}
       >
         <Map />
@@ -279,4 +273,4 @@ DashboardRealEstate.getLayout = (page) => <SidebarLayout>{page}</SidebarLayout>;
 
 // export default withPageAuthRequired(DashboardRealEstate, { returnTo: '' });
 export default DashboardRealEstate;
-// export const getServerSideProps = withPageAuthRequired();
+export const getServerSideProps = withPageAuthRequired();

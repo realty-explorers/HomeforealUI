@@ -23,6 +23,7 @@ import {
 import { useLazyGetBuyBoxesQuery } from "@/store/services/buyboxApiService";
 import { useSnackbar } from "notistack";
 import BuyBox from "@/models/buybox";
+import FiltersDialog from "./FiltersDialog";
 
 type MapControlPanelProps = {};
 const MapControlPanel = (props: MapControlPanelProps) => {
@@ -30,7 +31,7 @@ const MapControlPanel = (props: MapControlPanelProps) => {
   const { suggestion } = useSelector(selectLocation);
   const { selectedPropertyPreview } = useSelector(selectProperties);
   // const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
-  const [filtersOpen, setFiltersOpen] = useState(true);
+  const [filtersOpen, setFiltersOpen] = useState(false);
   const { filteredProperties } = useSelector(selectFilter);
   const [notSelected, setNotSelected] = useState(true);
 
@@ -53,6 +54,8 @@ const MapControlPanel = (props: MapControlPanelProps) => {
     dispatch(setSelectedPropertyPreview(null));
     dispatch(setSuggestion(location));
   };
+
+  const windowWidth = typeof window !== "undefined" ? window.innerWidth : 0;
 
   return (
     <div className="absolute left-0 top-0 flex p-4 pointer-events-none w-full">
@@ -77,15 +80,19 @@ const MapControlPanel = (props: MapControlPanelProps) => {
           )}
         </div>
 
-        <Collapse in={filtersOpen && suggestion}>
-          <div
-            className={clsx([
-              "hidden md:flex p-10 bg-white/[.8] rounded-md mt-4 w-80 relative pointer-events-auto",
-            ])}
-          >
-            <MainControls />
-          </div>
-        </Collapse>
+        {windowWidth > 768
+          ? (
+            <Collapse in={filtersOpen && suggestion}>
+              <div
+                className={clsx([
+                  "hidden md:flex px-4 pt-10 bg-white/[.8] rounded-md mt-4 w-80 relative pointer-events-auto",
+                ])}
+              >
+                <MainControls />
+              </div>
+            </Collapse>
+          )
+          : <FiltersDialog open={filtersOpen} setOpen={setFiltersOpen} />}
       </div>
     </div>
   );

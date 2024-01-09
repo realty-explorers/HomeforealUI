@@ -35,8 +35,8 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
       >
         <div
           className={clsx([
-            "row-span-2 flex items-center justify-center cursor-pointer overflow-hidden rounded-lg",
-            props.photos.length == 1 ? "col-span-2" : "col-span-1",
+            "row-span-2 col-span-2 flex items-center justify-center cursor-pointer overflow-hidden rounded-lg",
+            props.photos.length == 1 ? "sm:col-span-2" : "sm:col-span-1",
           ])}
         >
           <Image
@@ -55,8 +55,8 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
         </div>
         <div
           className={clsx([
-            "h-full justify-center items-center cursor-pointer overflow-hidden rounded-lg",
-            props.photos.length < 2 ? "hidden" : "xl:flex",
+            "h-full justify-center items-center cursor-pointer overflow-hidden rounded-lg hidden",
+            props.photos.length < 2 ? "" : "sm:flex",
             props.photos.length == 2
               ? "row-span-2"
               : "row-span-2 xl:row-span-1",

@@ -23,7 +23,7 @@ const FactsCard = ({ facts, icon }: FactsCardProps) => {
   return (
     <div
       className={clsx([
-        "flex bg-white h-20 rounded-lg shadow",
+        "flex bg-white h-20 rounded-lg shadow  w-full sm:flex-[1_1_40%] ",
         styles.factsCard,
       ])}
     >
@@ -64,7 +64,8 @@ type PropertyFactsProps = {
 const PropertyFacts = (props: PropertyFactsProps) => {
   const [open, setOpen] = useState<boolean>(false);
   return (
-    <div className="grid grid-cols-2 grid-rows-2 gap-x-4 gap-y-4 p-4">
+    // <div className="grid grid-cols-2 grid-rows-2 gap-x-4 gap-y-4 p-4">
+    <div className="flex flex-wrap  gap-x-4 gap-y-4 p-4">
       <FactsCard
         icon={<BedroomParentIcon htmlColor="white" />}
         facts={[

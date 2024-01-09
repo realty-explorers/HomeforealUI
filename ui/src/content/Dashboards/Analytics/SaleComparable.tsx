@@ -61,7 +61,7 @@ const SaleComparable = (props: SaleComparableProps) => {
 
   return (props.property?.sales_comps?.data?.length > 0 &&
     (
-      <div className="p-4">
+      <div className="hidden md:block p-4 w-full">
         <Grid className={styles.tableWrapper}>
           <TableContainer>
             <Table>

@@ -22,18 +22,23 @@ const Buybox = () => {
   };
 
   return (
-    <div className="flex flex-col w-full items-stretch">
-      {/* <div className=""> */}
-      {/*   <BuyboxStatus /> */}
-      {/* </div> */}
-      <div className="h-full overflow-y-auto">
-        <BuyboxList editBuyBox={editBuyBox} />
+    <div className="flex w-full">
+      <div className="hidden md:flex flex-col w-full items-stretch">
+        {/* <div className=""> */}
+        {/*   <BuyboxStatus /> */}
+        {/* </div> */}
+        <div className="h-full overflow-y-auto">
+          <BuyboxList editBuyBox={editBuyBox} />
+        </div>
+        <EditBuyBoxDialog
+          buybox={selectedBuyBox}
+          showEditBuybox={showEditBuyBox}
+          setShowEditBuybox={setShowEditBuyBox}
+        />
       </div>
-      <EditBuyBoxDialog
-        buybox={selectedBuyBox}
-        showEditBuybox={showEditBuyBox}
-        setShowEditBuybox={setShowEditBuyBox}
-      />
+      <div className="flex md:hidden">
+        Please use a larger screen to view this page
+      </div>
     </div>
   );
 };

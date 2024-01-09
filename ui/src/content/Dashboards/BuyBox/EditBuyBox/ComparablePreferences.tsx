@@ -129,7 +129,33 @@ const ComparablePreferences = (
 
   return (
     <>
-      <div className="col-span-2">
+      <div className="col-span-2 relative">
+        {similarityTypes.map((similarityType, index) => (
+          index === tab && (
+            <div
+              key={index}
+              className={clsx([
+                " flex absolute top-0 left-0",
+              ])}
+            >
+              <Controller
+                name={`similarity.${similarityType}.active`}
+                control={control}
+                render={({ field: { value, ...field } }) => (
+                  <Checkbox
+                    {...field}
+                    checked={!!value}
+                  />
+                )}
+              />
+              <Typography className={styles.label}>
+                Active
+              </Typography>
+              {" "}
+            </div>
+          )
+        ))}
+
         <Tabs
           value={tab}
           onChange={handleChange}
@@ -166,6 +192,7 @@ const ComparablePreferences = (
             className={clsx([tab === 3 && "bg-red-500"])}
           />
         </Tabs>
+
         {/* <Button */}
         {/*   startIcon={<ArticleIcon />} */}
         {/*   className="bg-secondary text-white hover:ring-4 hover:bg-secondary px-4" */}
@@ -174,6 +201,7 @@ const ComparablePreferences = (
         {/*   Use Template */}
         {/* </Button> */}
       </div>
+
       {similarityTypes.map((similarityType, index) => {
         return (
           <React.Fragment key={index}>
@@ -194,6 +222,9 @@ const ComparablePreferences = (
                           <Switch
                             {...field}
                             checked={!!value}
+                            disabled={!watch(
+                              `similarity.${similarityType}.active`,
+                            )}
                           />
                         )}
                       />
@@ -214,7 +245,9 @@ const ComparablePreferences = (
                         <SwitchField
                           fieldName={`similarity.${similarityType}.${similarityField.fieldName}.0`}
                           control={control}
-                          // disabled={!watch(`${group.fieldName}`)}
+                          disabled={!watch(
+                            `similarity.${similarityType}.active`,
+                          )}
                         />
                         <Typography className={styles.label}>
                           {similarityField.fieldName}
@@ -234,7 +267,7 @@ const ComparablePreferences = (
                         getValues={getValues}
                         disabled={!watch(
                           `similarity.${similarityType}.${similarityField.fieldName}.0`,
-                        )}
+                        ) || !watch(`similarity.${similarityType}.active`)}
                         className={clsx([
                           index === tab ? "" : "hidden",
                         ])}
@@ -280,6 +313,9 @@ const ComparablePreferences = (
                     className={clsx([
                       index === tab ? "" : "hidden",
                     ])}
+                    disabled={!watch(
+                      `similarity.${similarityType}.active`,
+                    )}
                   />
                 </>
               )}

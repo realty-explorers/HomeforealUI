@@ -8,6 +8,8 @@ import {
 // import Lottie from "lottie-react";
 import mapLoadingAnimation from "@/static/animations/loading/mapLoadingAnimation.json";
 import clsx from "clsx";
+import Lottie from "lottie-react";
+import { Skeleton } from "@mui/material";
 
 type ImageProps = {
   src: string;
@@ -19,9 +21,8 @@ type ImageProps = {
 const Image = (
   { src, alt, defaultSrc, className, overrideStyles, ...imgProps }: ImageProps,
 ) => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [imgSrc, setImgSrc] = useState(src);
-  const [lock, setLock] = useState(true);
 
   useEffect(() => {
     setImgSrc(src);
@@ -38,7 +39,6 @@ const Image = (
 
   const handleEndLoad = (e: SyntheticEvent<HTMLImageElement, Event>) => {
     setLoading(false);
-    setLock(false);
   };
 
   return (
@@ -51,10 +51,7 @@ const Image = (
               !loading ? "hidden" : "flex",
             ])}
           >
-            {/* <Lottie */}
-            {/*   animationData={mapLoadingAnimation} */}
-            {/*   className="h-full aspect-square z-[3]" */}
-            {/* /> */}
+            <Skeleton variant="rectangular" width="100%" height="100%" />
           </div>
         )}
 

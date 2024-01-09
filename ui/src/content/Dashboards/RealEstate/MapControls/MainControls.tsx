@@ -332,7 +332,7 @@ const MainControls: React.FC<MainControlsProps> = (
   };
 
   return (
-    <div>
+    <div className="w-full">
       <div className="absolute top-2 right-4 font-poppins font-bold">
         {filteredProperties?.length} found
       </div>
@@ -403,7 +403,10 @@ const MainControls: React.FC<MainControlsProps> = (
           </ToggleButton>
         </ToggleButtonGroup>
       </div>
-      <div id="filters">
+      <div
+        id="filters"
+        className=" pr-4 pl-2 mb-4 w-full overflow-y-auto overflow-x-hidden"
+      >
         {strategy === "ARV"
           ? (
             <SliderField

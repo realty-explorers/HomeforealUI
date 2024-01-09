@@ -52,7 +52,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
         `}
       </Script>
       <Header open={open} setOpen={setOpen} />
-      <main className="flex w-full grow z-0">
+      <main className="flex w-full grow z-0" id="main">
         {children}
       </main>
       <BottomNavigation />

@@ -43,8 +43,8 @@ const PropertiesExample = () => {
       </div>
       <div className="hidden xl:flex relative justify-center">
         <img
-          src="/static/images/placeholders/covers/homepageCard3.png"
-          className="w-full h-full"
+          src="/static/images/placeholders/covers/homepageCard3.jpg"
+          className="w-full h-full rounded"
         />
         <div className="bg-white opacity-90 rounded w-[80%] h-14 absolute bottom-8 flex justify-around items-center">
           <Typography

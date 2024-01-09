@@ -10,10 +10,12 @@ import { Button, Typography } from "@mui/material";
 const HeroSection = () => {
   return (
     // <div className="max-w-[100%] h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 ">
-    <div className="max-w-[100%] h-full bg-[url('https://miro.medium.com/v2/resize:fit:10000/1*PK-uDYbGaV4WNtGCIZjOyQ.jpeg')] bg-cover bg-center lg:bg-none">
+    // <div className="max-w-[100%] h-full bg-[url('https://as1.ftcdn.net/v2/jpg/06/40/37/12/1000_F_640371297_lHDESWb6jWtovBasI9PURspZa4IQ1IC6.jpg')] bg-cover bg-center lg:bg-none">
+    <div className="max-w-[100%] h-[100dvh] bg-[url('https://miro.medium.com/v2/resize:fit:10000/1*PK-uDYbGaV4WNtGCIZjOyQ.jpeg')] bg-cover bg-center lg:bg-none">
+      {/* <div className="max-w-[100%] h-full bg-[url('https://media.istockphoto.com/id/1352396871/photo/businessman-holding-investment-finance-chart-stock-market-business-and-exchange-financial.jpg?s=2048x2048&w=is&k=20&c=lqUotxGdXiJusZRDcdE0sTO6m_Gx_cfZL2SbxSTG2k4=')] bg-cover bg-center lg:bg-none"> */}
       <div className="flex justify-center h-full backdrop-brightness-50 lg:backdrop-brightness-100 lg:px-8">
-        <div className="flex flex-col h-[100dvh] lg:pt-32 justify-center lg:justify-start pb-20 lg:pb-0 lg:items-center lg:px-16 lg:gap-y-8">
-          <div className="flex w-full items-center ">
+        <div className="flex flex-col justify-center pb-20 lg:pb-0 lg:items-center lg:px-16 lg:gap-y-8">
+          <div className="flex w-full items-center z-[2]">
             <Typography
               className={clsx([
                 "font-playfair text-[3rem] lg:text-[3.5rem] capitalize font-bold w-full  lg:text-left mb-4 text-white lg:text-black text-center",
@@ -75,7 +77,7 @@ const HeroSection = () => {
             </Button>
           </div>
         </div>
-        <div className="hidden lg:flex  max-w-[50%] h-full items-center">
+        <div className="hidden lg:flex  max-w-[50%] items-center">
           <div className="flex h-3/4">
             <PropertiesExample />
           </div>

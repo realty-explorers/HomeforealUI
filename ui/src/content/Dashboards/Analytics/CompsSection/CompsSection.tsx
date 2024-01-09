@@ -63,7 +63,7 @@ const CompsSection = (
       <Button
         onClick={() => setFilterOpen(!filterOpen)}
         startIcon={<TuneIcon />}
-        className="text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl mt-2 px-4"
+        className="hidden md:flex text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl mt-2 px-4"
       >
         Filter Comps
       </Button>
@@ -75,7 +75,7 @@ const CompsSection = (
       />
 
       <Wrapper className={styles.cardsWrapper}>
-        <Grid item className="mb-8 sticky left-0 z-[1]">
+        <Grid item className="hidden md:flex mb-8 sticky left-0 z-[1]">
           {propertyCard}
         </Grid>
         {comps?.map((compsProperty, index) => (

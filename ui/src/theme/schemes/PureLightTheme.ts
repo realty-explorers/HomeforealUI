@@ -390,7 +390,7 @@ export const PureLightTheme = createTheme({
           borderRadius: "10px",
           // backgroundColor: "rgba(0,0,0,0.3)",
           backgroundColor: "darkgrey",
-          outline: "1px solid slategrey",
+          // outline: "1px solid slategrey",
         },
         ".child-popover .MuiPaper-root .MuiList-root": {
           flexDirection: "column",

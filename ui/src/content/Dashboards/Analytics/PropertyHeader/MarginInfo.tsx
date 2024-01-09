@@ -21,13 +21,16 @@ const MarginInfoChips = (
   { amount, percent, margin, color, name },
 ) => {
   return (
-    <div className="flex ml-12">
+    <div className="flex justify-center sm:ml-12 w-full sm:w-auto">
       <div
         className={clsx([
-          "rounded-lg flex items-center py-2  pr-12 pl-4 justify-center",
+          "rounded-lg flex flex-col items-center py-2  pr-12 pl-4 grow xs:grow-0",
           `bg-${color}-200`,
         ])}
       >
+        <Typography className="font-poppins font-semibold flex md:hidden">
+          {name}
+        </Typography>
         <Typography
           className={clsx([
             " font-poppins font-bold text-xl flex justify-center transition-all overflow-clip",
@@ -39,7 +42,7 @@ const MarginInfoChips = (
       </div>
       <div
         className={clsx([
-          "px-2 text-white rounded-lg -ml-8 py-2 flex flex-col items-center w-16",
+          "px-2 text-white rounded-lg -ml-8 py-2 flex flex-col items-center w-16 justify-center grow xs:grow-0",
           `bg-${color}-600`,
         ])}
       >
@@ -53,7 +56,7 @@ const MarginInfoChips = (
       </div>
       <div
         className={clsx([
-          " px-2 text-white rounded-lg ml-4 py-2 flex flex-col items-center",
+          " px-2 text-white rounded-lg ml-4 py-2 flex flex-col items-center justify-center grow xs:grow-0",
           `bg-${color}-500`,
         ])}
       >
@@ -79,8 +82,8 @@ const MarginInfo = (props: MarginInfoProps) => {
   const totalExpenses = initialInvestment + financingCosts;
   return (saleCalculatedProperty?.sales_comps?.data?.length > 0 &&
     (
-      <div className="grid grid-cols-[auto_1fr] grid-rows-2 gap-y-4 mt-4 items-center sticky top-0 z-[2] bg-off-white pb-4 px-4">
-        <Typography className="font-poppins text-2xl">
+      <div className="flex flex-col md:grid grid-cols-[auto_1fr] grid-rows-2 gap-y-4 mt-4 items-center md:sticky top-0 z-[2] bg-off-white pb-4 px-4">
+        <Typography className="hidden md:flex font-poppins text-2xl">
           Sale Comparable
         </Typography>
         <MarginInfoChips
@@ -97,10 +100,10 @@ const MarginInfo = (props: MarginInfoProps) => {
             totalExpenses,
           ).toFixed()}
           color="purple"
-          name="Under Comps"
+          name="Sale Comparable"
         />
 
-        <Typography className="font-poppins text-2xl">
+        <Typography className="hidden md:flex font-poppins text-2xl">
           Top 25th ARV
         </Typography>
 
@@ -119,7 +122,7 @@ const MarginInfo = (props: MarginInfoProps) => {
             totalExpenses,
           ).toFixed()}
           color="green"
-          name="Under ARV"
+          name="Top 25th ARV"
         />
       </div>
     ));

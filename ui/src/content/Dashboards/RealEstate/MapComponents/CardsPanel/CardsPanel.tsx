@@ -178,7 +178,7 @@ const CardsPanel: React.FC<CardsPanelProps> = (
       >
         <div
           className={clsx([
-            "relative flex w-full h-full",
+            "relative flex w-full h-full group",
           ])}
         >
           {filteredProperties?.length > 0 && (
@@ -196,8 +196,17 @@ const CardsPanel: React.FC<CardsPanelProps> = (
             </IconButton>
           )}
 
-          <IconButton onClick={scrollLeft}>
-            <ArrowCircleLeftSharpIcon />
+          <IconButton
+            onClick={scrollLeft}
+            className="opacity-0 group-hover:opacity-100 absolute left-4 top-0 translate-y-[150%] bg-white hover:bg-gray-300 transition-all rounded-[50%] z-[1]"
+            style={{ boxShadow: "0px 0px 5px rgba(0,0,0,0.75)" }}
+          >
+            <ExpandMoreIcon
+              className={clsx([
+                "transition-all rotate-90",
+              ])}
+            />
+            {/* <ArrowCircleLeftSharpIcon /> */}
           </IconButton>
           <div
             className="w-full h-full"
@@ -220,12 +229,22 @@ const CardsPanel: React.FC<CardsPanelProps> = (
             </AutoSizer>
           </div>
 
-          <IconButton onClick={scrollRight}>
-            <ArrowCircleRightSharpIcon />
+          <IconButton
+            onClick={scrollRight}
+            className="opacity-0 group-hover:opacity-100 absolute right-4 top-0 translate-y-[150%] bg-white hover:bg-gray-300 transition-all rounded-[50%] z-[1] "
+            style={{ boxShadow: "0px 0px 5px rgba(0,0,0,0.75)" }}
+          >
+            {/* <ArrowCircleRightSharpIcon /> */}
+
+            <ExpandMoreIcon
+              className={clsx([
+                "transition-all -rotate-90",
+              ])}
+            />
           </IconButton>
         </div>
       </div>
-      <MobilePanel />
+      <MobilePanel sortedProperties={sortedProperties} />
     </div>
   );
 };

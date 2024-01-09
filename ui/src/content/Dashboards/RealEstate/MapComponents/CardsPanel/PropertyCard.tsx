@@ -195,7 +195,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
         >
           <div
             className={clsx([
-              "flex  absolute top-1 left-1 z-[1] rounded-lg px-2 py-0.5 items-center",
+              "flex absolute top-1 left-1 z-[1] rounded-lg px-2 py-0.5 items-center",
               strategyMode === "ARV" ? "bg-arv" : "bg-secondary",
             ])}
           >
@@ -206,7 +206,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           </div>
         </Tooltip>
       )}
-      <div className="flex w-full h-1/3 rounded-t-x">
+      <div className="flex w-full h-1/3 md:h-1/3 rounded-t-x">
         <Image
           src={validateValue(cardImage, "string", "")}
           alt=""
@@ -214,7 +214,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           className="w-full h-full rounded-t-xl object-cover object-center aspect-[2] sm:aspect-[5/2] md:aspect-[auto]"
         />
       </div>
-      <div className="flex flex-col grow w-full px-4 pb-2 pt-2 md:pt-0 gap-y-2 md:gap-y-0">
+      <div className="flex flex-col h-2/3 md:h-2/3  w-full px-4 pb-2 pt-2 md:pt-0 gap-y-2 md:gap-y-0">
         <Chip
           label={props.property?.address}
           clickable
@@ -226,34 +226,34 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           <div className="font-poppins text-2xl text-secondary font-[900] text-left">
             {priceFormatter(props.property?.listing_price)}
           </div>
-          <div className="">
-            <Typography className="font-poppins text-[1rem] text-black text-left">
+          <div className="mt-2">
+            <Typography className="font-poppins text-[1rem] text-gray-800 text-left">
               {props.property?.address}
             </Typography>
           </div>
           <div className="grid grid-cols-[auto_1fr] mt-2 gap-x-6">
-            <Typography className="text-black text-lg font-semibold font-poppins">
+            <Typography className="text-black text-lg    font-poppins">
               Sales Comps:
             </Typography>
-            <Typography className="text-black text-lg font-semibold text-left font-poppins">
+            <Typography className="text-black text-lg  text-left font-poppins">
               {priceFormatter(props.property?.sales_comps_price)}
             </Typography>
 
-            <Typography className="text-left text-black text-lg font-semibold font-poppins">
+            <Typography className="text-left text-black text-lg  font-poppins">
               ARV:
             </Typography>
-            <Typography className="text-black text-lg font-semibold text-left font-poppins">
+            <Typography className="text-black text-lg  text-left font-poppins">
               {priceFormatter(props.property?.arv_price)}
             </Typography>
 
-            <Typography className="text-left text-black text-lg font-semibold font-poppins">
+            <Typography className="text-left text-black text-lg  font-poppins">
               Cap Rate:
             </Typography>
-            <Typography className="text-black text-lg font-semibold text-left font-poppins">
+            <Typography className="text-black text-lg  text-left font-poppins">
               {(numberStringUtil(props.property?.cap_rate)).toFixed(2)} %
             </Typography>
           </div>
-          <div className="w-full flex justify-around mt-2">
+          <div className="w-full flex justify-center gap-x-6 xs:gap-x-12 mt-2">
             <div className="flex text-gray-500 items-center">
               <BedIcon />
               <Typography className="text-gray-500">

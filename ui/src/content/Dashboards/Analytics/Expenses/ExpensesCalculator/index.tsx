@@ -66,7 +66,7 @@ const ExpensesCalculator = (props: ExpensesCalculatorProps) => {
   }, [props.property]);
 
   return (
-    <div className="p-4">
+    <div className="hidden md:flex p-4">
       <Grid
         className={`${analyticsStyles.blackBorderedSection} ${analyticsStyles.sectionContainer}`}
       >

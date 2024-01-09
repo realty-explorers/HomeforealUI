@@ -37,7 +37,7 @@ type SliderFieldProps = {
 
 const SliderField: React.FC<SliderFieldProps> = (props: SliderFieldProps) => {
   return (
-    <GridDiv container rowGap={1} marginBottom={2}>
+    <div className="flex flex-col px-2 gap-y-2">
       <div className="flex items-center">
         <Typography align="right" noWrap variant="h5">
           {props.fieldName}
@@ -55,10 +55,10 @@ const SliderField: React.FC<SliderFieldProps> = (props: SliderFieldProps) => {
           </Tooltip>
         )}
       </div>
-      <Grid item xs={12}>
+      <div className="flex w-full">
         {props.children}
-      </Grid>
-    </GridDiv>
+      </div>
+    </div>
   );
 };
 
