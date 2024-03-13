@@ -1,5 +1,5 @@
-"use client";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+'use client';
+import React, { useContext, useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Chip,
@@ -10,40 +10,34 @@ import {
   InputAdornment,
   InputBase,
   TextField,
-  Typography,
-} from "@mui/material";
-import Autocomplete from "@mui/material/Autocomplete";
-import LocationSuggestion from "@/models/location_suggestions";
-import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import { useDebounce } from "@/hooks/useDebounce";
+  Typography
+} from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import LocationSuggestion from '@/models/location_suggestions';
+import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import { useDebounce } from '@/hooks/useDebounce';
 import {
   useGetLocationSuggestionQuery,
-  useLazyGetLocationSuggestionQuery,
-} from "@/store/services/locationApiService";
-import { borderRadius, styled } from "@mui/system";
-import Fuse from "fuse.js";
-import { useDispatch } from "react-redux";
-import { setSelectedPropertyPreview } from "@/store/slices/propertiesSlice";
-import clsx from "clsx";
+  useLazyGetLocationSuggestionQuery
+} from '@/store/services/locationApiService';
+import { borderRadius, styled } from '@mui/system';
+import Fuse from 'fuse.js';
+import { useDispatch } from 'react-redux';
+import { setSelectedPropertyPreview } from '@/store/slices/propertiesSlice';
+import clsx from 'clsx';
 
 interface TargetLocation {
-  "display": string;
-  "type": string;
-  "state": string;
-  "city": string;
-  "neighborhood": string;
-  "zipCode": string;
+  display: string;
+  type: string;
+  state: string;
+  city: string;
+  neighborhood: string;
+  zipCode: string;
 }
 
 const SuggestionsContainer = (props) => {
-  return (
-    <div
-      {...props}
-      className="shadow rounded-xl mt-4"
-    >
-    </div>
-  );
+  return <div {...props} className="shadow rounded-xl mt-4"></div>;
 };
 
 function StyledInput({ searching, params, value }) {
@@ -51,8 +45,8 @@ function StyledInput({ searching, params, value }) {
     <form
       id="search-bar"
       className={clsx([
-        "ring-1 ring-[rgba(155,81,224,0.5)] hover:ring-0 flex items-center bg-white rounded-3xl px-4 py-0  font-poppins border-2 border-transparent focus-within:border-[rgba(155,81,224,0.5)] focus-within:ring-0 hover:border-[rgba(155,81,224,0.5)] transition-all",
-        !value && "ring-4",
+        'ring-1 ring-[rgba(155,81,224,0.5)] hover:ring-0 flex items-center bg-white rounded-3xl px-4 py-0  font-poppins border-2 border-transparent focus-within:border-[rgba(155,81,224,0.5)] focus-within:ring-0 hover:border-[rgba(155,81,224,0.5)] transition-all',
+        !value && 'ring-4'
       ])}
     >
       <InputBase
@@ -62,21 +56,14 @@ function StyledInput({ searching, params, value }) {
         endAdornment={
           <div className="absolute -right-4">
             <InputAdornment position="start">
-              <IconButton
-                disabled={searching}
-              >
-                {searching &&
-                  (
-                    <CircularProgress
-                      size={24}
-                    />
-                  )}
+              <IconButton disabled={searching}>
+                {searching && <CircularProgress size={24} />}
               </IconButton>
             </InputAdornment>
           </div>
         }
         placeholder="Search Locations"
-        style={{ padding: "0.5rem 0rem" }}
+        style={{ padding: '0.5rem 0rem' }}
         className="font-poppins text-lg"
       />
     </form>
@@ -88,9 +75,9 @@ type LocationAutocompleteProps = {
   locations: LocationSuggestion[];
 };
 const LocationAutocomplete: React.FC<LocationAutocompleteProps> = (
-  props: LocationAutocompleteProps,
+  props: LocationAutocompleteProps
 ) => {
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState('');
   const debouncedSearchTerm = useDebounce<string>(searchTerm, 500);
   // const { data } = useGetLocationSuggestionQuery(debouncedSearchTerm);
   const [getLocationSuggestions, state] = useLazyGetLocationSuggestionQuery();
@@ -103,13 +90,14 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = (
         try {
           const response = await getLocationSuggestions(
             searchTerm,
-            true,
+            true
           ).unwrap();
-          const allowedTypes = ["city", "state", "neighborhood", "postal_code"];
-          const allowedStates = ["FL", "AL"];
-          const relevantResultOptions = response.filter((option) =>
-            allowedTypes.includes(option.type) &&
-            allowedStates.includes(option.state)
+          const allowedTypes = ['city', 'state', 'neighborhood', 'postal_code'];
+          const allowedStates = ['FL', 'AL', 'IL', 'TX', 'OH'];
+          const relevantResultOptions = response.filter(
+            (option) =>
+              allowedTypes.includes(option.type) &&
+              allowedStates.includes(option.state)
           );
           setOptions([]);
           setOptions(relevantResultOptions);
@@ -119,12 +107,12 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = (
             error.response.status &&
             (error.response.status === 400 || error.response.status === 401)
           ) {
-            alert("Unauthorized");
+            alert('Unauthorized');
             // signOut();
           } else alert(error);
         }
       }, 400),
-    [],
+    []
   );
 
   const handleInputChange = (event, newInput) => {
@@ -148,7 +136,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = (
         props.setLocations(newValue);
       }}
       options={options}
-      getOptionLabel={(option?: LocationSuggestion) => option.display ?? ""}
+      getOptionLabel={(option?: LocationSuggestion) => option.display ?? ''}
       onInputChange={handleInputChange}
       PaperComponent={(props) => <SuggestionsContainer {...props} />}
       renderInput={(params) => (
@@ -169,30 +157,25 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = (
             key={index}
             // variant="outlined"
             label={option.display}
-            style={{ marginRight: "0.5rem" }}
+            style={{ marginRight: '0.5rem' }}
             {...getTagProps({ index })}
           />
-        ))}
+        ))
+      }
       renderOption={(props, option) => {
         return (
-          <li
-            {...props}
-          >
+          <li {...props}>
             <Grid container alignItems="center">
-              <Grid item sx={{ display: "flex", width: 44 }}>
-                <LocationOnIcon sx={{ color: "text.secondary" }} />
+              <Grid item sx={{ display: 'flex', width: 44 }}>
+                <LocationOnIcon sx={{ color: 'text.secondary' }} />
               </Grid>
               <Grid
                 item
-                sx={{ width: "calc(100% - 44px)", wordWrap: "break-word" }}
+                sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}
               >
-                <Typography className="">
-                  {option?.display}
-                </Typography>
+                <Typography className="">{option?.display}</Typography>
 
-                <span className="text-gray-400 capitalize">
-                  {option?.type}
-                </span>
+                <span className="text-gray-400 capitalize">{option?.type}</span>
               </Grid>
             </Grid>
           </li>
