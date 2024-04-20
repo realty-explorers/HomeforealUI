@@ -1,67 +1,66 @@
-import AnalyzedProperty from "@/models/analyzedProperty";
-import PropertyPreview from "@/models/propertyPreview";
+import AnalyzedProperty from '@/models/analyzedProperty';
+import PropertyPreview from '@/models/propertyPreview';
 import {
   BaseQueryApi,
   createApi,
   FetchArgs,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
+  fetchBaseQuery
+} from '@reduxjs/toolkit/query/react';
 
 const baseUrl = process.env.NEXT_PUBLIC_PROPERTIES_API_URL;
-const GENERAL_BUYBOX_ID = "3dbf8068-bfda-4422-af27-7597045dac6e";
+const GENERAL_BUYBOX_ID = '3dbf8068-bfda-4422-af27-7597045dac6e';
 
-const API_KEY = "o63cMy45PuLH8sRs8iEP";
+const API_KEY = 'o63cMy45PuLH8sRs8iEP';
 const baseQuery = fetchBaseQuery({
   baseUrl,
   prepareHeaders: async (headers, { getState }) => {
-    headers.set("API-Key", API_KEY);
-
     return headers;
-  },
+  }
 });
 
 const baseQueryWithReauth = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
-  extraOptions: any,
+  extraOptions: any
 ) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 403) {
     //TODO: fetch new accessToken using refresh token and update auth state and recall the api
   } else if (result?.error?.status === 401) {
-    console.log("401");
+    console.log('401');
   }
   return result;
 };
 
 export const propertiesApi = createApi({
-  reducerPath: "propertiesApi",
+  reducerPath: 'propertiesApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Previews"],
+  tagTypes: ['Previews'],
   endpoints: (builder) => ({
     getPropertiesPreviews: builder.query({
-      query: (
-        { suggestion: { type, state, city, zipCode, neighborhood }, buybox_id },
-      ) => {
+      query: ({
+        suggestion: { type, state, city, zipCode, neighborhood },
+        buybox_id
+      }) => {
         // `loc_properties?buybox_id=${GENERAL_BUYBOX_ID}&city=${city}&neighborhood=${"Central southwest"}`,
-        let queryUrl = "";
+        let queryUrl = '';
         switch (type) {
-          case "city":
-            queryUrl = new URLSearchParams({ city: city.toLowerCase() })
-              .toString();
+          case 'city':
+            queryUrl = new URLSearchParams({
+              city: city.toLowerCase()
+            }).toString();
             break;
-          case "neighborhood":
+          case 'neighborhood':
             queryUrl = new URLSearchParams({
               city: city.toLowerCase(),
-              neighborhood,
-            })
-              .toString();
+              neighborhood
+            }).toString();
             break;
           default:
-            queryUrl = "";
+            queryUrl = '';
             break;
         }
-        return `preview/?buybox_id=${buybox_id}&${queryUrl}`;
+        return `preview?buybox_id=${buybox_id}&${queryUrl}`;
       },
       transformResponse: (response: PropertyPreview[]) => {
         try {
@@ -80,22 +79,21 @@ export const propertiesApi = createApi({
         } catch (e) {
           console.log(e);
         }
-      },
+      }
     }),
     getProperties: builder.query({
       query: ({ type, state, city, zipCode, neighborhood }) => {
         // `loc_properties?buybox_id=${GENERAL_BUYBOX_ID}&city=${city}&neighborhood=${"Central southwest"}`,
-        let queryUrl = "";
+        let queryUrl = '';
         switch (type) {
-          case "city":
+          case 'city':
             queryUrl = new URLSearchParams({ city }).toString();
             break;
-          case "neighborhood":
-            queryUrl = new URLSearchParams({ city, neighborhood })
-              .toString();
+          case 'neighborhood':
+            queryUrl = new URLSearchParams({ city, neighborhood }).toString();
             break;
           default:
-            queryUrl = "";
+            queryUrl = '';
             break;
         }
         return `leads/?buybox_id=${GENERAL_BUYBOX_ID}&${queryUrl}`;
@@ -125,7 +123,7 @@ export const propertiesApi = createApi({
         } catch (e) {
           console.log(e);
         }
-      },
+      }
     }),
 
     getProperty: builder.query({
@@ -138,7 +136,7 @@ export const propertiesApi = createApi({
         } catch (e) {
           console.log(e);
         }
-      },
+      }
     }),
 
     getDeals: builder.query({
@@ -147,9 +145,9 @@ export const propertiesApi = createApi({
 
       query: ({ display, type, city, state }) =>
         `findGeneralDeals?display=${display}&type=${type}&city=${city}&state=${state}`,
-      transformResponse: (response: any) => response,
-    }),
-  }),
+      transformResponse: (response: any) => response
+    })
+  })
 });
 
 export const propertiesApiEndpoints = propertiesApi.endpoints;
@@ -159,6 +157,6 @@ export const {
   useLazyGetPropertyQuery,
 
   useLazyGetPropertiesPreviewsQuery,
-  useGetPropertiesPreviewsQuery,
+  useGetPropertiesPreviewsQuery
   // useLazyGetDealsQuery,
 } = propertiesApi;
