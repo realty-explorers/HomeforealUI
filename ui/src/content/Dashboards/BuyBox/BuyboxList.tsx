@@ -187,7 +187,6 @@ const BuyboxList = (props: BuyboxListProps) => {
 
   return (
     <div className="flex w-full h-full">
-      buyboxes
       <div className="relative w-full p-4 rounded-lg">
         {state.isFetching ? (
           <LoadingImage />
