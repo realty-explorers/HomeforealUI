@@ -1,48 +1,54 @@
-import PropertyPreview from "@/models/propertyPreview";
-import CompData from "@/models/compData";
-import { currencyFormatter } from "@/utils/converters";
-import { FilteredComp } from "@/models/analyzedProperty";
-import { string } from "zod";
+import PropertyPreview from '@/models/propertyPreview';
+import CompData from '@/models/compData';
+import { currencyFormatter } from '@/utils/converters';
+import { FilteredComp } from '@/models/analyzedProperty';
+import { string } from 'zod';
 
 const marginPercentage = (property: PropertyPreview, strategyMode: string) => {
-  const fieldName = strategyMode === "ARV" ? "arv_price" : "sales_comps_price";
-  return (property?.[fieldName] > 0 &&
-    property[fieldName] - property.listing_price) /
-    property[fieldName] * 100;
+  const fieldName = strategyMode === 'ARV' ? 'arv25_price' : 'arv_price';
+  return (
+    ((property?.[fieldName] > 0 && property[fieldName] - property.price) /
+      property[fieldName]) *
+    100
+  );
 };
 
 const generatePropertyGeoJson = (
   property: PropertyPreview,
-  strategy: string,
+  strategy: string
 ) => {
   const percentage = marginPercentage(property, strategy);
   return {
-    type: "Feature",
+    type: 'Feature',
     properties: {
-      id: property.source_id, // Generate a random ID
+      id: property.id, // Generate a random ID
       // price: `${currencyFormatter(property.sales_listing_price)}`,
       price: `↓ ${percentage.toFixed()}%`,
-      sortKey: -percentage,
+      sortKey: -percentage
     },
     geometry: {
-      type: "Point",
-      coordinates: [property.longitude, property.latitude, 0.0],
-    },
+      type: 'Point',
+      coordinates: [property.coordinates[0], property.coordinates[1], 0.0]
+    }
   };
 };
 
 const generateCompsGeoJson = (comp: FilteredComp) => {
   return {
-    type: "Feature",
+    type: 'Feature',
     properties: {
-      id: comp.source_id, // Generate a random ID
+      id: comp.id, // Generate a random ID
       index: comp.index + 1,
-      isARVCalculated: comp.is_arv_25th,
+      isARVCalculated: comp.is_arv_25th
     },
     geometry: {
-      type: "Point",
-      coordinates: [comp.longitude, comp.latitude, 0.0],
-    },
+      type: 'Point',
+      coordinates: [
+        comp.location.geometry.coordinates[0],
+        comp.location.geometry.coordinates[1],
+        0.0
+      ]
+    }
   };
 };
 

@@ -1,32 +1,37 @@
-import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
-import { TextField, Typography } from "@mui/material";
-import clsx from "clsx";
+import { buyboxSchemaType } from '@/schemas/BuyBoxSchemas';
+import { TextField, Typography } from '@mui/material';
+import clsx from 'clsx';
 import {
   Control,
   UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
-import styles from "../EditBuyBoxDialog.module.scss";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import ComparablePreferences from "../ComparablePreferences";
-import SimilarityChart from "../SimilarityChart";
+  UseFormWatch
+} from 'react-hook-form';
+import styles from '../EditBuyBoxDialog.module.scss';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import ComparablePreferences from '../ComparablePreferences';
+import SimilarityChart from '../SimilarityChart';
+import { BuyBoxFormData } from '@/schemas/BuyBoxFormSchema';
 
 type AdjustComparableProps = {
-  register: UseFormRegister<buyboxSchemaType>;
-  control: Control<buyboxSchemaType>;
-  watch: UseFormWatch<buyboxSchemaType>;
-  setValue: UseFormSetValue<buyboxSchemaType>;
-  getValues: UseFormGetValues<buyboxSchemaType>;
+  register: UseFormRegister<BuyBoxFormData>;
+  control: Control<BuyBoxFormData>;
+  watch: UseFormWatch<BuyBoxFormData>;
+  setValue: UseFormSetValue<BuyBoxFormData>;
+  getValues: UseFormGetValues<BuyBoxFormData>;
 };
-const AdjustComparable = (
-  { register, control, watch, setValue, getValues }: AdjustComparableProps,
-) => {
+const AdjustComparable = ({
+  register,
+  control,
+  watch,
+  setValue,
+  getValues
+}: AdjustComparableProps) => {
   return (
-    <div className={clsx(["grow flex flex-col pt-8 h-full px-4"])}>
+    <div className={clsx(['grow flex flex-col pt-8 h-full px-4'])}>
       <div className="h-full max-h-full overflow-y-auto">
-        <Typography className={clsx([styles.header, "mb-4"])}>
+        <Typography className={clsx([styles.header, 'mb-4'])}>
           Homeforeal provides a unique CMA by categorizing comparables based on
           their similarity to the target property, with four ranks from best
           (green) to less great (red).
@@ -43,6 +48,7 @@ const AdjustComparable = (
           </div>
 
           <div>
+            {/* TODO: Add SimilarityChart */}
             <SimilarityChart
               register={register}
               control={control}

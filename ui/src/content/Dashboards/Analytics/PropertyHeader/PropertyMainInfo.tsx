@@ -1,7 +1,7 @@
-import AnalyzedProperty from "@/models/analyzedProperty";
-import { priceFormatter } from "@/utils/converters";
-import { Chip, Grid, Typography } from "@mui/material";
-import styles from "./PropertyHeaderStyles.module.scss";
+import AnalyzedProperty from '@/models/analyzedProperty';
+import { priceFormatter } from '@/utils/converters';
+import { Chip, Grid, Typography } from '@mui/material';
+import styles from './PropertyHeaderStyles.module.scss';
 
 type PropertyMainInfoProps = {
   property: AnalyzedProperty;
@@ -18,12 +18,12 @@ const PropertyMainInfo = (props: PropertyMainInfoProps) => {
           {/*   Listing Price */}
           {/* </Typography> */}
           <Typography className={styles.infoHeader}>
-            {priceFormatter(props.property.sales_listing_price)}
+            {priceFormatter(props.property.price)}
           </Typography>
         </Grid>
         <Grid item xs={12}>
           <Typography className={styles.infoDescription}>
-            {`${props.property.address}, ${props.property.city}, ${props.property.state} ${props.property.zipcode}`}
+            {`${props.property.location.address}, ${props.property.location.city}, ${props.property.location.state} ${props.property.location.zip_code}`}
           </Typography>
         </Grid>
       </Grid>

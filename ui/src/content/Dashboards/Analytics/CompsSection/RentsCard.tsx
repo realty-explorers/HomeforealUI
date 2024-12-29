@@ -1,99 +1,100 @@
-import { Card, Checkbox, Divider, Grid, Typography } from "@mui/material";
-import GridTableField from "@/components/Grid/GridTableField";
-import Image from "next/image";
-import analyticsStyles from "../Analytics.module.scss";
-import styles from "./CompsSection.module.scss";
-import styled from "@emotion/styled";
-import { priceFormatter } from "@/utils/converters";
-import clsx from "clsx";
-import React, { useState } from "react";
-import { CompData } from "@/models/analyzedProperty";
+import { Card, Checkbox, Divider, Grid, Typography } from '@mui/material';
+import GridTableField from '@/components/Grid/GridTableField';
+import Image from 'next/image';
+import analyticsStyles from '../Analytics.module.scss';
+import styles from './CompsSection.module.scss';
+import styled from '@emotion/styled';
+import { priceFormatter } from '@/utils/converters';
+import clsx from 'clsx';
+import React, { useState } from 'react';
+import { CompData } from '@/models/analyzedProperty';
 
 const CheckBoxWhite = styled(Checkbox)(({ theme }) => ({
-  color: "white",
+  color: 'white'
 }));
 
 const gridRows = (property: CompData) => [
   {
-    label: "Rent Price",
-    value: priceFormatter(property.rents_closing_price),
+    label: 'Rent Price',
+    value: priceFormatter(property.price)
   },
   {
-    label: "Bedrooms",
-    value: property.bedrooms,
+    label: 'Bedrooms',
+    value: property.beds
   },
   {
-    label: "Bathrooms",
-    value: property.full_bathrooms,
+    label: 'Bathrooms',
+    value: property.baths
   },
   {
-    label: "Lot Sqft",
-    value: property.lot_size,
+    label: 'Lot Sqft',
+    value: property.lot_area
   },
   {
-    label: "Building Sqft",
-    value: property.building_area,
+    label: 'Building Sqft',
+    value: property.area
   },
   {
-    label: "Floors",
-    value: property.floors,
+    label: 'Floors',
+    value: property.floors
   },
   {
-    label: "Garages",
-    value: property.garages,
+    label: 'Garages',
+    value: property.garages
   },
   {
-    label: "Year Built",
-    value: typeof property.year_built === "string"
-      ? property.year_built.slice(0, 4)
-      : property.year_built,
+    label: 'Year Built',
+    value:
+      typeof property.year_built === 'string'
+        ? property.year_built.slice(0, 4)
+        : property.year_built
   },
   {
-    label: "Hood",
-    value: property.neighborhood,
+    label: 'Hood',
+    value: property.location.neighborhood
   },
   {
-    label: "Rent/Sqft",
+    label: 'Rent/Sqft',
     value: priceFormatter(
-      property.building_area && property.building_area > 0
-        ? (property.rents_closing_price / property.building_area).toFixed()
-        : 0,
-    ),
-  },
+      property.area && property.area > 0
+        ? (property.price / property.area).toFixed()
+        : 0
+    )
+  }
 ];
 
 const getSimilarityValues = (color?: string) => {
   switch (color) {
-    case "red":
+    case 'red':
       return {
-        label: "Very Low",
-        class: "text-red-500",
+        label: 'Very Low',
+        class: 'text-red-500'
       };
-    case "orange":
+    case 'orange':
       return {
-        label: "Low",
-        class: "text-orange-500",
+        label: 'Low',
+        class: 'text-orange-500'
       };
-    case "yellow":
+    case 'yellow':
       return {
-        label: "Medium",
-        class: "text-yellow-500",
+        label: 'Medium',
+        class: 'text-yellow-500'
       };
-    case "green":
+    case 'green':
       return {
-        label: "High",
-        class: "text-green-500",
+        label: 'High',
+        class: 'text-green-500'
       };
     default:
       return {
-        label: "N/A",
-        class: "text-gray-500",
+        label: 'N/A',
+        class: 'text-gray-500'
       };
   }
 };
 
 const defaultImage =
-  "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
+  'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=';
 
 type RentsCardProps = {
   index: number;
@@ -104,7 +105,7 @@ type RentsCardProps = {
 };
 const RentsCard = (props: RentsCardProps) => {
   const [cardImage, setCardImage] = useState(
-    props.compsProperty.primary_image || defaultImage,
+    props.compsProperty.primary_image || defaultImage
   );
   return (
     <Card className={props.className}>
@@ -112,7 +113,7 @@ const RentsCard = (props: RentsCardProps) => {
         container
         justifyContent="center"
         alignItems="center"
-        sx={{ height: "4rem" }}
+        sx={{ height: '4rem' }}
       >
         <CheckBoxWhite
           title="Select this property"
@@ -126,8 +127,8 @@ const RentsCard = (props: RentsCardProps) => {
       <Grid
         container
         justifyContent="center"
-        padding={"0.5rem 1rem"}
-        marginBottom={"2rem"}
+        padding={'0.5rem 1rem'}
+        marginBottom={'2rem'}
       >
         <div className="h-44 w-full relative">
           {/* <Image */}
@@ -141,8 +142,10 @@ const RentsCard = (props: RentsCardProps) => {
           {/* /> */}
 
           <img
-            src={cardImage ||
-              "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q="}
+            src={
+              cardImage ||
+              'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q='
+            }
             className="h-44 rounded-lg aspect-video object-cover"
           />
           {/* <img */}
@@ -179,7 +182,7 @@ const RentsCard = (props: RentsCardProps) => {
               </div>
 
               <div className="text-white">
-                <Typography className={clsx([styles.propertyText, "truncate"])}>
+                <Typography className={clsx([styles.propertyText, 'truncate'])}>
                   {property.value}
                 </Typography>
               </div>
@@ -193,13 +196,13 @@ const RentsCard = (props: RentsCardProps) => {
         <>
           <div className="text-white">
             <Typography
-              className={clsx([styles.propertyRowHeader, "truncate"])}
+              className={clsx([styles.propertyRowHeader, 'truncate'])}
             >
               Distance
             </Typography>
           </div>
           <div className="text-white">
-            <Typography className={clsx([styles.propertyText, "truncate"])}>
+            <Typography className={clsx([styles.propertyText, 'truncate'])}>
               {props.compsProperty.distance?.toFixed(2)} Miles
             </Typography>
           </div>
@@ -208,7 +211,7 @@ const RentsCard = (props: RentsCardProps) => {
         <>
           <div className="text-white">
             <Typography
-              className={clsx([styles.propertyRowHeader, "truncate"])}
+              className={clsx([styles.propertyRowHeader, 'truncate'])}
             >
               Similarity
             </Typography>
@@ -217,8 +220,8 @@ const RentsCard = (props: RentsCardProps) => {
             <Typography
               className={clsx([
                 styles.propertyText,
-                "font-semibold",
-                getSimilarityValues(props.compsProperty.similarity_color).class,
+                'font-semibold',
+                getSimilarityValues(props.compsProperty.similarity_color).class
               ])}
             >
               {getSimilarityValues(props.compsProperty.similarity_color).label}

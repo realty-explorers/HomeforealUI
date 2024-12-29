@@ -3,26 +3,27 @@ import {
   createApi,
   FetchArgs,
   fetchBaseQuery,
-  RootState,
-} from "@reduxjs/toolkit/query/react";
-import { logout } from "../slices/authSlice";
+  RootState
+} from '@reduxjs/toolkit/query/react';
+import { logout } from '../slices/authSlice';
 
 const baseUrl = process.env.NEXT_PUBLIC_DATA_API_URL;
 
-const API_KEY = "o63cMy45PuLH8sRs8iEP";
+const API_KEY = 'o63cMy45PuLH8sRs8iEP';
 const baseQuery = fetchBaseQuery({
   baseUrl,
   prepareHeaders: async (headers, { getState }) => {
-    headers.set("API-Key", API_KEY);
+    headers.set('API-Key', API_KEY);
+    headers.set('X-Service', 'api');
 
     return headers;
-  },
+  }
 });
 
 const baseQueryWithReauth = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
-  extraOptions: any,
+  extraOptions: any
 ) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 403) {
@@ -34,21 +35,18 @@ const baseQueryWithReauth = async (
 };
 
 export const dataApi = createApi({
-  reducerPath: "dataApi",
+  reducerPath: 'dataApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["Locations"],
+  tagTypes: ['Locations'],
   endpoints: (builder) => ({
     getLocations: builder.query({
-      query: () => ({ url: "get_all_locations" }),
+      query: () => ({ url: 'get_all_locations' }),
       transformResponse: (response: any) => response,
-      providesTags: ["Locations"],
-    }),
-  }),
+      providesTags: ['Locations']
+    })
+  })
 });
 
 export const dataApiEndpoints = dataApi.endpoints;
 
-export const {
-  useLazyGetLocationsQuery,
-  useGetLocationsQuery,
-} = dataApi;
+export const { useLazyGetLocationsQuery, useGetLocationsQuery } = dataApi;

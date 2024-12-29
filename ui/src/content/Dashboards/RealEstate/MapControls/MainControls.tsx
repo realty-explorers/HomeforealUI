@@ -349,7 +349,7 @@ const MainControls: React.FC<MainControlsProps> = (
             >
               {buyBoxesState.data?.map((buybox) => (
                 <MenuItem key={buybox.id} value={buybox}>
-                  {buybox.name}
+                  {buybox.parameters.name}
                 </MenuItem>
               ))}
             </Select>

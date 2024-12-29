@@ -1,4 +1,4 @@
-import * as React from "react";
+import * as React from 'react';
 import {
   Accordion,
   AccordionDetails,
@@ -11,67 +11,67 @@ import {
   Tab,
   Tabs,
   Tooltip,
-  Typography,
-} from "@mui/material";
+  Typography
+} from '@mui/material';
 
-import LinearProgress from "@mui/material/LinearProgress";
-import styles from "./BuyboxItem.module.scss";
-import clsx from "clsx";
-import BuyBox from "@/models/buybox";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import StopCircleIcon from "@mui/icons-material/StopCircle";
-import BallotIcon from "@mui/icons-material/Ballot";
-import AnalyticsIcon from "@mui/icons-material/Analytics";
-import InsightsIcon from "@mui/icons-material/Insights";
-import BuyBoxLeads from "./BuyBoxLeads";
+import LinearProgress from '@mui/material/LinearProgress';
+import styles from './BuyboxItem.module.scss';
+import clsx from 'clsx';
+import BuyBox from '@/models/buybox';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import PlayCircleIcon from '@mui/icons-material/PlayCircle';
+import StopCircleIcon from '@mui/icons-material/StopCircle';
+import BallotIcon from '@mui/icons-material/Ballot';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import InsightsIcon from '@mui/icons-material/Insights';
+import BuyBoxLeads from './BuyBoxLeads';
 import {
   buyBoxApi,
-  useDeleteBuyBoxMutation,
-} from "@/store/services/buyboxApiService";
-import { useSnackbar } from "notistack";
-import ConfirmDialog from "@/components/Modals/Alerts/ConfirmDialog";
-import { useState } from "react";
-import { useAnalyzeBuyBoxMutation } from "@/store/services/buyboxAnalysisApi";
-import { useDispatch } from "react-redux";
-import { analysisApi } from "@/store/services/analysisApi";
-import { timeSince } from "@/utils/dateUtils";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import Chip from "@/components/Chip";
-import BuyBoxStatistics from "./BuyBoxStatistics";
+  useDeleteBuyBoxMutation
+} from '@/store/services/buyboxApiService';
+import { useSnackbar } from 'notistack';
+import ConfirmDialog from '@/components/Modals/Alerts/ConfirmDialog';
+import { useState } from 'react';
+import { useAnalyzeBuyBoxMutation } from '@/store/services/buyboxAnalysisApi';
+import { useDispatch } from 'react-redux';
+import { analysisApi } from '@/store/services/analysisApi';
+import { timeSince } from '@/utils/dateUtils';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import Chip from '@/components/Chip';
+import BuyBoxStatistics from './BuyBoxStatistics';
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
 ))(({}) => ({
-  borderRadius: "0px",
-  backgroundColor: "transparent",
-  "&:not(:last-child)": {
-    borderBottom: 0,
+  borderRadius: '0px',
+  backgroundColor: 'transparent',
+  '&:not(:last-child)': {
+    borderBottom: 0
   },
-  "&:before": {
-    display: "none",
-  },
+  '&:before': {
+    display: 'none'
+  }
 }));
 
 const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
   <AccordionSummary
-    expandIcon={<ExpandMoreIcon sx={{ fontSize: "0.9rem" }} />}
+    expandIcon={<ExpandMoreIcon sx={{ fontSize: '0.9rem' }} />}
     {...props}
   />
 ))(({ theme }) => ({
-  borderRadius: "2rem",
-  marginBottom: "1rem",
-  backgroundColor: "white",
-  boxShadow: "0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)",
-  flexDirection: "row-reverse",
-  "& .MuiAccordionSummary-expandIconWrapper.Mui-expanded": {
-    transform: "rotate(90deg)",
+  borderRadius: '2rem',
+  marginBottom: '1rem',
+  backgroundColor: 'white',
+  boxShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
+  flexDirection: 'row-reverse',
+  '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
+    transform: 'rotate(90deg)'
   },
-  "& .MuiAccordionSummary-content": {
-    marginLeft: theme.spacing(1),
-  },
+  '& .MuiAccordionSummary-content': {
+    marginLeft: theme.spacing(1)
+  }
 }));
 
 type BuyboxItemProps = {
@@ -106,27 +106,27 @@ const BuyboxItem = (props: BuyboxItemProps) => {
 
       const patchCollection = dispatch(
         buyBoxApi.util.updateQueryData(
-          "getBuyBoxes",
-          "",
+          'getBuyBoxes',
+          '',
           (buyBoxes: BuyBox[]) => {
-            buyBoxes = buyBoxes.filter((buybox) =>
-              buybox.id !== props.buybox.id
+            buyBoxes = buyBoxes.filter(
+              (buybox) => buybox.id !== props.buybox.id
             );
             return buyBoxes;
-          },
-        ),
+          }
+        )
       );
       enqueueSnackbar(`BuyBox Deleted`, {
-        variant: "success",
+        variant: 'success'
       });
     } catch (error) {
-      if (error.status === "FETCH_ERROR") {
+      if (error.status === 'FETCH_ERROR') {
         enqueueSnackbar(`Connection error - please try again later`, {
-          variant: "error",
+          variant: 'error'
         });
       } else {
         enqueueSnackbar(`Error: ${error.data?.message || error.error}`, {
-          variant: "error",
+          variant: 'error'
         });
       }
     }
@@ -146,11 +146,9 @@ const BuyboxItem = (props: BuyboxItemProps) => {
       setRunning(true);
       await analyzeBuyBox(props.buybox.id).unwrap();
       dispatch(
-        analysisApi.util.invalidateTags(["BuyBoxLeads", "BuyBoxLeadsCount"]),
+        analysisApi.util.invalidateTags(['BuyBoxLeads', 'BuyBoxLeadsCount'])
       );
-      dispatch(
-        buyBoxApi.util.invalidateTags(["BuyBox"]),
-      );
+      dispatch(buyBoxApi.util.invalidateTags(['BuyBox']));
       // const patchCollection = dispatch(
       //   buyBoxApi.util.updateQueryData(
       //     "getBuyBoxes",
@@ -167,16 +165,16 @@ const BuyboxItem = (props: BuyboxItemProps) => {
       //   ),
       // );
       enqueueSnackbar(`Analysis Complete`, {
-        variant: "success",
+        variant: 'success'
       });
     } catch (error) {
-      if (error.status === "FETCH_ERROR") {
+      if (error.status === 'FETCH_ERROR') {
         enqueueSnackbar(`Connection error - please try again later`, {
-          variant: "error",
+          variant: 'error'
         });
       } else {
         enqueueSnackbar(`Error: ${error.data?.message || error.error}`, {
-          variant: "error",
+          variant: 'error'
         });
       }
     } finally {
@@ -184,11 +182,11 @@ const BuyboxItem = (props: BuyboxItemProps) => {
     }
   };
 
-  const allowedToEdit = props.buybox.permissions.includes("edit");
+  const allowedToEdit = props.buybox.permissions.includes('edit');
 
   const handleClick = () => {
     if (expanded) {
-      props.setBuyBoxId("");
+      props.setBuyBoxId('');
     } else {
       props.setBuyBoxId(props.buybox.id);
     }
@@ -221,7 +219,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
           <div className="flex justify-between w-full">
             <div className="flex items-center ">
               <Typography className="flex items-center w-40 text-ellipsis overflow-hidden">
-                {props.buybox.data.buybox_name}
+                {props.buybox.parameters.name}
               </Typography>
               {!running && props.buybox?.execute_date && (
                 <div className="flex gap-x-4">
@@ -230,50 +228,48 @@ const BuyboxItem = (props: BuyboxItemProps) => {
                       updated {timeSince(props?.buybox?.execute_date)}
                     </Typography>
                   </div>
-                  {props.buybox?.new_deals > 0 && (
-                    <Tooltip
-                      title={`New leads since ${
-                        timeSince(props?.buybox?.execute_date)
-                      }`}
-                    >
-                      <div className="flex bg-secondary px-2 py-[0.2rem] rounded-3xl font-poppins font-semibold text-white text-xs ">
-                        {props.buybox?.new_deals} new leads
-                      </div>
-                    </Tooltip>
-                  )}
+                  {/* {props.buybox?.new_deals && props.buybox.new_deals > 0 && ( */}
+                  {/*   <Tooltip */}
+                  {/*     title={`New leads since ${timeSince( */}
+                  {/*       props?.buybox?.execute_date */}
+                  {/*     )}`} */}
+                  {/*   > */}
+                  {/*     <div className="flex bg-secondary px-2 py-[0.2rem] rounded-3xl font-poppins font-semibold text-white text-xs "> */}
+                  {/*       {props.buybox?.new_deals} new leads */}
+                  {/*     </div> */}
+                  {/*   </Tooltip> */}
+                  {/* )} */}
                 </div>
               )}
             </div>
 
-            {running
-              ? (
-                <div className="flex grow items-center px-36 gap-x-4">
-                  <div className="grow relative flex items-center gap-x-2">
-                    <div className="absolute z-[1] top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex">
-                      <Typography
-                        className={clsx([
-                          " text-white font-poppins font-bold",
-                        ])}
-                      >
-                        Analyzing BuyBox
-                      </Typography>
-                      <SettingsOutlinedIcon
-                        fontSize="small"
-                        className={clsx([styles.loading, "text-white mx-2"])}
-                      />
-                    </div>
-
-                    <LinearProgress
-                      variant="indeterminate"
-                      className="grow h-6 rounded-3xl"
-                      // value={30}
-                      // valueBuffer={30}
+            {running ? (
+              <div className="flex grow items-center px-36 gap-x-4">
+                <div className="grow relative flex items-center gap-x-2">
+                  <div className="absolute z-[1] top-1/2 left-1/2 -translate-y-1/2 -translate-x-1/2 flex">
+                    <Typography
+                      className={clsx([' text-white font-poppins font-bold'])}
+                    >
+                      Analyzing BuyBox
+                    </Typography>
+                    <SettingsOutlinedIcon
+                      fontSize="small"
+                      className={clsx([styles.loading, 'text-white mx-2'])}
                     />
-                    {/* <Typography>30%</Typography> */}
                   </div>
+
+                  <LinearProgress
+                    variant="indeterminate"
+                    className="grow h-6 rounded-3xl"
+                    // value={30}
+                    // valueBuffer={30}
+                  />
+                  {/* <Typography>30%</Typography> */}
                 </div>
-              )
-              : <div></div>}
+              </div>
+            ) : (
+              <div></div>
+            )}
             <div className="flex gap-x-2">
               {allowedToEdit && !running && (
                 <Button
@@ -286,18 +282,22 @@ const BuyboxItem = (props: BuyboxItemProps) => {
               )}
               {!running && (
                 <Button
-                  startIcon={allowedToEdit
-                    ? <SettingsOutlinedIcon className="className" />
-                    : null}
+                  startIcon={
+                    allowedToEdit ? (
+                      <SettingsOutlinedIcon className="className" />
+                    ) : null
+                  }
                   className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
                   onClick={handleEditBuyBox}
                 >
-                  {allowedToEdit ? "Configure" : "View"}
+                  {allowedToEdit ? 'Configure' : 'View'}
                 </Button>
               )}
 
-              {allowedToEdit && user?.user_roles?.includes("admin") && (running
-                ? (
+              {allowedToEdit &&
+                user?.user_roles &&
+                (user.user_roles as string[])?.includes('admin') &&
+                (running ? (
                   <Button
                     startIcon={<StopCircleIcon />}
                     className="bg-red-500 hover:bg-red-700 text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
@@ -306,8 +306,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
                   >
                     Cancel
                   </Button>
-                )
-                : (
+                ) : (
                   <Button
                     startIcon={<PlayCircleIcon />}
                     className="bg-green-500 hover:bg-green-700 text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "

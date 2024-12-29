@@ -1,18 +1,17 @@
 interface PropertyPreview {
-  source_id: string;
-  sales_comps_price: number;
-  arv_price: number;
-  cap_rate: string;
-  listing_price: number;
-  image: string;
-  status: string;
+  id: string;
   address: string;
-  latitude: number;
-  longitude: number;
+  coordinates: [number, number];
+  arv_price: number;
+  arv25_price: number;
+  cap_rate: string;
+  price: number;
+  image: string;
+  area: number;
+  status: string;
   property_type: string;
-  bedrooms: number;
-  total_bathrooms: number;
-  building_area: number;
+  beds: number;
+  baths: number;
 }
 
 export default PropertyPreview;

@@ -1,32 +1,33 @@
-import { numberFormatter } from "@/utils/converters";
+import { buyboxSchemaType, RangeField } from '@/schemas/BuyBoxSchemas';
+import { numberFormatter } from '@/utils/converters';
 import {
   InputAdornment,
   Slider,
   SliderProps,
   Switch,
   TextField,
-  Typography,
-} from "@mui/material";
-import { styled } from "@mui/system";
-import clsx from "clsx";
-import React, { useEffect, useState } from "react";
-import { UseFormSetValue } from "react-hook-form";
-import NumericField from "./NumericField";
+  Typography
+} from '@mui/material';
+import { styled } from '@mui/system';
+import clsx from 'clsx';
+import React, { useEffect, useState } from 'react';
+import { UseFormGetValues, UseFormSetValue } from 'react-hook-form';
+import NumericField from './NumericField';
 
 const StyledSlider = styled(Slider)({
-  "& .MuiSlider-valueLabel": {
-    borderRadius: "2rem",
-    backgroundColor: "#223354",
-    fontFamily: "var(--font-poppins)",
-    fontWeight: 600,
-  },
+  '& .MuiSlider-valueLabel': {
+    borderRadius: '2rem',
+    backgroundColor: '#223354',
+    fontFamily: 'var(--font-poppins)',
+    fontWeight: 600
+  }
 });
 
 type RangeFieldProps = {
   min: number;
   max: number;
-  setValue: UseFormSetValue<any>;
-  getValues: any;
+  setValue: UseFormSetValue<RangeField>;
+  getValues: UseFormGetValues<buyboxSchemaType>;
   fieldName: string;
   prefix?: string;
   postfix?: string;
@@ -35,49 +36,47 @@ type RangeFieldProps = {
   className?: string;
 } & SliderProps;
 
-const RangeField = (
-  {
-    min,
-    max,
-    setValue,
-    getValues,
-    fieldName,
-    disabled,
-    prefix,
-    postfix,
-    formatLabelAsNumber,
-    className,
-    ...props
-  }: RangeFieldProps,
-) => {
+const RangeField = ({
+  min,
+  max,
+  setValue,
+  getValues,
+  fieldName,
+  disabled,
+  prefix,
+  postfix,
+  formatLabelAsNumber,
+  className,
+  ...props
+}: RangeFieldProps) => {
   const [values, setValues] = React.useState(getValues(fieldName));
   const handleNumberInputChangeMin = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     let value = Number(e.target.value);
     if (value < min) {
       value = min;
     }
-    setValues(typeof values !== "object" ? value : [value, values[1]]);
+    setValues(typeof values !== 'object' ? value : [value, values[1]]);
     setValue(
-      typeof values !== "object" ? `${fieldName}` : `${fieldName}.0`,
+      typeof values !== 'object' ? `${fieldName}` : `${fieldName}.0`,
       value,
-      { shouldDirty: true },
+      { shouldDirty: true }
     );
   };
 
   const handleNumberInputChangeMax = (
-    e: React.ChangeEvent<HTMLInputElement>,
+    e: React.ChangeEvent<HTMLInputElement>
   ) => {
     let value = Number(e.target.value);
     if (value > max) {
       value = max;
     }
-    setValues(typeof values === "number" ? value : [values[0], value]);
+    setValues(typeof values === 'number' ? value : [values[0], value]);
     setValue(
-      typeof values === "number" ? `${fieldName}` : `${fieldName}.1`,
+      typeof values === 'number' ? `${fieldName}` : `${fieldName}.1`,
       value,
-      { shouldDirty: true },
+      { shouldDirty: true }
     );
     // setValues([values[0], e.target.valueAsNumber]);
     // setValue(`${fieldName}.1`, e.target.valueAsNumber);
@@ -86,22 +85,22 @@ const RangeField = (
   const handleSliderChange = (
     event: Event,
     value: number | number[],
-    activeThumb: number,
+    activeThumb: number
   ) => {
     setValues(value);
     setValue(fieldName, value, { shouldDirty: true });
   };
 
   const formatLabel = (value: any) => {
-    return `${prefix ? prefix : ""} ${value} ${postfix ? postfix : ""}`;
+    return `${prefix ? prefix : ''} ${value} ${postfix ? postfix : ''}`;
   };
 
   return (
     <div className="grid grid-cols-[1fr_3fr_1fr] w-full gap-x-4 items-center">
       <TextField
-        label={typeof values === "object" ? "Min" : ""}
+        label={typeof values === 'object' ? 'Min' : ''}
         size="small"
-        value={typeof values !== "object" ? values : values?.[0]}
+        value={typeof values !== 'object' ? values : values?.[0]}
         onChange={handleNumberInputChangeMin}
         id="formatted-numberformat-input"
         InputProps={{
@@ -109,14 +108,14 @@ const RangeField = (
           inputProps: {
             min: min,
             max: max,
-            formatLabelAsNumber: formatLabelAsNumber,
+            formatLabelAsNumber: formatLabelAsNumber
           },
           startAdornment: prefix && (
             <InputAdornment position="start">{prefix}</InputAdornment>
           ),
           endAdornment: postfix && (
             <InputAdornment position="end">{postfix}</InputAdornment>
-          ),
+          )
         }}
         variant="outlined"
         disabled={disabled}
@@ -138,11 +137,11 @@ const RangeField = (
         {...props}
       />
 
-      {typeof values === "object" && (
+      {typeof values === 'object' && (
         <TextField
           size="small"
           label="Max"
-          value={typeof values === "number" ? values : values?.[1]}
+          value={typeof values === 'number' ? values : values?.[1]}
           onChange={handleNumberInputChangeMax}
           name="numberformat"
           id="formatted-numberformat-input"
@@ -151,14 +150,14 @@ const RangeField = (
             inputProps: {
               min: min,
               max: max,
-              formatLabelAsNumber: formatLabelAsNumber,
+              formatLabelAsNumber: formatLabelAsNumber
             },
             startAdornment: prefix && (
               <InputAdornment position="start">{prefix}</InputAdornment>
             ),
             endAdornment: postfix && (
               <InputAdornment position="end">{postfix}</InputAdornment>
-            ),
+            )
           }}
           variant="outlined"
           disabled={disabled}

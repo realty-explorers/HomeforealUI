@@ -1,6 +1,6 @@
-import React, { memo, useEffect, useState } from "react";
-import PropertyPreview from "@/models/propertyPreview";
-import { openGoogleSearch } from "@/utils/windowFunctions";
+import React, { memo, useEffect, useState } from 'react';
+import PropertyPreview from '@/models/propertyPreview';
+import { openGoogleSearch } from '@/utils/windowFunctions';
 import {
   Button,
   CardProps,
@@ -8,23 +8,23 @@ import {
   Grid,
   SvgIcon,
   Tooltip,
-  Typography,
-} from "@mui/material";
+  Typography
+} from '@mui/material';
 import {
   numberStringUtil,
   percentFormatter,
   priceFormatter,
-  validateValue,
-} from "@/utils/converters";
-import { useDispatch, useSelector } from "react-redux";
-import styles from "../styles.module.scss";
-import Image from "@/components/Photos/Image";
-import clsx from "clsx";
-import { selectFilter } from "@/store/slices/filterSlice";
-import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
+  validateValue
+} from '@/utils/converters';
+import { useDispatch, useSelector } from 'react-redux';
+import styles from '../styles.module.scss';
+import Image from '@/components/Photos/Image';
+import clsx from 'clsx';
+import { selectFilter } from '@/store/slices/filterSlice';
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 
 const defaultImage =
-  "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
+  'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=';
 
 const BathIcon = () => {
   return (
@@ -97,11 +97,11 @@ type PropertyCardProps = {
   className?: string;
 };
 const PropertyCard: React.FC<PropertyCardProps> = (
-  props: PropertyCardProps,
+  props: PropertyCardProps
 ) => {
   const dispatch = useDispatch();
   const [cardImage, setCardImage] = useState(
-    validateValue(props.property?.image, "string", defaultImage),
+    validateValue(props.property?.image, 'string', defaultImage)
   );
   const { strategyMode } = useSelector(selectFilter);
   const handlePropertySelected = async () => {
@@ -127,26 +127,22 @@ const PropertyCard: React.FC<PropertyCardProps> = (
   };
 
   useEffect(() => {
-    setCardImage(
-      validateValue(props.property?.image, "string", defaultImage),
-    );
+    setCardImage(validateValue(props.property?.image, 'string', defaultImage));
     // console.log("rerender property card");
   }, [props.property]);
 
   const arvPercentage =
-    props.property?.arv_price && props.property.arv_price > 0
-      ? Math.round(
-        props.property.arv_price -
-          props.property.listing_price,
-      ) / props.property.arv_price * 100
+    props.property?.arv25_price && props.property.arv25_price > 0
+      ? (Math.round(props.property.arv25_price - props.property.price) /
+          props.property.arv25_price) *
+        100
       : 0;
 
   const compsPercentage =
-    props.property?.sales_comps_price && props.property.sales_comps_price > 0
-      ? Math.round(
-        props.property.sales_comps_price -
-          props.property.listing_price,
-      ) / props.property.sales_comps_price * 100
+    props.property?.arv_price && props.property.arv_price > 0
+      ? (Math.round(props.property.arv_price - props.property.price) /
+          props.property.arv_price) *
+        100
       : 0;
 
   // const profit = arvPercentage.toFixed(100);
@@ -154,9 +150,9 @@ const PropertyCard: React.FC<PropertyCardProps> = (
 
   const getStrategyValue = () => {
     switch (strategyMode) {
-      case "ARV":
+      case 'ARV':
         return arvPercentage;
-      case "Comps":
+      case 'Comps':
         return compsPercentage;
       default:
         return 0;
@@ -171,32 +167,31 @@ const PropertyCard: React.FC<PropertyCardProps> = (
   return (
     <Button
       className={clsx([
-        "w-full h-full flex flex-col p-0 rounded-xl relative shadow-lg",
-        props.selected &&
-        "ring ring-black",
+        'w-full h-full flex flex-col p-0 rounded-xl relative shadow-lg',
+        props.selected && 'ring ring-black'
       ])}
       onClick={handlePropertySelected}
       // onMouseOver={() => props.setHoveredProperty(props.property)}
     >
-      {typeof props.property.arv_price === "number" && (
+      {typeof props.property.arv25_price === 'number' && (
         <Tooltip
           title={`Under ${strategyMode} by ${getStrategyValue().toFixed(2)}%`}
           placement="top"
           PopperProps={{
             modifiers: [
               {
-                name: "offset",
+                name: 'offset',
                 options: {
-                  offset: [0, -10],
-                },
-              },
-            ],
+                  offset: [0, -10]
+                }
+              }
+            ]
           }}
         >
           <div
             className={clsx([
-              "flex absolute top-1 left-1 z-[1] rounded-lg px-2 py-0.5 items-center",
-              strategyMode === "ARV" ? "bg-arv" : "bg-secondary",
+              'flex absolute top-1 left-1 z-[1] rounded-lg px-2 py-0.5 items-center',
+              strategyMode === 'ARV' ? 'bg-arv' : 'bg-secondary'
             ])}
           >
             <ArrowCircleDownIcon className="text-white text-[1rem]" />
@@ -208,7 +203,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
       )}
       <div className="flex w-full h-1/3 md:h-1/3 rounded-t-x">
         <Image
-          src={validateValue(cardImage, "string", "")}
+          src={validateValue(cardImage, 'string', '')}
           alt=""
           defaultSrc={defaultImage}
           className="w-full h-full rounded-t-xl object-cover object-center aspect-[2] sm:aspect-[5/2] md:aspect-[auto]"
@@ -224,7 +219,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
         />
         <div className="w-full flex flex-col md:hidden">
           <div className="font-poppins text-2xl text-secondary font-[900] text-left">
-            {priceFormatter(props.property?.listing_price)}
+            {priceFormatter(props.property?.price)}
           </div>
           <div className="mt-2">
             <Typography className="font-poppins text-[1rem] text-gray-800 text-left">
@@ -236,21 +231,21 @@ const PropertyCard: React.FC<PropertyCardProps> = (
               Sales Comps:
             </Typography>
             <Typography className="text-black text-lg  text-left font-poppins">
-              {priceFormatter(props.property?.sales_comps_price)}
+              {priceFormatter(props.property?.arv_price)}
             </Typography>
 
             <Typography className="text-left text-black text-lg  font-poppins">
               ARV:
             </Typography>
             <Typography className="text-black text-lg  text-left font-poppins">
-              {priceFormatter(props.property?.arv_price)}
+              {priceFormatter(props.property?.arv25_price)}
             </Typography>
 
             <Typography className="text-left text-black text-lg  font-poppins">
               Cap Rate:
             </Typography>
             <Typography className="text-black text-lg  text-left font-poppins">
-              {(numberStringUtil(props.property?.cap_rate)).toFixed(2)} %
+              {numberStringUtil(props.property?.cap_rate).toFixed(2)} %
             </Typography>
           </div>
           <div className="w-full flex justify-center gap-x-6 xs:gap-x-12 mt-2">
@@ -281,24 +276,22 @@ const PropertyCard: React.FC<PropertyCardProps> = (
         <div className="hidden md:flex flex-col">
           <div className={styles.cardInfoRow}>
             <Typography>Price</Typography>
-            <Typography>
-              {priceFormatter(props.property?.listing_price)}
-            </Typography>
+            <Typography>{priceFormatter(props.property?.price)}</Typography>
           </div>
           <div className={styles.cardInfoRow}>
             <Typography>Comps Sale</Typography>
-            <Typography>
-              {priceFormatter(props.property?.sales_comps_price)}
-            </Typography>
+            <Typography>{priceFormatter(props.property?.arv_price)}</Typography>
           </div>
           <div className={styles.cardInfoRow}>
             <Typography>ARV</Typography>
-            <Typography>{priceFormatter(props.property?.arv_price)}</Typography>
+            <Typography>
+              {priceFormatter(props.property?.arv25_price)}
+            </Typography>
           </div>
           <div className={styles.cardInfoRow}>
             <Typography>Cap Rate</Typography>
             <Typography>
-              {(numberStringUtil(props.property?.cap_rate)).toFixed(2)} %
+              {numberStringUtil(props.property?.cap_rate).toFixed(2)} %
             </Typography>
           </div>
         </div>

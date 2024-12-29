@@ -7,13 +7,14 @@ import {
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
 
-const baseUrl = process.env.NEXT_PUBLIC_PROPERTIES_API_URL;
+const baseUrl = process.env.NEXT_PUBLIC_ANALYSIS_API_URL;
 const GENERAL_BUYBOX_ID = '3dbf8068-bfda-4422-af27-7597045dac6e';
 
 const API_KEY = 'o63cMy45PuLH8sRs8iEP';
 const baseQuery = fetchBaseQuery({
   baseUrl,
   prepareHeaders: async (headers, { getState }) => {
+    headers.set('X-Service', 'scraper');
     return headers;
   }
 });
@@ -43,7 +44,7 @@ export const propertiesApi = createApi({
         buybox_id
       }) => {
         // `loc_properties?buybox_id=${GENERAL_BUYBOX_ID}&city=${city}&neighborhood=${"Central southwest"}`,
-        let queryUrl = '';
+        let queryUrl = '/Results';
         switch (type) {
           case 'city':
             queryUrl = new URLSearchParams({
@@ -60,7 +61,7 @@ export const propertiesApi = createApi({
             queryUrl = '';
             break;
         }
-        return `preview?buybox_id=${buybox_id}&${queryUrl}`;
+        return `/Previews?buybox_id=${buybox_id}&${queryUrl}`;
       },
       transformResponse: (response: PropertyPreview[]) => {
         try {
@@ -128,7 +129,7 @@ export const propertiesApi = createApi({
 
     getProperty: builder.query({
       query: ({ buybox_id, property_id }) => {
-        return `lead/?buybox_id=${buybox_id}&source_id=${property_id}`;
+        return `/AnalyzedProperty/?resultId=${property_id}`;
       },
       transformResponse: (response: AnalyzedProperty) => {
         try {

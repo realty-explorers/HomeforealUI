@@ -1,9 +1,9 @@
-import { CompData } from "@/models/analyzedProperty";
-import { Fade, Popper } from "@mui/material";
-import { Marker } from "@react-google-maps/api";
-import clsx from "clsx";
-import { useState } from "react";
-import CompsMapCard from "./CompsMapCard";
+import { CompData } from '@/models/analyzedProperty';
+import { Fade, Popper } from '@mui/material';
+import { Marker } from '@react-google-maps/api';
+import clsx from 'clsx';
+import { useState } from 'react';
+import CompsMapCard from './CompsMapCard';
 
 type CompMarkerProps = {
   compsProperty: CompData;
@@ -14,7 +14,7 @@ const CompMarker = ({ compsProperty, text, colorClass }: CompMarkerProps) => {
   const [hovering, setHovering] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const id = open ? "simple-popper" : undefined;
+  const id = open ? 'simple-popper' : undefined;
 
   const handleMouseOver = (e: google.maps.MapMouseEvent) => {
     const element = e.domEvent.currentTarget;
@@ -33,23 +33,23 @@ const CompMarker = ({ compsProperty, text, colorClass }: CompMarkerProps) => {
   return (
     <Marker
       position={{
-        lat: compsProperty.latitude,
-        lng: compsProperty.longitude,
+        lng: compsProperty.location.geometry.coordinates[0],
+        lat: compsProperty.location.geometry.coordinates[1]
       }}
       zIndex={hovering ? 1000 : 1}
       label={{
-        text: text ?? "",
+        text: text ?? '',
         className: clsx([
-          " font-poppins text-white py-[6px] px-0 rounded-2xl  w-[25px] h-[25px]",
-          colorClass,
+          ' font-poppins text-white py-[6px] px-0 rounded-2xl  w-[25px] h-[25px]',
+          colorClass
         ]),
-        color: "#fff",
-        fontSize: "12px",
-        fontWeight: "bold",
+        color: '#fff',
+        fontSize: '12px',
+        fontWeight: 'bold'
       }}
       icon={{
-        url: "/static/images/pins/homePin.png",
-        scaledSize: new google.maps.Size(25, 25),
+        url: '/static/images/pins/homePin.png',
+        scaledSize: new google.maps.Size(25, 25)
       }}
       onMouseOver={handleMouseOver}
       onMouseOut={handleMouseOut}
@@ -61,25 +61,25 @@ const CompMarker = ({ compsProperty, text, colorClass }: CompMarkerProps) => {
           anchorEl={anchorEl}
           modifiers={[
             {
-              name: "flip",
+              name: 'flip',
               enabled: true,
               options: {
                 altBoundary: true,
-                rootBoundary: "document",
-                padding: 8,
-              },
+                rootBoundary: 'document',
+                padding: 8
+              }
             },
             {
-              name: "preventOverflow",
+              name: 'preventOverflow',
               enabled: true,
               options: {
                 altAxis: true,
                 altBoundary: true,
                 tether: true,
-                rootBoundary: "document",
-                padding: 8,
-              },
-            },
+                rootBoundary: 'document',
+                padding: 8
+              }
+            }
             // {
             //   name: "arrow",
             //   enabled: true,
@@ -91,8 +91,8 @@ const CompMarker = ({ compsProperty, text, colorClass }: CompMarkerProps) => {
         >
           <Fade in={open} timeout={500}>
             <div
-              // style={divStyle}
-              // onMouseLeave={() => handleMouseOut()}
+            // style={divStyle}
+            // onMouseLeave={() => handleMouseOut()}
             >
               <CompsMapCard
                 // property={hoveredProperty as PropertyPreview}

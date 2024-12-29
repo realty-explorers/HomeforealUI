@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Button,
   Checkbox,
@@ -11,13 +11,13 @@ import {
   List,
   ListItem,
   ListItemText,
-  Typography,
-} from "@mui/material";
-import ExpensesRow, { Expense } from "../ExpensesRow";
-import styles from "../ExpensesCalculator.module.scss";
-import { TransitionGroup } from "react-transition-group";
-import AnalyzedProperty from "@/models/analyzedProperty";
-import { priceFormatter } from "@/utils/converters";
+  Typography
+} from '@mui/material';
+import ExpensesRow, { Expense } from '../ExpensesRow';
+import styles from '../ExpensesCalculator.module.scss';
+import { TransitionGroup } from 'react-transition-group';
+import AnalyzedProperty from '@/models/analyzedProperty';
+import { priceFormatter } from '@/utils/converters';
 
 type MonthlyExpensesProps = {
   property: AnalyzedProperty;
@@ -27,12 +27,12 @@ type MonthlyExpensesProps = {
 };
 const MonthlyExpenses = (props: MonthlyExpensesProps) => {
   const priceTypes = [
-    { label: "ARV", value: props.property?.arv_price },
-    { label: "Listing Price", value: props.property?.listing_price || 0 },
+    { label: 'ARV', value: props.property?.arv_price },
+    { label: 'Listing Price', value: props.property?.price || 0 },
     {
-      label: "Annual Rent",
-      value: props.property?.rental_comps_price * 12 || 0,
-    },
+      label: 'Annual Rent',
+      value: props.property?.rental_comps_price * 12 || 0
+    }
     // {
     //   label: "Rental Price",
     //   value: typeof props.property?.rents_listing_price === "number"
@@ -50,59 +50,60 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
     const defaultExpenses = [
       {
         id: uuidv4(),
-        label: "Property Tax",
+        label: 'Property Tax',
         value:
           props.property?.operational_expenses?.property_tax?.expense_amount ||
           0,
         priceType:
           props.property.operational_expenses?.property_tax?.expense_ref ===
-              "arv"
+          'arv'
             ? priceTypes[0]
-            : priceTypes[1],
+            : priceTypes[1]
       },
       {
         id: uuidv4(),
-        label: "Insurance",
+        label: 'Insurance',
         value:
           props.property?.operational_expenses?.insurance?.expense_amount || 0,
         priceType:
-          props.property?.operational_expenses?.insurance?.expense_ref === "arv"
+          props.property?.operational_expenses?.insurance?.expense_ref === 'arv'
             ? priceTypes[0]
-            : priceTypes[1],
+            : priceTypes[1]
       },
       {
         id: uuidv4(),
-        label: "Maintenance",
+        label: 'Maintenance',
         value:
           props.property?.operational_expenses?.maintenance?.expense_amount ||
           defaultMaintenance,
         priceType:
           props.property.operational_expenses?.maintenance?.expense_ref ===
-              "arv"
+          'arv'
             ? priceTypes[0]
-            : priceTypes[1],
+            : priceTypes[1]
       },
       {
         id: uuidv4(),
-        label: "Management",
+        label: 'Management',
         value:
           props.property?.operational_expenses?.management?.expense_amount ||
           defaultManagement,
         priceType:
-          props.property.operational_expenses?.management?.expense_ref === "arv"
+          props.property.operational_expenses?.management?.expense_ref === 'arv'
             ? priceTypes[0]
-            : priceTypes[2],
+            : priceTypes[2]
       },
       {
         id: uuidv4(),
-        label: "Vacancy",
-        value: props.property?.operational_expenses?.vacancy?.expense_amount ||
+        label: 'Vacancy',
+        value:
+          props.property?.operational_expenses?.vacancy?.expense_amount ||
           defaultVacancy,
         priceType:
-          props.property.operational_expenses?.vacancy?.expense_ref === "arv"
+          props.property.operational_expenses?.vacancy?.expense_ref === 'arv'
             ? priceTypes[0]
-            : priceTypes[1],
-      },
+            : priceTypes[1]
+      }
     ];
     setExpenses(defaultExpenses);
     props.setExpenses(totalExpenses(defaultExpenses));
@@ -110,7 +111,7 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
 
   const handleChangeExpenses = (changedExpense: Expense) => {
     const expenseIndex = expenses.findIndex(
-      (expense) => expense.id === changedExpense.id,
+      (expense) => expense.id === changedExpense.id
     );
     if (expenseIndex === -1) return;
     expenses[expenseIndex] = changedExpense;
@@ -128,15 +129,13 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
         id: uuidv4(),
         label: `New Expense`,
         value: 0,
-        priceType: priceTypes[0],
-      },
+        priceType: priceTypes[0]
+      }
     ]);
   };
 
   const handleRemoveExpense = (id) => {
-    const updatedExpenses = expenses.filter(
-      (expanse) => expanse.id !== id,
-    );
+    const updatedExpenses = expenses.filter((expanse) => expanse.id !== id);
     setExpenses(updatedExpenses);
     props.setExpenses(totalExpenses(updatedExpenses));
   };

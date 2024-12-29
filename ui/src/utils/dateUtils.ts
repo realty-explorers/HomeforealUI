@@ -12,6 +12,7 @@ const dateDaysDiff = (date: string) => {
 
 const readableDateDiff = (date: string) => {
   const diffDays = dateDaysDiff(date);
+  if (!diffDays) return 'Never';
   if (diffDays < 30) {
     return `${diffDays} days`;
   } else if (diffDays < 365) {
@@ -22,12 +23,12 @@ const readableDateDiff = (date: string) => {
     return `${diffYears} years`;
   }
 };
-function timeSince(date: string) {
-  if (!date) return ("Never");
+function timeSince(date: string | Date) {
+  if (!date) return 'Never';
   const currentDate = new Date();
   const dateToCompare = new Date(date);
   const timeDifference = Math.abs(
-    currentDate.getTime() - dateToCompare.getTime(),
+    currentDate.getTime() - dateToCompare.getTime()
   );
 
   const seconds = Math.floor(timeDifference / 1000);
@@ -38,17 +39,17 @@ function timeSince(date: string) {
   const years = Math.floor(days / 365);
 
   if (seconds < 60) {
-    return "Just now";
+    return 'Just now';
   } else if (minutes < 60) {
-    return `${minutes} minute${minutes > 1 ? "s" : ""} ago`;
+    return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
   } else if (hours < 24) {
-    return `${hours} hour${hours > 1 ? "s" : ""} ago`;
+    return `${hours} hour${hours > 1 ? 's' : ''} ago`;
   } else if (days < 30) {
-    return `${days} day${days > 1 ? "s" : ""} ago`;
+    return `${days} day${days > 1 ? 's' : ''} ago`;
   } else if (months < 12) {
-    return `${months} month${months > 1 ? "s" : ""} ago`;
+    return `${months} month${months > 1 ? 's' : ''} ago`;
   } else {
-    return `${years} year${years > 1 ? "s" : ""} ago`;
+    return `${years} year${years > 1 ? 's' : ''} ago`;
   }
 }
 

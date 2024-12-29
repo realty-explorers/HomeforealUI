@@ -1,15 +1,15 @@
-import BuyBox from "@/models/buybox";
+import BuyBox from '@/models/buybox';
 import {
   BaseQueryApi,
   createApi,
   FetchArgs,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
-import { logout } from "../slices/authSlice";
+  fetchBaseQuery
+} from '@reduxjs/toolkit/query/react';
+import { logout } from '../slices/authSlice';
 
 const baseUrl = process.env.NEXT_PUBLIC_BUYBOX_API_URL;
 // const baseUrl = "http://localhost:8000/buybox";
-const GENERAL_BUYBOX_ID = "3dbf8068-bfda-4422-af27-7597045dac6e";
+const GENERAL_BUYBOX_ID = '3dbf8068-bfda-4422-af27-7597045dac6e';
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
@@ -18,7 +18,7 @@ const baseQuery = fetchBaseQuery({
 
     if (!token) {
       try {
-        const request = await fetch("/api/protected");
+        const request = await fetch('/api/protected');
         token = (await request.json()).accessToken;
       } catch (e) {
         console.log(e);
@@ -27,17 +27,19 @@ const baseQuery = fetchBaseQuery({
 
     // If we have a token set in state, let's assume that we should be passing it.
     if (token) {
-      headers.set("authorization", `Bearer ${token}`);
+      headers.set('authorization', `Bearer ${token}`);
     }
 
+    headers.set('X-Service', 'buybox');
+
     return headers;
-  },
+  }
 });
 
 const baseQueryWithReauth = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
-  extraOptions: any,
+  extraOptions: any
 ) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 403) {
@@ -49,29 +51,29 @@ const baseQueryWithReauth = async (
 };
 
 export const buyBoxApi = createApi({
-  reducerPath: "buyboxApi",
+  reducerPath: 'buyboxApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["BuyBox"],
+  tagTypes: ['BuyBox'],
   endpoints: (builder) => ({
     getBuyBoxes: builder.query<BuyBox[], any>({
-      query: () => ({ url: "/all" }),
+      query: () => ({ url: '/api/v1/buybox' }),
       transformResponse: (response: any) => response,
-      providesTags: ["BuyBox"],
+      providesTags: ['BuyBox']
     }),
     createBuyBox: builder.mutation({
       query: (body) => ({
-        url: "/",
-        method: "POST",
-        body: { "json_params": body },
+        url: '/api/v1/buybox',
+        method: 'POST',
+        body: { parameters: body }
       }),
       transformResponse: (response: any) => response,
-      invalidatesTags: ["BuyBox"],
+      invalidatesTags: ['BuyBox']
     }),
     updateBuyBox: builder.mutation({
-      query: (body) => ({
-        url: `/`,
-        method: "PUT",
-        body: { "json_params": body.data, "buybox_id": body.id },
+      query: ({ id, parameters }) => ({
+        url: `/api/v1/buybox/${id}`,
+        method: 'PUT',
+        body: { parameters }
       }),
       transformResponse: (response: any) => response,
       // async onQueryStarted({ id, ...patch }, { dispatch, queryFulfilled }) {
@@ -102,22 +104,22 @@ export const buyBoxApi = createApi({
       //   error,
       //   arg,
       // ) => [{ type: "BuyBox", id: arg.id }],
-      invalidatesTags: ["BuyBox"],
+      invalidatesTags: ['BuyBox']
     }),
     deleteBuyBox: builder.mutation({
       query: (id) => ({
-        url: `/?buybox_id=${id}`,
-        method: "DELETE",
+        url: `/api/v1/buybox/${id}`,
+        method: 'DELETE'
       }),
-      transformResponse: (response: any) => response,
+      transformResponse: (response: any) => response
       // invalidatesTags: (result, error, arg) => [{ type: "BuyBox", id: arg.id }],
     }),
 
     getLeads: builder.query({
       query: () => ({ url: `leads/${GENERAL_BUYBOX_ID}` }),
-      transformResponse: (response: any) => response,
-    }),
-  }),
+      transformResponse: (response: any) => response
+    })
+  })
 });
 
 export const buyBoxApiEndpoints = buyBoxApi.endpoints;
@@ -127,5 +129,5 @@ export const {
   useLazyGetBuyBoxesQuery,
   useCreateBuyBoxMutation,
   useUpdateBuyBoxMutation,
-  useDeleteBuyBoxMutation,
+  useDeleteBuyBoxMutation
 } = buyBoxApi;

@@ -1,10 +1,10 @@
-import Deal from "@/models/deal";
+import Deal from '@/models/deal';
 import {
   distanceFormatter,
   percentFormatter,
   priceFormatter,
-  validateValue,
-} from "@/utils/converters";
+  validateValue
+} from '@/utils/converters';
 import {
   Box,
   Card,
@@ -18,47 +18,47 @@ import {
   ListItemText,
   Pagination,
   styled,
-  Typography,
-} from "@mui/material";
-import { useState } from "react";
-import { TransitionGroup } from "react-transition-group";
-import CompsProperty from "@/models/comps_property";
-import { openGoogleSearch } from "@/utils/windowFunctions";
-import PropertyPreview from "@/models/propertyPreview";
-import Image from "@/components/Photos/Image";
-import HotelIcon from "@mui/icons-material/Hotel";
-import BathtubOutlinedIcon from "@mui/icons-material/BathtubOutlined";
-import WcIcon from "@mui/icons-material/Wc";
-import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
-import SquareFootIcon from "@mui/icons-material/SquareFoot";
-import PinDropOutlinedIcon from "@mui/icons-material/PinDropOutlined";
-import StraightenIcon from "@mui/icons-material/Straighten";
-import LocalOfferIcon from "@mui/icons-material/LocalOffer";
-import TodayIcon from "@mui/icons-material/Today";
-import AssessmentIcon from "@mui/icons-material/Assessment";
-import { calculateArvPercentage } from "@/utils/calculationUtils";
+  Typography
+} from '@mui/material';
+import { useState } from 'react';
+import { TransitionGroup } from 'react-transition-group';
+import CompsProperty from '@/models/comps_property';
+import { openGoogleSearch } from '@/utils/windowFunctions';
+import PropertyPreview from '@/models/propertyPreview';
+import Image from '@/components/Photos/Image';
+import HotelIcon from '@mui/icons-material/Hotel';
+import BathtubOutlinedIcon from '@mui/icons-material/BathtubOutlined';
+import WcIcon from '@mui/icons-material/Wc';
+import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
+import SquareFootIcon from '@mui/icons-material/SquareFoot';
+import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
+import StraightenIcon from '@mui/icons-material/Straighten';
+import LocalOfferIcon from '@mui/icons-material/LocalOffer';
+import TodayIcon from '@mui/icons-material/Today';
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import { calculateArvPercentage } from '@/utils/calculationUtils';
 
-const AddressLink = styled("h3")(({ theme }) => ({
+const AddressLink = styled('h3')(({ theme }) => ({
   padding: 0,
   margin: 0,
-  textAlign: "center",
-  width: "100%",
-  display: "flex",
-  justifyContent: "center",
-  paddingBottom: "2px",
-  cursor: "pointer",
+  textAlign: 'center',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+  paddingBottom: '2px',
+  cursor: 'pointer'
 }));
 
 type PropertyMapCardProps = {
   property: PropertyPreview;
 };
 const PropertyMapCard: React.FC<PropertyMapCardProps> = (
-  props: PropertyMapCardProps,
+  props: PropertyMapCardProps
 ) => {
   const defaultImage =
-    "/static/images/placeholders/covers/house_placeholder.jpg";
+    '/static/images/placeholders/covers/house_placeholder.jpg';
   const [cardImage, setCardImage] = useState(
-    props.property?.image || defaultImage,
+    props.property?.image || defaultImage
   );
 
   const showDistance = () => {
@@ -71,22 +71,20 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
     }
   };
 
-  const stats =
-    `${props.property?.bedrooms} Beds ● ${props.property?.total_bathrooms} Baths ● ${props.property?.building_area} Sqft`;
+  const stats = `${props.property?.beds} Beds ● ${props.property?.baths} Baths ● ${props.property?.area} Sqft`;
 
   const arvPercentage = calculateArvPercentage(
     props.property.arv_price,
-    props.property.listing_price,
+    props.property.price
   );
   const compsPercentage = calculateArvPercentage(
-    props.property.sales_comps_price,
-    props.property.listing_price,
+    props.property.arv_price,
+    props.property.price
   );
   const arvDiscount = `ARV ↓${arvPercentage.toFixed()}%`;
   const compsDiscount = `Comps ↓${compsPercentage.toFixed()}%`;
-  const seperator = " ● ";
-  const discounts =
-    `ARV ↓${arvPercentage.toFixed()}% ● Comps ↓${compsPercentage.toFixed()}%`;
+  const seperator = ' ● ';
+  const discounts = `ARV ↓${arvPercentage.toFixed()}% ● Comps ↓${compsPercentage.toFixed()}%`;
 
   return (
     <div className="flex rounded-xl bg-white w-80 h-40">
@@ -107,7 +105,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
         {/* /> */}
 
         <Image
-          src={validateValue(cardImage, "string", defaultImage)}
+          src={validateValue(cardImage, 'string', defaultImage)}
           alt={props.property?.address}
           defaultSrc={defaultImage}
           className="object-cover object-center w-full h-full rounded-l-xl"
@@ -128,8 +126,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
             <Typography className="text-xs ml-2 font-poppins ">
               {props.property?.address}
             </Typography>
-            <Typography className="text-xs ml-2 font-poppins">
-            </Typography>
+            <Typography className="text-xs ml-2 font-poppins"></Typography>
           </div>
         </div>
 
@@ -143,7 +140,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
         <div className="flex items-center mt-2 w-full">
           <LocalOfferIcon fontSize="small" />
           <Typography className="text-xs ml-2 font-poppins text-center">
-            {priceFormatter(props.property?.listing_price)}
+            {priceFormatter(props.property?.price)}
           </Typography>
         </div>
 
@@ -213,15 +210,16 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
           alt={props.property.address}
           onError={() =>
             setCardImage(
-              "/static/images/placeholders/illustrations/unknown-house.png",
-            )}
+              '/static/images/placeholders/illustrations/unknown-house.png'
+            )
+          }
         />
-        <CardContent sx={{ paddingTop: "1em" }}>
+        <CardContent sx={{ paddingTop: '1em' }}>
           <Grid xs={12} sm={12} item display="flex" alignItems="center">
             <List
               disablePadding
               sx={{
-                width: "100%",
+                width: '100%'
               }}
             >
               <AddressLink
@@ -232,17 +230,15 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
               <ListItem disableGutters sx={{ padding: 0 }}>
                 <ListItemText
                   primary="Price"
-                  primaryTypographyProps={{ variant: "h5", noWrap: true }}
+                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
                   secondaryTypographyProps={{
-                    variant: "subtitle2",
-                    noWrap: true,
+                    variant: 'subtitle2',
+                    noWrap: true
                   }}
                 />
                 <Box>
                   <Typography align="right" noWrap>
-                    {priceFormatter(
-                      props.property.listing_price,
-                    )}
+                    {priceFormatter(props.property.listing_price)}
                   </Typography>
                 </Box>
               </ListItem>
@@ -250,10 +246,10 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
               <ListItem disableGutters sx={{ padding: 0 }}>
                 <ListItemText
                   primary="Sqft"
-                  primaryTypographyProps={{ variant: "h5", noWrap: true }}
+                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
                   secondaryTypographyProps={{
-                    variant: "subtitle2",
-                    noWrap: true,
+                    variant: 'subtitle2',
+                    noWrap: true
                   }}
                 />
                 <Box>
@@ -265,10 +261,10 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
               <ListItem disableGutters sx={{ padding: 0 }}>
                 <ListItemText
                   primary="Beds"
-                  primaryTypographyProps={{ variant: "h5", noWrap: true }}
+                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
                   secondaryTypographyProps={{
-                    variant: "subtitle2",
-                    noWrap: true,
+                    variant: 'subtitle2',
+                    noWrap: true
                   }}
                 />
                 <Box>
@@ -280,10 +276,10 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
               <ListItem disableGutters sx={{ padding: 0 }}>
                 <ListItemText
                   primary="Baths"
-                  primaryTypographyProps={{ variant: "h5", noWrap: true }}
+                  primaryTypographyProps={{ variant: 'h5', noWrap: true }}
                   secondaryTypographyProps={{
-                    variant: "subtitle2",
-                    noWrap: true,
+                    variant: 'subtitle2',
+                    noWrap: true
                   }}
                 />
                 <Box>
