@@ -4,7 +4,12 @@ import { z } from 'zod';
 const moneySchema = z.number().positive('Amount must be greater than 0');
 const daysSchema = z.number().min(0).max(365);
 
-const financingTypesSchema = z.enum(['BANK', 'SELLER', 'EXISTING_MORTGAGE']);
+const financingTypesSchema = z.enum([
+  'CONVENTIONAL LOAN',
+  'SELLER FINANCE',
+  'SUBJECT TO',
+  'CASH'
+]);
 export const financingTypeLabels = financingTypesSchema.options;
 
 const surveyorChoiceSchema = z.enum(['buyer', 'seller', 'shared']);
@@ -14,10 +19,8 @@ export const OfferSchema = z.object({
   // Purchase Price and Financing
   financialDetails: z.object({
     purchasePrice: moneySchema,
-    requireFinancing: z.boolean(),
     financingType: financingTypesSchema.optional(),
-    loanAmount: z.number().optional(),
-    interestRate: z.number().optional()
+    loanAmount: z.number().optional()
   }),
 
   // Deposit
@@ -47,7 +50,10 @@ export const OfferSchema = z.object({
   }),
 
   // Inspection Period
-  propertyDescription: z.object({
+  propertyTerms: z.object({
+    conductInspection: z.boolean(),
+    isInspectionContingent: z.boolean().optional(),
+    inspectionDurationDays: daysSchema.optional(),
     lease: z.boolean()
   }),
 
@@ -74,13 +80,23 @@ export const OfferSchema = z.object({
     requireResidentialServiceContract: z.boolean()
   }),
 
-  // Closing and Possession
+  buyerDetails: z.object({
+    name: z.string(),
+    address: z.string(),
+    phone: z.string().optional(),
+    email: z.string().email().optional()
+  }),
+
+  settlementExpenses: z.object({
+    sellerPaysSettlementExpenses: z.boolean(),
+    settlementAmount: moneySchema.optional()
+  }),
+
   closingDetails: z.object({
-    closingMethod: z.enum(['specific_date', 'days_after_execution']),
     closingDate: z.string().optional(),
-    daysAfterExecution: z.number().optional(),
-    possessionDate: z.string(),
-    possessionTime: z.string()
+    possesionOnClosing: z.boolean(),
+    optionToTerminate: z.boolean(),
+    additionalClause: z.string().optional()
   }),
 
   // Option to Terminate
@@ -88,24 +104,6 @@ export const OfferSchema = z.object({
     allowTermination: z.boolean(),
     terminationFee: moneySchema.optional(),
     terminationPeriodDays: daysSchema.optional()
-  }),
-
-  // Additional Clauses
-  additionalClauses: z
-    .array(
-      z.object({
-        clause: z.string(),
-        details: z.string()
-      })
-    )
-    .optional(),
-
-  // Settlement Expenses
-  settlementExpenses: z.object({
-    closingCostsPaidBy: z.enum(['buyer', 'seller', 'split']),
-    splitPercentageBuyer: z.number().optional(),
-    splitPercentageSeller: z.number().optional(),
-    transferTaxPaidBy: z.enum(['buyer', 'seller', 'split'])
   })
 });
 

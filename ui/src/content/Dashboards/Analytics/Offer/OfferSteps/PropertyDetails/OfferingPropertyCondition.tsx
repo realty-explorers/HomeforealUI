@@ -212,7 +212,7 @@ const OfferingPropertyCondition = ({
       <Typography
         className={clsx([styles.subheader, 'col-span-1 col-start-1'])}
       >
-        Ask to conduct a threatened or endangered species report?
+        Conduct a threatened or endangered species report?
         <Tooltip title="The property might be affected by threatened or endangered species which can limit renovation work in some states">
           <HelpOutlineOutlinedIcon className="text-gray-400" />
         </Tooltip>
@@ -220,7 +220,7 @@ const OfferingPropertyCondition = ({
 
       <SwitchField
         control={control}
-        fieldName="propertyCondition.conductEndangeredSpeciesReport"
+        fieldName="propertyConditions.conductEndangeredSpeciesReport"
         className="m-0"
       />
 
@@ -233,7 +233,7 @@ const OfferingPropertyCondition = ({
 
       <SwitchField
         control={control}
-        fieldName="propertyCondition.conductEnvironmnetalReport"
+        fieldName="propertyConditions.conductEnvironmnetalReport"
         className="m-0"
       />
 
@@ -243,7 +243,7 @@ const OfferingPropertyCondition = ({
 
       <SwitchField
         control={control}
-        fieldName="propertyCondition.requireResidentialServiceContract"
+        fieldName="propertyConditions.requireResidentialServiceContract"
         className="m-0"
       />
     </>

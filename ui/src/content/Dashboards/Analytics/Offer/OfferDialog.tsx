@@ -34,15 +34,26 @@ import { useDispatch } from 'react-redux';
 import OfferFinancing from './OfferSteps/OfferFinancing';
 import { OfferSchema, OfferSchemaType } from '@/schemas/OfferSchemas';
 import OfferPropertyDetails from './OfferSteps/OfferPropertyDetails';
+import OfferPartyDetails from './OfferSteps/OfferPartyDetails';
+import OfferFinalSteps from './OfferSteps/OfferFinalSteps';
+import OfferDialogTitle from './OfferDialogTitle';
 
 const steps = [
+  {
+    title: `Buyer Details`,
+    fields: ['buyerDetails']
+  },
   {
     title: 'Financing',
     fields: ['financialDetails', 'deposit', 'conditions', 'landSurvey']
   },
   {
-    title: 'Property Details',
-    fields: ['legalDescription']
+    title: 'Terms & Conditions',
+    fields: ['legalDescription', 'propertyDescription', 'propertyConditions']
+  },
+  {
+    title: 'Final Steps',
+    fields: ['settlementExpenses']
   }
 ];
 
@@ -140,135 +151,143 @@ const OfferDialog = (props: OfferDialogProps) => {
     // };
   }, [errors]);
 
+  const StepButtons = (
+    <div className="flex flex-col bg-[rgba(151,71,255,0.7)] pb-8 h-full">
+      {steps.map((step, index) => (
+        <Button
+          key={index}
+          onClick={() => setActiveStep(index)}
+          className={clsx([
+            ' text-white text-xl font-bold  h-24 rounded-[0] px-8 py-4 hover:bg-[#9747FF]',
+            styles.font_poppins,
+            activeStep === index ? 'bg-[#9747FF]' : 'bg-transparent'
+          ])}
+        >
+          {steps[index].title}
+        </Button>
+      ))}
+    </div>
+  );
+  const StepSections = (
+    <motion.div
+      key={activeStep}
+      className="grow w-full flex"
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: -20, opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {activeStep === 0 && (
+        <OfferPartyDetails
+          register={register}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+          getValues={getValues}
+          errors={errors}
+        />
+      )}
+
+      {activeStep === 1 && (
+        <OfferFinancing
+          register={register}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+          getValues={getValues}
+          errors={errors}
+        />
+      )}
+
+      {activeStep === 2 && (
+        <OfferPropertyDetails
+          register={register}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+          getValues={getValues}
+          errors={errors}
+        />
+      )}
+
+      {activeStep === 3 && (
+        <OfferFinalSteps
+          register={register}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+          getValues={getValues}
+          errors={errors}
+        />
+      )}
+    </motion.div>
+  );
+  const FormFooter = (
+    <div className="w-full flex justify-between py-4 px-4">
+      <div className="flex gap-x-2">
+        {activeStep === 0 ? (
+          <div></div>
+        ) : (
+          <Button onClick={handleBackStep} className={styles.button}>
+            <ArrowBackIosOutlinedIcon className="h-4 w-4" />
+            Back
+          </Button>
+        )}
+      </div>
+
+      <div className="flex gap-x-2">
+        {isDirty && (
+          <Button onClick={handleResetBuyBox} className={styles.button}>
+            <RestartAltOutlined className="h-4 w-4" />
+            <Typography className={styles.button_text}>Reset</Typography>
+          </Button>
+        )}
+        <LoadingButton
+          onClick={handleSubmitForm}
+          className={styles.button}
+          loading={isSubmitting}
+        >
+          <Typography className={styles.button_text}>
+            {isDirty ? 'Save & Finish' : 'Finish'}
+          </Typography>
+        </LoadingButton>
+
+        {activeStep < steps.length - 1 && (
+          <Button onClick={handleNextStep} className={styles.button}>
+            <Typography className={styles.button_text}>Next</Typography>
+            <ArrowForwardIos className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+    </div>
+  );
   return (
     <Dialog
       open={props.show}
       onClose={handleClose}
       fullWidth
       maxWidth="lg"
-      className={clsx[poppins.variable]}
+      className={clsx[(poppins.variable, '')]}
     >
-      <div className="w-full h-[80vh] grid grid-cols-[15rem_1fr]  gap-x-0 overflow-hidden">
-        <div className="col-span-2 w-full flex justify-center items-center shadow">
-          <IconButton
-            className="absolute top-0 right-0 w-8 h-8 rounded-3xl"
-            onClick={handleClose}
-          >
-            <HighlightOffOutlinedIcon />
-          </IconButton>
-          <DialogTitle
-            className={clsx([' text-2xl font-bold ', styles.font_poppins])}
-          >
-            Make an Offer
-          </DialogTitle>
-          <Stepper
-            nonLinear
-            activeStep={activeStep}
-            className="hidden md:flex grow px-8 bg-transparent"
-          >
-            {steps.map((step, index) => (
-              <Step key={index} className="">
-                <StepLabel
-                  className={clsx([styles.font_poppins, 'cursor-pointer'])}
-                  error={Boolean(getStepsErrors(index))}
-                  onClick={() => setActiveStep(index)}
-                >
-                  {step.title}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </div>
-        <div className="flex flex-col bg-[rgba(151,71,255,0.7)] pb-8 ">
-          {steps.map((step, index) => (
-            <Button
-              key={index}
-              onClick={() => setActiveStep(index)}
-              className={clsx([
-                ' text-white text-xl font-bold  h-24 rounded-[0] px-8 py-4 hover:bg-[#9747FF]',
-                styles.font_poppins,
-                activeStep === index ? 'bg-[#9747FF]' : 'bg-transparent'
-              ])}
+      <div className="h-[80vh] w-full flex flex-col gap-x-0 overflow-hidden">
+        <OfferDialogTitle
+          steps={steps}
+          activeStep={activeStep}
+          setActiveStep={setActiveStep}
+          errors={errors}
+          handleClose={handleClose}
+        />
+        <div className="flex w-full flex-grow overflow-hidden">
+          {StepButtons}
+          <div className=" w-full overflow-y-auto">
+            <form
+              className="flex min-h-full flex-col"
+              onSubmit={handleSubmit(onSubmit)}
             >
-              {steps[index].title}
-            </Button>
-          ))}
-        </div>
-        <div className="h-full overflow-y-auto">
-          <form
-            className="h-full flex flex-col"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <motion.div
-              key={activeStep}
-              className="grow w-full flex"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {activeStep === 0 && (
-                <OfferFinancing
-                  register={register}
-                  control={control}
-                  watch={watch}
-                  setValue={setValue}
-                  getValues={getValues}
-                  errors={errors}
-                />
-              )}
-
-              {activeStep === 1 && (
-                <OfferPropertyDetails
-                  register={register}
-                  control={control}
-                  watch={watch}
-                  setValue={setValue}
-                  getValues={getValues}
-                  errors={errors}
-                />
-              )}
-            </motion.div>
-            <div className="w-full flex justify-between py-4 px-4">
-              <div className="flex gap-x-2">
-                {activeStep === 0 ? (
-                  <div></div>
-                ) : (
-                  <Button onClick={handleBackStep} className={styles.button}>
-                    <ArrowBackIosOutlinedIcon className="h-4 w-4" />
-                    Back
-                  </Button>
-                )}
-              </div>
-
-              <div className="flex gap-x-2">
-                {isDirty && (
-                  <Button onClick={handleResetBuyBox} className={styles.button}>
-                    <RestartAltOutlined className="h-4 w-4" />
-                    <Typography className={styles.button_text}>
-                      Reset
-                    </Typography>
-                  </Button>
-                )}
-                <LoadingButton
-                  onClick={handleSubmitForm}
-                  className={styles.button}
-                  loading={isSubmitting}
-                >
-                  <Typography className={styles.button_text}>
-                    {isDirty ? 'Save & Finish' : 'Finish'}
-                  </Typography>
-                </LoadingButton>
-
-                {activeStep < steps.length - 1 && (
-                  <Button onClick={handleNextStep} className={styles.button}>
-                    <Typography className={styles.button_text}>Next</Typography>
-                    <ArrowForwardIos className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            </div>
-          </form>
+              {StepSections}
+              {FormFooter}
+            </form>
+          </div>
         </div>
       </div>
     </Dialog>

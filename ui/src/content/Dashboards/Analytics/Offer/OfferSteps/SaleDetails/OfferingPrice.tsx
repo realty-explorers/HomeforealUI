@@ -1,6 +1,6 @@
 import AutocompleteField from '@/components/Form/AutocompleteField';
 import SwitchField from '@/components/Form/SwitchField';
-import { OfferSchemaType } from '@/schemas/OfferSchemas';
+import { financingTypeLabels, OfferSchemaType } from '@/schemas/OfferSchemas';
 import { TextField, Typography } from '@mui/material';
 import clsx from 'clsx';
 import {
@@ -43,61 +43,37 @@ const OfferingPrice = ({
         error={!!errors?.financialDetails?.purchasePrice}
       />
 
-      <Typography className={clsx([styles.subheader])}>
-        Do you require financing?
-      </Typography>
-      <SwitchField
-        control={control}
-        fieldName="financialDetails.requireFinancing"
-        className="m-0"
-      />
-      {watch('financialDetails.requireFinancing') && (
-        <>
-          <Typography className={clsx([styles.subheader])}>
-            Financing Type:
-          </Typography>
-          <AutocompleteField
-            label="Financing Type"
-            options={['BANK', 'SELLER']}
-            multiple={false}
-            control={control}
-            fieldName="financialDetails.financingType"
-            className=""
-          />
-          <Typography className={clsx([styles.subheader])}>
-            How much is the loan?
-          </Typography>
+      <>
+        <Typography className={clsx([styles.subheader])}>
+          Financing Type:
+        </Typography>
+        <AutocompleteField
+          label="Financing Type"
+          options={financingTypeLabels}
+          multiple={false}
+          control={control}
+          fieldName="financialDetails.financingType"
+          className=""
+        />
 
-          <TextField
-            label="Loan Amount"
-            variant="outlined"
-            size="small"
-            type="number"
-            {...register('financialDetails.loanAmount')}
-            className=""
-            helperText={errors?.financialDetails?.loanAmount?.message}
-            error={!!errors?.financialDetails?.loanAmount}
-          />
-          {watch('financialDetails.financingType') === 'SELLER' && (
-            <>
-              <Typography className={clsx([styles.subheader])}>
-                Interest Rate (If applicable)
-              </Typography>
-
-              <TextField
-                label="Property Price Offer"
-                variant="outlined"
-                size="small"
-                type="number"
-                {...register('financialDetails.loanAmount')}
-                className=""
-                helperText={errors?.financialDetails?.interestRate?.message}
-                error={!!errors?.financialDetails?.interestRate}
-              />
-            </>
-          )}
-        </>
-      )}
+        {watch('financialDetails.financingType') !== 'CASH' && (
+          <>
+            <Typography className={clsx([styles.subheader])}>
+              How much is the loan?
+            </Typography>
+            <TextField
+              label="Loan Amount"
+              variant="outlined"
+              size="small"
+              type="number"
+              {...register('financialDetails.loanAmount')}
+              className=""
+              helperText={errors?.financialDetails?.loanAmount?.message}
+              error={!!errors?.financialDetails?.loanAmount}
+            />
+          </>
+        )}
+      </>
     </>
   );
 };

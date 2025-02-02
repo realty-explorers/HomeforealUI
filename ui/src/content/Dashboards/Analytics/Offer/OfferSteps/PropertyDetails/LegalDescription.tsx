@@ -25,32 +25,7 @@ const OfferingLegalDescription = ({
   errors
 }: OfferingLegalDescriptionProps) => {
   const [writeDescriptionNow, setWriteDescriptionNow] = useState(false);
-  return (
-    <>
-      <Typography className={clsx([styles.header, 'col-span-2'])}>
-        Legal Description
-      </Typography>
-      <Typography className={clsx([styles.subheader, 'col-span-1'])}>
-        Would you like to add the property's legal description now?
-      </Typography>
-
-      <Switch
-        className="m-0"
-        checked={writeDescriptionNow}
-        onChange={() => setWriteDescriptionNow(!writeDescriptionNow)}
-      />
-      {writeDescriptionNow && (
-        <TextField
-          label="Legal Description"
-          variant="outlined"
-          size="small"
-          {...register('legalDescription.description')}
-          helperText={errors?.legalDescription?.description?.message}
-          error={!!errors?.legalDescription?.description}
-        />
-      )}
-    </>
-  );
+  return <></>;
 };
 
 export default OfferingLegalDescription;
