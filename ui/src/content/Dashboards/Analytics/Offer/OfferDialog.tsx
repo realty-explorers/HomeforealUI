@@ -152,7 +152,7 @@ const OfferDialog = (props: OfferDialogProps) => {
   }, [errors]);
 
   const StepButtons = (
-    <div className="flex flex-col bg-[rgba(151,71,255,0.7)] pb-8 h-full">
+    <div className="hidden md:flex flex-col bg-[rgba(151,71,255,0.7)] pb-8 h-full">
       {steps.map((step, index) => (
         <Button
           key={index}

@@ -62,6 +62,7 @@ const OfferingPropertyDescription = ({
             size="small"
             type="number"
             {...register('propertyTerms.inspectionDurationDays')}
+            className="col-start-1 lg:col-start-2"
             helperText={errors?.propertyTerms?.inspectionDurationDays?.message}
             error={!!errors?.propertyTerms?.inspectionDurationDays}
           />

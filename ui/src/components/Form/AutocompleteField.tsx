@@ -1,6 +1,7 @@
 import { BuyBoxFormData } from '@/schemas/BuyBoxFormSchema';
 import { Autocomplete, TextField } from '@mui/material';
 import { Control, Controller, Path } from 'react-hook-form';
+import { clsx } from 'yet-another-react-lightbox';
 
 type AutocompleteFieldProps<T> = {
   label: string;
@@ -10,6 +11,7 @@ type AutocompleteFieldProps<T> = {
   fieldName: Path<T>;
   disabled?: boolean;
   className?: string;
+  containerClassName?: string;
 };
 
 const AutocompleteField = <T extends Record<string, any>>({
@@ -19,7 +21,8 @@ const AutocompleteField = <T extends Record<string, any>>({
   control,
   fieldName,
   disabled,
-  className
+  className,
+  containerClassName
 }: AutocompleteFieldProps<T>) => {
   const getUniqueOptions = (options: string[]) => {
     const optionLabels = new Set();
@@ -36,7 +39,9 @@ const AutocompleteField = <T extends Record<string, any>>({
   const uniqueOptions = getUniqueOptions(options);
 
   return (
-    <div className="grid w-full gap-x-4 items-center">
+    <div
+      className={clsx(['grid w-full gap-x-4 items-center', containerClassName])}
+    >
       <Controller
         name={fieldName}
         control={control}

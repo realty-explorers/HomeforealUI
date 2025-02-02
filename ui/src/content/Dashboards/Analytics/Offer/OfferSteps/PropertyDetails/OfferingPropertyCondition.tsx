@@ -166,7 +166,7 @@ const OfferingPropertyCondition = ({
             </>
           ))}
 
-          <Typography className={clsx([styles.subheader])}>
+          <Typography className={clsx([styles.subheader, 'mb-2'])}>
             Additional and county/local law
           </Typography>
 

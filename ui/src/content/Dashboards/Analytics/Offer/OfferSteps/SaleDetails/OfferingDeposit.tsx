@@ -38,7 +38,7 @@ const OfferingDesposit = ({
         size="small"
         type="number"
         {...register('deposit.depositAmount')}
-        className=""
+        className="col-start-1 lg:col-start-2"
         helperText={errors?.financialDetails?.purchasePrice?.message}
         error={!!errors?.financialDetails?.purchasePrice}
       />

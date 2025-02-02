@@ -39,7 +39,9 @@ const OfferingLandSurvey = ({
         className="m-0"
       />
 
-      <Typography className={clsx([styles.subheader, 'col-span-1'])}>
+      <Typography
+        className={clsx([styles.subheader, 'col-span-2 lg:col-span-1'])}
+      >
         {watch('landSurvey.requireNewSurvey')
           ? 'Who pays if existing survey is unacceptable to lender?'
           : 'Who will pay for the land survey?'}

@@ -38,13 +38,15 @@ const OfferingPrice = ({
         size="small"
         type="number"
         {...register('financialDetails.purchasePrice')}
-        className=""
+        className="col-start-1 lg:col-start-2"
         helperText={errors?.financialDetails?.purchasePrice?.message}
         error={!!errors?.financialDetails?.purchasePrice}
       />
 
       <>
-        <Typography className={clsx([styles.subheader])}>
+        <Typography
+          className={clsx([styles.subheader, 'col-span-2 lg:col-span-1'])}
+        >
           Financing Type:
         </Typography>
         <AutocompleteField
@@ -53,7 +55,7 @@ const OfferingPrice = ({
           multiple={false}
           control={control}
           fieldName="financialDetails.financingType"
-          className=""
+          containerClassName="col-start-1 lg:col-start-2"
         />
 
         {watch('financialDetails.financingType') !== 'CASH' && (
@@ -67,7 +69,7 @@ const OfferingPrice = ({
               size="small"
               type="number"
               {...register('financialDetails.loanAmount')}
-              className=""
+              className="col-start-1 lg:col-start-2"
               helperText={errors?.financialDetails?.loanAmount?.message}
               error={!!errors?.financialDetails?.loanAmount}
             />

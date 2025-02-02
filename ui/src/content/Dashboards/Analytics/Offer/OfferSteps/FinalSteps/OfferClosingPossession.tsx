@@ -41,6 +41,7 @@ const OfferingClosingPossession = ({
         size="small"
         type="date"
         {...register('closingDetails.closingDate')}
+        className="col-start-1 lg:col-start-2"
         helperText={errors?.closingDetails?.closingDate?.message}
         error={!!errors?.closingDetails?.closingDate}
       />
