@@ -33,9 +33,6 @@ const SalesComps = (props: SalesCompsProps) => {
   const soldComps = selectedProperty.comps.filter(
     (comp) => comp.status === 'sold'
   );
-  if (soldComps.length) {
-    return null;
-  }
 
   //TODO: handle this
   // const recalculateComps = async (compsIds: string[]) => {

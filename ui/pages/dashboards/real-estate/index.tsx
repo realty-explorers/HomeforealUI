@@ -1,106 +1,105 @@
-import { useEffect, useRef, useState } from "react";
-import { getSession, withPageAuthRequired } from "@auth0/nextjs-auth0";
-import SidebarLayout from "@/layouts/SidebarLayout";
-import { CircularProgress, IconButton } from "@mui/material";
-import Map from "@/content/Dashboards/RealEstate/Map";
-import { useDispatch, useSelector } from "react-redux";
-import clsx from "clsx";
+import { useEffect, useRef, useState } from 'react';
+import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
+import SidebarLayout from '@/layouts/SidebarLayout';
+import { CircularProgress, IconButton } from '@mui/material';
+import Map from '@/content/Dashboards/RealEstate/Map';
+import { useDispatch, useSelector } from 'react-redux';
+import clsx from 'clsx';
 import {
   selectProperties,
   setSelectedProperty,
   setSelectedPropertyPreview,
-  setSelectedRentalComps,
-} from "@/store/slices/propertiesSlice";
-import styles from "./RealEstate.module.scss";
-import { CompData, FilteredComp } from "@/models/analyzedProperty";
-import { motion, Variants } from "framer-motion";
-import { propertiesApiEndpoints } from "@/store/services/propertiesApiService";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import SkeletonSection from "@/content/Dashboards/RealEstate/MoreDetails/SkeletonSection";
-import MoreDetails from "@/content/Dashboards/RealEstate/MoreDetails/MoreDetails";
-import dynamic from "next/dynamic";
-import Joyride from "react-joyride";
-import { selectMap } from "@/store/slices/mapSlice";
-import { map } from "lodash";
-import PageTourModal from "@/components/JoyRide/ToolTips/PageTourModal";
-import { ACTIONS, EVENTS } from "react-joyride";
-import { selectLocation } from "@/store/slices/locationSlice";
+  setSelectedRentalComps
+} from '@/store/slices/propertiesSlice';
+import styles from './RealEstate.module.scss';
+import { CompData, FilteredComp } from '@/models/analyzedProperty';
+import { motion, Variants } from 'framer-motion';
+import { propertiesApiEndpoints } from '@/store/services/propertiesApiService';
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import SkeletonSection from '@/content/Dashboards/RealEstate/MoreDetails/SkeletonSection';
+import MoreDetails from '@/content/Dashboards/RealEstate/MoreDetails/MoreDetails';
+import dynamic from 'next/dynamic';
+import Joyride from 'react-joyride';
+import { selectMap } from '@/store/slices/mapSlice';
+import { map } from 'lodash';
+import PageTourModal from '@/components/JoyRide/ToolTips/PageTourModal';
+import { ACTIONS, EVENTS } from 'react-joyride';
+import { selectLocation } from '@/store/slices/locationSlice';
+import MakeOfferButton from '@/content/Dashboards/Analytics/Offer/MakeOfferButton';
+import OfferDialog from '@/content/Dashboards/Analytics/Offer/OfferDialog';
 
-const JoyRideNoSSR = dynamic(
-  () => import("react-joyride"),
-  { ssr: false },
-);
+const JoyRideNoSSR = dynamic(() => import('react-joyride'), { ssr: false });
 
 const steps = [
   {
-    target: "#search-bar",
+    target: '#search-bar',
     content:
-      "Search for a location to get started. Search by zip code, neighborhood or city. Currently, we only support Alabama and Florida.",
+      'Search for a location to get started. Search by zip code, neighborhood or city. Currently, we only support Alabama and Florida.',
     locale: { skip: <strong aria-label="skip">SKIP</strong> },
     disableBeacon: true,
     styles: {
       spotlight: {
-        borderRadius: "3rem",
+        borderRadius: '3rem',
         padding: 0,
-        margin: 0,
-      },
-    },
+        margin: 0
+      }
+    }
   },
 
   {
-    target: "#buybox_combobox",
+    target: '#buybox_combobox',
     content:
-      "Select a buy box to get started. You can create a new buy box by visiting the buy box page.",
+      'Select a buy box to get started. You can create a new buy box by visiting the buy box page.',
     locale: { skip: <strong aria-label="skip">SKIP</strong> },
     disableBeacon: true,
     styles: {
       spotlight: {
-        borderRadius: "1rem",
+        borderRadius: '1rem',
         padding: 0,
-        margin: 0,
-      },
-    },
+        margin: 0
+      }
+    }
   },
 
   {
-    target: "#strategy_toggle",
-    content: "Select an investment strategy",
+    target: '#strategy_toggle',
+    content: 'Select an investment strategy',
     locale: { skip: <strong aria-label="skip">SKIP</strong> },
     disableBeacon: true,
     styles: {
       spotlight: {
-        borderRadius: "1rem",
+        borderRadius: '1rem',
         padding: 0,
-        margin: 0,
-      },
-    },
+        margin: 0
+      }
+    }
   },
 
   {
-    target: "#filters",
-    content: "Apply filters to narrow down your search.",
+    target: '#filters',
+    content: 'Apply filters to narrow down your search.',
     locale: { skip: <strong aria-label="skip">SKIP</strong> },
     disableBeacon: true,
     styles: {
       spotlight: {
-        borderRadius: "1rem",
+        borderRadius: '1rem',
         padding: 0,
-        margin: 0,
-      },
-    },
+        margin: 0
+      }
+    }
   },
 
   {
-    target: "#buybox-page",
-    content: "Build new buyboxes",
+    target: '#buybox-page',
+    content: 'Build new buyboxes',
     locale: { skip: <strong aria-label="skip">SKIP</strong> },
     disableBeacon: true,
     styles: {
       spotlight: {
-        borderRadius: "1rem",
-      },
-    },
-  },
+        borderRadius: '1rem'
+      }
+    }
+  }
 ];
 
 const DashboardRealEstate = (props: any) => {
@@ -111,20 +110,19 @@ const DashboardRealEstate = (props: any) => {
     selectedComps,
     selectedPropertyPreview,
     selectedRentalComps,
-    selecting,
-  } = useSelector(
-    selectProperties,
-  );
+    selecting
+  } = useSelector(selectProperties);
   const [showGuide, setShowGuide] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [step2ready, setStep2Ready] = useState(false);
+  const [showOfferDialog, setShowOfferDialog] = useState(false);
 
   const { suggestion } = useSelector(selectLocation);
   const openMoreDetails = selectedPropertyPreview;
 
-  const selectedPropertyState = propertiesApiEndpoints.getProperty
-    .useQueryState(
-      selectedPropertyPreview?.source_id,
+  const selectedPropertyState =
+    propertiesApiEndpoints.getProperty.useQueryState(
+      selectedPropertyPreview?.source_id
     );
 
   const handleSelectRentalComps = (compsProperties: FilteredComp[]) => {
@@ -146,12 +144,12 @@ const DashboardRealEstate = (props: any) => {
   });
 
   useEffect(() => {
-    if (typeof window !== "undefined" && window.localStorage) {
-      const tourValue = localStorage.getItem("tour");
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const tourValue = localStorage.getItem('tour');
       if (!tourValue) {
-        localStorage.setItem("tour", "true");
+        localStorage.setItem('tour', 'true');
       }
-      if (!tourValue || tourValue === "true") {
+      if (!tourValue || tourValue === 'true') {
         setTour(true);
       } else {
         setTour(false);
@@ -159,7 +157,7 @@ const DashboardRealEstate = (props: any) => {
     }
   }, []);
 
-  const windowWidth = typeof window !== "undefined" ? window.innerWidth : 0;
+  const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
 
   return (
     <div className="flex w-full h-full relative overflow-hidden" id="map">
@@ -176,18 +174,20 @@ const DashboardRealEstate = (props: any) => {
           //   `Step ${index}, ${status} ${type}, ${stepIndex}, ${action}, ${typeof status}`,
           // );
           if (
-            index > 0 && type === EVENTS.STEP_AFTER && action === ACTIONS.NEXT
+            index > 0 &&
+            type === EVENTS.STEP_AFTER &&
+            action === ACTIONS.NEXT
           ) {
             setStepIndex(index + 1);
           }
           if (stepIndex === 0 && step2ready) {
             setStepIndex(1);
-          } else if (index === 0 && type === "step:after") {
+          } else if (index === 0 && type === 'step:after') {
             if (suggestion) {
               setStep2Ready(true);
             }
             setStepIndex(1);
-          } else if (index === 1 && type === "error:target_not_found") {
+          } else if (index === 1 && type === 'error:target_not_found') {
             setShowGuide(false);
             setStepIndex(1);
             if (!suggestion) {
@@ -201,10 +201,10 @@ const DashboardRealEstate = (props: any) => {
         styles={{
           options: {
             // arrowColor: "#eee",
-            backgroundColor: "#eee",
-            primaryColor: "#000",
-            textColor: "#000",
-          },
+            backgroundColor: '#eee',
+            primaryColor: '#000',
+            textColor: '#000'
+          }
         }}
         stepIndex={stepIndex}
       />
@@ -216,55 +216,59 @@ const DashboardRealEstate = (props: any) => {
           >
             <ExpandMoreIcon
               className={clsx([
-                "transition-all ",
-                openMoreDetails ? "rotate-90" : "-rotate-90",
+                'transition-all ',
+                openMoreDetails ? 'rotate-90' : '-rotate-90'
               ])}
             />
           </IconButton>
+
+          {/* <MakeOfferButton onClick={() => setShowOfferDialog(true)} /> */}
           <motion.div
             initial={{
-              translateX: "-100%",
+              translateX: '-100%'
             }}
-            animate={{ translateX: "0" }}
+            animate={{ translateX: '0' }}
             transition={{
               duration: 0.8,
-              ease: [0, 0.71, 0.2, 1.01],
+              ease: [0, 0.71, 0.2, 1.01]
             }}
             className={clsx([
               styles.moreDetailsPanel,
-              "w-full md:w-1/2 overflow-y-auto absolute h-full bg-off-white z-[1]",
+              'w-full md:w-1/2 overflow-y-auto absolute h-full bg-off-white z-[1]'
             ])}
           >
-            {(selectedPropertyState.isFetching || selecting)
-              ? <SkeletonSection />
-              : (
-                <div
-                  className={clsx([
-                    "duration-500 transition-opacity animate-fade",
-                  ])}
-                >
-                  <MoreDetails
-                    selectedProperty={selectedProperty}
-                    selectedComps={selectedComps}
-                    selectedRentalComps={selectedRentalComps}
-                    setSelectedRentalComps={handleSelectRentalComps}
-                  />
-                </div>
-              )}
+            {selectedPropertyState.isFetching || selecting ? (
+              <SkeletonSection />
+            ) : (
+              <div
+                className={clsx([
+                  'duration-500 transition-opacity animate-fade relative'
+                ])}
+              >
+                <MakeOfferButton onClick={() => setShowOfferDialog(true)} />
+                <MoreDetails
+                  selectedProperty={selectedProperty}
+                  selectedComps={selectedComps}
+                  selectedRentalComps={selectedRentalComps}
+                  setSelectedRentalComps={handleSelectRentalComps}
+                />
+              </div>
+            )}
           </motion.div>
         </>
       )}
 
       <div
         className={clsx([
-          "h-full absolute left-0 md:left-1/2 bg-white transition-transform duration-500 overflow-hidden",
+          'h-full absolute left-0 md:left-1/2 bg-white transition-transform duration-500 overflow-hidden',
           openMoreDetails
-            ? "w-full md:w-1/2 translate-x-0 md:translate-x-0"
-            : "w-full  translate-x-0 md:-translate-x-1/2",
+            ? 'w-full md:w-1/2 translate-x-0 md:translate-x-0'
+            : 'w-full  translate-x-0 md:-translate-x-1/2'
         ])}
       >
         <Map />
       </div>
+      <OfferDialog show={showOfferDialog} setShow={setShowOfferDialog} />
     </div>
   );
 };

@@ -2,17 +2,17 @@ import { BuyBoxFormData } from '@/schemas/BuyBoxFormSchema';
 import { Autocomplete, TextField } from '@mui/material';
 import { Control, Controller, Path } from 'react-hook-form';
 
-type AutocompleteFieldProps = {
+type AutocompleteFieldProps<T> = {
   label: string;
   options: string[];
   multiple: boolean;
-  control: Control<BuyBoxFormData>;
-  fieldName: Path<BuyBoxFormData>;
+  control: Control<T>;
+  fieldName: Path<T>;
   disabled?: boolean;
   className?: string;
 };
 
-const AutocompleteField = ({
+const AutocompleteField = <T extends Record<string, any>>({
   label,
   options,
   multiple,
@@ -20,7 +20,7 @@ const AutocompleteField = ({
   fieldName,
   disabled,
   className
-}: AutocompleteFieldProps) => {
+}: AutocompleteFieldProps<T>) => {
   const getUniqueOptions = (options: string[]) => {
     const optionLabels = new Set();
     const uniqueOptions: string[] = [];

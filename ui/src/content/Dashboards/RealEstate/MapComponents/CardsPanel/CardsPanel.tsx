@@ -70,8 +70,7 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   const sortedProperties =
     filteredProperties &&
     [...filteredProperties].sort((a, b) => {
-      const fieldName =
-        strategyMode === 'ARV' ? 'arv_price' : 'sales_comps_price';
+      const fieldName = strategyMode === 'ARV' ? 'arv25_price' : 'arv_price';
 
       if (!validValue(a[fieldName]) && validValue(b[fieldName])) return 1;
       if (validValue(a[fieldName]) && !validValue(b[fieldName])) return -1;

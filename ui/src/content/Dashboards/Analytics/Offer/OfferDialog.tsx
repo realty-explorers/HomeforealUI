@@ -1,0 +1,278 @@
+import {
+  AppBar,
+  Autocomplete,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  IconButton,
+  Pagination,
+  Slider,
+  Switch,
+  TextField,
+  Toolbar,
+  Typography
+} from '@mui/material';
+import Stepper from '@mui/material/Stepper';
+import Step from '@mui/material/Step';
+import StepButton from '@mui/material/StepButton';
+import StepLabel from '@mui/material/StepLabel';
+import { poppins } from '@/components/Fonts';
+import LoadingButton from '@mui/lab/LoadingButton';
+import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
+import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
+import { useEffect, useMemo, useState } from 'react';
+import { Controller, FieldName, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import styles from './OfferDialog.module.scss';
+
+import { motion } from 'framer-motion';
+import { useSnackbar } from 'notistack';
+import clsx from 'clsx';
+import { ArrowForwardIos, RestartAltOutlined } from '@mui/icons-material';
+import { useDispatch } from 'react-redux';
+import OfferFinancing from './OfferSteps/OfferFinancing';
+import { OfferSchema, OfferSchemaType } from '@/schemas/OfferSchemas';
+import OfferPropertyDetails from './OfferSteps/OfferPropertyDetails';
+
+const steps = [
+  {
+    title: 'Financing',
+    fields: ['financialDetails', 'deposit', 'conditions', 'landSurvey']
+  },
+  {
+    title: 'Property Details',
+    fields: ['legalDescription']
+  }
+];
+
+type OfferDialogProps = {
+  show: boolean;
+  setShow: (show: boolean) => void;
+};
+
+const OfferDialog = (props: OfferDialogProps) => {
+  const [activeStep, setActiveStep] = useState(0);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting, isDirty },
+    reset,
+    setValue,
+    getValues,
+    watch,
+    control,
+    trigger
+  } = useForm<OfferSchemaType>({
+    // defaultValues: { emailActive: true, email: "meow@meow.com", name: "" },
+    resolver: zodResolver(OfferSchema)
+    // defaultValues: getDefaultFormValues()
+    // defaultValues: getDefaultData(),
+  });
+
+  const { enqueueSnackbar } = useSnackbar();
+
+  const handleSubmitForm = async () => {
+    const completeOutput = await trigger();
+    if (!completeOutput) {
+      enqueueSnackbar(`Some steps are not completed`, {
+        variant: 'error'
+      });
+      return;
+    }
+    await handleSubmit(onSubmit)();
+  };
+
+  const handleNextStep = async () => {
+    console.log(JSON.stringify(getValues(), null, 2));
+    const fields = steps[activeStep].fields;
+    const output = await trigger(fields as FieldName[], { shouldFocus: true });
+    if (!output) {
+      enqueueSnackbar(`Please fill out all required fields`, {
+        variant: 'error'
+      });
+      return;
+    }
+    if (activeStep === steps.length - 1) {
+      await handleSubmitForm();
+      return;
+    }
+
+    if (activeStep < steps.length) {
+      setActiveStep(activeStep + 1);
+    }
+  };
+
+  const handleBackStep = () => {
+    if (activeStep > 0) {
+      setActiveStep(activeStep - 1);
+    }
+  };
+
+  const handleClose = () => {
+    props.setShow(false);
+  };
+
+  const onSubmit = async (data: any) => {
+    handleClose();
+  };
+
+  const handleResetBuyBox = () => {
+    const defaultData = {};
+    reset(defaultData);
+    setActiveStep(0);
+  };
+
+  const getStepsErrors = useMemo(() => {
+    return (step: number) => {};
+    // return (step: number) => {
+    //   switch (step) {
+    //     case 0:
+    //       return errors?.name || errors?.description;
+    //     case 1:
+    //       return errors?.strategy;
+    //     case 2:
+    //       return errors?.target_locations;
+    //     default:
+    //       return undefined;
+    //   }
+    // };
+  }, [errors]);
+
+  return (
+    <Dialog
+      open={props.show}
+      onClose={handleClose}
+      fullWidth
+      maxWidth="lg"
+      className={clsx[poppins.variable]}
+    >
+      <div className="w-full h-[80vh] grid grid-cols-[15rem_1fr]  gap-x-0 overflow-hidden">
+        <div className="col-span-2 w-full flex justify-center items-center shadow">
+          <IconButton
+            className="absolute top-0 right-0 w-8 h-8 rounded-3xl"
+            onClick={handleClose}
+          >
+            <HighlightOffOutlinedIcon />
+          </IconButton>
+          <DialogTitle
+            className={clsx([' text-2xl font-bold ', styles.font_poppins])}
+          >
+            Make an Offer
+          </DialogTitle>
+          <Stepper
+            nonLinear
+            activeStep={activeStep}
+            className="hidden md:flex grow px-8 bg-transparent"
+          >
+            {steps.map((step, index) => (
+              <Step key={index} className="">
+                <StepLabel
+                  className={clsx([styles.font_poppins, 'cursor-pointer'])}
+                  error={Boolean(getStepsErrors(index))}
+                  onClick={() => setActiveStep(index)}
+                >
+                  {step.title}
+                </StepLabel>
+              </Step>
+            ))}
+          </Stepper>
+        </div>
+        <div className="flex flex-col bg-[rgba(151,71,255,0.7)] pb-8 ">
+          {steps.map((step, index) => (
+            <Button
+              key={index}
+              onClick={() => setActiveStep(index)}
+              className={clsx([
+                ' text-white text-xl font-bold  h-24 rounded-[0] px-8 py-4 hover:bg-[#9747FF]',
+                styles.font_poppins,
+                activeStep === index ? 'bg-[#9747FF]' : 'bg-transparent'
+              ])}
+            >
+              {steps[index].title}
+            </Button>
+          ))}
+        </div>
+        <div className="h-full overflow-y-auto">
+          <form
+            className="h-full flex flex-col"
+            onSubmit={handleSubmit(onSubmit)}
+          >
+            <motion.div
+              key={activeStep}
+              className="grow w-full flex"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -20, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              {activeStep === 0 && (
+                <OfferFinancing
+                  register={register}
+                  control={control}
+                  watch={watch}
+                  setValue={setValue}
+                  getValues={getValues}
+                  errors={errors}
+                />
+              )}
+
+              {activeStep === 1 && (
+                <OfferPropertyDetails
+                  register={register}
+                  control={control}
+                  watch={watch}
+                  setValue={setValue}
+                  getValues={getValues}
+                  errors={errors}
+                />
+              )}
+            </motion.div>
+            <div className="w-full flex justify-between py-4 px-4">
+              <div className="flex gap-x-2">
+                {activeStep === 0 ? (
+                  <div></div>
+                ) : (
+                  <Button onClick={handleBackStep} className={styles.button}>
+                    <ArrowBackIosOutlinedIcon className="h-4 w-4" />
+                    Back
+                  </Button>
+                )}
+              </div>
+
+              <div className="flex gap-x-2">
+                {isDirty && (
+                  <Button onClick={handleResetBuyBox} className={styles.button}>
+                    <RestartAltOutlined className="h-4 w-4" />
+                    <Typography className={styles.button_text}>
+                      Reset
+                    </Typography>
+                  </Button>
+                )}
+                <LoadingButton
+                  onClick={handleSubmitForm}
+                  className={styles.button}
+                  loading={isSubmitting}
+                >
+                  <Typography className={styles.button_text}>
+                    {isDirty ? 'Save & Finish' : 'Finish'}
+                  </Typography>
+                </LoadingButton>
+
+                {activeStep < steps.length - 1 && (
+                  <Button onClick={handleNextStep} className={styles.button}>
+                    <Typography className={styles.button_text}>Next</Typography>
+                    <ArrowForwardIos className="h-4 w-4" />
+                  </Button>
+                )}
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </Dialog>
+  );
+};
+
+export default OfferDialog;
