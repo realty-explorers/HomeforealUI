@@ -147,7 +147,7 @@ const OfferingPropertyCondition = ({
       />
 
       {provideDisclosure && (
-        <div className="grid grid-cols-2">
+        <div className="grid grid-cols-[1fr_auto]">
           {disclosures.map((disclosure, index) => (
             <>
               <Typography className={clsx([styles.subheader])}>
@@ -177,6 +177,7 @@ const OfferingPropertyCondition = ({
             {...register(
               'propertyConditions.disclosureTopics.additionalDisclosures'
             )}
+            className="col-start-1"
             helperText={
               errors?.propertyConditions?.disclosureTopics.additionalDisclosures
                 ?.message
