@@ -20,7 +20,7 @@ export const OfferSchema = z.object({
   financialDetails: z.object({
     purchasePrice: moneySchema,
     financingType: financingTypesSchema.optional(),
-    loanAmount: z.number().optional()
+    loanAmount: z.number().nonnegative().optional()
   }),
 
   // Deposit
@@ -29,7 +29,7 @@ export const OfferSchema = z.object({
     holderName: z.string(),
     holderAddress: z.string(),
     holderPhone: z.string().optional(),
-    holderEmail: z.string().email().optional()
+    holderEmail: z.union([z.string().email().optional(), z.literal('')])
   }),
 
   // Conditions
@@ -84,12 +84,12 @@ export const OfferSchema = z.object({
     name: z.string(),
     address: z.string(),
     phone: z.string().optional(),
-    email: z.string().email().optional()
+    email: z.union([z.string().email().optional(), z.literal('')])
   }),
 
   settlementExpenses: z.object({
     sellerPaysSettlementExpenses: z.boolean(),
-    settlementAmount: moneySchema.optional()
+    settlementAmount: z.number().nonnegative().optional()
   }),
 
   closingDetails: z.object({
@@ -102,9 +102,82 @@ export const OfferSchema = z.object({
   // Option to Terminate
   terminationOption: z.object({
     allowTermination: z.boolean(),
-    terminationFee: moneySchema.optional(),
+    terminationFee: z.number().nonnegative().optional(),
     terminationPeriodDays: daysSchema.optional()
   })
 });
 
 export type OfferSchemaType = z.infer<typeof OfferSchema>;
+
+export const defaultOfferData: OfferSchemaType = {
+  financialDetails: {
+    purchasePrice: 0,
+    financingType: 'CONVENTIONAL LOAN',
+    loanAmount: 0
+  },
+  deposit: {
+    depositAmount: 0,
+    holderName: '',
+    holderAddress: '',
+    holderPhone: undefined,
+    holderEmail: undefined
+  },
+  conditions: {
+    subjectProperty: false,
+    exludedFixtures: []
+  },
+  landSurvey: {
+    requireNewSurvey: false,
+    surveyorChoice: 'buyer'
+  },
+  legalDescription: {
+    description: ''
+  },
+  propertyTerms: {
+    conductInspection: false,
+    isInspectionContingent: false,
+    inspectionDurationDays: 0,
+    lease: false
+  },
+  propertyConditions: {
+    isNew: false,
+    disclosureTopics: {
+      occupancyAndProperty: false,
+      fixturesAndItems: false,
+      roof: false,
+      additionsAndAlterations: false,
+      soilTreeAndVegetation: false,
+      woodDestroyingOrganisms: false,
+      floodAndMoisture: false,
+      toxicMaterialAndSubstances: false,
+      covenantsFeesAndAssessments: false,
+      plumbing: false,
+      insulation: false,
+      miscellaneous: false,
+      additionalDisclosures: ''
+    },
+    sellerRepairs: '',
+    conductEndangeredSpeciesReport: false,
+    conductEnvironmnetalReport: false,
+    requireResidentialServiceContract: false
+  },
+  buyerDetails: {
+    name: '',
+    address: ''
+  },
+  settlementExpenses: {
+    sellerPaysSettlementExpenses: false,
+    settlementAmount: 0
+  },
+  closingDetails: {
+    closingDate: '',
+    possesionOnClosing: false,
+    optionToTerminate: false,
+    additionalClause: ''
+  },
+  terminationOption: {
+    allowTermination: false,
+    terminationFee: 0,
+    terminationPeriodDays: 0
+  }
+};

@@ -22,7 +22,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import { useEffect, useMemo, useState } from 'react';
-import { Controller, FieldName, useForm } from 'react-hook-form';
+import { Controller, FieldName, Path, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from './OfferDialog.module.scss';
 
@@ -32,16 +32,28 @@ import clsx from 'clsx';
 import { ArrowForwardIos, RestartAltOutlined } from '@mui/icons-material';
 import { useDispatch } from 'react-redux';
 import OfferFinancing from './OfferSteps/OfferFinancing';
-import { OfferSchema, OfferSchemaType } from '@/schemas/OfferSchemas';
+import {
+  defaultOfferData,
+  OfferSchema,
+  OfferSchemaType
+} from '@/schemas/OfferSchemas';
 import OfferPropertyDetails from './OfferSteps/OfferPropertyDetails';
 import OfferPartyDetails from './OfferSteps/OfferPartyDetails';
 import OfferFinalSteps from './OfferSteps/OfferFinalSteps';
 import OfferDialogTitle from './OfferDialogTitle';
 
-const steps = [
+const steps: {
+  title: string;
+  fields: Path<OfferSchemaType>[];
+}[] = [
   {
     title: `Buyer Details`,
-    fields: ['buyerDetails']
+    fields: [
+      'buyerDetails.name',
+      'buyerDetails.email',
+      'buyerDetails.phone',
+      'buyerDetails.address'
+    ]
   },
   {
     title: 'Financing',
@@ -53,7 +65,7 @@ const steps = [
   },
   {
     title: 'Final Steps',
-    fields: ['settlementExpenses']
+    fields: ['settlementExpenses', 'closingDetails']
   }
 ];
 
@@ -77,7 +89,8 @@ const OfferDialog = (props: OfferDialogProps) => {
     trigger
   } = useForm<OfferSchemaType>({
     // defaultValues: { emailActive: true, email: "meow@meow.com", name: "" },
-    resolver: zodResolver(OfferSchema)
+    resolver: zodResolver(OfferSchema),
+    defaultValues: defaultOfferData
     // defaultValues: getDefaultFormValues()
     // defaultValues: getDefaultData(),
   });
@@ -98,7 +111,9 @@ const OfferDialog = (props: OfferDialogProps) => {
   const handleNextStep = async () => {
     console.log(JSON.stringify(getValues(), null, 2));
     const fields = steps[activeStep].fields;
-    const output = await trigger(fields as FieldName[], { shouldFocus: true });
+    console.log(fields);
+    const output = await trigger(fields, { shouldFocus: true });
+    console.log(output);
     if (!output) {
       enqueueSnackbar(`Please fill out all required fields`, {
         variant: 'error'
@@ -136,6 +151,13 @@ const OfferDialog = (props: OfferDialogProps) => {
   };
 
   const getStepsErrors = useMemo(() => {
+    return (step: number) => {
+      const fieldNames = steps[step].fields;
+      const errors = fieldNames.map((fieldName) => {
+        return errors[fieldName];
+      });
+      return errors;
+    };
     return (step: number) => {};
     // return (step: number) => {
     //   switch (step) {
@@ -171,7 +193,7 @@ const OfferDialog = (props: OfferDialogProps) => {
   const StepSections = (
     <motion.div
       key={activeStep}
-      className="grow w-full flex"
+      className="grow w-full flex justify-center"
       initial={{ y: 20, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       exit={{ y: -20, opacity: 0 }}
@@ -286,6 +308,19 @@ const OfferDialog = (props: OfferDialogProps) => {
             >
               {StepSections}
               {FormFooter}
+              <pre>
+                {Object.entries(errors).map(([key, error]) => (
+                  <li key={key}>
+                    {key}:{' '}
+                    {Object.entries(error).map(([key, value]) => (
+                      <li key={key}>
+                        {key}: {value.message}
+                      </li>
+                    ))}
+                    )
+                  </li>
+                ))}
+              </pre>
             </form>
           </div>
         </div>

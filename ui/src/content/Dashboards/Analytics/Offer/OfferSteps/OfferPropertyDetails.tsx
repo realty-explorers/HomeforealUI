@@ -15,12 +15,6 @@ import {
   financingTypes,
   OfferSchemaType
 } from '@/schemas/OfferSchemas';
-import SwitchField from '@/components/Form/SwitchField';
-import AutocompleteField from '@/components/Form/AutocompleteField';
-import OfferingPrice from './SaleDetails/OfferingPrice';
-import OfferingDesposit from './SaleDetails/OfferingDeposit';
-import OfferingConditions from './SaleDetails/OfferingConditions';
-import OfferingLandSurvey from './SaleDetails/OfferingLandSurvery';
 import OfferingLegalDescription from './PropertyDetails/LegalDescription';
 import OfferingPropertyDescription from './PropertyDetails/OfferingPropertyDescription';
 import OfferingPropertyCondition from './PropertyDetails/OfferingPropertyCondition';
@@ -43,7 +37,7 @@ const OfferPropertyDetails = ({
 }: OfferPropertyDetailsProps) => {
   return (
     <div className={clsx(['flex justify-left px-4 pt-8 grow gap-x-4 over'])}>
-      <div className="grid grid-cols-[auto_1fr] auto-rows-min items-center  gap-x-2  w-full gap-y-2">
+      <div className="flex flex-col md:grid grid-cols-[auto_1fr] auto-rows-min md:items-center  gap-x-2  w-full gap-y-2">
         <OfferingLegalDescription
           register={register}
           control={control}

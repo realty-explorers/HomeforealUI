@@ -1,7 +1,7 @@
 import AutocompleteField from '@/components/Form/AutocompleteField';
 import SwitchField from '@/components/Form/SwitchField';
 import { OfferSchemaType } from '@/schemas/OfferSchemas';
-import { TextField, Typography } from '@mui/material';
+import { InputAdornment, TextField, Typography } from '@mui/material';
 import clsx from 'clsx';
 import {
   Control,
@@ -37,7 +37,10 @@ const OfferingDesposit = ({
         variant="outlined"
         size="small"
         type="number"
-        {...register('deposit.depositAmount')}
+        {...register('deposit.depositAmount', { valueAsNumber: true })}
+        InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>
+        }}
         className="col-start-1 lg:col-start-2"
         helperText={errors?.financialDetails?.purchasePrice?.message}
         error={!!errors?.financialDetails?.purchasePrice}
@@ -81,7 +84,6 @@ const OfferingDesposit = ({
         label="Holder Email (Optional)"
         variant="outlined"
         size="small"
-        type="email"
         {...register('deposit.holderEmail')}
         className="col-span-1 col-end-2"
         helperText={errors?.deposit?.holderEmail?.message}

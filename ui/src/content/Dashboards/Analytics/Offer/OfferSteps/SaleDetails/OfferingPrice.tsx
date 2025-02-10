@@ -1,7 +1,7 @@
 import AutocompleteField from '@/components/Form/AutocompleteField';
 import SwitchField from '@/components/Form/SwitchField';
 import { financingTypeLabels, OfferSchemaType } from '@/schemas/OfferSchemas';
-import { TextField, Typography } from '@mui/material';
+import { InputAdornment, TextField, Typography } from '@mui/material';
 import clsx from 'clsx';
 import {
   Control,
@@ -37,10 +37,13 @@ const OfferingPrice = ({
         variant="outlined"
         size="small"
         type="number"
-        {...register('financialDetails.purchasePrice')}
+        {...register('financialDetails.purchasePrice', { valueAsNumber: true })}
         className="col-start-1 lg:col-start-2"
         helperText={errors?.financialDetails?.purchasePrice?.message}
         error={!!errors?.financialDetails?.purchasePrice}
+        InputProps={{
+          startAdornment: <InputAdornment position="start">$</InputAdornment>
+        }}
       />
 
       <>
@@ -68,7 +71,14 @@ const OfferingPrice = ({
               variant="outlined"
               size="small"
               type="number"
-              {...register('financialDetails.loanAmount')}
+              {...register('financialDetails.loanAmount', {
+                valueAsNumber: true
+              })}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">$</InputAdornment>
+                )
+              }}
               className="col-start-1 lg:col-start-2"
               helperText={errors?.financialDetails?.loanAmount?.message}
               error={!!errors?.financialDetails?.loanAmount}

@@ -21,6 +21,11 @@ const buyerDetails: {
     label: 'Buyer/Company Name',
     fieldName: 'buyerDetails.name'
   },
+
+  {
+    label: 'Buyer Address',
+    fieldName: 'buyerDetails.address'
+  },
   {
     label: 'Buyer Email',
     fieldName: 'buyerDetails.email'

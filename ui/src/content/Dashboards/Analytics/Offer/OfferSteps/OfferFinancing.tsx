@@ -39,8 +39,8 @@ const OfferFinancing = ({
   errors
 }: OfferFinancingProps) => {
   return (
-    <div className={clsx(['flex justify-left px-4 pt-8 grow gap-x-4 over'])}>
-      <div className="grid grid-cols-[auto_1fr] auto-rows-min items-center  gap-x-2  w-full gap-y-2">
+    <div className={clsx(['flex px-4 pt-8 grow gap-x-4 over'])}>
+      <div className="flex flex-col md:grid grid-cols-[auto_1fr] auto-rows-min md:items-center  gap-x-2  w-full gap-y-2">
         <OfferingPrice
           register={register}
           control={control}
