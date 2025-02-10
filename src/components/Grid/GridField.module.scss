@@ -1,0 +1,18 @@
+.label {
+  color: #0e0d0d;
+  @apply font-poppins;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 275;
+  line-height: normal;
+  text-transform: capitalize;
+}
+.value {
+  color: #000;
+  @apply font-poppins;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: capitalize;
+}

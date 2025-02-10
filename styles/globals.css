@@ -1,0 +1,126 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .zoom-effect {
+    @apply transform hover:scale-x-110 hover:scale-y-110 transition-transform duration-300;
+  }
+}
+
+:root {
+  --color-primary: #590d82;
+  --color-secondary: #9b51e0;
+  --color-arv: #22c55e;
+  --color-off-white: #f8f9fa;
+
+  --controls-display: none;
+
+  @media only screen and (min-width: 768px) {
+    --controls-display: block;
+  }
+}
+
+/* Map styles */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.mapboxgl-popup-content {
+  padding: 0 !important;
+  animation: fadeIn 0.3s ease-in-out;
+  border-radius: 2rem !important;
+}
+.mapbox-popup {
+  /* @apply flex rounded-xl bg-white w-[200rem] h-40; */
+  max-width: 50rem !important;
+  max-height: 10rem !important;
+  width: 20rem;
+  height: 10rem;
+}
+.custom-marker::after {
+  content: '\2023';
+  position: absolute;
+  bottom: 1.3rem;
+  color: #590d82;
+  font-size: 25px;
+  transform: rotate(90deg);
+  left: 38%;
+}
+
+/* .custom-marker::after { */
+/*   content: ''; */
+/*   position: absolute; */
+/*   bottom: 1.3rem; */
+/*   left: 50%; */
+/*   margin-left: -10px; /* Adjust the arrow's width as needed */
+/*   border-width: 10px; */
+/*   border-style: solid; */
+/*   border-color: #590d82 transparent transparent transparent; */
+/* } */
+
+.custom-marker-hovered::after {
+  content: '';
+  position: absolute;
+  bottom: 1.3rem;
+  left: 50%;
+  margin-left: -10px; /* Adjust the arrow's width as needed */
+  border-width: 10px;
+  border-style: solid;
+  border-color: white transparent transparent transparent;
+}
+.cluster {
+  background-color: rgba(0, 0, 0, 0.65);
+  border-radius: 50%;
+}
+.cluster img {
+  display: none;
+}
+.gm-style-iw button {
+  display: none !important;
+}
+.gm-style-iw-t > div {
+  padding: 0 !important;
+}
+.gm-style-iw-d {
+  overflow: hidden !important;
+  font-family: var(--font-poppins);
+  padding: 0.5rem 1rem !important;
+}
+/***************/
+
+* {
+  box-sizing: border-box;
+}
+/* input:focus { */
+/*   outline: none; */
+/* } */
+div:focus:not(:focus-visible) {
+  outline: none;
+  /* box-shadow: 1px 1px 5px rgba(1, 1, 0, 0.7); */
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.chipShadow {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+.buttonText {
+  color: var(--text-color, #252b42);
+
+  /* h5 */
+  font-family: Poppins;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 1.5rem; /* 150% */
+  letter-spacing: 0.00625rem;
+}

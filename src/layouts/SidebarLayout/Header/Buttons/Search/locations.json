@@ -1,0 +1,8462 @@
+[
+  {
+    "type": "city",
+    "name": "Southside Place",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "Sugar Land",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "Richmond",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "Jacinto City",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "Fairchilds",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "Rosenberg",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "Missouri City",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "Stafford",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "West University Place",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "Pleak",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "Houston",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "Meadows Place",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77064",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77049",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77498-7336",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77018",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77345",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77077",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77489",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77079",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77013",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77004",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77365",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77051",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77083",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77050",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77031",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77006",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77096",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77065",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77088",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77086",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77063",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77071",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77532",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77469",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77089",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77036",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77081",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77060",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77057",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77074",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77076",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77041",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77098",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77078",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77069",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77027",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77019",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77068",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77072",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77095",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77038",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77388",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77066",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77026",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77504",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77034",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77338",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77091",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77016",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77032",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77547",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77498",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77099",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77396",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77029",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77477",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77087",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77053",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77044",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77045",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77092",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77022-4735",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77030",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77024",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77336",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77040",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77005",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77042",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77009",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77022",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77058",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77007",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77056",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77082",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77015",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77055",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77012",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77021",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77493",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77037",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77479",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77014",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77039",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77085",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77339",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77054",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77061",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77059",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77084",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77023",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77346",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77048",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77028",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77003",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77080",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77075",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77011",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77598",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77073",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77094",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77047",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77459",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77583",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77090",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77025",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77449",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77067",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77017",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77093",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77008",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77020",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77035",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77043",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77033",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77070",
+    "identifier": "Houston"
+  },
+  {
+    "type": "zipcode",
+    "name": "77062",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": {},
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Alief",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Acres home",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lawndale / wayside",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Spring branch north",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Macgregor",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Briar forest",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Northshore",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greenway / upper kirby area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Central southwest",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Edgebrook area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lazybrook / timbergrove",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Midtown",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Medical center area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Neartown - montrose",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Braeswood",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kashmere gardens",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Spring branch central",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East little york / homestead",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater eastwood",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater fifth ward",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Clinton park tri-community",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Memorial",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South park",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater ost / south union",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hunterwood",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fort bend houston",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "University place",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater hobby area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pleasantville area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sharpstown",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Trinity / houston gardens",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Meadowbrook / allendale",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "El dorado / oates prairie",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Denver harbor / port houston",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Afton oaks / river oaks area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Independence heights",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Near northside",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater uptown",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Museum park",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kingwood area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carverdale",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westbranch",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Downtown",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Spring branch west",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater greenspoint",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South main",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westchase",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Park place",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Minnetex",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Harrisburg / manchester",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Eldridge / west oaks",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Meyerland area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Gulfton",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sunnyside",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pecan park",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Addicks park ten",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South belt / ellington",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Braeburn",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Magnolia park",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater inwood",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Brays oaks",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fairbanks / northwest crossing",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake houston",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westwood",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Golfcrest / bellfort / reveille",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Second ward",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Eastex - jensen area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Langwood",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East houston",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Iah / airport area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Washington avenue coalition / memorial park",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Spring branch east",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Gulfgate riverview / pine valley",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Willow meadows / willowbend area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater heights",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Settegast",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fourth ward",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Northside/northline",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Central northwest",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mid west",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South acres / crestmont park",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Astrodome area",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westbury",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater third ward",
+    "identifier": "Houston"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Clear lake",
+    "identifier": "Houston"
+  },
+  {
+    "type": "city",
+    "name": "jacksonville",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "orlando",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "tampa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "winter park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "clearwater",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "temple terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "thonotosassa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "lutz",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "belle isle",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "baldwin",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "golden oak",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "jacksonville beach",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "jacksonville heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "northdale",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "pine hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "tsmps",
+    "identifier": "Florida"
+  },
+  {
+    "type": "city",
+    "name": "waldo",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32218",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32256",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32244",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32210",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32822",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32219",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32832",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32209",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33611",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33604",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33647",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32208",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32205",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32827",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33610",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33615",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33629",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32224",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32824",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32835",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32819",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32246",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33602",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32811",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32225",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32207",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32828",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32206",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33619",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32789",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32806",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32226",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33624",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32808",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32222",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33612",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32257",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32792",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32839",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32801",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33606",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33617",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32211",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32220",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33603",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32258",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32216",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32836",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33609",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33618",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32821",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32837",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32221",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32254",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32223",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33605",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32812",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33616",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33607",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32833",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32217",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33614",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32804",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32825",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33613",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33625",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33759",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32826",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32277",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32805",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33635",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32810",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32817",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33626",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32818",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32803",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32807",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32204",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33637",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32234",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32820",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32809",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33592",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33559",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "33634",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32202",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32829",
+    "identifier": "Florida"
+  },
+  {
+    "type": "zipcode",
+    "name": "32814",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southwest Tampa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southeast Jacksonville",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Northeast Tampa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southwest Jacksonville",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Town N County Alliance",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Jacksonville",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Northwest Jacksonville",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Northwest Tampa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Nona",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater Palm River Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Chimney Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Egypt Lake - Leto",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Forest Trails",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cape Orl Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverside",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Florida Center North",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Citrus Park Community",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Metro West",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cisco Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ventura",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Springfield",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Beach Haven",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Highlands",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orlando Central Business District",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Baymeadows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Lake - Orient Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Eagle Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater Arlington",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "40th Street Corridor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "College Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Jacksonville Farms-Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Deerwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Woodstock",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tallulah-North Shore",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greater Thonotosassa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Old Seminole Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Gulfstream Harbor Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windy Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Brentwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Golden Glades-The Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Secret Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "New Tampa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Eola",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Cape",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mid-Westside",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tampa Palms",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fairways Country Club",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Davis Islands",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Moncrief Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Arlington",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mandarin Station-Losco",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Storey Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Downtown Jacksonville",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Julington Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hamptons at Metrowest Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverview",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oceanway",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "San Marco",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Girvin",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hunters Green",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Longbranch",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Murray Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Northlakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pineloch",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sherwood Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Semoran",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southeast Tampa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "University of Central Florida",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carrollwood Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Grand Hampton",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southside Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arlington",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Downtown Orlando",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Holiday Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mandarin",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Marietta",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Monterey",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Tampa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Robinson",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Temple Crest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Deercreek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lincoln Villas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "McGirts Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sandalwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Avondale",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pumpkin Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Starlight Ranch Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hunters Creek Golf Course",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hyde Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lemon Tree Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wesconnett",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "West Meadows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wyndham Lakes Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hillcrest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Jacksonville Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kirkman South",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Normandy Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ortega Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Park Central",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "San Jose",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Whitehouse",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Colonialtown North",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greenland",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hidden Hills Country Club",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Island in the Sun",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Jacksonville Heights South",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Nona South",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Live Oak Preserve Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Magnolia Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Plantation",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Princeton - Silverstar",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Richmond Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Settlers Landing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Riverside",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southbank",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wadeview Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arlington Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Baldwin Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Biltmore",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Eastwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Edgewood Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fort Caroline Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Jackson Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lakeshore",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lowry Park North",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Millenia",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rosemont",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "San Jose Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Westshore",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sun Bay South",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Village of Tampa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterford Lakes East",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windhover",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "45th and Moncrief",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Americana",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bay Port Colony",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bayshore Beautiful",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cory Lake Isles",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Engelwood Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Florida Center",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Goodby's Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Jacksonville Ranch Club",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Loretto",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Northdale Golf Club",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rio Grande Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Royal Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "University Square",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Washington Heights Estate",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Woodland Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arlington Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Avalon Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cedar Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dixie Belle",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Duclay Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fairfield",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lamplighter on the River Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mixon Town",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Raintree Village Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Regency",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ribault",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Seffner Community Alliance",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Seminole Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "V. M. Ybor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "29th and Chase",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arbor Green",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arrowhead",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bay Crest Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Black Hammock Island",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carver Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Country Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Duval",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Herlong",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hidden Valley Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Jacksonville Heights West",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kenilworth Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kirkman North",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Forest Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Miramar",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Normandy Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Quarter",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Shore at Lake Hart",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orange Tree",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rolling Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sans Souci",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Spring Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tamaya",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Quarter at Ybor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Turtle Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Vista East",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterford Lakes South",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Park Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Alderman Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arlingwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Beacon Hills and Harbour",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bermuda Dunes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carver City - Lincoln Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Center Lake",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Central Park Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Duclay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Jacksonville",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fern Cliff",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Glen Ellen",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Grand Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hawthorne Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Heritage Isles",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Isle of Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kingswood Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Frederica",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Lawsona Historic District",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Lucina",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Hyde Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Northeast Community",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Northlake Park at Lake Nona",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oakwood Villa Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ortega Farms",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Palmetto Beach",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Phoenix",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Randal Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "River Oaks Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Robinswood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Serenata Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Signal Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Stoneybrook",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sunbeam",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Landings of Tampa Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tiger Hole-Secret Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Twelve Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Walt Disney World Resort",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Woodmere",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Airport North",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Andover Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Audubon Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Avila",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Beach Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bryn Mawr",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Callahan",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Clearwater Travel Resort RV Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Craven",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cypress Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Deerfield",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Del Rio",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Eagles Hammock",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Eastbrook",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fairways Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hillsboro Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Chase Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Como",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Shore Landings",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lakeshore Villa Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lakewood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Live Oak Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Tampa Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Palma Ceia Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pebble Creek Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pepper Mill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Raintree Manor Homes Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverbend Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rose Lake Estates Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sawgrass Plantation",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sky Lake South",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Speedway Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Spring Lake",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Stonemeade",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sweetwater",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "University Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Venetia",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "West Park Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Whisper Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Allendale",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Atlantic Highlands",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Avalon Park Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bartram Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bella Terra Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Big Econ Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cannongate",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carver Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "College Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Colonies",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Conway Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Copper Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Delaney Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Englewood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fairfax",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Falcon Trace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Forest Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Forest Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Garden City",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Glynlea-Grove Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Golfside",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Harbour Island",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hidden Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hidden Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hunters Vista",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hyde Park North",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "K Bar Ranch",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "LaVina",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Conway Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Davis-Greenwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lakeside Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Little Marsh Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Londonderry Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Malibu Groves",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Meadow Woods Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mission Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Normandy Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Haven",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Parc Corniche Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Regency Gardens Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Renaissance Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rosemont North",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "San Mateo",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Bay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southchase Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southpointe Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Spring Isle",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tampa Heights Historic District",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Timber Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Village Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterchase",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Whispering Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Park Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Park Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Adirondack Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Argyle Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arlington Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Atlantic Boulevard Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Avalon Lakes Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Avalon Park South",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Biscayne Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cedarhurst Mobile Home Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Coachman Creek Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Colonial Village Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Corner Lake",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Crossings at Conway Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Discovery Palms",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dover Shores West",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Emerson Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Four Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Green Briar Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hamptons",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Harbor East",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Harrell Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hiawassee Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Highland Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Interbay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Jacksonville North Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Shore Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lawndale",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lexington Place Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Liberty Square Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lynnwood Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "MacFarlane Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mercy Drive",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Meridan Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Miramar Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Monclair",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Murray Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Osceola Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Palomar",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pine Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sawgrass",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Seaward Plantation Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Silver Pines Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Somerset Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Orange",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "St. Johns Bluff",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "St. Nicholas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Suncrest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sutherland Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sutton Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Villas at Carrollwood Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Vistas at Stonebridge Commons",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Vizcaya Heights Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Washington Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "West Orlando",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westchester of Hillsborough",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westfield",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Whispering Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windrose at Southmeadow",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Woodland Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arabian Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arbor Ridge West",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Asbury Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bavarian Village Condominium Apartments",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Baywood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Beacon Meadows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Biltmore Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Boggy Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Boulevard Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Camelot by the Lake",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carrollwood Place Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carrollwood Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Catalina",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cedarhurst",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Charmont",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Charter Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cherry Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cloverlawn",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Coco Plum Villas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "College Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Colonialtown South",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Conway Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cosway Harbor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Country Club Village at Carrollwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Crescent Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cross Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cross Fletcher",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Crystal Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cypress Lakes East",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cypress Landing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Deer Creek Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dinsmore",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dover Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Downtown Historic District",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Downtown River Arts",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dubsdread Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Durkeeville",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Pine Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Ybor Historic",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Easton Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Evans Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fair Oaks South Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fells Landing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fleming Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Glencoe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Grand Key",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Grant Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greenfield Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Haralson Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Harborview",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Island Club at Rosemont Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Island Cove Villas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "LaVilla",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Byrd",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Eola Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Richmond",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Ridge Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Underhill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake and Pines Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Little Lake Bryan",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Love Grove-Riviera Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Magdalene Reserve",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Magnolia Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Maitland Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mariner's Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Millennium Palms Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Monument Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Nela Isle",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "New Town",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Normandy Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Forest Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Manor Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Shadows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orange River Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orlo Vista Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Osprey Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Palm River Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Park Lane Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Park Manor Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pershing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pickwick Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Place One Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rich Moor Villas at Goldenrod",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Richmond Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rio Pinar Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "River Run",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverbrook at Kernan",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverhills Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverside Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Robinson Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Roland Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Roosevelt Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sand Lake Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sans Pareil",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Seminole Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sheldon West Mobile Home",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sienna Place Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Solano Grove Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Florida Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southpoint",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tamarack East Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tanglewood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tanner Road",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Falls at New Tampa Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Fords",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Groves Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Willows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Timberleaf",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tradewinds Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "University Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "University Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Victoria Preserve",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Victoria Terrace Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Villanova at Hunters Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Villariva Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Villas of Casselberry",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Vizcaya",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterfall Cove at Winter Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westwood Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windmill Point Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Park Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Woodland Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Zion Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Adalia Bayfront Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Albert Lee Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Alhambra Courts Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arlington Bay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Aston Villas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Avendale",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Avon Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bay Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bayedge Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bearss Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Beauclerc",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bel-Aire Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bella Notte at Vizcaya",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bella Vida",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bellvue",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bour Lands",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Brackridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bradford Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Brierwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Brookshire Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Brown Island",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bulls Bay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bungalow Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bunker Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Captiva Bluff",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carmel Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carrollwood Meadows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cedar Bend at Meadow Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cedar Creek at Country Run",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cedar Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Chatham Place at Arbor Meadows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Chelsea Landing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cheney Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cheney Highlands",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Chickasaw Trails",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Clear Lake",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Clubhouse Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Conway Estates West",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Conway Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cordoba Estate",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Country Club Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Country Lake Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Country Run",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Courtney Palms Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Crabtrees Riverside Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cypress Bend",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cypress Chase",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dean Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Del Oro Groves",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dover Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dover Shores East",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Eagles Landing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Bay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Orlando",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Orlando Gateway",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Tampa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Empire Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "English Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Estates at Park Central Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fairview",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Falcon Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fawn Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fieldstream",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Florence Villa - Beasley - Oak Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Forest Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Frances Wilds Estate",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Garden Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Gatewood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Gatlin Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Gentle Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Golfview Fairways",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Grande Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Green Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greenmoor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greenpointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Grove Villa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Habana Park Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Handsonhurst Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Harbor View",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Harbour Towne Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hart Haven Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hiawassee Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hibiscus",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hidden Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hideaway Harbour Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "High Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Historic Bayview",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Historic Ybor City",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hogan",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Holiday Harbors",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Holly Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hollyglen Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Huntcliff Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Il Villagio",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Indian Mound Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Interlachen Avenue Historic District",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Interlake Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Jacquelyn Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kempton Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kernan West",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Killarney Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Killarney Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "La Carbayera",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lackawanna",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Cane Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Florence Highlands",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Gloria Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Nona Central",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lancaster Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lancelot at Winter Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Laurel Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Laurel Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lawsona- Fern Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Logan Gate at Carroll Wood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lorna Doone",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Losprados Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lost Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lyme Bay Colony",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Magdelene Shores Community",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Magnolia Court Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mai Tai Village Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mandalay at Stonebridge Commons Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "McNeils Orange Villa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Meadowood Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Merry Mount",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Michigan Trailer Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Monroe Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Montpelier Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Moss Park Landings",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Muriel Terraces",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Murray Hill Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Lawne Villas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Oaks Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Orange",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Ybor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Meadows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Ridge at Countryway",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "One Thousand Oaks Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ortega",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ortega Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orwin Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Park Lake- Highland",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Parkview Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Parkview Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pheasant Run at Rosemont Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Picketville",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pine Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pine Hills Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pinnacle Apartments Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Plaza Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pleasant Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Portofino Meadows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Quail Run",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Quail Trail Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Regent Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ridgemoor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rio Pinar Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverbend",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Robinsdale",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rogers Park Golf Course - Blackwater Hammock",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rolling Green Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rose Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Royal Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Royal Manor Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rybolt Reserve",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Saddlewood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sanctuary on Livingston",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Saracity Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Seaboard Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Shadow Hills Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Shadowridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Shores of Lake Killarney",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Siesta Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Silver Pines Golf Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Silver Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Silver Star Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Silver Star Village Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Skycrests",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Hampton",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Lakemont Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Spring Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Stonebridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Stratford Winter Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sue Haven",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Summerfield",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sunfish Bay Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sunshine Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Surrey Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Swann Lake Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sylvan Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tampa Overlook",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tampa's North Side Country Club",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Alexandria Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Greens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Pinnacle at Carrollwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Plantation",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Thornton Park Central",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Three Point Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tiffany Oaks Lakeside Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Timber Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Traditions at Woodmont",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Turtle Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "University Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Venetia Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Village at Curry Ford Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Villages of Rio Pinar",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Washington Booker Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterford Landing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterford Trails",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterleaf",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterside Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterside Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "West Colonial",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "West Tampa National Historic District",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westmont",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westmoreland Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westshore Palms",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westside Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wetherbee Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Whispering Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Williams Crossing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wilshire Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windcrest at Meadow Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windermere Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winding Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windsong",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windsor Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Park Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Park Gardens Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Park Villas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Run",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winwood Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Woodbridge at Meadow Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "World Gateway",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Air Bel Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Alandale",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Altamonte Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Amandas Crossing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Anchorage Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Anderson Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Antlers Run",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arbor Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arbor Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arbor Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arden Vista",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arrowhead Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Arrowoods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ashford Green Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Atriums at Silver Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Autumn Glen",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Autumn Green Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Autumn Run",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Avondale Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Azalea Scott Mill Meadows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bacchus Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Barbara Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Barnhart",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bay Hill Apartments Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bay Hill Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bay Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bay Run",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bay View Reserve",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bay Vista Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bayview Bluff",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Beachwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Beacon Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bear Gully Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Beeman Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bel Air",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bel Aire",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Belle Glen",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Belle Isle West",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Belmont at Park Central Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bishop Homes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Blackwater Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Blue Ridge Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bon Air",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bonita Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bougenvista",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Brandy Harbor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Brentwood Club",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bretwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Briarcliff",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bridge Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bristol Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Brooklyn",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Buckhead",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Buffalo Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Bumby Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Byrds Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cambridge Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cameron Crossing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Campus Hill Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Caney Branch Plantation",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Canyon Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cardinal Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Caroline Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carpenters Run",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carriage Crossing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carrollwood Gables",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Carrollwood Village Fairway Townhouses Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Caseys Landing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Castle Homes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Catalina Isles Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Catalina Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Causeway Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cedar Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cedar Hills Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cedar Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cedar Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cedarwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Chalfont",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Channel District",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Charlin Park West",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Chartres Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Chateau de Ville Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Chautauqua Lake Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Chelsea Parc East",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Chelsea West",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cherokee Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Chickasaw Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cinnamon Bay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Clarcona Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cloisters Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Club at Orlando",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Coastal Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "College Quarter",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Collins Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Colonial Landings",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Colonial Point Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Colonialtown Center",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Colony Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Commonwealth",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Comstock Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Conway East",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Conway Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Conway Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Corrientes Court",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Corrine Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Country Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Country Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Countrywalk",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Courtland",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Covenant Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Creek Water",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Crest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Crestview Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Crystal Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cypress Park Garden Homes Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Cypress Pointe at Lake Orlando Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Daneli North",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dean Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Deans Landing at Sheffield Forests",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Deans Reserve",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Deerfoot Point Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Devonwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Diamond Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dover Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Downtown Tampa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Drew Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dunn Creek Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Dunwoody Place Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Eagle Bend",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Early Rise",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Bay Farms",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Central Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Dale Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Gate Mobile Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "East Hampton",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ebans Preserve",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Echols Lake Carroll Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Eden Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Edgefield",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Edmunds Shire",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Egrets Glade",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Elizabeth Court",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Embassy Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Enclave at Lake Price",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Enclave at Moss Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Estates at Phillips Landing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ethans Glenn",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ethel Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Evergreen Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fairbanks Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fairview Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fairview Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fairvilla Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fawn Lake",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fernway",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fleetwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Floral Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Florida Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Florida Villas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Flowers Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fontainbleau",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fontana Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fort Caroline Club Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fort Caroline Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fort Caroline Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fort George Island",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fountainbrook",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fox Briar",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Fox Hill Farms",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Gadsden Court",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Garden Grove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Gatlin Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Glamance Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Glen Ellen Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Golden Lake",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Goldenrod Village Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Golfair Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Golfview Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Golfview at Hunters Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Grand Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Grandview Isles",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Green Ridge Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greenbriar",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Greens of Town N Country",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Half Moon Island",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hamilton Downs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hamilton Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hampshire Villas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hampton Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hanging Moss Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Harbor Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Harbor Winds",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Harbour Oaks Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Heather Glen at Meadow Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hedricks Riverda",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Herbroc Fountains",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Heritage Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Heron Bay at Meadow Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hi-Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hi-pines Mobile Home Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hiawassa Highlands",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hiawassee Meadows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hiawassee Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hibiscus Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hickory Glen",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hickory Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hidden Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hidden Harbor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hidden Oaks at Temple Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "High Top",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Highland Glen",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Highland View",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hillandale Reserve",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hills of Ortega",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hogan's Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Holden Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Holden Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Holden Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Holden Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Holden-Parramore",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Holly Oaks Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Home Garden Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hounds Run",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Howard Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Howell Branch Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hughey Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hunter's Isle",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hunters Lake",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hunters Mill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Hunters Trace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Huntington by the Campus",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ibis Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Imperial Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Indian Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Indian Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Inglewood Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Isla Bella",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Islands of Curry Ford",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Isle of Palms",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Isles",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ivanhoe Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Jacaranda",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Jewel Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Johnson Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Julington Landing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kapok Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kapok Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kenilworth Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kenilworth Grove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kensington",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Kensington Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Killarney Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "La Ventura",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Barton Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Bosse Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Butler",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Cherokee",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Copeland Historic District",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Drawdy Reserve",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Drawdy Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Ellen Landings Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Ellen Walk",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Ellen Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Gloria Preserve",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Holden Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Jennie Jewell Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Lovely Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Magdalene Drive",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Magdalene Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Magdalene Manors",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Magdalene for Restoration",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Margaret Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Margaret Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Marsha",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Marsha Highlands",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Mary Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Morley Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Pineloch Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Sheen",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Sparling Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Sue Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Sunset Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Teakwood Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lake Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lakeside Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lakeside Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lakeview Village Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Landings at Lake Conway",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Las Palmas at Sand Lake",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Laubacks Panama",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Laurel Hills Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Laurel Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Laurelon Village of Meadowood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Le Clare Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lewis Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lime Tree Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lincoln Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Linnell Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lonesome Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Long Lake Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Longboat Landing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lorene Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Loretto Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lorraine Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Louisa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lowell Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lowry Park Central",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lukas Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Lydia Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Magnolia Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Magnolia Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Maikai Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Main Street Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mandalay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Marigold Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mariner Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Marsh Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Maxville",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mayfair Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Meadowbrook Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Medallion Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Metro at Michigan Park Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Michigan Avenue Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Michigan Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Middleburg II",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Midtowne",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Midway",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mimsburg",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mirabella at Vizcaya",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mobilaire",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Montclair",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Monument Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Morey Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Morgan Mill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Morningside Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Moss Park Reserve",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Moss Park Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Moss Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Mulberry Hollow",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Murray Hill Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Nebraska Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "New Malibu",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Normandy",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Bay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North New Berlin",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Oak Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "North Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Northview Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Northwood Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Bluff Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Grove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Knoll Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Lynn",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oak Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oakbrook",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oakcrest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oakridge Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oaks at Riverview",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Oasis Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ocita",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Old Plank Plantation",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ollie Villa",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Olympia Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orange Blossom Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orange Grove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orange Hill Heights West",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orange Land Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orangewood Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orista Bay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orlando Highlands",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Orlando Kissimmee Farms",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Osceola Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Otis",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pablo Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Palm Cove Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Palm Lake Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Palma Ceia",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Palma Vista at Tampa Palms",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Palmer Avenue Lakeside",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Palms Villa Residences",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Panama",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pansy",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Paradise Vista",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Parks at the Cathedral",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Parkview Village Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Paxon",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Paxon Field",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pearl Crest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pecan Grove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pelham Park East",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pelican Bay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pelican Island",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pennsylvania Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pershing Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pershing Villas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Phillips Bay Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Phoenix Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pickett Grove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pine Hill Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pine Hills Manor North",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pine Hills Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pine Ridge Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pine Ridge Estates East",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pinecrest Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pinecrest West Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pinellas Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pinewood Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Piney Oak Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Piney Woods Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pleasant Dale",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pleasant Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pleasure Island",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Point Cypress",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Princeton Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Progreso",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Pyles Homestead",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Quail Hollow Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Quail Hollow at Rio Pinar",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Quail Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Radcliffe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Raintree",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ranchette",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ravine Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rawls Road",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Reedy Branch Plantation",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Regency Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Reserve at Lakeview Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rests Haven",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Retreat at Carrollwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Richland",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Richmond Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Richwood Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ridgefield",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rimar Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rio Grande",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rio Pinar East",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rio Pinar South",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ripples",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "River Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "River Enclave",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "River Forest Reserve",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "River Haven Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverbend Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverdale Farms",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverdale Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rivers Edge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rivers Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverside Acres South",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Riverwood Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rock Lake",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rocky Point Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rocky River Sites",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rolando Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rose Hill Groves",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rose Isle",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rosemount Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Rosetta Villas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sailcove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sailmaker",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sand Lake Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sand Lake Point",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sand Lake Village Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sandpiper Community",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sandy Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Secret Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sedwick Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Semoran Pines Regimes Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Seneca Club",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Serena Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sevilla",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Seville Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Shindler Crossing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Shore Crests",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Shuman Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sibley Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Silversmith Creek Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Somerset Chase",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Somerset Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Somerset Park Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Somerset Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sorenson Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "South Pine Run",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southeast Seminole Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Southshire",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sparling Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Spring Branch",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Springtree Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "St Nicholas Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Stocktons",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Stonebriar",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Stonewood Manorhomes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Summer Grove Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Summer Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Summer Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Summer Trees",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Summer Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Summerfield Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sun Haven",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sunray Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sunridge of Tampa Bay Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sutton Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Sylvan Hylands",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tallyrand",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tamarind Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tampa Downs Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tampa Villas South",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Taylor Field",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Temple Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Temple Grove Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Temple Knoll Correct",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Temple Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Terrace Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Terrace Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Bridges",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Crest at Waterford Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Dovers",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Greens Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Islands of Valencia",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Little Cuba",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Preserve at Temple Terrace Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Residences at Pablo Bay",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Sanctuary",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "The Waterside Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tiffany Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Timber Ridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Timber Run Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Timberlane Shores",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Timberview",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Timmerman's Walk",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Timucua",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Timuquana Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tindaro Pine Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Torey Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tree Top Estate",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Turnbury Woods",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Turner Trace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tuscania",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tuscany Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tuxedo Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Tuxedo Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Twin Branch Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Uceta Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "University Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "University Pines",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Valencia Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Valencia Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Venetian Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Ventana at Carrollwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Venus Mars Court",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Veradale",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Verano at Bartram Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Vieux Carre",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Villa Beauclerc Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Villa Sonoma at International Plaza Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Village Green",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Village Green at Baymeadows",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Village Green at Carrollwood Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Village of Carrollwood Village",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Villages at Lake Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Villages at Universal Blvd",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Villages of Bartram Springs",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Villages of Pablo",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Villages of Westport",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Virginia Grove Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Virginia Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Vista Hills",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Vistas at Lake Howell",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Vizcaya at Waterford",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Walker Glen",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Washington Lake Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterbridge",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterford Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waterfront Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Watermill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waverley",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Waverly Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Weatherly Condominium at Central Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wedgefield Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wedgewood Villas",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wellswood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "West Colonial Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "West Hollybrook",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "West Suwanee Heights",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westchase Golf Course",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westminster Landing",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westmont Oaks",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westmoor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westwind Place Condominium",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Westwood Gardens",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Whisper Glen",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "White Trout Estate",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wildwood Homes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Willa Grove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "William Grove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Willow Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Willowbrook",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Willowbrook Cove",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windmill Pointe",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windsor Place at Citrus Park",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windsor Walk",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windward Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Windward Square",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wingrove Estates",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Hill",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Park Forest",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Park Manor",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winter Park Place",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Winwood",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wolf Creek",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Woodbery",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Woodland Park Acres",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Woodmere Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Woodstock Terrace",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Woodvalley",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wooland",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wrenwood Condominiums",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Wynnfield Lakes",
+    "identifier": "Florida"
+  },
+  {
+    "type": "neighborhood",
+    "name": "Young Pine",
+    "identifier": "Florida"
+  }
+]

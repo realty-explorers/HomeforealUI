@@ -1,15 +1,7 @@
+# See https://help.github.com/ignore-files/ for more about ignoring files.
+
 # dependencies
-node_modules/
-.pnp/
-.pnp.js
-
-# testing
-coverage/
-test/
-
-# production
-build/
-out/
+/node_modules
 
 # misc
 .DS_Store
@@ -18,18 +10,10 @@ out/
 .env.test.local
 .env.production.local
 .env.production
-.env
-*.env
-tmp/
-.vscode
 
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-data.txt
-venv/
-raw_data/
-data/
-certs/
-*.crt
+# Next.js
+/.next

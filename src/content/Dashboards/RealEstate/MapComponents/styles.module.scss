@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins');
+.cardInfoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  div {
+    color: black;
+    @apply font-poppins;
+    // margin-bottom: 0.5rem;
+    font-size: 0.8rem;
+  }
+  :first-child {
+    font-weight: 700;
+  }
+}
+.cardDiscountChip {
+  @apply font-poppins;
+  width: 45%;
+  position: absolute;
+  top: 0.3em;
+  left: 0.3em;
+  border-radius: 0.5rem;
+  padding: 0;
+  z-index: 1;
+  background-color: #9747ff;
+  color: #fff;
+  text-align: center;
+  font-size: 0.9375rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: capitalize;
+}
+
+.cardDiscountValue {
+  color: #fff;
+  text-align: center;
+  @apply font-poppins;
+  font-size: 1.2rem;
+  font-style: normal;
+  font-weight: 900;
+  line-height: normal;
+  text-transform: capitalize;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cardDiscountText {
+  color: #fff;
+  text-align: center;
+  @apply font-poppins;
+  font-size: 0.8rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: capitalize;
+}
+
+.cardSaveIcon {
+  position: absolute;
+  top: 0.5em;
+  right: 0.5em;
+  z-index: 1;
+}

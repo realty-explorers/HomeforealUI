@@ -1,0 +1,3868 @@
+{
+    "extension": "linecounter",
+    "version": "0.2.7",
+    "workspace": "/home/sharon/Documents/homeforeal/ui",
+    "linecount": [
+        {
+            "version": "0.2.7",
+            "counttime": "2023-05-07 19:37:45",
+            "filesum": 612,
+            "codesum": 61841,
+            "commentsum": 5875,
+            "blanksum": 4871,
+            "statistics": {
+                "": {
+                    "code": 219,
+                    "comment": 4,
+                    "blank": 29
+                },
+                ".json": {
+                    "code": 39303,
+                    "comment": 0,
+                    "blank": 35
+                },
+                ".ts": {
+                    "code": 6481,
+                    "comment": 144,
+                    "blank": 295
+                },
+                ".local": {
+                    "code": 15,
+                    "comment": 6,
+                    "blank": 1
+                },
+                ".md": {
+                    "code": 0,
+                    "comment": 0,
+                    "blank": 0
+                },
+                ".js": {
+                    "code": 4388,
+                    "comment": 5414,
+                    "blank": 3635
+                },
+                ".css": {
+                    "code": 21,
+                    "comment": 0,
+                    "blank": 3
+                },
+                ".tsx": {
+                    "code": 10882,
+                    "comment": 306,
+                    "blank": 873
+                },
+                ".txt": {
+                    "code": 3,
+                    "comment": 1,
+                    "blank": 0
+                },
+                ".svg": {
+                    "code": 529,
+                    "comment": 0,
+                    "blank": 0
+                }
+            },
+            "filelist": [
+                {
+                    "blank": 0,
+                    "code": 7,
+                    "comment": 0,
+                    "filename": ".dockerignore"
+                },
+                {
+                    "blank": 1,
+                    "code": 15,
+                    "comment": 6,
+                    "filename": ".env.local"
+                },
+                {
+                    "blank": 0,
+                    "code": 5,
+                    "comment": 0,
+                    "filename": ".eslintignore"
+                },
+                {
+                    "blank": 0,
+                    "code": 21,
+                    "comment": 0,
+                    "filename": ".eslintrc.json"
+                },
+                {
+                    "blank": 4,
+                    "code": 15,
+                    "comment": 1,
+                    "filename": ".gitignore"
+                },
+                {
+                    "blank": 7,
+                    "code": 28,
+                    "comment": 0,
+                    "filename": ".next/build-manifest.json"
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development-fallback/0.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development-fallback/index.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/0.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/1.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/10.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/11.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/12.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/13.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/14.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/15.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/16.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/17.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/18.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/19.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/2.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/20.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/3.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/4.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/5.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/6.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/7.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/8.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/9.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/index.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/client-development/index.pack.old",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/edge-server-development/0.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/edge-server-development/1.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/edge-server-development/2.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/edge-server-development/index.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/edge-server-development/index.pack.old",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/0.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/1.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/10.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/11.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/12.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/13.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/14.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/15.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/16.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/17.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/18.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/2.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/3.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/4.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/5.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/6.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/7.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/8.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/9.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/index.pack",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": ".next/cache/webpack/server-development/index.pack.old",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/package.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/react-loadable-manifest.json"
+                },
+                {
+                    "blank": 5,
+                    "code": 11,
+                    "comment": 13,
+                    "filename": ".next/server/_error.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": ".next/server/middleware-manifest.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": ".next/server/pages-manifest.json"
+                },
+                {
+                    "blank": 21,
+                    "code": 26,
+                    "comment": 29,
+                    "filename": ".next/server/pages/_app.js"
+                },
+                {
+                    "blank": 13,
+                    "code": 18,
+                    "comment": 21,
+                    "filename": ".next/server/pages/_document.js"
+                },
+                {
+                    "blank": 5,
+                    "code": 11,
+                    "comment": 13,
+                    "filename": ".next/server/pages/_error.js"
+                },
+                {
+                    "blank": 5,
+                    "code": 16,
+                    "comment": 11,
+                    "filename": ".next/server/pages/api/auth/[...nextauth].js"
+                },
+                {
+                    "blank": 121,
+                    "code": 126,
+                    "comment": 129,
+                    "filename": ".next/server/pages/dashboards/real-estate.js"
+                },
+                {
+                    "blank": 57,
+                    "code": 62,
+                    "comment": 65,
+                    "filename": ".next/server/pages/index.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 11,
+                    "filename": ".next/server/webpack-api-runtime.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 11,
+                    "filename": ".next/server/webpack-runtime.js"
+                },
+                {
+                    "blank": 4,
+                    "code": 10,
+                    "comment": 17,
+                    "filename": ".next/static/chunks/_error.js"
+                },
+                {
+                    "blank": 171,
+                    "code": 172,
+                    "comment": 180,
+                    "filename": ".next/static/chunks/amp.js"
+                },
+                {
+                    "blank": 227,
+                    "code": 228,
+                    "comment": 239,
+                    "filename": ".next/static/chunks/main.js"
+                },
+                {
+                    "blank": 2032,
+                    "code": 2038,
+                    "comment": 2064,
+                    "filename": ".next/static/chunks/pages/_app.js"
+                },
+                {
+                    "blank": 4,
+                    "code": 10,
+                    "comment": 17,
+                    "filename": ".next/static/chunks/pages/_error.js"
+                },
+                {
+                    "blank": 646,
+                    "code": 652,
+                    "comment": 666,
+                    "filename": ".next/static/chunks/pages/dashboards/real-estate.js"
+                },
+                {
+                    "blank": 30,
+                    "code": 36,
+                    "comment": 43,
+                    "filename": ".next/static/chunks/pages/index.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 1,
+                    "filename": ".next/static/chunks/polyfills.js"
+                },
+                {
+                    "blank": 10,
+                    "code": 15,
+                    "comment": 24,
+                    "filename": ".next/static/chunks/react-refresh.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 11,
+                    "filename": ".next/static/chunks/webpack.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/development/_buildManifest.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/development/_ssgManifest.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/008728f4e611858f.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/0689107dc74a544d.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/06bbac9b5da4bca2.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/076d6f2a51d95f0f.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/07ad3dab34d2b0df.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/091880554483b458.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/0cc1de0d0e764dd1.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/0fd9f6c848c625dc.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/0fdb093d6b4f932a.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/13cb3272aebc93fe.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/1b174a5f381d81e7.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/1b9dc336b3dad635.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/202c119bc7c75ef6.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/2ad82d10037e4ed8.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/2bae165d9b198983.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/2efb07f030217920.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/2f38e36778b6dd8c.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/3935d633085e4140.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/39891ccc5b9cd123.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/3e5d2dce43678c58.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/3ea6188b6f9e2b4c.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/3f64f32097ad47a6.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/42fa00b2624ca0df.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/45c655169c4c7692.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/4aa88aa94edf8ec9.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/4ae51f7eee8f1f33.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/4dc0b26d95189885.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/514a860d19265b46.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/522bef6b2df22a72.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/5531bac6fbaa7099.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/59b1c7123d49de49.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/5e184b7a14bee77c.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/60d3b4a145899c34.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/611d9e0bb4db7f42.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/6134a80488643d47.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/616b32a79748798e.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/61c74c624b9d5ba3.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/64267457e99aa9ea.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/6730a3036bcd5575.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/6ee8fb75e224b90d.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/6f4f98f9e6b4ea33.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/7220b2c73f30fe63.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/77830f873c3e2ad6.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/7918038cbea43cc4.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/814c18eb55f8a040.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/882b8f1d5f680453.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/8f634c748e293c48.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/96dc70ccaaa87f19.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/9979a9dde3d3f6bc.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/9a2357de5b682dd6.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/9c8fcdf91e2696b1.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/9e459d1004cce158.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/a0788efca3146695.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/a210de10b720e7bd.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/a347cd06132b647c.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/abbb68fcbe02f55a.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/ad58110f4bd86866.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/af743a7ad9b21233.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/b1b1c673970e1f6c.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/c5222d6e6ea54ae3.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/c572f1a07b02738c.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/c7e41e4c212653cd.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/e1e72fd2d4fd27f1.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/e204ee1989b4c5f3.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/e61957285f194c10.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/edaa15779998d77a.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/ee0b3501e0e38aec.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/ee0ef6871159ce14.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/f123aea44c5568e6.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/f188adcba74008e4.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/fe4cb855d159213b.webpack.hot-update.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": ".next/static/webpack/fec1c47118456986.webpack.hot-update.json"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.008728f4e611858f.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.0689107dc74a544d.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.06bbac9b5da4bca2.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.076d6f2a51d95f0f.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.07ad3dab34d2b0df.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.091880554483b458.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.0cc1de0d0e764dd1.hot-update.js"
+                },
+                {
+                    "blank": 5,
+                    "code": 7,
+                    "comment": 12,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.0fd9f6c848c625dc.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.0fdb093d6b4f932a.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.13cb3272aebc93fe.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.1b174a5f381d81e7.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.1b9dc336b3dad635.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.202c119bc7c75ef6.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.2ad82d10037e4ed8.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.2bae165d9b198983.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.2efb07f030217920.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.2f38e36778b6dd8c.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.3935d633085e4140.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.39891ccc5b9cd123.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.3e5d2dce43678c58.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.3ea6188b6f9e2b4c.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.3f64f32097ad47a6.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.42fa00b2624ca0df.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.45c655169c4c7692.hot-update.js"
+                },
+                {
+                    "blank": 5,
+                    "code": 7,
+                    "comment": 12,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.4aa88aa94edf8ec9.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.4ae51f7eee8f1f33.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.4dc0b26d95189885.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.514a860d19265b46.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.522bef6b2df22a72.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.5531bac6fbaa7099.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.59b1c7123d49de49.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.5e184b7a14bee77c.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.60d3b4a145899c34.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.611d9e0bb4db7f42.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.6134a80488643d47.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.616b32a79748798e.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.61c74c624b9d5ba3.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.64267457e99aa9ea.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.6730a3036bcd5575.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.6ee8fb75e224b90d.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.6f4f98f9e6b4ea33.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.7220b2c73f30fe63.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.77830f873c3e2ad6.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.7918038cbea43cc4.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.814c18eb55f8a040.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.882b8f1d5f680453.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.8f634c748e293c48.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.96dc70ccaaa87f19.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.9a2357de5b682dd6.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.9c8fcdf91e2696b1.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.9e459d1004cce158.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.a0788efca3146695.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.a347cd06132b647c.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.abbb68fcbe02f55a.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.ad58110f4bd86866.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.af743a7ad9b21233.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.b1b1c673970e1f6c.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.c5222d6e6ea54ae3.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.c572f1a07b02738c.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.c7e41e4c212653cd.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.e1e72fd2d4fd27f1.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.e61957285f194c10.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.edaa15779998d77a.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.ee0b3501e0e38aec.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.ee0ef6871159ce14.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.f123aea44c5568e6.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.f188adcba74008e4.hot-update.js"
+                },
+                {
+                    "blank": 3,
+                    "code": 5,
+                    "comment": 10,
+                    "filename": ".next/static/webpack/pages/dashboards/real-estate.fec1c47118456986.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.008728f4e611858f.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.0689107dc74a544d.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.06bbac9b5da4bca2.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.076d6f2a51d95f0f.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.07ad3dab34d2b0df.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.091880554483b458.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.0cc1de0d0e764dd1.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.0fd9f6c848c625dc.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.0fdb093d6b4f932a.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.13cb3272aebc93fe.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.1b174a5f381d81e7.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.1b9dc336b3dad635.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.202c119bc7c75ef6.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.2ad82d10037e4ed8.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.2bae165d9b198983.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.2efb07f030217920.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.2f38e36778b6dd8c.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.3935d633085e4140.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.39891ccc5b9cd123.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.3e5d2dce43678c58.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.3ea6188b6f9e2b4c.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.3f64f32097ad47a6.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.42fa00b2624ca0df.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.45c655169c4c7692.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.4aa88aa94edf8ec9.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.4ae51f7eee8f1f33.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.4dc0b26d95189885.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.514a860d19265b46.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.522bef6b2df22a72.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.5531bac6fbaa7099.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.59b1c7123d49de49.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.5e184b7a14bee77c.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.60d3b4a145899c34.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.611d9e0bb4db7f42.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.6134a80488643d47.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.616b32a79748798e.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.61c74c624b9d5ba3.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.64267457e99aa9ea.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.6730a3036bcd5575.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.6ee8fb75e224b90d.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.6f4f98f9e6b4ea33.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.7220b2c73f30fe63.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.77830f873c3e2ad6.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.7918038cbea43cc4.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.814c18eb55f8a040.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.882b8f1d5f680453.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.8f634c748e293c48.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.96dc70ccaaa87f19.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.9979a9dde3d3f6bc.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.9a2357de5b682dd6.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.9c8fcdf91e2696b1.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.9e459d1004cce158.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.a0788efca3146695.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.a210de10b720e7bd.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.a347cd06132b647c.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.abbb68fcbe02f55a.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.ad58110f4bd86866.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.af743a7ad9b21233.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.b1b1c673970e1f6c.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.c5222d6e6ea54ae3.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.c572f1a07b02738c.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.c7e41e4c212653cd.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.e1e72fd2d4fd27f1.hot-update.js"
+                },
+                {
+                    "blank": 2,
+                    "code": 17,
+                    "comment": 29,
+                    "filename": ".next/static/webpack/webpack.e204ee1989b4c5f3.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.e61957285f194c10.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.edaa15779998d77a.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.ee0b3501e0e38aec.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.ee0ef6871159ce14.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.f123aea44c5568e6.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.f188adcba74008e4.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.fe4cb855d159213b.hot-update.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 8,
+                    "comment": 16,
+                    "filename": ".next/static/webpack/webpack.fec1c47118456986.hot-update.js"
+                },
+                {
+                    "blank": 0,
+                    "code": 100,
+                    "comment": 0,
+                    "filename": ".next/trace"
+                },
+                {
+                    "blank": 0,
+                    "code": 5,
+                    "comment": 0,
+                    "filename": ".prettierignore"
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": ".prettierrc"
+                },
+                {
+                    "blank": 3,
+                    "code": 21,
+                    "comment": 0,
+                    "filename": "cognito.css"
+                },
+                {
+                    "blank": 12,
+                    "code": 25,
+                    "comment": 0,
+                    "filename": "Dockerfile"
+                },
+                {
+                    "blank": 4,
+                    "code": 17,
+                    "comment": 0,
+                    "filename": "LICENSE"
+                },
+                {
+                    "blank": 0,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "middleware.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 0,
+                    "comment": 4,
+                    "filename": "next-env.d.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 19,
+                    "comment": 0,
+                    "filename": "next.config.js"
+                },
+                {
+                    "blank": 1,
+                    "code": 14,
+                    "comment": 0,
+                    "filename": "next.d.ts"
+                },
+                {
+                    "blank": 28,
+                    "code": 39033,
+                    "comment": 0,
+                    "filename": "package-lock.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 71,
+                    "comment": 0,
+                    "filename": "package.json"
+                },
+                {
+                    "blank": 7,
+                    "code": 96,
+                    "comment": 0,
+                    "filename": "pages/404.tsx"
+                },
+                {
+                    "blank": 7,
+                    "code": 55,
+                    "comment": 0,
+                    "filename": "pages/_app.tsx"
+                },
+                {
+                    "blank": 7,
+                    "code": 50,
+                    "comment": 29,
+                    "filename": "pages/_document.tsx"
+                },
+                {
+                    "blank": 6,
+                    "code": 42,
+                    "comment": 51,
+                    "filename": "pages/api/auth/[...nextauth].ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 16,
+                    "comment": 0,
+                    "filename": "pages/api/location/suggest.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 17,
+                    "comment": 0,
+                    "filename": "pages/api/properties/findDeals.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 17,
+                    "comment": 0,
+                    "filename": "pages/api/properties/findProperties.ts"
+                },
+                {
+                    "blank": 10,
+                    "code": 53,
+                    "comment": 6,
+                    "filename": "pages/auth/FooterIllustration.tsx"
+                },
+                {
+                    "blank": 19,
+                    "code": 303,
+                    "comment": 10,
+                    "filename": "pages/auth/signIn.tsx"
+                },
+                {
+                    "blank": 7,
+                    "code": 32,
+                    "comment": 16,
+                    "filename": "pages/dashboards/real-estate/index.tsx"
+                },
+                {
+                    "blank": 6,
+                    "code": 62,
+                    "comment": 9,
+                    "filename": "pages/index.tsx"
+                },
+                {
+                    "blank": 6,
+                    "code": 63,
+                    "comment": 0,
+                    "filename": "pages/management/profile/index.tsx"
+                },
+                {
+                    "blank": 8,
+                    "code": 76,
+                    "comment": 0,
+                    "filename": "pages/management/profile/settings/index.tsx"
+                },
+                {
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 1,
+                    "filename": "public/_redirects"
+                },
+                {
+                    "filename": "public/favicon.ico",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/icon-192x192.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/icon-256x256.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/icon-384x384.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/icon-512x512.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 30,
+                    "comment": 0,
+                    "filename": "public/manifest.json"
+                },
+                {
+                    "blank": 0,
+                    "code": 3,
+                    "comment": 1,
+                    "filename": "public/robots.txt"
+                },
+                {
+                    "filename": "public/static/images/avatars/1.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/avatars/2.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/avatars/3.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/avatars/4.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/avatars/5.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/logo/full-logo.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 13,
+                    "comment": 0,
+                    "filename": "public/static/images/logo/google.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/logo/material-ui.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/logo/next-js.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": "public/static/images/logo/typescript.svg"
+                },
+                {
+                    "filename": "public/static/images/overview/accent_header.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/overview/accent_sidebar.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/overview/bottom_navigation.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/overview/boxed_sidebar.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/overview/collapsed_sidebar.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/overview/extended_sidebar.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 14,
+                    "comment": 0,
+                    "filename": "public/static/images/overview/figma.svg"
+                },
+                {
+                    "filename": "public/static/images/overview/hero-screenshot.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/overview/management_screen_1.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/overview/management_screen_2.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/overview/management_screen_3.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/overview/performance.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/overview/rtl-preview.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 18,
+                    "comment": 0,
+                    "filename": "public/static/images/overview/sketch.svg"
+                },
+                {
+                    "filename": "public/static/images/overview/tokyo-logo.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/overview/top_navigation.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/pins/greenPin.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/pins/homePin.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/pins/star-pin.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/pins/yellowPin.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/covers/1.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/covers/2.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/covers/3.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/covers/4.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/covers/5.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/covers/6.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/covers/7.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/covers/automation-bg.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/covers/garden_camera.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/fitness/1.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/fitness/2.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/fitness/3.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/fitness/4.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/1.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/illustrations/2.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/3.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/4.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/5.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/illustrations/6.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/analysis.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/illustrations/auth-v1-mask-dark.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/illustrations/auth-v1-mask-light.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/illustrations/auth-v1-tree-2.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/illustrations/auth-v1-tree.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/authentication.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/businessman.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/handshake.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/moving.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/partly-cloudy-day-rain.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/pressure-high.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/security.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/time.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/illustrations/unknown-house.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/illustrations/wireframe.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/adobe.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/airbnb-icon.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 10,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/airbnb.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/autodesk.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/bankofamerica.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/bitcoin.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/cardano.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/coinbase.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/deutschebank.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 3,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/deutschebank_light.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/discord-icon.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/discord.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/dribbble-icon.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/ea.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/ethereum.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/facebook.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/google-icon.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/google-logo.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/google.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/hp.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/ibm.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/ing.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/instagram-icon.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/instagram.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/mastercard.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/microsoft-icon.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/microsoft.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/netflix-icon.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/netflix-logo.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/netflix.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/oracle.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/orange.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/pinterest-icon.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/ripple.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/slack-big.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/slack-icon.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 10,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/slack.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/spotify copy.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/spotify-icon.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 3,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/spotify.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/stripe.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 1,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/tesla.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/uipath.jpg",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/logo/visa.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/logo/wellsfargo.svg"
+                },
+                {
+                    "filename": "public/static/images/placeholders/products/1.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/products/10.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/products/2.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/products/3.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/products/4.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/products/5.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/products/6.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/products/7.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/products/8.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "filename": "public/static/images/placeholders/products/9.png",
+                    "isbinaryfile": true,
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0
+                },
+                {
+                    "blank": 0,
+                    "code": 8,
+                    "comment": 0,
+                    "filename": "public/static/images/placeholders/products/pin.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 64,
+                    "comment": 0,
+                    "filename": "public/static/images/status/404.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 110,
+                    "comment": 0,
+                    "filename": "public/static/images/status/500.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 93,
+                    "comment": 0,
+                    "filename": "public/static/images/status/coming-soon.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 81,
+                    "comment": 0,
+                    "filename": "public/static/images/status/maintenance.svg"
+                },
+                {
+                    "blank": 0,
+                    "code": 0,
+                    "comment": 0,
+                    "filename": "README.md"
+                },
+                {
+                    "blank": 6,
+                    "code": 44,
+                    "comment": 4,
+                    "filename": "src/@core/components/card-statistics/card-stats-vertical/index.tsx"
+                },
+                {
+                    "blank": 2,
+                    "code": 11,
+                    "comment": 2,
+                    "filename": "src/@core/components/card-statistics/types.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 3,
+                    "comment": 2,
+                    "filename": "src/@core/components/react-apexcharts/index.tsx"
+                },
+                {
+                    "blank": 8,
+                    "code": 35,
+                    "comment": 4,
+                    "filename": "src/@core/components/scroll-to-top/index.tsx"
+                },
+                {
+                    "blank": 11,
+                    "code": 30,
+                    "comment": 6,
+                    "filename": "src/@core/context/settingsContext.tsx"
+                },
+                {
+                    "blank": 1,
+                    "code": 3,
+                    "comment": 0,
+                    "filename": "src/@core/hooks/useSettings.ts"
+                },
+                {
+                    "blank": 6,
+                    "code": 32,
+                    "comment": 5,
+                    "filename": "src/@core/layouts/BlankLayout.tsx"
+                },
+                {
+                    "blank": 3,
+                    "code": 48,
+                    "comment": 2,
+                    "filename": "src/@core/layouts/components/shared-components/footer/FooterContent.tsx"
+                },
+                {
+                    "blank": 9,
+                    "code": 41,
+                    "comment": 7,
+                    "filename": "src/@core/layouts/components/shared-components/footer/index.tsx"
+                },
+                {
+                    "blank": 8,
+                    "code": 28,
+                    "comment": 4,
+                    "filename": "src/@core/layouts/components/shared-components/ModeToggler.tsx"
+                },
+                {
+                    "blank": 17,
+                    "code": 188,
+                    "comment": 12,
+                    "filename": "src/@core/layouts/components/shared-components/NotificationDropdown.tsx"
+                },
+                {
+                    "blank": 11,
+                    "code": 138,
+                    "comment": 7,
+                    "filename": "src/@core/layouts/components/shared-components/UserDropdown.tsx"
+                },
+                {
+                    "blank": 11,
+                    "code": 53,
+                    "comment": 6,
+                    "filename": "src/@core/layouts/components/vertical/appBar/index.tsx"
+                },
+                {
+                    "blank": 10,
+                    "code": 67,
+                    "comment": 8,
+                    "filename": "src/@core/layouts/components/vertical/navigation/Drawer.tsx"
+                },
+                {
+                    "blank": 18,
+                    "code": 118,
+                    "comment": 17,
+                    "filename": "src/@core/layouts/components/vertical/navigation/index.tsx"
+                },
+                {
+                    "blank": 12,
+                    "code": 113,
+                    "comment": 8,
+                    "filename": "src/@core/layouts/components/vertical/navigation/VerticalNavHeader.tsx"
+                },
+                {
+                    "blank": 9,
+                    "code": 27,
+                    "comment": 3,
+                    "filename": "src/@core/layouts/components/vertical/navigation/VerticalNavItems.tsx"
+                },
+                {
+                    "blank": 15,
+                    "code": 112,
+                    "comment": 9,
+                    "filename": "src/@core/layouts/components/vertical/navigation/VerticalNavLink.tsx"
+                },
+                {
+                    "blank": 8,
+                    "code": 59,
+                    "comment": 5,
+                    "filename": "src/@core/layouts/components/vertical/navigation/VerticalNavSectionTitle.tsx"
+                },
+                {
+                    "blank": 7,
+                    "code": 39,
+                    "comment": 0,
+                    "filename": "src/@core/layouts/types.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 8,
+                    "comment": 8,
+                    "filename": "src/@core/layouts/utils.ts"
+                },
+                {
+                    "blank": 19,
+                    "code": 88,
+                    "comment": 11,
+                    "filename": "src/@core/layouts/VerticalLayout.tsx"
+                },
+                {
+                    "blank": 2,
+                    "code": 100,
+                    "comment": 1,
+                    "filename": "src/@core/styles/libs/react-apexcharts/index.ts"
+                },
+                {
+                    "blank": 10,
+                    "code": 344,
+                    "comment": 7,
+                    "filename": "src/@core/styles/libs/react-datepicker/index.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 10,
+                    "comment": 0,
+                    "filename": "src/@core/theme/breakpoints/index.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 43,
+                    "comment": 1,
+                    "filename": "src/@core/theme/globalStyles.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 46,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/accordion.ts"
+                },
+                {
+                    "blank": 4,
+                    "code": 106,
+                    "comment": 2,
+                    "filename": "src/@core/theme/overrides/alerts.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 27,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/avatars.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 20,
+                    "comment": 2,
+                    "filename": "src/@core/theme/overrides/backdrop.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 48,
+                    "comment": 2,
+                    "filename": "src/@core/theme/overrides/button.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 83,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/card.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 19,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/chip.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 61,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/dateTimePicker.ts"
+                },
+                {
+                    "blank": 5,
+                    "code": 98,
+                    "comment": 4,
+                    "filename": "src/@core/theme/overrides/dialog.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 13,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/divider.ts"
+                },
+                {
+                    "blank": 4,
+                    "code": 82,
+                    "comment": 2,
+                    "filename": "src/@core/theme/overrides/index.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 62,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/input.ts"
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "src/@core/theme/overrides/link.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 41,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/list.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 16,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/menu.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 36,
+                    "comment": 2,
+                    "filename": "src/@core/theme/overrides/pagination.ts"
+                },
+                {
+                    "blank": 0,
+                    "code": 9,
+                    "comment": 0,
+                    "filename": "src/@core/theme/overrides/paper.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 15,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/popover.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 13,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/rating.ts"
+                },
+                {
+                    "blank": 0,
+                    "code": 12,
+                    "comment": 0,
+                    "filename": "src/@core/theme/overrides/select.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 13,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/snackbar.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 15,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/switches.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 66,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/table.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 27,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/tabs.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 78,
+                    "comment": 2,
+                    "filename": "src/@core/theme/overrides/timeline.ts"
+                },
+                {
+                    "blank": 0,
+                    "code": 16,
+                    "comment": 0,
+                    "filename": "src/@core/theme/overrides/toggleButton.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 23,
+                    "comment": 2,
+                    "filename": "src/@core/theme/overrides/tooltip.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 13,
+                    "comment": 1,
+                    "filename": "src/@core/theme/overrides/typography.ts"
+                },
+                {
+                    "blank": 4,
+                    "code": 105,
+                    "comment": 2,
+                    "filename": "src/@core/theme/palette/index.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 59,
+                    "comment": 1,
+                    "filename": "src/@core/theme/shadows/index.ts"
+                },
+                {
+                    "blank": 0,
+                    "code": 3,
+                    "comment": 0,
+                    "filename": "src/@core/theme/spacing/index.ts"
+                },
+                {
+                    "blank": 14,
+                    "code": 34,
+                    "comment": 12,
+                    "filename": "src/@core/theme/ThemeComponent.tsx"
+                },
+                {
+                    "blank": 7,
+                    "code": 47,
+                    "comment": 4,
+                    "filename": "src/@core/theme/ThemeOptions.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 17,
+                    "comment": 0,
+                    "filename": "src/@core/theme/types.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 64,
+                    "comment": 1,
+                    "filename": "src/@core/theme/typography/index.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 4,
+                    "comment": 0,
+                    "filename": "src/@core/utils/create-emotion-cache.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 10,
+                    "comment": 3,
+                    "filename": "src/@core/utils/hex-to-rgba.ts"
+                },
+                {
+                    "blank": 5,
+                    "code": 25,
+                    "comment": 2,
+                    "filename": "src/api/deals_api.ts"
+                },
+                {
+                    "blank": 4,
+                    "code": 23,
+                    "comment": 1,
+                    "filename": "src/api/location_api.ts"
+                },
+                {
+                    "blank": 5,
+                    "code": 35,
+                    "comment": 0,
+                    "filename": "src/api/routes.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 2,
+                    "comment": 0,
+                    "filename": "src/components/Chart/index.tsx"
+                },
+                {
+                    "blank": 3,
+                    "code": 37,
+                    "comment": 0,
+                    "filename": "src/components/Footer/index.tsx"
+                },
+                {
+                    "blank": 1,
+                    "code": 12,
+                    "comment": 0,
+                    "filename": "src/components/Form/formTypes.d.ts"
+                },
+                {
+                    "blank": 13,
+                    "code": 82,
+                    "comment": 0,
+                    "filename": "src/components/Label/index.tsx"
+                },
+                {
+                    "blank": 14,
+                    "code": 106,
+                    "comment": 5,
+                    "filename": "src/components/Link/index.tsx"
+                },
+                {
+                    "blank": 13,
+                    "code": 115,
+                    "comment": 0,
+                    "filename": "src/components/Logo/index.tsx"
+                },
+                {
+                    "blank": 7,
+                    "code": 66,
+                    "comment": 2,
+                    "filename": "src/components/LogoSign/index.tsx"
+                },
+                {
+                    "blank": 4,
+                    "code": 49,
+                    "comment": 0,
+                    "filename": "src/components/PageTitle/index.tsx"
+                },
+                {
+                    "blank": 5,
+                    "code": 22,
+                    "comment": 0,
+                    "filename": "src/components/PageTitleWrapper/index.tsx"
+                },
+                {
+                    "blank": 7,
+                    "code": 40,
+                    "comment": 0,
+                    "filename": "src/components/Scrollbar/index.tsx"
+                },
+                {
+                    "blank": 15,
+                    "code": 78,
+                    "comment": 0,
+                    "filename": "src/components/Text/index.tsx"
+                },
+                {
+                    "blank": 0,
+                    "code": 13,
+                    "comment": 0,
+                    "filename": "src/config/auth.ts"
+                },
+                {
+                    "blank": 6,
+                    "code": 74,
+                    "comment": 0,
+                    "filename": "src/content/Applications/Messenger/BottomBarContent.tsx"
+                },
+                {
+                    "blank": 10,
+                    "code": 304,
+                    "comment": 0,
+                    "filename": "src/content/Applications/Messenger/ChatContent.tsx"
+                },
+                {
+                    "blank": 26,
+                    "code": 503,
+                    "comment": 0,
+                    "filename": "src/content/Applications/Messenger/SidebarContent.tsx"
+                },
+                {
+                    "blank": 18,
+                    "code": 325,
+                    "comment": 0,
+                    "filename": "src/content/Applications/Messenger/TopBarContent.tsx"
+                },
+                {
+                    "blank": 8,
+                    "code": 327,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/Crypto/AccountBalance.tsx"
+                },
+                {
+                    "blank": 9,
+                    "code": 146,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/Crypto/AccountSecurity.tsx"
+                },
+                {
+                    "blank": 3,
+                    "code": 34,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/Crypto/PageHeader.tsx"
+                },
+                {
+                    "blank": 9,
+                    "code": 213,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/Crypto/Wallets.tsx"
+                },
+                {
+                    "blank": 9,
+                    "code": 90,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/Crypto/WatchList.tsx"
+                },
+                {
+                    "blank": 7,
+                    "code": 375,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/Crypto/WatchListColumn.tsx"
+                },
+                {
+                    "blank": 10,
+                    "code": 361,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/Crypto/WatchListRow.tsx"
+                },
+                {
+                    "blank": 8,
+                    "code": 59,
+                    "comment": 8,
+                    "filename": "src/content/Dashboards/RealEstate/Map.tsx"
+                },
+                {
+                    "blank": 16,
+                    "code": 260,
+                    "comment": 4,
+                    "filename": "src/content/Dashboards/RealEstate/MapComponent.tsx"
+                },
+                {
+                    "blank": 7,
+                    "code": 58,
+                    "comment": 6,
+                    "filename": "src/content/Dashboards/RealEstate/MapComponents/CardsPanel.tsx"
+                },
+                {
+                    "blank": 4,
+                    "code": 65,
+                    "comment": 2,
+                    "filename": "src/content/Dashboards/RealEstate/MapComponents/LocationBounds.tsx"
+                },
+                {
+                    "blank": 5,
+                    "code": 68,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/RealEstate/MapComponents/PropertiesMarkers.tsx"
+                },
+                {
+                    "blank": 16,
+                    "code": 239,
+                    "comment": 6,
+                    "filename": "src/content/Dashboards/RealEstate/MapComponents/PropertyCard.tsx"
+                },
+                {
+                    "blank": 8,
+                    "code": 161,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/RealEstate/MapComponents/PropertyMapCard.tsx"
+                },
+                {
+                    "blank": 4,
+                    "code": 35,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/RealEstate/MapComponents/PropertyRadius.tsx"
+                },
+                {
+                    "blank": 3,
+                    "code": 26,
+                    "comment": 3,
+                    "filename": "src/content/Dashboards/RealEstate/MapComponents/SelectedPropertyMarker.tsx"
+                },
+                {
+                    "blank": 5,
+                    "code": 81,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/RealEstate/MapComponents/SoldPropertiesMarkers.tsx"
+                },
+                {
+                    "blank": 2,
+                    "code": 73,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/RealEstate/MapControls/AdvancedControls.tsx"
+                },
+                {
+                    "blank": 4,
+                    "code": 131,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/RealEstate/MapControls/MainControls.tsx"
+                },
+                {
+                    "blank": 13,
+                    "code": 109,
+                    "comment": 19,
+                    "filename": "src/content/Dashboards/RealEstate/MapControls/MapControls.tsx"
+                },
+                {
+                    "blank": 5,
+                    "code": 46,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/RealEstate/MapControls/SliderField.tsx"
+                },
+                {
+                    "blank": 11,
+                    "code": 83,
+                    "comment": 10,
+                    "filename": "src/content/Dashboards/RealEstate/Properties.tsx"
+                },
+                {
+                    "blank": 4,
+                    "code": 34,
+                    "comment": 0,
+                    "filename": "src/content/Dashboards/RealEstate/SliderInput.tsx"
+                },
+                {
+                    "blank": 6,
+                    "code": 103,
+                    "comment": 20,
+                    "filename": "src/content/Dashboards/RealEstate/SliderRangeInput.tsx"
+                },
+                {
+                    "blank": 10,
+                    "code": 83,
+                    "comment": 0,
+                    "filename": "src/content/Management/Transactions/BulkActions.tsx"
+                },
+                {
+                    "blank": 3,
+                    "code": 30,
+                    "comment": 0,
+                    "filename": "src/content/Management/Transactions/PageHeader.tsx"
+                },
+                {
+                    "blank": 3,
+                    "code": 144,
+                    "comment": 0,
+                    "filename": "src/content/Management/Transactions/RecentOrders.tsx"
+                },
+                {
+                    "blank": 24,
+                    "code": 342,
+                    "comment": 0,
+                    "filename": "src/content/Management/Transactions/RecentOrdersTable.tsx"
+                },
+                {
+                    "blank": 4,
+                    "code": 87,
+                    "comment": 0,
+                    "filename": "src/content/Management/Users/details/Addresses.tsx"
+                },
+                {
+                    "blank": 4,
+                    "code": 87,
+                    "comment": 0,
+                    "filename": "src/content/Management/Users/details/Feed.tsx"
+                },
+                {
+                    "blank": 15,
+                    "code": 200,
+                    "comment": 0,
+                    "filename": "src/content/Management/Users/details/MyCards.tsx"
+                },
+                {
+                    "blank": 4,
+                    "code": 139,
+                    "comment": 0,
+                    "filename": "src/content/Management/Users/details/PopularTags.tsx"
+                },
+                {
+                    "blank": 14,
+                    "code": 158,
+                    "comment": 1,
+                    "filename": "src/content/Management/Users/details/ProfileCover.tsx"
+                },
+                {
+                    "blank": 8,
+                    "code": 123,
+                    "comment": 0,
+                    "filename": "src/content/Management/Users/details/RecentActivity.tsx"
+                },
+                {
+                    "blank": 4,
+                    "code": 122,
+                    "comment": 0,
+                    "filename": "src/content/Management/Users/settings/ActivityTab.tsx"
+                },
+                {
+                    "blank": 3,
+                    "code": 194,
+                    "comment": 0,
+                    "filename": "src/content/Management/Users/settings/EditProfileTab.tsx"
+                },
+                {
+                    "blank": 4,
+                    "code": 125,
+                    "comment": 0,
+                    "filename": "src/content/Management/Users/settings/NotificationsTab.tsx"
+                },
+                {
+                    "blank": 3,
+                    "code": 18,
+                    "comment": 0,
+                    "filename": "src/content/Management/Users/settings/PageHeader.tsx"
+                },
+                {
+                    "blank": 12,
+                    "code": 286,
+                    "comment": 0,
+                    "filename": "src/content/Management/Users/settings/SecurityTab.tsx"
+                },
+                {
+                    "blank": 12,
+                    "code": 183,
+                    "comment": 0,
+                    "filename": "src/content/Overview/Hero/index.tsx"
+                },
+                {
+                    "blank": 5,
+                    "code": 28,
+                    "comment": 0,
+                    "filename": "src/contexts/SidebarContext.tsx"
+                },
+                {
+                    "blank": 1,
+                    "code": 6,
+                    "comment": 0,
+                    "filename": "src/createEmotionCache.ts"
+                },
+                {
+                    "blank": 12,
+                    "code": 77,
+                    "comment": 0,
+                    "filename": "src/hooks/useAuth.tsx"
+                },
+                {
+                    "blank": 11,
+                    "code": 80,
+                    "comment": 4,
+                    "filename": "src/hooks/useSearch.ts"
+                },
+                {
+                    "blank": 4,
+                    "code": 23,
+                    "comment": 0,
+                    "filename": "src/layouts/BaseLayout/index.tsx"
+                },
+                {
+                    "blank": 2,
+                    "code": 14,
+                    "comment": 0,
+                    "filename": "src/layouts/SidebarLayout/Header/Buttons/index.tsx"
+                },
+                {
+                    "blank": 9,
+                    "code": 114,
+                    "comment": 0,
+                    "filename": "src/layouts/SidebarLayout/Header/Buttons/Notifications/index.tsx"
+                },
+                {
+                    "blank": 6,
+                    "code": 111,
+                    "comment": 2,
+                    "filename": "src/layouts/SidebarLayout/Header/Buttons/Search/AutocompleteInput.tsx"
+                },
+                {
+                    "blank": 3,
+                    "code": 52,
+                    "comment": 0,
+                    "filename": "src/layouts/SidebarLayout/Header/Buttons/Search/DropdownInput.tsx"
+                },
+                {
+                    "blank": 16,
+                    "code": 131,
+                    "comment": 5,
+                    "filename": "src/layouts/SidebarLayout/Header/Buttons/Search/index.tsx"
+                },
+                {
+                    "blank": 4,
+                    "code": 83,
+                    "comment": 0,
+                    "filename": "src/layouts/SidebarLayout/Header/Buttons/Search/RangeInput.tsx"
+                },
+                {
+                    "blank": 7,
+                    "code": 109,
+                    "comment": 0,
+                    "filename": "src/layouts/SidebarLayout/Header/Buttons/Search/SearchForm.tsx"
+                },
+                {
+                    "blank": 3,
+                    "code": 40,
+                    "comment": 1,
+                    "filename": "src/layouts/SidebarLayout/Header/Buttons/Search/SliderInput.tsx"
+                },
+                {
+                    "blank": 6,
+                    "code": 92,
+                    "comment": 0,
+                    "filename": "src/layouts/SidebarLayout/Header/index.tsx"
+                },
+                {
+                    "blank": 14,
+                    "code": 106,
+                    "comment": 10,
+                    "filename": "src/layouts/SidebarLayout/Header/Menu/index.tsx"
+                },
+                {
+                    "blank": 14,
+                    "code": 133,
+                    "comment": 0,
+                    "filename": "src/layouts/SidebarLayout/Header/Userbox/index.tsx"
+                },
+                {
+                    "blank": 7,
+                    "code": 65,
+                    "comment": 0,
+                    "filename": "src/layouts/SidebarLayout/index.tsx"
+                },
+                {
+                    "blank": 6,
+                    "code": 120,
+                    "comment": 0,
+                    "filename": "src/layouts/SidebarLayout/Sidebar/index.tsx"
+                },
+                {
+                    "blank": 30,
+                    "code": 209,
+                    "comment": 0,
+                    "filename": "src/layouts/SidebarLayout/Sidebar/SidebarMenu/index.tsx"
+                },
+                {
+                    "blank": 1,
+                    "code": 5,
+                    "comment": 0,
+                    "filename": "src/models/comps_property.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 14,
+                    "comment": 0,
+                    "filename": "src/models/crypto_order.ts"
+                },
+                {
+                    "blank": 2,
+                    "code": 10,
+                    "comment": 0,
+                    "filename": "src/models/deal.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 21,
+                    "comment": 0,
+                    "filename": "src/models/location_data.ts"
+                },
+                {
+                    "blank": 0,
+                    "code": 16,
+                    "comment": 0,
+                    "filename": "src/models/location_suggestions.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 5,
+                    "comment": 0,
+                    "filename": "src/models/marker.ts"
+                },
+                {
+                    "blank": 0,
+                    "code": 19,
+                    "comment": 0,
+                    "filename": "src/models/property.ts"
+                },
+                {
+                    "blank": 10,
+                    "code": 119,
+                    "comment": 5,
+                    "filename": "src/store/searchSlice.ts"
+                },
+                {
+                    "blank": 3,
+                    "code": 19,
+                    "comment": 0,
+                    "filename": "src/store/store.ts"
+                },
+                {
+                    "blank": 6,
+                    "code": 251,
+                    "comment": 0,
+                    "filename": "src/theme/base.ts"
+                },
+                {
+                    "blank": 33,
+                    "code": 1217,
+                    "comment": 2,
+                    "filename": "src/theme/schemes/GreyGooseTheme.ts"
+                },
+                {
+                    "blank": 33,
+                    "code": 1217,
+                    "comment": 2,
+                    "filename": "src/theme/schemes/PureLightTheme.ts"
+                },
+                {
+                    "blank": 33,
+                    "code": 1215,
+                    "comment": 2,
+                    "filename": "src/theme/schemes/PurpleFlowTheme.ts"
+                },
+                {
+                    "blank": 7,
+                    "code": 23,
+                    "comment": 6,
+                    "filename": "src/theme/schemes/themeConfig.ts"
+                },
+                {
+                    "blank": 6,
+                    "code": 26,
+                    "comment": 0,
+                    "filename": "src/theme/ThemeProvider.tsx"
+                },
+                {
+                    "blank": 12,
+                    "code": 85,
+                    "comment": 0,
+                    "filename": "src/utils/converters.ts"
+                },
+                {
+                    "blank": 1,
+                    "code": 9,
+                    "comment": 1,
+                    "filename": "src/utils/windowFunctions.ts"
+                },
+                {
+                    "blank": 9,
+                    "code": 36,
+                    "comment": 2,
+                    "filename": "test_Dockerfile_test"
+                },
+                {
+                    "blank": 0,
+                    "code": 34,
+                    "comment": 0,
+                    "filename": "tsconfig.json"
+                }
+            ]
+        }
+    ]
+}

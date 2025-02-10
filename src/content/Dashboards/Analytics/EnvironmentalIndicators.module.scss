@@ -1,0 +1,40 @@
+.indicatorCard {
+  background-color: #f8f0d3;
+  height: 10rem;
+  :hover {
+    background-color: #f6dc7e;
+  }
+}
+.indicatorHeader {
+  color: #000;
+  text-align: center;
+  @apply font-poppins;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 700;
+  line-height: normal;
+  text-transform: uppercase;
+}
+
+.indicatorContent {
+  color: #000;
+  text-align: center;
+  @apply font-poppins;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-transform: lowercase;
+}
+
+.indicatorLink {
+  color: #4c49f0;
+  text-align: center;
+  @apply font-poppins;
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+  text-decoration-line: underline;
+  text-transform: capitalize;
+}

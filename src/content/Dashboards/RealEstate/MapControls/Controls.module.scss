@@ -1,0 +1,9 @@
+.propertyTypeLabel {
+  @apply font-poppins;
+  color: var(--second-text-color, #737373);
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 1.5rem; /* 266.667% */
+  letter-spacing: 0.0125rem;
+}
