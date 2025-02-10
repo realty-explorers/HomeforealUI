@@ -1,4 +1,4 @@
-import { sliderClasses } from "@mui/base";
+import { sliderClasses } from '@mui/base';
 import {
   Button,
   Checkbox,
@@ -6,10 +6,10 @@ import {
   Switch,
   Tab,
   Tabs,
-  Typography,
-} from "@mui/material";
-import clsx from "clsx";
-import React, { useState } from "react";
+  Typography
+} from '@mui/material';
+import clsx from 'clsx';
+import React, { useState } from 'react';
 import {
   Control,
   Controller,
@@ -18,89 +18,94 @@ import {
   UseFormRegister,
   UseFormRegisterReturn,
   UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
-import styles from "./EditBuyBoxDialog.module.scss";
+  UseFormWatch
+} from 'react-hook-form';
+import styles from './EditBuyBoxDialog.module.scss';
 // import { RangeField } from "./RangeField";
-import RangeField from "@/components/Form/RangeField";
-import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
-import { defaultSimilarityFields } from "@/schemas/defaults";
-import SwitchField from "@/components/Form/SwitchField";
-import ArticleIcon from "@mui/icons-material/Article";
-import { styled } from "@mui/system";
+import RangeField from '@/components/Form/RangeField';
+import { buyboxSchemaType } from '@/schemas/BuyBoxSchemas';
+import { defaultSimilarityFields } from '@/schemas/defaults';
+import SwitchField from '@/components/Form/SwitchField';
+import ArticleIcon from '@mui/icons-material/Article';
+import { styled } from '@mui/system';
+import RangeFieldV2 from '@/components/Form/RangeFieldV2';
+import SingleRangeField from '@/components/Form/SingleRangeField';
 
 const StyledTab = styled(Tab)(({ theme }) => ({
-  "&.Mui-selected, &.Mui-selected:hover": {
-    color: "white",
-  },
+  '&.Mui-selected, &.Mui-selected:hover': {
+    color: 'white'
+  }
 }));
 
-const similarityTypes = ["green", "yellow", "orange", "red"];
-const similarityFields = [
-  // { fieldName: "Same Neighborhood", type: "boolean" },
-  // { fieldName: "Same Property Type", type: "boolean" },
-  // { fieldName: "Same Pool Status", type: "boolean" },
+const similarityTypes = ['green', 'yellow', 'orange', 'red'];
+const rangeFields = [
   {
-    fieldName: "Bedrooms",
-    type: "range",
+    label: 'Bedrooms',
+    fieldName: 'beds_offset',
+    type: 'range',
     min: defaultSimilarityFields.bedrooms.min,
     max: defaultSimilarityFields.bedrooms.max,
-    step: defaultSimilarityFields.bedrooms.step,
+    step: defaultSimilarityFields.bedrooms.step
   },
   {
-    fieldName: "Bathrooms",
-    type: "range",
+    label: 'Bathrooms',
+    fieldName: 'baths_offset',
+    type: 'range',
     min: defaultSimilarityFields.bathrooms.min,
     max: defaultSimilarityFields.bathrooms.max,
-    step: defaultSimilarityFields.bathrooms.step,
+    step: defaultSimilarityFields.bathrooms.step
   },
   {
-    fieldName: "Building sqft",
-    type: "range",
+    label: 'Building Sqft',
+    fieldName: 'area_offset',
+    type: 'range',
     min: defaultSimilarityFields.area.min,
     max: defaultSimilarityFields.area.max,
     step: defaultSimilarityFields.area.step,
-    postfix: "%",
+    postfix: '%'
   },
   {
-    fieldName: "Year Built",
-    type: "range",
+    label: 'Year Built',
+    fieldName: 'year_built_offset',
+    type: 'range',
     min: defaultSimilarityFields.yearBuilt.min,
     max: defaultSimilarityFields.yearBuilt.max,
-    step: defaultSimilarityFields.yearBuilt.step,
+    step: defaultSimilarityFields.yearBuilt.step
   },
   {
-    fieldName: "Lot sqft",
-    type: "range",
+    label: 'Lot Size',
+    fieldName: 'lot_area_offset',
+    type: 'range',
     min: defaultSimilarityFields.lotSize.min,
     max: defaultSimilarityFields.lotSize.max,
     step: defaultSimilarityFields.lotSize.step,
     formatLabelAsNumber: true,
-    postfix: "%",
+    postfix: '%'
   },
   {
-    fieldName: "Garages",
-    type: "range",
-    min: defaultSimilarityFields.garages.min,
-    max: defaultSimilarityFields.garages.max,
-    step: defaultSimilarityFields.garages.step,
-  },
-  {
-    fieldName: "Distance",
-    type: "range",
+    label: 'Distance',
+    fieldName: 'max_distance',
+    type: 'single',
     min: defaultSimilarityFields.distance.min,
     max: defaultSimilarityFields.distance.max,
     step: defaultSimilarityFields.distance.step,
-    postfix: "mi",
+    postfix: 'mi'
   },
   {
-    fieldName: "Sale Date",
-    type: "range",
+    label: 'Sale Date',
+    fieldName: 'max_listing_age_months',
+    type: 'single',
     min: defaultSimilarityFields.saleDate.min,
     max: defaultSimilarityFields.saleDate.max,
     step: defaultSimilarityFields.saleDate.step,
-    postfix: "months",
-  },
+    postfix: 'months'
+  }
+];
+
+const booleanFields = [
+  // { fieldName: "Same Neighborhood", type: "boolean" },
+  // { fieldName: "Same Property Type", type: "boolean" },
+  // { fieldName: "Same Pool Status", type: "boolean" },
 ];
 
 //bg-red-500
@@ -115,46 +120,42 @@ type ComparablePreferencesProps = {
   setValue: UseFormSetValue<buyboxSchemaType>;
   getValues: UseFormGetValues<buyboxSchemaType>;
 };
-const ComparablePreferences = (
-  { register, control, watch, setValue, getValues }: ComparablePreferencesProps,
-) => {
+const ComparablePreferences = ({
+  register,
+  control,
+  watch,
+  setValue,
+  getValues
+}: ComparablePreferencesProps) => {
   const [tab, setTab] = useState(0);
   // const [value, setValue] = React.useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setTab(newValue);
   };
 
-  const handleUseTemplate = () => {
-  };
+  const handleUseTemplate = () => {};
 
   return (
     <>
       <div className="col-span-2 relative">
-        {similarityTypes.map((similarityType, index) => (
-          index === tab && (
-            <div
-              key={index}
-              className={clsx([
-                " flex absolute top-0 left-0",
-              ])}
-            >
-              <Controller
-                name={`similarity.${similarityType}.active`}
-                control={control}
-                render={({ field: { value, ...field } }) => (
-                  <Checkbox
-                    {...field}
-                    checked={!!value}
-                  />
-                )}
-              />
-              <Typography className={styles.label}>
-                Active
-              </Typography>
-              {" "}
-            </div>
-          )
-        ))}
+        {similarityTypes.map(
+          (similarityType, index) =>
+            index === tab && (
+              <div
+                key={index}
+                className={clsx([' flex absolute top-0 left-0'])}
+              >
+                <Controller
+                  name={`similarity_criteria.${index}.enabled`}
+                  control={control}
+                  render={({ field: { value, ...field } }) => (
+                    <Checkbox {...field} checked={!!value} />
+                  )}
+                />
+                <Typography className={styles.label}>Active</Typography>{' '}
+              </div>
+            )
+        )}
 
         <Tabs
           value={tab}
@@ -165,31 +166,31 @@ const ComparablePreferences = (
               // borderRadius: "10rem",
               border: `0.2rem solid ${
                 tab === 0
-                  ? "green"
+                  ? 'green'
                   : tab === 1
-                  ? "yellow"
+                  ? 'yellow'
                   : tab === 2
-                  ? "orange"
-                  : "red"
-              }`,
-            },
+                  ? 'orange'
+                  : 'red'
+              }`
+            }
           }}
         >
           <StyledTab
             label="Green"
-            className={clsx([tab === 0 && "bg-green-500 text-white"])}
+            className={clsx([tab === 0 && 'bg-green-500 text-white'])}
           />
           <StyledTab
             label="Yellow"
-            className={clsx([tab === 1 && "bg-yellow-500"])}
+            className={clsx([tab === 1 && 'bg-yellow-500'])}
           />
           <StyledTab
             label="Orange"
-            className={clsx([tab === 2 && "bg-orange-500"])}
+            className={clsx([tab === 2 && 'bg-orange-500'])}
           />
           <StyledTab
             label="Red"
-            className={clsx([tab === 3 && "bg-red-500"])}
+            className={clsx([tab === 3 && 'bg-red-500'])}
           />
         </Tabs>
 
@@ -205,123 +206,121 @@ const ComparablePreferences = (
       {similarityTypes.map((similarityType, index) => {
         return (
           <React.Fragment key={index}>
-            {similarityFields.map((similarityField, idx) => {
-              return index === tab && (
-                similarityField.type === "boolean"
-                  ? (
+            {rangeFields.map((similarityField, idx) => {
+              return (
+                index === tab &&
+                (similarityField.type === 'boolean' ? (
+                  <div
+                    key={idx}
+                    className={clsx(['flex w-full item-center col-span-2'])}
+                  >
+                    <Controller
+                      name={`similarity_criteria.${index}.${similarityField.fieldName}.enabled`}
+                      control={control}
+                      render={({ field: { value, ...field } }) => (
+                        <Switch
+                          {...field}
+                          checked={!!value}
+                          disabled={
+                            !watch(`similarity_criteria.${index}.enabled`)
+                          }
+                        />
+                      )}
+                    />
+                    <Typography className={styles.label}>
+                      {similarityField.fieldName}
+                    </Typography>{' '}
+                  </div>
+                ) : (
+                  <>
                     <div
-                      key={idx}
                       className={clsx([
-                        "flex w-full item-center col-span-2",
+                        ' w-full item-center',
+                        index === tab ? 'flex' : 'hidden'
                       ])}
                     >
-                      <Controller
-                        name={`similarity.${similarityType}.${similarityField.fieldName}`}
+                      <SwitchField
+                        fieldName={`similarity_criteria.${index}.${similarityField.fieldName}.enabled`}
                         control={control}
-                        render={({ field: { value, ...field } }) => (
-                          <Switch
-                            {...field}
-                            checked={!!value}
-                            disabled={!watch(
-                              `similarity.${similarityType}.active`,
-                            )}
-                          />
-                        )}
+                        disabled={
+                          !watch(`similarity_criteria.${index}.enabled`)
+                        }
                       />
                       <Typography className={styles.label}>
-                        {similarityField.fieldName}
+                        {similarityField.label}
                       </Typography>
-                      {" "}
                     </div>
-                  )
-                  : (
-                    <>
-                      <div
-                        className={clsx([
-                          " w-full item-center",
-                          index === tab ? "flex" : "hidden",
-                        ])}
-                      >
-                        <SwitchField
-                          fieldName={`similarity.${similarityType}.${similarityField.fieldName}.0`}
-                          control={control}
-                          disabled={!watch(
-                            `similarity.${similarityType}.active`,
-                          )}
-                        />
-                        <Typography className={styles.label}>
-                          {similarityField.fieldName}
-                        </Typography>
-                      </div>
-                      <RangeField
-                        key={index}
+                    {similarityField.type === 'range' && (
+                      <RangeFieldV2
+                        key={idx}
                         min={similarityField.min}
                         max={similarityField.max}
                         step={similarityField.step}
                         // prefix={similarityField.prefix}
                         postfix={similarityField.postfix}
-                        formatLabelAsNumber={similarityField
-                          .formatLabelAsNumber}
-                        fieldName={`similarity.${similarityType}.${similarityField.fieldName}.1`}
-                        setValue={setValue}
-                        getValues={getValues}
-                        disabled={!watch(
-                          `similarity.${similarityType}.${similarityField.fieldName}.0`,
-                        ) || !watch(`similarity.${similarityType}.active`)}
-                        className={clsx([
-                          index === tab ? "" : "hidden",
-                        ])}
+                        formatLabelAsNumber={
+                          similarityField.formatLabelAsNumber
+                        }
+                        fieldName={`similarity_criteria.${index}.${similarityField.fieldName}`}
+                        control={control}
+                        disabled={
+                          !watch(
+                            `similarity_criteria.${index}.${similarityField.fieldName}.enabled`
+                          )
+                        }
                       />
-                    </>
-                    // <RangeField
-                    //   key={idx}
-                    //   register={register}
-                    //   control={control}
-                    //   watch={watch}
-                    //   fieldName={`similarity.${similarityType}.${similarityField.fieldName}`}
-                    //   title={similarityField.fieldName}
-                    //   labelClass={index === value ? "" : "hidden"}
-                    //   sliderClass={index === value ? "" : "hidden"}
-                    //   min={similarityField.min}
-                    //   max={similarityField.max}
-                    //   step={similarityField.step}
-                    // />
-                  )
+                    )}
+                    {similarityField.type === 'single' && (
+                      <SingleRangeField
+                        key={idx}
+                        min={similarityField.min}
+                        max={similarityField.max}
+                        step={similarityField.step}
+                        // prefix={similarityField.prefix}
+                        postfix={similarityField.postfix}
+                        formatLabelAsNumber={
+                          similarityField.formatLabelAsNumber
+                        }
+                        fieldName={`similarity_criteria.${index}.${similarityField.fieldName}`}
+                        control={control}
+                        disabled={
+                          !watch(
+                            `similarity_criteria.${index}.${similarityField.fieldName}.enabled`
+                          )
+                        }
+                      />
+                    )}
+                  </>
+                ))
               );
             })}
-            {index === tab &&
-              (
-                <>
-                  <div
-                    className={clsx([
-                      " w-full item-center ml-14",
-                      index === tab ? "flex" : "hidden",
-                    ])}
-                  >
-                    <Typography className={styles.label}>
-                      Similarity Weight
-                    </Typography>
-                  </div>
-                  <RangeField
-                    key={index}
-                    min={0}
-                    max={1}
-                    step={0.01}
-                    fieldName={`similarity_weights.${similarityType}`}
-                    setValue={setValue}
-                    getValues={getValues}
-                    className={clsx([
-                      index === tab ? "" : "hidden",
-                    ])}
-                    disabled={!watch(
-                      `similarity.${similarityType}.active`,
-                    )}
-                  />
-                </>
-              )}
+            {index === tab && (
+              <>
+                <div
+                  className={clsx([
+                    ' w-full item-center ml-14',
+                    index === tab ? 'flex' : 'hidden'
+                  ])}
+                >
+                  <Typography className={styles.label}>
+                    Similarity Weight
+                  </Typography>
+                </div>
+                <SingleRangeField
+                  key={index}
+                  min={0}
+                  max={1}
+                  step={0.01}
+                  fieldName={`similarity_criteria.${index}.weight`}
+                  control={control}
+                  disabled={!watch(`similarity_criteria.${index}.enabled`)}
+                />
+              </>
+            )}
           </React.Fragment>
         );
       })}
+
       {/* {similarityTypes.map((similartyType, index) => { */}
       {/*   return ( */}
       {/*     ( */}

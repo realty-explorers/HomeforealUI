@@ -1,36 +1,34 @@
 import {
   distanceFormatter,
   percentFormatter,
-  priceFormatter,
-} from "@/utils/converters";
-import { Typography } from "@mui/material";
-import { useState } from "react";
-import { CompData } from "@/models/analyzedProperty";
-import Image from "@/components/Photos/Image";
-import WcIcon from "@mui/icons-material/Wc";
-import BedOutlinedIcon from "@mui/icons-material/BedOutlined";
-import SquareFootIcon from "@mui/icons-material/SquareFoot";
-import PinDropOutlinedIcon from "@mui/icons-material/PinDropOutlined";
-import StraightenIcon from "@mui/icons-material/Straighten";
-import LocalOfferOutlinedIcon from "@mui/icons-material/LocalOfferOutlined";
-import TodayIcon from "@mui/icons-material/Today";
-import AssessmentOutlinedIcon from "@mui/icons-material/AssessmentOutlined";
-import SettingsEthernetIcon from "@mui/icons-material/SettingsEthernet";
-import clsx from "clsx";
-import { readableDateDiff } from "@/utils/dateUtils";
+  priceFormatter
+} from '@/utils/converters';
+import { Typography } from '@mui/material';
+import { useState } from 'react';
+import { CompData } from '@/models/analyzedProperty';
+import Image from '@/components/Photos/Image';
+import WcIcon from '@mui/icons-material/Wc';
+import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
+import SquareFootIcon from '@mui/icons-material/SquareFoot';
+import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
+import StraightenIcon from '@mui/icons-material/Straighten';
+import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
+import TodayIcon from '@mui/icons-material/Today';
+import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
+import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
+import clsx from 'clsx';
+import { readableDateDiff } from '@/utils/dateUtils';
 
 const defaultImage =
-  "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=";
+  'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=';
 
 type CompsMapCardProps = {
   property: CompData;
 };
 const CompsMapCard: React.FC<CompsMapCardProps> = (
-  props: CompsMapCardProps,
+  props: CompsMapCardProps
 ) => {
-  const [cardImage, setCardImage] = useState(
-    props.property.primary_image,
-  );
+  const [cardImage, setCardImage] = useState(props.property.primary_image);
 
   const showDistance = () => {
     try {
@@ -44,25 +42,24 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
 
   const getColorClass = (color?: string) => {
     switch (color) {
-      case "red":
-        return "text-red-500";
-      case "orange":
-        return "text-orange-500";
-      case "yellow":
-        return "text-yellow-500";
-      case "green":
-        return "text-green-500";
+      case 'red':
+        return 'text-red-500';
+      case 'orange':
+        return 'text-orange-500';
+      case 'yellow':
+        return 'text-yellow-500';
+      case 'green':
+        return 'text-green-500';
       default:
-        return "text-gray-500";
+        return 'text-gray-500';
     }
   };
 
-  const stats =
-    `${props.property?.bedrooms} Beds ● ${props.property?.total_bathrooms} Baths ● ${props.property?.building_area} Sqft`;
+  const stats = `${props.property?.beds} Beds ● ${props.property?.baths} Baths ● ${props.property?.area} Sqft`;
 
-  const locationStats = `${props.property.distance.toFixed(2)} Miles ● ${
-    readableDateDiff(props.property.sales_date)
-  }`;
+  const locationStats = `${props.property.distance.toFixed(
+    2
+  )} Miles ● ${readableDateDiff(props.property.list_date)}`;
 
   return (
     <div className="flex rounded-xl bg-white w-80 h-40">
@@ -80,7 +77,7 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
         <Image
           src={cardImage}
           defaultSrc={defaultImage}
-          alt={props.property?.address}
+          alt={props.property?.location.address}
           className="object-cover object-center w-full h-full rounded-l-xl"
         />
 
@@ -102,10 +99,9 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
           <PinDropOutlinedIcon fontSize="small" />
           <div className="flex flex-col w-full truncate">
             <Typography className="text-xs ml-2 font-poppins ">
-              {props.property?.address}
+              {props.property?.location.address}
             </Typography>
-            <Typography className="text-xs ml-2 font-poppins">
-            </Typography>
+            <Typography className="text-xs ml-2 font-poppins"></Typography>
           </div>
         </div>
 
@@ -129,7 +125,7 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
         <div className="flex items-center mt-2 w-full">
           <LocalOfferOutlinedIcon fontSize="small" />
           <Typography className="text-xs ml-2 font-poppins text-center">
-            {priceFormatter(props.property?.sales_closing_price)}
+            {priceFormatter(props.property?.price)}
           </Typography>
         </div>
 
@@ -138,8 +134,8 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
 
           <Typography
             className={clsx([
-              "font-poppins ml-2 font-bold",
-              getColorClass(props.property.similarity_color),
+              'font-poppins ml-2 font-bold',
+              getColorClass(props.property.similarity_color)
             ])}
           >
             {Math.round(props.property.similarity_score * 100)}% Similarity

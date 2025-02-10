@@ -2,9 +2,9 @@ import {
   BaseQueryApi,
   createApi,
   FetchArgs,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
-import { logout } from "../slices/authSlice";
+  fetchBaseQuery
+} from '@reduxjs/toolkit/query/react';
+import { logout } from '../slices/authSlice';
 
 const baseUrl = process.env.NEXT_PUBLIC_ANALYSIS_API_URL;
 
@@ -15,7 +15,7 @@ const baseQuery = fetchBaseQuery({
 
     if (!token) {
       try {
-        const request = await fetch("/api/protected");
+        const request = await fetch('/api/protected');
         token = (await request.json()).accessToken;
       } catch (e) {
         console.log(e);
@@ -24,16 +24,18 @@ const baseQuery = fetchBaseQuery({
 
     // If we have a token set in state, let's assume that we should be passing it.
     if (token) {
-      headers.set("authorization", `Bearer ${token}`);
+      headers.set('authorization', `Bearer ${token}`);
     }
 
+    headers.set('X-Service', 'analysis');
+
     return headers;
-  },
+  }
 });
 const baseQueryWithReauth = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
-  extraOptions: any,
+  extraOptions: any
 ) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 403) {
@@ -45,21 +47,19 @@ const baseQueryWithReauth = async (
 };
 
 export const buyboxAnalysisApi = createApi({
-  reducerPath: "buyboxAnalysisApi",
+  reducerPath: 'buyboxAnalysisApi',
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     analyzeBuyBox: builder.mutation({
       query: (buybox_id) => ({
         url: `/Analyze?buyboxId=${buybox_id}`,
-        method: "POST",
+        method: 'POST'
       }),
-      transformResponse: (response: any) => response,
-    }),
-  }),
+      transformResponse: (response: any) => response
+    })
+  })
 });
 
 export const buyboxAnalysisApiEndpoints = buyboxAnalysisApi.endpoints;
 
-export const {
-  useAnalyzeBuyBoxMutation,
-} = buyboxAnalysisApi;
+export const { useAnalyzeBuyBoxMutation } = buyboxAnalysisApi;

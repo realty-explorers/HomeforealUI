@@ -1,10 +1,8 @@
-import AnalyzedProperty, { FilteredComp } from "@/models/analyzedProperty";
-import PropertyPreview from "@/models/propertyPreview";
-import {
-  useLazyGetLocationDataQuery,
-} from "@/store/services/locationApiService";
-import { useLazyGetPropertyQuery } from "@/store/services/propertiesApiService";
-import { selectFilter } from "@/store/slices/filterSlice";
+import AnalyzedProperty, { FilteredComp } from '@/models/analyzedProperty';
+import PropertyPreview from '@/models/propertyPreview';
+import { useLazyGetLocationDataQuery } from '@/store/services/locationApiService';
+import { useLazyGetPropertyQuery } from '@/store/services/propertiesApiService';
+import { selectFilter } from '@/store/slices/filterSlice';
 import {
   setRentalCalculatedProperty,
   setSaleCalculatedProperty,
@@ -12,12 +10,12 @@ import {
   setSelectedProperty,
   setSelectedPropertyLocation,
   setSelectedPropertyPreview,
-  setSelectedRentalComps,
-} from "@/store/slices/propertiesSlice";
-import { skipToken } from "@reduxjs/toolkit/query";
-import { useDispatch, useSelector } from "react-redux";
-import { useRouter } from "next/router";
-import { useSnackbar } from "notistack";
+  setSelectedRentalComps
+} from '@/store/slices/propertiesSlice';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { useDispatch, useSelector } from 'react-redux';
+import { useRouter } from 'next/router';
+import { useSnackbar } from 'notistack';
 
 export const useProperty = () => {
   const { buybox } = useSelector(selectFilter);
@@ -29,41 +27,49 @@ export const useProperty = () => {
   const { enqueueSnackbar } = useSnackbar();
 
   const resetSelectedComps = async (property: AnalyzedProperty) => {
-    const newSalesComps: FilteredComp[] = property.sales_comps?.data?.map(
-      (comp, index) => {
+    const newSalesComps: FilteredComp[] = property.comps
+      .filter((comp) => comp.status === 'sold')
+      .map((comp, index) => {
         return { ...comp, index };
-      },
-    );
+      });
 
-    const newRentalComps: FilteredComp[] = property.rents_comps?.data?.map(
-      (comp, index) => {
+    const newRentalComps: FilteredComp[] = property.comps
+      .filter((comp) => comp.status === 'for_rent')
+      .map((comp, index) => {
         return { ...comp, index };
-      },
-    );
+      });
     dispatch(setSelectedComps(newSalesComps));
     dispatch(setSelectedRentalComps(newRentalComps));
   };
 
   const selectPropertyId = async (buybox_id: string, propertyId: string) => {
     try {
-      const propertyData: AnalyzedProperty = await getProperty(
-        { buybox_id, property_id: propertyId },
-      )
-        .unwrap();
+      const propertyData: AnalyzedProperty = await getProperty({
+        buybox_id,
+        property_id: propertyId
+      }).unwrap();
       if (propertyData) {
         dispatch(
-          setSelectedPropertyPreview(
-            {
-              ...propertyData,
-              sales_listing_price: propertyData.listing_price,
-            } as PropertyPreview,
-          ),
+          setSelectedPropertyPreview({
+            id: propertyData.id,
+            address: propertyData.location.address,
+            coordinates: propertyData.location.geometry.coordinates,
+            price: propertyData.price,
+            arv_price: propertyData.arv_price,
+            arv25_price: propertyData.arv25_price,
+            cap_rate: propertyData.cap_rate,
+            image: propertyData.photos.primary,
+            status: propertyData.status,
+            property_type: propertyData.type,
+            beds: propertyData.beds,
+            baths: propertyData.baths
+          } as PropertyPreview)
         );
         const location = {
-          type: "neighborhood",
-          city: propertyData.city,
-          state: propertyData.state,
-          neighborhood: propertyData.neighborhood,
+          type: 'neighborhood',
+          city: propertyData.location.city,
+          state: propertyData.location.state,
+          neighborhood: propertyData.location.neighborhood
         };
         const locationData = await getLocationData(location).unwrap();
         dispatch(setSelectedPropertyLocation(locationData));
@@ -73,7 +79,7 @@ export const useProperty = () => {
         resetSelectedComps(propertyData);
       }
     } catch (e) {
-      enqueueSnackbar("Property not found", { variant: "error" });
+      enqueueSnackbar('Property not found', { variant: 'error' });
       console.log(e);
     }
   };
@@ -83,17 +89,14 @@ export const useProperty = () => {
     try {
       dispatch(setSelectedPropertyPreview(property));
       const propertyData: AnalyzedProperty = await getProperty(
-        buybox
-          ? { buybox_id: buybox.id, property_id: property.source_id }
-          : skipToken,
-      )
-        .unwrap();
+        buybox ? { buybox_id: buybox.id, property_id: property.id } : skipToken
+      ).unwrap();
       if (propertyData) {
         const location = {
-          type: "neighborhood",
-          city: propertyData.city,
-          state: propertyData.state,
-          neighborhood: propertyData.neighborhood,
+          type: 'neighborhood',
+          city: propertyData.location.city,
+          state: propertyData.location.state,
+          neighborhood: propertyData.location.neighborhood
         };
         const locationData = await getLocationData(location).unwrap();
         dispatch(setSelectedPropertyLocation(locationData));
@@ -104,15 +107,15 @@ export const useProperty = () => {
         router.push(
           {
             pathname: router.pathname,
-            query: { buybox_id: buybox.id, property_id: property.source_id },
+            query: { buybox_id: buybox.id, property_id: property.id }
           },
           undefined,
-          { shallow: true },
+          { shallow: true }
         );
       }
     } catch (e) {
-      enqueueSnackbar("There was a problem finding this property", {
-        variant: "error",
+      enqueueSnackbar('There was a problem finding this property', {
+        variant: 'error'
       });
       console.log(e);
     }
@@ -126,7 +129,7 @@ export const useProperty = () => {
   return {
     selectProperty,
     deselectProperty,
-    selectPropertyId,
+    selectPropertyId
   };
 };
 

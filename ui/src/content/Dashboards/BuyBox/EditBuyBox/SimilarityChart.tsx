@@ -1,7 +1,7 @@
-import { sliderClasses } from "@mui/base";
-import { Checkbox, Slider, Switch, Tab, Tabs, Typography } from "@mui/material";
-import clsx from "clsx";
-import React from "react";
+import { sliderClasses } from '@mui/base';
+import { Checkbox, Slider, Switch, Tab, Tabs, Typography } from '@mui/material';
+import clsx from 'clsx';
+import React from 'react';
 import {
   Control,
   Controller,
@@ -9,13 +9,14 @@ import {
   UseFormRegister,
   UseFormRegisterReturn,
   UseFormWatch,
-  useWatch,
-} from "react-hook-form";
-import DoNotDisturbIcon from "@mui/icons-material/DoNotDisturb";
-import CheckCircleOutlineRoundedIcon from "@mui/icons-material/CheckCircleOutlineRounded";
-import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
-import styles from "./EditBuyBoxDialog.module.scss";
-import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
+  useWatch
+} from 'react-hook-form';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
+import CheckCircleOutlineRoundedIcon from '@mui/icons-material/CheckCircleOutlineRounded';
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
+import styles from './EditBuyBoxDialog.module.scss';
+import { buyboxSchemaType } from '@/schemas/BuyBoxSchemas';
+import { BuyBoxFormData } from '@/schemas/BuyBoxFormSchema';
 
 const FieldValue = ({ index, value, className }: any) => {
   return (
@@ -27,53 +28,53 @@ const FieldValue = ({ index, value, className }: any) => {
     >
       <div
         className={clsx([
-          "flex items-center h-full border-b border-white py-2 text-white",
-          className,
+          'flex items-center h-full border-b border-white py-2 text-white',
+          className
         ])}
       >
-        <span className="font-semibold text-white">
-          {value}
-        </span>
+        <span className="font-semibold text-white">{value}</span>
       </div>
     </div>
   );
 };
 
 type SimilarityChartProps = {
-  register: UseFormRegister<buyboxSchemaType>;
-  control: Control<buyboxSchemaType>;
-  watch: UseFormWatch<buyboxSchemaType>;
+  register: UseFormRegister<BuyBoxFormData>;
+  control: Control<BuyBoxFormData>;
+  watch: UseFormWatch<BuyBoxFormData>;
 };
-const SimilarityChart = (
-  { register, control, watch }: SimilarityChartProps,
-) => {
+const SimilarityChart = ({
+  register,
+  control,
+  watch
+}: SimilarityChartProps) => {
   const [value, setValue] = React.useState(0);
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
-  const greenValues = useWatch({ control, name: "similarity.green" });
-  const yellowValues = useWatch({ control, name: "similarity.yellow" });
-  const orangeValues = useWatch({ control, name: "similarity.orange" });
-  const redValues = useWatch({ control, name: "similarity.red" });
+  const greenValues = useWatch({ control, name: 'similarity.green' });
+  const yellowValues = useWatch({ control, name: 'similarity.yellow' });
+  const orangeValues = useWatch({ control, name: 'similarity.orange' });
+  const redValues = useWatch({ control, name: 'similarity.red' });
 
   const displayValue = (value: any) => {
     if (Array.isArray(value)) {
       return value[0]
-        ? (!Array.isArray(value[1])
+        ? !Array.isArray(value[1])
           ? `${value[1]}`
-          : `${value[1][0]} - ${value[1][1]}`)
-        : "All";
+          : `${value[1][0]} - ${value[1][1]}`
+        : 'All';
     }
-    return value ? <CheckCircleOutlineRoundedIcon htmlColor="white" /> : "Any";
+    return value ? <CheckCircleOutlineRoundedIcon htmlColor="white" /> : 'Any';
   };
 
   return (
     <div className="col-span-2 mt-12">
       <div
         className={clsx([
-          "max-w-sm md:max-w-none grid md:grid-cols-5 text-sm  rounded-md",
-          "bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700",
+          'max-w-sm md:max-w-none grid md:grid-cols-5 text-sm  rounded-md',
+          'bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700'
         ])}
       >
         <section className="">

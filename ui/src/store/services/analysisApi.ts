@@ -2,9 +2,9 @@ import {
   BaseQueryApi,
   createApi,
   FetchArgs,
-  fetchBaseQuery,
-} from "@reduxjs/toolkit/query/react";
-import { logout } from "../slices/authSlice";
+  fetchBaseQuery
+} from '@reduxjs/toolkit/query/react';
+import { logout } from '../slices/authSlice';
 
 const baseUrl = process.env.NEXT_PUBLIC_OLD_API_URL;
 
@@ -15,7 +15,7 @@ const baseQuery = fetchBaseQuery({
 
     if (!token) {
       try {
-        const request = await fetch("/api/protected");
+        const request = await fetch('/api/protected');
         token = (await request.json()).accessToken;
       } catch (e) {
         console.log(e);
@@ -24,16 +24,18 @@ const baseQuery = fetchBaseQuery({
 
     // If we have a token set in state, let's assume that we should be passing it.
     if (token) {
-      headers.set("authorization", `Bearer ${token}`);
+      headers.set('authorization', `Bearer ${token}`);
     }
 
+    headers.set('X-Service', 'api');
+
     return headers;
-  },
+  }
 });
 const baseQueryWithReauth = async (
   args: string | FetchArgs,
   api: BaseQueryApi,
-  extraOptions: any,
+  extraOptions: any
 ) => {
   let result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 403) {
@@ -45,39 +47,39 @@ const baseQueryWithReauth = async (
 };
 
 export const analysisApi = createApi({
-  reducerPath: "analysisApi",
+  reducerPath: 'analysisApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ["BuyBoxLeads", "BuyBoxLeadsCount", "SelectedComps"],
+  tagTypes: ['BuyBoxLeads', 'BuyBoxLeadsCount', 'SelectedComps'],
   endpoints: (builder) => ({
     getLeads: builder.query({
       query: ({ id, skip, limit }) => ({
-        url: `summary/?buybox_id=${id}&skip=${skip}&limit=${limit}`,
+        url: `summary/?buybox_id=${id}&skip=${skip}&limit=${limit}`
       }),
       transformResponse: (response: any) => response,
-      providesTags: ["BuyBoxLeads"],
+      providesTags: ['BuyBoxLeads']
     }),
     getLeadsCount: builder.query({
       query: (id) => ({
-        url: `count/?buybox_id=${id}`,
+        url: `count/?buybox_id=${id}`
       }),
       transformResponse: (response: any) => response,
-      providesTags: ["BuyBoxLeadsCount"],
+      providesTags: ['BuyBoxLeadsCount']
     }),
     calculateComps: builder.mutation({
       query: ({ buybox_id, source_id, list_of_comps, analysis_comp_name }) => ({
-        url: "edit-comps",
-        method: "POST",
+        url: 'edit-comps',
+        method: 'POST',
         body: {
-          "buybox_id": buybox_id,
-          "source_id": source_id,
-          "list_of_comps": list_of_comps,
-          "analysis_comp_name": analysis_comp_name,
-        },
+          buybox_id: buybox_id,
+          source_id: source_id,
+          list_of_comps: list_of_comps,
+          analysis_comp_name: analysis_comp_name
+        }
       }),
       transformResponse: (response: any) => response,
-      invalidatesTags: ["SelectedComps"],
-    }),
-  }),
+      invalidatesTags: ['SelectedComps']
+    })
+  })
 });
 
 export const analysisApiEndpoints = analysisApi.endpoints;
@@ -86,5 +88,5 @@ export const {
   useGetLeadsQuery,
   useLazyGetLeadsQuery,
   useGetLeadsCountQuery,
-  useCalculateCompsMutation,
+  useCalculateCompsMutation
 } = analysisApi;

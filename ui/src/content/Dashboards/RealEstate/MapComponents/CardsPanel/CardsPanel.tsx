@@ -70,14 +70,13 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   const sortedProperties =
     filteredProperties &&
     [...filteredProperties].sort((a, b) => {
-      const fieldName =
-        strategyMode === 'ARV' ? 'arv_price' : 'sales_comps_price';
+      const fieldName = strategyMode === 'ARV' ? 'arv25_price' : 'arv_price';
 
       if (!validValue(a[fieldName]) && validValue(b[fieldName])) return 1;
       if (validValue(a[fieldName]) && !validValue(b[fieldName])) return -1;
       // if (a[fieldName] && b.arv_price) {
-      const arvPercentageA = (a[fieldName] - a.listing_price) / a[fieldName];
-      const arvPercentageB = (b[fieldName] - b.listing_price) / b[fieldName];
+      const arvPercentageA = (a[fieldName] - a.price) / a[fieldName];
+      const arvPercentageB = (b[fieldName] - b.price) / b[fieldName];
       return arvPercentageB - arvPercentageA;
       // }
       return 0;
@@ -99,7 +98,7 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
 
   const fetchPropertyData = async (property: PropertyPreview) => {
     //TODO: Watch out here for race conditions when internet not stable
-    const propertyData = await getProperty(property?.source_id).unwrap();
+    const propertyData = await getProperty(property?.id).unwrap();
     dispatch(setSelectedProperty(propertyData));
     dispatch(setSaleCalculatedProperty(propertyData));
     dispatch(setRentalCalculatedProperty(propertyData));
@@ -111,7 +110,7 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
     // console.log("rerender cards panel");
     if (selectedPropertyPreview) {
       const selectedPropertyIndex = filteredProperties?.findIndex(
-        (property) => property.source_id === selectedPropertyPreview.source_id
+        (property) => property.id === selectedPropertyPreview.id
       );
       setSelectedIndex(selectedPropertyIndex);
       if (notSelected) {
@@ -152,8 +151,7 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
             key={index}
             property={sortedProperties[index]}
             selected={
-              selectedPropertyPreview?.source_id ===
-              sortedProperties[index].source_id
+              selectedPropertyPreview?.id === sortedProperties[index].id
             }
             selectProperty={(property) => handleSelectProperty(property)}
             deselectProperty={() => handleDeselectProperty()}

@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
+import { useEffect, useState } from 'react';
+import { v4 as uuidv4 } from 'uuid';
 import {
   Button,
   Checkbox,
@@ -11,13 +11,13 @@ import {
   List,
   ListItem,
   ListItemText,
-  Typography,
-} from "@mui/material";
-import ExpensesRow, { Expense } from "../ExpensesRow";
-import styles from "../ExpensesCalculator.module.scss";
-import { TransitionGroup } from "react-transition-group";
-import AnalyzedProperty from "@/models/analyzedProperty";
-import { priceFormatter } from "@/utils/converters";
+  Typography
+} from '@mui/material';
+import ExpensesRow, { Expense } from '../ExpensesRow';
+import styles from '../ExpensesCalculator.module.scss';
+import { TransitionGroup } from 'react-transition-group';
+import AnalyzedProperty from '@/models/analyzedProperty';
+import { priceFormatter } from '@/utils/converters';
 
 type InitialInvestmentProps = {
   property: AnalyzedProperty;
@@ -27,8 +27,8 @@ type InitialInvestmentProps = {
 };
 const InitialInvestment = (props: InitialInvestmentProps) => {
   const priceTypes = [
-    { label: "ARV", value: props.property?.arv_price },
-    { label: "Listing Price", value: props.property?.listing_price || 0 },
+    { label: 'ARV', value: props.property?.arv_price },
+    { label: 'Listing Price', value: props.property?.price || 0 }
   ];
 
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -37,38 +37,42 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
     const defaultExpenses = [
       {
         id: uuidv4(),
-        label: "Fixed Fee",
+        label: 'Fixed Fee',
         value: props.property?.expenses?.fixed_fee?.expense_amount || 0,
-        priceType: props.property.expenses?.fixed_fee?.expense_ref === "arv"
-          ? priceTypes[0]
-          : priceTypes[1],
+        priceType:
+          props.property.expenses?.fixed_fee?.expense_ref === 'arv'
+            ? priceTypes[0]
+            : priceTypes[1]
       },
       {
         id: uuidv4(),
-        label: "Closing Fee",
+        label: 'Closing Fee',
         // value: props.property?.expenses?.closing_fee?.expense_amount || 0,
         value: 1000,
-        priceType: props.property.expenses?.closing_fee?.expense_ref === "arv"
-          ? priceTypes[0]
-          : priceTypes[1],
+        priceType:
+          props.property.expenses?.closing_fee?.expense_ref === 'arv'
+            ? priceTypes[0]
+            : priceTypes[1]
       },
       {
         id: uuidv4(),
-        label: "Selling Fee",
+        label: 'Selling Fee',
         // value: props.property?.expenses?.selling_fee?.expense_amount || 0,
         value: props.property?.arv_price * 0.03,
-        priceType: props.property.expenses?.selling_fee?.expense_ref === "arv"
-          ? priceTypes[0]
-          : priceTypes[1],
+        priceType:
+          props.property.expenses?.selling_fee?.expense_ref === 'arv'
+            ? priceTypes[0]
+            : priceTypes[1]
       },
       {
         id: uuidv4(),
-        label: "Rehab",
+        label: 'Rehab',
         value: props.property?.expenses?.rehab?.expense_amount || 0,
-        priceType: props.property.expenses?.rehab?.expense_ref === "arv"
-          ? priceTypes[0]
-          : priceTypes[1],
-      },
+        priceType:
+          props.property.expenses?.rehab?.expense_ref === 'arv'
+            ? priceTypes[0]
+            : priceTypes[1]
+      }
     ];
     setExpenses(defaultExpenses);
     props.setExpenses(totalExpenses(defaultExpenses));
@@ -76,7 +80,7 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
 
   const handleChangeExpenses = (changedExpense: Expense) => {
     const expenseIndex = expenses.findIndex(
-      (expense) => expense.id === changedExpense.id,
+      (expense) => expense.id === changedExpense.id
     );
     if (expenseIndex === -1) return;
     expenses[expenseIndex] = changedExpense;
@@ -94,15 +98,13 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
         id: uuidv4(),
         label: `New Expense`,
         value: 0,
-        priceType: priceTypes[0],
-      },
+        priceType: priceTypes[0]
+      }
     ]);
   };
 
   const handleRemoveExpense = (id) => {
-    const updatedExpenses = expenses.filter(
-      (expense) => expense.id !== id,
-    );
+    const updatedExpenses = expenses.filter((expense) => expense.id !== id);
     setExpenses(updatedExpenses);
     props.setExpenses(totalExpenses(updatedExpenses));
   };

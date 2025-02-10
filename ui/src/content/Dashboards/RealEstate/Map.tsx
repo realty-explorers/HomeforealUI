@@ -1,37 +1,37 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import MapBox, {
   FullscreenControl,
   Marker,
   NavigationControl,
   Popup,
   ScaleControl,
-  ViewStateChangeEvent,
-} from "react-map-gl";
-import "mapbox-gl/dist/mapbox-gl.css";
-import * as turf from "@turf/turf";
-import type { MapRef } from "react-map-gl";
-import type { GeoJSONSource } from "react-map-gl";
-import { clusterLayer } from "./MapComponents/Layers/layers";
-import MapControlPanel from "./MapControlPanel/MapControlPanel";
-import { FeatureCollection, Geometry } from "@turf/turf";
-import mapboxgl from "mapbox-gl";
+  ViewStateChangeEvent
+} from 'react-map-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import * as turf from '@turf/turf';
+import type { MapRef } from 'react-map-gl';
+import type { GeoJSONSource } from 'react-map-gl';
+import { clusterLayer } from './MapComponents/Layers/layers';
+import MapControlPanel from './MapControlPanel/MapControlPanel';
+import { FeatureCollection, Geometry } from '@turf/turf';
+import mapboxgl from 'mapbox-gl';
 import {
   locationApi,
-  locationApiEndpoints,
-} from "@/store/services/locationApiService";
+  locationApiEndpoints
+} from '@/store/services/locationApiService';
 import {
   propertiesApiEndpoints,
-  useLazyGetPropertyQuery,
-} from "@/store/services/propertiesApiService";
-import { useDispatch, useSelector } from "react-redux";
-import { selectLocation, setSuggestion } from "@/store/slices/locationSlice";
-import PropertyPreview from "@/models/propertyPreview";
-import CardsPanel from "./MapComponents/CardsPanel/CardsPanel";
+  useLazyGetPropertyQuery
+} from '@/store/services/propertiesApiService';
+import { useDispatch, useSelector } from 'react-redux';
+import { selectLocation, setSuggestion } from '@/store/slices/locationSlice';
+import PropertyPreview from '@/models/propertyPreview';
+import CardsPanel from './MapComponents/CardsPanel/CardsPanel';
 import {
   selectFilter,
   setBuybox,
-  setPropertyTypes,
-} from "@/store/slices/filterSlice";
+  setPropertyTypes
+} from '@/store/slices/filterSlice';
 import {
   selectProperties,
   setRentalCalculatedProperty,
@@ -41,62 +41,71 @@ import {
   setSelectedPropertyLocation,
   setSelectedPropertyPreview,
   setSelectedRentalComps,
-  setSelecting,
-} from "@/store/slices/propertiesSlice";
+  setSelecting
+} from '@/store/slices/propertiesSlice';
 
-import PropertiesSource from "./MapComponents/Sources/PropertiesSource";
-import CompsSource from "./MapComponents/Sources/CompsSource";
-import LocationBoundsSource from "./MapComponents/Sources/LocationBoundsSource";
-import SelectedPropertyMarker from "./MapComponents/Markers/SelectedPropertyMarker";
-import MarkerPopup from "./MapComponents/Overlays/MarkerPopup";
+import PropertiesSource from './MapComponents/Sources/PropertiesSource';
+import CompsSource from './MapComponents/Sources/CompsSource';
+import LocationBoundsSource from './MapComponents/Sources/LocationBoundsSource';
+import SelectedPropertyMarker from './MapComponents/Markers/SelectedPropertyMarker';
+import MarkerPopup from './MapComponents/Overlays/MarkerPopup';
 import {
   generateCompsGeoJson,
-  generatePropertyGeoJson,
-} from "./MapUtils/CoordinatesUtils";
+  generatePropertyGeoJson
+} from './MapUtils/CoordinatesUtils';
 import {
   INITIAL_VIEW_STATE,
   MAPBOX_STYLE,
   MAPBOX_TOKEN,
-  US_BOUNDS,
-} from "./MapUtils/constants";
-import { CircularProgress } from "@mui/material";
-import CompMarkersPopup from "./MapComponents/Overlays/CompMarkerPopup";
-import LoadingSpinner from "./MapComponents/Overlays/LoadingSpinner";
-import RentalsSource from "./MapComponents/Sources/RentalsSource";
-import { useLazyGetLocationsQuery } from "@/store/services/dataApiService";
-import PropertyLocationBoundsSource from "./MapComponents/Sources/PropertyLocationBoundsSource";
-import useProperty from "@/hooks/useProperty";
-import { skipToken } from "@reduxjs/toolkit/query";
-import { useSearchParams } from "next/navigation";
-import { useSnackbar } from "notistack";
-import { setMapLoading } from "@/store/slices/mapSlice";
-import styles from "./Map.module.scss";
+  US_BOUNDS
+} from './MapUtils/constants';
+import { CircularProgress } from '@mui/material';
+import CompMarkersPopup from './MapComponents/Overlays/CompMarkerPopup';
+import LoadingSpinner from './MapComponents/Overlays/LoadingSpinner';
+import RentalsSource from './MapComponents/Sources/RentalsSource';
+import { useLazyGetLocationsQuery } from '@/store/services/dataApiService';
+import PropertyLocationBoundsSource from './MapComponents/Sources/PropertyLocationBoundsSource';
+import useProperty from '@/hooks/useProperty';
+import { skipToken } from '@reduxjs/toolkit/query';
+import { useSearchParams } from 'next/navigation';
+import { useSnackbar } from 'notistack';
+import { setMapLoading } from '@/store/slices/mapSlice';
+import styles from './Map.module.scss';
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
   const searchParams = useSearchParams();
-  const selectedBuyBoxId = searchParams.get("buybox_id");
-  const selectedPropertyId = searchParams.get("property_id");
+  const selectedBuyBoxId = searchParams.get('buybox_id');
+  const selectedPropertyId = searchParams.get('property_id');
 
   const mapRef = useRef<MapRef>(null);
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(true);
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
   const [data, setData] = useState<
-    FeatureCollection<Geometry, {
-      [name: string]: any;
-    }>
+    FeatureCollection<
+      Geometry,
+      {
+        [name: string]: any;
+      }
+    >
   >();
   const [compsData, setCompsData] = useState<
-    FeatureCollection<Geometry, {
-      [name: string]: any;
-    }>
+    FeatureCollection<
+      Geometry,
+      {
+        [name: string]: any;
+      }
+    >
   >();
 
   const [rentalsData, setRentalsData] = useState<
-    FeatureCollection<Geometry, {
-      [name: string]: any;
-    }>
+    FeatureCollection<
+      Geometry,
+      {
+        [name: string]: any;
+      }
+    >
   >();
 
   const [boundsData, setBoundsData] = useState<Geometry>();
@@ -106,28 +115,27 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
-  const { filteredProperties, strategyMode, buybox } = useSelector(
-    selectFilter,
-  );
+  const { filteredProperties, strategyMode, buybox } =
+    useSelector(selectFilter);
   const {
     selectedPropertyPreview,
     selectedComps,
     selectedRentalComps,
     selectedProperty,
     selectedPropertyLocation,
-    selecting,
+    selecting
   } = useSelector(selectProperties);
 
   const { selectProperty, deselectProperty, selectPropertyId } = useProperty();
 
   const [getProperty, propertyState] = useLazyGetPropertyQuery();
   const locationState = locationApiEndpoints.getLocationData.useQueryState(
-    suggestion || skipToken,
+    suggestion || skipToken
   );
 
-  const propertiesState = propertiesApiEndpoints.getPropertiesPreviews
-    .useQueryState(
-      suggestion && buybox ? { suggestion, buybox_id: buybox?.id } : skipToken,
+  const propertiesState =
+    propertiesApiEndpoints.getPropertiesPreviews.useQueryState(
+      suggestion && buybox ? { suggestion, buybox_id: buybox?.id } : skipToken
     );
 
   const handleDeselectProperty = () => {
@@ -146,7 +154,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const fetchPropertyData = async (property: PropertyPreview) => {
     //TODO: Watch out here for race conditions when internet not stable
-    const propertyData = await getProperty(property?.source_id).unwrap();
+    const propertyData = await getProperty(property?.id).unwrap();
     dispatch(setSelectedProperty(propertyData));
     dispatch(setSaleCalculatedProperty(propertyData));
     dispatch(setRentalCalculatedProperty(propertyData));
@@ -154,7 +162,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const onMove = useCallback((viewState: ViewStateChangeEvent) => {
     const newCenter = {
-      ...viewState.viewState,
+      ...viewState.viewState
     };
     setViewState(newCenter);
     // Only update the view state if the center is inside the geofence
@@ -171,14 +179,14 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const handleClickCluster = (
     event: mapboxgl.MapMouseEvent & {
       features?: mapboxgl.MapboxGeoJSONFeature[];
-    } & mapboxgl.EventData,
+    } & mapboxgl.EventData
   ) => {
     const feature = event.features[0];
     if (feature) {
       const clusterId = feature.properties.cluster_id;
 
       const mapboxSource = mapRef.current?.getSource(
-        "properties",
+        'properties'
       ) as GeoJSONSource;
 
       mapboxSource?.getClusterExpansionZoom(clusterId, (err, zoom) => {
@@ -190,7 +198,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           center: feature.geometry.coordinates,
           zoom,
           duration: 500,
-          pitch: 0,
+          pitch: 0
         });
       });
     }
@@ -199,14 +207,14 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const handleHoverProperty = (
     e: mapboxgl.MapMouseEvent & {
       features?: mapboxgl.MapboxGeoJSONFeature[];
-    } & mapboxgl.EventData,
+    } & mapboxgl.EventData
   ) => {
     if (mapRef?.current) {
-      mapRef.current.getCanvas().style.cursor = "pointer";
+      mapRef.current.getCanvas().style.cursor = 'pointer';
     }
     const feature = e.features[0];
     const hoveredProperty = filteredProperties?.find(
-      (property) => property.source_id === feature.properties.id,
+      (property) => property.id === feature.properties.id
     );
     setHoveredProperty(hoveredProperty);
   };
@@ -214,10 +222,10 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const handleMouseLeaveProperty = (
     e: mapboxgl.MapMouseEvent & {
       features?: mapboxgl.MapboxGeoJSONFeature[];
-    } & mapboxgl.EventData,
+    } & mapboxgl.EventData
   ) => {
     if (mapRef?.current) {
-      mapRef.current.getCanvas().style.cursor = "";
+      mapRef.current.getCanvas().style.cursor = '';
     }
     setHoveredProperty(null);
   };
@@ -225,12 +233,12 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const handleClickProperty = (
     e: mapboxgl.MapMouseEvent & {
       features?: mapboxgl.MapboxGeoJSONFeature[];
-    } & mapboxgl.EventData,
+    } & mapboxgl.EventData
   ) => {
     const feature = e.features[0];
 
     const selectedProperty = filteredProperties?.find(
-      (property) => property.source_id === feature.properties.id,
+      (property) => property.id === feature.properties.id
     );
     handleSelectProperty(selectedProperty);
   };
@@ -238,11 +246,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const handleMouseEnterComps = (
     e: mapboxgl.MapMouseEvent & {
       features?: mapboxgl.MapboxGeoJSONFeature[];
-    } & mapboxgl.EventData,
+    } & mapboxgl.EventData
   ) => {
     const feature = e.features[0];
     const hoveredProperty = selectedComps?.find(
-      (property) => property.index === feature.properties.index - 1,
+      (property) => property.index === feature.properties.index - 1
     );
     setHoveredComp(hoveredProperty);
 
@@ -260,7 +268,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const handleMouseLeaveComps = (
     e: mapboxgl.MapMouseEvent & {
       features?: mapboxgl.MapboxGeoJSONFeature[];
-    } & mapboxgl.EventData,
+    } & mapboxgl.EventData
   ) => {
     setHoveredComp(null);
   };
@@ -268,11 +276,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const handleMouseEnterRentals = (
     e: mapboxgl.MapMouseEvent & {
       features?: mapboxgl.MapboxGeoJSONFeature[];
-    } & mapboxgl.EventData,
+    } & mapboxgl.EventData
   ) => {
     const feature = e.features[0];
     const hoveredProperty = selectedRentalComps?.find(
-      (property) => property.index === feature.properties.index - 1,
+      (property) => property.index === feature.properties.index - 1
     );
     setHoveredComp(hoveredProperty);
   };
@@ -280,7 +288,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const handleMouseLeaveRentals = (
     e: mapboxgl.MapMouseEvent & {
       features?: mapboxgl.MapboxGeoJSONFeature[];
-    } & mapboxgl.EventData,
+    } & mapboxgl.EventData
   ) => {
     setHoveredComp(null);
   };
@@ -294,11 +302,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       mapRef.current?.flyTo({
         center: [
           locationState.data.center.longitude,
-          locationState.data.center.latitude,
+          locationState.data.center.latitude
         ],
         zoom: 11,
         pitch: 0,
-        duration: 2000,
+        duration: 2000
       });
       // mapRef.current?.fitBounds(locationState.data.bounds);
     }
@@ -307,9 +315,9 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const handleResize = () => {
     mapRef.current?.resize();
     const infoEl = document.getElementsByClassName(
-      "mapboxgl-ctrl mapboxgl-ctrl-attrib",
+      'mapboxgl-ctrl mapboxgl-ctrl-attrib'
     );
-    infoEl[0]?.classList.add("mapboxgl-compact");
+    infoEl[0]?.classList.add('mapboxgl-compact');
   };
 
   function enableLineAnimation() {
@@ -323,7 +331,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     } else {
       dispatch(setSelectedPropertyPreview(null));
       mapRef.current?.setPitch(0);
-      dispatch(locationApi.util.invalidateTags(["Suggestion", "LocationData"]));
+      dispatch(locationApi.util.invalidateTags(['Suggestion', 'LocationData']));
       dispatch(setSuggestion(null));
     }
   }, []);
@@ -372,30 +380,30 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   }, [selectedPropertyPreview, selecting]);
 
   useEffect(() => {
-    mapRef?.current?.on("render", handleRender);
-    mapRef?.current?.on("click", "unclustered-point", handleClickProperty);
-    mapRef?.current?.on("mouseenter", "unclustered-point", handleHoverProperty);
+    mapRef?.current?.on('render', handleRender);
+    mapRef?.current?.on('click', 'unclustered-point', handleClickProperty);
+    mapRef?.current?.on('mouseenter', 'unclustered-point', handleHoverProperty);
     mapRef?.current?.on(
-      "mouseleave",
-      "unclustered-point",
-      handleMouseLeaveProperty,
+      'mouseleave',
+      'unclustered-point',
+      handleMouseLeaveProperty
     );
-    mapRef?.current?.on("click", "clusters", handleClickCluster);
+    mapRef?.current?.on('click', 'clusters', handleClickCluster);
 
     return () => {
-      mapRef.current?.off("click", "unclustered-point", handleClickProperty);
+      mapRef.current?.off('click', 'unclustered-point', handleClickProperty);
       mapRef?.current?.off(
-        "mouseenter",
-        "unclustered-point",
-        handleHoverProperty,
+        'mouseenter',
+        'unclustered-point',
+        handleHoverProperty
       );
       mapRef?.current?.off(
-        "mouseleave",
-        "unclustered-point",
-        handleMouseLeaveProperty,
+        'mouseleave',
+        'unclustered-point',
+        handleMouseLeaveProperty
       );
 
-      mapRef.current?.off("click", "clusters", handleClickCluster);
+      mapRef.current?.off('click', 'clusters', handleClickCluster);
     };
   }, [mapRef.current, filteredProperties]);
 
@@ -405,7 +413,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       const bounds = locationState.data.bounds;
       const newData: Geometry = {
         type: locationState.data.type,
-        coordinates: bounds,
+        coordinates: bounds
       };
       setBoundsData(newData);
     }
@@ -416,7 +424,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       const bounds = selectedPropertyLocation.bounds;
       const newData: Geometry = {
         type: selectedPropertyLocation.type,
-        coordinates: bounds,
+        coordinates: bounds
       };
       setPropertyBoundsData(newData);
     }
@@ -428,18 +436,21 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       for (const property of filteredProperties) {
         coordinates.push(generatePropertyGeoJson(property, strategyMode));
       }
-      const newData: FeatureCollection<Geometry, {
-        [name: string]: any;
-      }> = {
-        type: "FeatureCollection",
-        features: coordinates,
+      const newData: FeatureCollection<
+        Geometry,
+        {
+          [name: string]: any;
+        }
+      > = {
+        type: 'FeatureCollection',
+        features: coordinates
       };
       setData(newData);
     } else {
       if (buybox && suggestion) {
-        enqueueSnackbar("No results found", {
-          variant: "default",
-          preventDuplicate: true,
+        enqueueSnackbar('No results found', {
+          variant: 'default',
+          preventDuplicate: true
         });
       }
       setData(null);
@@ -452,21 +463,18 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
     if (selectedPropertyPreview) {
       mapRef.current?.flyTo({
-        center: [
-          selectedPropertyPreview?.longitude,
-          selectedPropertyPreview?.latitude,
-        ],
+        center: selectedPropertyPreview?.coordinates,
         zoom: 15,
         pitch: 70,
         speed: 0.1,
-        duration: 1500,
+        duration: 1500
       });
     } else {
       mapRef.current?.flyTo({
         zoom: mapRef.current.getZoom() - 1,
         pitch: 0,
         speed: 0.1,
-        duration: 1500,
+        duration: 1500
       });
       // centerMap();
     }
@@ -478,54 +486,59 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   }, [selectedPropertyPreview]);
 
   useEffect(() => {
-    mapRef?.current?.on("mouseenter", "comps-point", handleMouseEnterComps);
-    mapRef?.current?.on("mouseleave", "comps-point", handleMouseLeaveComps);
+    mapRef?.current?.on('mouseenter', 'comps-point', handleMouseEnterComps);
+    mapRef?.current?.on('mouseleave', 'comps-point', handleMouseLeaveComps);
 
     const coordinates = [];
     if (selectedComps?.length > 0) {
       for (let i = 0; i < selectedComps.length; i++) {
         coordinates.push(generateCompsGeoJson(selectedComps[i]));
       }
-      const newData: FeatureCollection<Geometry, {
-        [name: string]: any;
-      }> = {
-        type: "FeatureCollection",
-        features: coordinates,
+      const newData: FeatureCollection<
+        Geometry,
+        {
+          [name: string]: any;
+        }
+      > = {
+        type: 'FeatureCollection',
+        features: coordinates
       };
       setCompsData(newData);
     }
 
     return () => {
-      mapRef?.current?.off("mouseenter", "comps-point", handleMouseEnterComps);
-      mapRef?.current?.off("mouseleave", "comps-point", handleMouseLeaveComps);
+      mapRef?.current?.off('mouseenter', 'comps-point', handleMouseEnterComps);
+      mapRef?.current?.off('mouseleave', 'comps-point', handleMouseLeaveComps);
     };
   }, [selectedComps]);
 
   useEffect(() => {
-    mapRef?.current?.on("mouseenter", "rentals-point", handleMouseEnterRentals);
-    mapRef?.current?.on("mouseleave", "rentals-point", handleMouseLeaveRentals);
+    mapRef?.current?.on('mouseenter', 'rentals-point', handleMouseEnterRentals);
+    mapRef?.current?.on('mouseleave', 'rentals-point', handleMouseLeaveRentals);
 
-    const coordinates = selectedRentalComps?.map((comp) =>
-      generateCompsGeoJson(comp)
-    ) || [];
-    const newData: FeatureCollection<Geometry, {
-      [name: string]: any;
-    }> = {
-      type: "FeatureCollection",
-      features: coordinates,
+    const coordinates =
+      selectedRentalComps?.map((comp) => generateCompsGeoJson(comp)) || [];
+    const newData: FeatureCollection<
+      Geometry,
+      {
+        [name: string]: any;
+      }
+    > = {
+      type: 'FeatureCollection',
+      features: coordinates
     };
     setRentalsData(newData);
 
     return () => {
       mapRef?.current?.off(
-        "mouseenter",
-        "rentals-point",
-        handleMouseEnterRentals,
+        'mouseenter',
+        'rentals-point',
+        handleMouseEnterRentals
       );
       mapRef?.current?.off(
-        "mouseleave",
-        "rentals-point",
-        handleMouseLeaveRentals,
+        'mouseleave',
+        'rentals-point',
+        handleMouseLeaveRentals
       );
     };
   }, [selectedRentalComps]);
@@ -534,11 +547,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     setLoading(false);
     dispatch(setMapLoading(false));
     mapRef?.current?.loadImage(
-      "/static/images/pins/marker-label.png",
+      '/static/images/pins/marker-label.png',
       (error, image) => {
         if (error) throw error;
-        mapRef?.current?.addImage("custom-marker", image);
-      },
+        mapRef?.current?.addImage('custom-marker', image);
+      }
     );
   };
 
@@ -554,11 +567,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         mapboxAccessToken={MAPBOX_TOKEN}
         mapStyle={MAPBOX_STYLE}
         style={{
-          width: "100%",
-          height: "100%",
+          width: '100%',
+          height: '100%',
           opacity: loading ? 0 : 1,
-          transition: "opacity 0.5s ease",
-          position: "relative",
+          transition: 'opacity 0.5s ease',
+          position: 'relative'
         }}
         onLoad={handleLoad}
         interactiveLayerIds={[clusterLayer.id]}
@@ -569,10 +582,10 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         initialViewState={INITIAL_VIEW_STATE}
         {...viewState}
       >
-        <FullscreenControl style={{ display: "var(--controls-display)" }} />
+        <FullscreenControl style={{ display: 'var(--controls-display)' }} />
         <NavigationControl
           visualizePitch={true}
-          style={{ display: "var(--controls-display)" }}
+          style={{ display: 'var(--controls-display)' }}
         />
         <LoadingSpinner
           loading={propertiesState.isFetching || locationState.isFetching}
@@ -584,18 +597,13 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           selectedProperty={selectedPropertyPreview}
         />
 
-        <CardsPanel
-          open={Boolean(propertiesState.data)}
-        />
+        <CardsPanel open={Boolean(propertiesState.data)} />
         <PropertyLocationBoundsSource
           show={!selecting && Boolean(selectedPropertyPreview)}
           data={propertyBoundsData}
           map={mapRef.current?.getMap()}
         />
-        <PropertiesSource
-          show={!selectedPropertyPreview}
-          data={data}
-        />
+        <PropertiesSource show={!selectedPropertyPreview} data={data} />
         <CompsSource
           show={Boolean(selectedPropertyPreview && !selecting)}
           data={compsData}

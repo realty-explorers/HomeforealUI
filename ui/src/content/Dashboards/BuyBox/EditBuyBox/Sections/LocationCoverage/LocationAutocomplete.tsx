@@ -93,7 +93,7 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = (
             true
           ).unwrap();
           const allowedTypes = ['city', 'state', 'neighborhood', 'postal_code'];
-          const allowedStates = ['FL', 'AL', 'IL', 'TX', 'OH'];
+          const allowedStates = ['FL', 'AL', 'IL', 'TX', 'OH', 'NJ'];
           const relevantResultOptions = response.filter(
             (option) =>
               allowedTypes.includes(option.type) &&

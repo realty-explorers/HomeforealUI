@@ -1,177 +1,181 @@
-import SwitchField from "@/components/Form/SwitchField";
-import { defaults } from "@/schemas/defaults";
-import { Slider, Switch, Typography } from "@mui/material";
+import SwitchField from '@/components/Form/SwitchField';
+import { defaults } from '@/schemas/defaults';
+import { Slider, Switch, Typography } from '@mui/material';
 import {
   Control,
   Controller,
+  Path,
+  PathValue,
   RegisterOptions,
   UseFormGetValues,
   UseFormRegister,
   UseFormRegisterReturn,
   UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
-import styles from "./EditBuyBoxDialog.module.scss";
-import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
-import RangeField from "@/components/Form/RangeField";
-import clsx from "clsx";
-import AutocompleteField from "@/components/Form/AutocompleteField";
+  UseFormWatch
+} from 'react-hook-form';
+import styles from './EditBuyBoxDialog.module.scss';
+import RangeField from '@/components/Form/RangeField';
+import clsx from 'clsx';
+import AutocompleteField from '@/components/Form/AutocompleteField';
+import { BuyBoxFormData } from '@/schemas/BuyBoxFormSchema';
+import RangeFieldV2 from '@/components/Form/RangeFieldV2';
 
-const fields = [
+const select_fields: {
+  title: string;
+  fieldName: Path<BuyBoxFormData>;
+  options: { label: string; value: string }[];
+  multiple: boolean;
+}[] = [
   {
-    title: "Property Types",
-    fieldName: "property.Property Types",
-    type: "select",
+    title: 'Property Types',
+    fieldName: 'property_criteria.property_types',
     options: [
-      "Single Family",
+      { label: 'Single Family', value: 'single_family' }
       // { label: "Multi Family", value: "Multi Family" },
       // { label: "Condo", value: "Condo" },
       // { label: "Townhouse", value: "Townhouse" },
     ],
-    multiple: true,
-  },
+    multiple: true
+  }
+];
 
+const range_fields: {
+  title: string;
+  fieldName: Path<BuyBoxFormData>;
+  min: number;
+  max: number;
+  step: number;
+  prefix?: string;
+  postfix?: string;
+  formatLabelAsNumber?: boolean;
+}[] = [
   {
-    title: "Pool",
-    fieldName: "property.Pool",
-    type: "select",
-    options: [
-      "With",
-      "Without",
-    ],
-    multiple: false,
-  },
-  {
-    title: "Bedrooms",
-    fieldName: "property.Bedrooms",
-    type: "range",
+    title: 'Bedrooms',
+    fieldName: 'property_criteria.beds',
     min: defaults.bedrooms.min,
     max: defaults.bedrooms.max,
-    step: defaults.bedrooms.step,
+    step: defaults.bedrooms.step
   },
   {
-    title: "Bathrooms",
-    fieldName: "property.Bathrooms",
-    type: "range",
+    title: 'Bathrooms',
+    fieldName: 'property_criteria.baths',
     min: defaults.bathrooms.min,
     max: defaults.bathrooms.max,
-    step: defaults.bathrooms.step,
+    step: defaults.bathrooms.step
   },
   {
-    title: "Building Sqft",
-    fieldName: "property.Building sqft",
-    type: "range",
+    title: 'Building Sqft',
+    fieldName: 'property_criteria.area',
     min: defaults.area.min,
     max: defaults.area.max,
     step: defaults.area.step,
-    formatLabelAsNumber: true,
+    formatLabelAsNumber: true
   },
   {
-    title: "Lot Size",
-    fieldName: "property.Lot sqft",
-    type: "range",
+    title: 'Lot Size',
+    fieldName: 'property_criteria.lot_area',
     min: defaults.area.min,
     max: defaults.area.max,
     step: defaults.area.step,
-    formatLabelAsNumber: true,
+    formatLabelAsNumber: true
   },
   {
-    title: "Year Built",
-    fieldName: "property.Year Built",
-    type: "range",
+    title: 'Year Built',
+    fieldName: 'property_criteria.year_built',
     min: defaults.yearBuilt.min,
     max: defaults.yearBuilt.max,
-    step: defaults.yearBuilt.step,
+    step: defaults.yearBuilt.step
   },
   {
-    title: "Garages",
-    fieldName: "property.Garages",
-    type: "range",
-    min: defaults.garages.min,
-    max: defaults.garages.max,
-    step: defaults.garages.step,
-  },
-  // {
-  //   title: "Listing Price",
-  //   fieldName: "property.Listing Price",
-  //   type: "range",
-  //   min: defaults.listingPrice.min,
-  //   max: defaults.listingPrice.max,
-  //   step: defaults.listingPrice.step,
-  //   prefix: "$",
-  //   formatLabelAsNumber: true,
-  // },
+    title: 'Listing Price',
+    fieldName: 'property_criteria.price',
+    min: defaults.listingPrice.min,
+    max: defaults.listingPrice.max,
+    step: defaults.listingPrice.step,
+    prefix: '$',
+    formatLabelAsNumber: true
+  }
 ];
 
 type PropertyCriteriaFieldsProps = {
-  register: UseFormRegister<buyboxSchemaType>;
-  control: Control<buyboxSchemaType>;
-  watch: UseFormWatch<buyboxSchemaType>;
-  setValue: UseFormSetValue<buyboxSchemaType>;
-  getValues: UseFormGetValues<buyboxSchemaType>;
+  register: UseFormRegister<BuyBoxFormData>;
+  control: Control<BuyBoxFormData>;
+  watch: UseFormWatch<BuyBoxFormData>;
+  setValue: UseFormSetValue<BuyBoxFormData>;
+  getValues: UseFormGetValues<BuyBoxFormData>;
 };
 
-const PropertyCriteriaFields = (
-  { register, control, watch, setValue, getValues }:
-    PropertyCriteriaFieldsProps,
-) => {
+const PropertyCriteriaFields = ({
+  register,
+  control,
+  watch,
+  setValue,
+  getValues
+}: PropertyCriteriaFieldsProps) => {
   return (
     <>
-      {fields.map((field, index) => {
-        if (field.type === "range") {
-          return (
-            <>
-              <div
-                className={clsx([
-                  "flex w-full item-center",
-                ])}
-              >
-                <SwitchField
-                  fieldName={`${field.fieldName}.0`}
-                  control={control}
-                  // disabled={!watch(`${group.fieldName}`)}
-                />
-                <Typography className={styles.label}>
-                  {field.title}
-                </Typography>
-              </div>
-              <RangeField
-                key={index}
-                min={field.min}
-                max={field.max}
-                step={field.step}
-                prefix={field.prefix}
-                postfix={field.postfix}
-                formatLabelAsNumber={field.formatLabelAsNumber}
-                fieldName={`${field.fieldName}.1`}
-                setValue={setValue}
-                getValues={getValues}
-                disabled={!watch(`${field.fieldName}.0`)}
-              />
-            </>
-          );
-        } else if (field.type === "select") {
-          return (
-            <div
-              key={index}
-              className="flex w-full items-center justify-center col-span-2 mb-2"
-            >
+      {select_fields.map((field, index) => {
+        return (
+          <div
+            key={index}
+            className="flex w-full items-center justify-center col-span-2 mb-2"
+          >
+            <SwitchField
+              fieldName={`${field.fieldName}.enabled`}
+              control={control}
+            />
+            <AutocompleteField
+              label={field.title}
+              options={field.options.map((option) => option.value)}
+              multiple={field.multiple}
+              control={control}
+              fieldName={`${field.fieldName}.items` as Path<BuyBoxFormData>}
+              disabled={
+                !watch(`${field.fieldName}.enabled` as Path<BuyBoxFormData>)
+              }
+            />
+          </div>
+        );
+      })}
+      {range_fields.map((field, index) => {
+        return (
+          <>
+            <div className={clsx(['flex w-full item-center'])}>
               <SwitchField
-                fieldName={`${field.fieldName}.0`}
+                fieldName={`${field.fieldName}.enabled`}
                 control={control}
+                // disabled={!watch(`${group.fieldName}`)}
               />
-              <AutocompleteField
-                label={field.title}
-                options={field.options}
-                multiple={field.multiple}
-                setValue={setValue}
-                getValues={getValues}
-                fieldName={`${field.fieldName}.1`}
-                disabled={!watch(`${field.fieldName}.0`)}
-              />
+              <Typography className={styles.label}>{field.title}</Typography>
             </div>
-          );
-        }
+            <RangeFieldV2
+              min={field.min}
+              max={field.max}
+              step={field.step}
+              control={control}
+              prefix={field.prefix}
+              formatLabelAsNumber={field.formatLabelAsNumber}
+              fieldName={`${field.fieldName}`}
+              disabled={
+                !watch(`${field.fieldName}.enabled` as Path<BuyBoxFormData>)
+              }
+            />
+            {/* <RangeField */}
+            {/*   key={index} */}
+            {/*   min={field.min || 0} */}
+            {/*   max={field.max || 0} */}
+            {/*   step={field.step} */}
+            {/*   // prefix={field.prefix} */}
+            {/*   // postfix={field.postfix} */}
+            {/*   formatLabelAsNumber={field.formatLabelAsNumber} */}
+            {/*   minFieldName={field.minFieldName} */}
+            {/*   maxFieldName={field.maxFieldName} */}
+            {/*   setValue={setValue} */}
+            {/*   getValues={getValues} */}
+            {/*   disabled={!watch(field.minFieldName)} */}
+            {/* /> */}
+          </>
+        );
       })}
     </>
   );

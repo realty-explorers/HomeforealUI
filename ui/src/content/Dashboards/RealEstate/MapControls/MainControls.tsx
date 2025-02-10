@@ -136,7 +136,7 @@ const MainControls: React.FC<MainControlsProps> = (
             }
           } else {
             const defaultBuyBox = data.find(
-              (buybox) => buybox.name === 'General BuyBox'
+              (buybox) => buybox.parameters.name === 'General BuyBox'
             );
             router.push(
               {
@@ -204,7 +204,7 @@ const MainControls: React.FC<MainControlsProps> = (
       }
       const percentage =
         propertyValue > 0
-          ? ((propertyValue - property.listing_price) / propertyValue) * 100
+          ? ((propertyValue - property.price) / propertyValue) * 100
           : 0;
 
       if (filterValue > percentage) {
@@ -349,7 +349,7 @@ const MainControls: React.FC<MainControlsProps> = (
             >
               {buyBoxesState.data?.map((buybox) => (
                 <MenuItem key={buybox.id} value={buybox}>
-                  {buybox.name}
+                  {buybox.parameters.name}
                 </MenuItem>
               ))}
             </Select>

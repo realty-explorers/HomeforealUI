@@ -1,16 +1,16 @@
-import { CompData, FilteredComp } from "@/models/analyzedProperty";
-import { Box, Button, Grid, Typography } from "@mui/material";
-import CompsFilter from "./CompsFilter";
-import TuneIcon from "@mui/icons-material/Tune";
-import styled from "@emotion/styled";
-import analyticsStyles from "../Analytics.module.scss";
-import styles from "./CompsSection.module.scss";
-import { useEffect, useState } from "react";
-import React from "react";
+import { CompData, FilteredComp } from '@/models/analyzedProperty';
+import { Box, Button, Grid, Typography } from '@mui/material';
+import CompsFilter from './CompsFilter';
+import TuneIcon from '@mui/icons-material/Tune';
+import styled from '@emotion/styled';
+import analyticsStyles from '../Analytics.module.scss';
+import styles from './CompsSection.module.scss';
+import { useEffect, useState } from 'react';
+import React from 'react';
 
 const Wrapper = styled(Box)(({ theme }) => ({
-  width: "10rem",
-  overflow: "hidden",
+  width: '10rem',
+  overflow: 'hidden'
 }));
 
 type CompsSectionProps = {
@@ -20,14 +20,17 @@ type CompsSectionProps = {
   propertyCard: React.ReactNode;
   compCard: React.ReactElement;
 };
-const CompsSection = (
-  { comps, selectedComps, setSelectedComps, propertyCard, compCard }:
-    CompsSectionProps,
-) => {
+const CompsSection = ({
+  comps,
+  selectedComps,
+  setSelectedComps,
+  propertyCard,
+  compCard
+}: CompsSectionProps) => {
   const [filterOpen, setFilterOpen] = useState(false);
   // const selectedCompsIndexes = selectedComps?.map((comp) => comp.index);
   const [selectedCompsIndexes, setSelectedCompsIndexes] = useState<number[]>(
-    [],
+    []
   );
 
   useEffect(() => {
@@ -36,8 +39,8 @@ const CompsSection = (
 
   const handleToggle = (index: number) => {
     if (selectedCompsIndexes?.includes(index)) {
-      const filteredComps = selectedComps.filter((property) =>
-        property.index !== index
+      const filteredComps = selectedComps.filter(
+        (property) => property.index !== index
       );
       setSelectedComps(filteredComps);
     } else {
@@ -50,7 +53,7 @@ const CompsSection = (
       compsProperty,
       index,
       selected: selectedCompsIndexes?.includes(index),
-      toggle: () => handleToggle(index),
+      toggle: () => handleToggle(index)
     });
     return newCompCard;
   };

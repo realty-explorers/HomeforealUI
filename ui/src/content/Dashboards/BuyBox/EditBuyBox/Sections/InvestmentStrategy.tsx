@@ -1,92 +1,115 @@
-import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
-import { Badge, Button, TextField, Typography } from "@mui/material";
-import clsx from "clsx";
+import { buyboxSchemaType } from '@/schemas/BuyBoxSchemas';
+import { Badge, Button, TextField, Typography } from '@mui/material';
+import clsx from 'clsx';
 import {
   Control,
   FieldErrors,
   UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
-import styles from "../EditBuyBoxDialog.module.scss";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import { useState } from "react";
-import FixAndFlip from "./InvestmentTypes/FixAndFlip";
-import BuyAndHold from "./InvestmentTypes/BuyAndHold";
-import { getValue } from "@mui/system";
+  UseFormWatch
+} from 'react-hook-form';
+import styles from '../EditBuyBoxDialog.module.scss';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import { useState } from 'react';
+import FixAndFlip from './InvestmentTypes/FixAndFlip';
+import BuyAndHold from './InvestmentTypes/BuyAndHold';
+import { getValue } from '@mui/system';
+import { BuyBoxFormData } from '@/schemas/BuyBoxFormSchema';
 
 const investmentTypes = [
-  { label: "Fix and Flip", value: "fix_and_flip" },
+  { label: 'Fix and Flip', value: 'fix_and_flip' },
   {
-    label: "Buy and Hold",
-    value: "buy_and_hold",
-    status: "Beta",
-  },
-  { label: "BRRR", value: "brrr", disabled: true, status: "Coming soon" },
-  { label: "ADU", value: "adu", disabled: true, status: "Coming soon" },
-  {
-    label: "Short Term Rental",
-    value: "short_term_rental",
+    label: 'Buy and Hold',
+    value: 'buy_and_hold',
     disabled: true,
-    status: "Coming soon",
+    status: 'Coming Soon'
   },
+  { label: 'BRRR', value: 'brrr', disabled: true, status: 'Coming soon' },
+  { label: 'ADU', value: 'adu', disabled: true, status: 'Coming soon' },
+  {
+    label: 'Short Term Rental',
+    value: 'short_term_rental',
+    disabled: true,
+    status: 'Coming soon'
+  }
 ];
 
 type InvestmentStrategyProps = {
-  register: UseFormRegister<buyboxSchemaType>;
-  control: Control<buyboxSchemaType>;
-  watch: UseFormWatch<buyboxSchemaType>;
-  setValue: UseFormSetValue<buyboxSchemaType>;
-  getValues: UseFormGetValues<buyboxSchemaType>;
-  errors: FieldErrors<buyboxSchemaType>;
+  register: UseFormRegister<BuyBoxFormData>;
+  control: Control<BuyBoxFormData>;
+  watch: UseFormWatch<BuyBoxFormData>;
+  setValue: UseFormSetValue<BuyBoxFormData>;
+  getValues: UseFormGetValues<BuyBoxFormData>;
+  errors: FieldErrors<BuyBoxFormData>;
 };
-const InvestmentStrategy = (
-  { register, control, watch, setValue, getValues, errors }:
-    InvestmentStrategyProps,
-) => {
+const InvestmentStrategy = ({
+  register,
+  control,
+  watch,
+  setValue,
+  getValues,
+  errors
+}: InvestmentStrategyProps) => {
   const [selectedStrategy, setSelectedStrategy] = useState<string>(
-    getValues("opp.strategy"),
+    // getValues('opp.strategy') TODO: Need to add strategy selection
+    'fix_and_flip'
   );
-  const handleSelectStrategy = (strategy: string) => {
-    if (selectedStrategy !== "") {
-      setValue(`opp.${selectedStrategy}.0`, false, { shouldDirty: true });
-    }
-    setValue(`opp.${strategy}.0`, true, { shouldDirty: true });
-    setValue(`opp.strategy`, strategy, { shouldDirty: true });
-    setSelectedStrategy(strategy);
-  };
+  // const handleSelectStrategy = (strategy: string) => {
+  //   if (selectedStrategy !== '') {
+  //     setValue(`opp.${selectedStrategy}.0`, false, { shouldDirty: true });
+  //   }
+  //   setValue(`opp.${strategy}.0`, true, { shouldDirty: true });
+  //   setValue(`opp.strategy`, strategy, { shouldDirty: true });
+  //   setSelectedStrategy(strategy);
+  // };
   return (
     <div
       className={clsx([
-        "grid grid-cols-[auto_1fr] pt-8 gap-x-8 px-4",
-        styles.font_poppins,
+        'grid grid-cols-[auto_1fr] pt-8 gap-x-8 px-4',
+        styles.font_poppins
       ])}
     >
-      <Typography className={clsx([styles.header, "col-span-2 mb-4"])}>
-        Please choose your investor's strategy{" "}
-        <span className="text-red-400">{errors?.opp?.strategy?.message}</span>
+      <Typography className={clsx([styles.header, 'col-span-2 mb-4'])}>
+        Please choose your investor's strategy{' '}
+        <span className="text-red-400">
+          {errors?.strategy?.message?.toString()}
+        </span>
       </Typography>
       <div className="flex flex-col gap-y-4">
         {investmentTypes.map((type, index) => (
           <Badge
             key={index}
             badgeContent={type.status}
-            color={type.status === "Beta" ? "primary" : "secondary"}
+            color={type.status === 'Beta' ? 'primary' : 'secondary'}
             anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
+              vertical: 'top',
+              horizontal: 'right'
             }}
           >
+            {/* TODO: Need to add strategy selection */}
+            {/* <Button */}
+            {/*   className={clsx([ */}
+            {/*     'text-gray-500 px-12 py-4 w-full', */}
+            {/*     selectedStrategy === type.value */}
+            {/*       ? 'ring ring-secondary' */}
+            {/*       : 'ring-1 ring-gray-500 ' */}
+            {/*   ])} */}
+            {/*   disabled={type.disabled} */}
+            {/*   onClick={() => handleSelectStrategy(type.value)} */}
+            {/* > */}
+            {/*   {type.label} */}
+            {/* </Button> */}
+
             <Button
               className={clsx([
-                "text-gray-500 px-12 py-4 w-full",
-                selectedStrategy === type.value
-                  ? "ring ring-secondary"
-                  : "ring-1 ring-gray-500 ",
+                'text-gray-500 px-12 py-4 w-full',
+                'fix_and_flip' === type.value
+                  ? 'ring ring-secondary'
+                  : 'ring-1 ring-gray-500 '
               ])}
               disabled={type.disabled}
-              onClick={() => handleSelectStrategy(type.value)}
+              // onClick={() => handleSelectStrategy(type.value)}
             >
               {type.label}
             </Button>
@@ -94,7 +117,7 @@ const InvestmentStrategy = (
         ))}
       </div>
       <div>
-        {selectedStrategy === "fix_and_flip" && (
+        {selectedStrategy === 'fix_and_flip' && (
           <FixAndFlip
             register={register}
             control={control}
@@ -104,7 +127,7 @@ const InvestmentStrategy = (
           />
         )}
 
-        {selectedStrategy === "buy_and_hold" && (
+        {selectedStrategy === 'buy_and_hold' && (
           <BuyAndHold
             register={register}
             control={control}

@@ -1,14 +1,14 @@
-import { Button, Typography } from "@mui/material";
-import styles from "./ButtonStyles.module.scss";
+import { Button, Typography } from '@mui/material';
+import styles from './ButtonStyles.module.scss';
 
 type ThemedButtonProps = {} & React.ComponentProps<typeof Button>;
-const ThemedButton = (props: ThemedButtonProps) => {
+const ThemedButton = ({ children, ...props }: ThemedButtonProps) => {
   return (
     <Button
       {...props}
       className=" bg-gradient-to-r from-purple-500 via-purple-600 to-purple-700 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-purple-300 dark:focus:ring-purple-800 shadow-lg shadow-purple-500/50 dark:shadow-lg dark:shadow-purple-800/80  rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 "
     >
-      {props.children}
+      {children}
     </Button>
   );
 };

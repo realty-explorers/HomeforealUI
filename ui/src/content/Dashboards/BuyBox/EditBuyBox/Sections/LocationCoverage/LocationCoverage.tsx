@@ -1,20 +1,21 @@
-import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
-import { Autocomplete, TextField, Typography } from "@mui/material";
-import clsx from "clsx";
+import { buyboxSchemaType } from '@/schemas/BuyBoxSchemas';
+import { Autocomplete, TextField, Typography } from '@mui/material';
+import clsx from 'clsx';
 import {
   Control,
+  FieldErrors,
   UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
-import styles from "../../EditBuyBoxDialog.module.scss";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-import { useGetLocationsQuery } from "@/store/services/dataApiService";
-import { useEffect, useState } from "react";
-import LocationAutocomplete from "./LocationAutocomplete";
-import LocationSuggestion from "@/models/location_suggestions";
-import { error } from "console";
+  UseFormWatch
+} from 'react-hook-form';
+import styles from '../../EditBuyBoxDialog.module.scss';
+import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
+import { useGetLocationsQuery } from '@/store/services/dataApiService';
+import { useEffect, useState } from 'react';
+import LocationAutocomplete from './LocationAutocomplete';
+import LocationSuggestion from '@/models/location_suggestions';
+import { error } from 'console';
 
 type LocationCoverageProps = {
   register: UseFormRegister<buyboxSchemaType>;
@@ -24,16 +25,20 @@ type LocationCoverageProps = {
   getValues: UseFormGetValues<buyboxSchemaType>;
   errors: FieldErrors<buyboxSchemaType>;
 };
-const LocationCoverage = (
-  { register, control, watch, setValue, getValues, errors }:
-    LocationCoverageProps,
-) => {
+const LocationCoverage = ({
+  register,
+  control,
+  watch,
+  setValue,
+  getValues,
+  errors
+}: LocationCoverageProps) => {
   const [locations, setLocations] = useState<LocationSuggestion[]>(
-    getValues("target_location.locations"),
+    getValues('target_locations')
   );
-  const locationsQuery = useGetLocationsQuery("");
+  const locationsQuery = useGetLocationsQuery('');
   const handleSetLocations = (value: any) => {
-    setValue("target_location.locations", value, { shouldDirty: true });
+    setValue('target_locations', value, { shouldDirty: true });
     setLocations(value);
   };
 
@@ -50,19 +55,18 @@ const LocationCoverage = (
   // };
 
   useEffect(() => {
-    setLocations(getValues("target_location.locations"));
+    setLocations(getValues('target_locations'));
   }, []);
   return (
-    <div className={clsx(["flex flex-col px-4 pt-8 h-full gap-x-4 w-full"])}>
-      <Typography className={clsx([styles.header, "mb-12"])}>
+    <div className={clsx(['flex flex-col px-4 pt-8 h-full gap-x-4 w-full'])}>
+      <Typography className={clsx([styles.header, 'mb-12'])}>
         Please indicate your location coverage area
       </Typography>
       <LocationAutocomplete
         locations={locations}
         setLocations={handleSetLocations}
       />
-      <span className="text-red-400">
-      </span>
+      <span className="text-red-400"></span>
 
       {/* <Autocomplete */}
       {/*   multiple */}

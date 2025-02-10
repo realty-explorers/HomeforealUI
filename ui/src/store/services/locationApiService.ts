@@ -1,10 +1,10 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { getAccessToken } from "@auth0/nextjs-auth0";
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { getAccessToken } from '@auth0/nextjs-auth0';
 
 const baseUrl = process.env.NEXT_PUBLIC_LOCATION_API_URL;
 
 export const locationApi = createApi({
-  reducerPath: "locationApi",
+  reducerPath: 'locationApi',
   baseQuery: fetchBaseQuery({
     baseUrl,
     prepareHeaders: async (headers, { getState }) => {
@@ -12,32 +12,38 @@ export const locationApi = createApi({
 
       // If we have a token set in state, let's assume that we should be passing it.
       if (token) {
-        headers.set("authorization", `Bearer ${token}`);
+        headers.set('authorization', `Bearer ${token}`);
       }
 
+      headers.set('X-Service', 'scraper');
+
       return headers;
-    },
+    }
   }),
 
-  tagTypes: ["Suggestion", "LocationData"],
+  tagTypes: ['Suggestion', 'LocationData'],
   endpoints: (builder) => ({
     getLocationSuggestion: builder.query({
       // query: ({ searchTerm }) => ({ url: "suggest", params: { searchTerm } }),
       query: (searchTerm) => `suggest?searchTerm=${searchTerm}`,
       transformResponse: (response: any) => response,
-      providesTags: ["Suggestion"],
+      providesTags: ['Suggestion']
     }),
     getLocationData: builder.query({
       // query: ({ display, type, city, state }) => ({ url: "data", params: { display, type, city, state } }),
       query: ({ type, state, city, zipCode, neighborhood }) => {
-        let queryUrl = "";
+        let queryUrl = '';
         switch (type) {
-          case "city":
+          case 'city':
             queryUrl = new URLSearchParams({ type, state, city }).toString();
             break;
-          case "neighborhood":
-            queryUrl = new URLSearchParams({ type, state, city, neighborhood })
-              .toString();
+          case 'neighborhood':
+            queryUrl = new URLSearchParams({
+              type,
+              state,
+              city,
+              neighborhood
+            }).toString();
             break;
           default:
             queryUrl = new URLSearchParams({ type, state }).toString();
@@ -47,9 +53,9 @@ export const locationApi = createApi({
         // return `data?display=&type=${type}&city=${city}&state=${state}`;
       },
       transformResponse: (response: any) => response,
-      providesTags: ["LocationData"],
-    }),
-  }),
+      providesTags: ['LocationData']
+    })
+  })
 });
 
 export const locationApiEndpoints = locationApi.endpoints;
@@ -58,5 +64,5 @@ export const {
   useGetLocationSuggestionQuery,
   useLazyGetLocationSuggestionQuery,
   useGetLocationDataQuery,
-  useLazyGetLocationDataQuery,
+  useLazyGetLocationDataQuery
 } = locationApi;
