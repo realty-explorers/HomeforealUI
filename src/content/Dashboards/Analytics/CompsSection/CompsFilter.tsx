@@ -33,8 +33,8 @@ import { numberFormatter } from '@/utils/converters';
 const defaultRangeFields: FormRangeField[] = [
   {
     label: 'Sold Price',
-    fieldName: 'sales_closing_price',
-    subjectFieldName: 'sales_closing_price',
+    fieldName: 'price',
+    subjectFieldName: 'price',
     min: defaults.soldPrice.min,
     max: defaults.soldPrice.max,
     step: defaults.soldPrice.step,
@@ -43,8 +43,8 @@ const defaultRangeFields: FormRangeField[] = [
   },
   {
     label: 'Asked Price',
-    fieldName: 'sales_listing_price',
-    subjectFieldName: 'sales_listing_price',
+    fieldName: 'price',
+    subjectFieldName: 'price',
     min: defaults.listingPrice.min,
     max: defaults.listingPrice.max,
     step: defaults.listingPrice.step,
@@ -61,8 +61,8 @@ const defaultRangeFields: FormRangeField[] = [
   },
   {
     label: 'Bathrooms',
-    fieldName: 'full_bathrooms',
-    subjectFieldName: 'full_bathrooms',
+    fieldName: 'baths',
+    subjectFieldName: 'baths',
     min: defaults.bathrooms.min,
     max: defaults.bathrooms.max,
     step: defaults.bathrooms.step
@@ -70,8 +70,8 @@ const defaultRangeFields: FormRangeField[] = [
 
   {
     label: 'Lot Sqft',
-    fieldName: 'lot_size',
-    subjectFieldName: 'lot_size',
+    fieldName: 'lotArea',
+    subjectFieldName: 'lotArea',
     min: defaults.lotSize.min,
     max: defaults.lotSize.max,
     step: defaults.lotSize.step,
@@ -79,8 +79,8 @@ const defaultRangeFields: FormRangeField[] = [
   },
   {
     label: 'Building Sqft',
-    fieldName: 'building_area',
-    subjectFieldName: 'building_area',
+    fieldName: 'area',
+    subjectFieldName: 'area',
     min: defaults.area.min,
     max: defaults.area.max,
     step: defaults.area.step,
@@ -88,8 +88,8 @@ const defaultRangeFields: FormRangeField[] = [
   },
   {
     label: 'Year Built',
-    fieldName: 'year_built',
-    subjectFieldName: 'year_built',
+    fieldName: 'yearBuilt',
+    subjectFieldName: 'yearBuilt',
     min: defaults.yearBuilt.min,
     max: defaults.yearBuilt.max,
     step: defaults.yearBuilt.step,
@@ -120,7 +120,7 @@ const defaultRangeFields: FormRangeField[] = [
 const customRangeFields = [
   {
     label: 'Max Sold Date',
-    fieldName: 'sold_date',
+    fieldName: 'listDate',
     min: defaults.soldMonths.min,
     max: defaults.soldMonths.max,
     step: defaults.soldMonths.step,

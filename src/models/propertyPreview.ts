@@ -12,6 +12,7 @@ interface PropertyPreview {
   propertyType: string;
   beds: number;
   baths: number;
+  listDate: Date;
 }
 
 export default PropertyPreview;

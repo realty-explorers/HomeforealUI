@@ -6,7 +6,7 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { logout } from '../slices/authSlice';
 
-const baseUrl = process.env.NEXT_PUBLIC_ANALYSIS_API_URL;
+const baseUrl = `${process.env.NEXT_PUBLIC_ANALYSIS_API_URL}/api/v1/analysis`;
 
 const baseQuery = fetchBaseQuery({
   baseUrl,
@@ -26,8 +26,6 @@ const baseQuery = fetchBaseQuery({
     if (token) {
       headers.set('authorization', `Bearer ${token}`);
     }
-
-    headers.set('X-Service', 'analysis');
 
     return headers;
   }
@@ -52,7 +50,7 @@ export const buyboxAnalysisApi = createApi({
   endpoints: (builder) => ({
     analyzeBuyBox: builder.mutation({
       query: (buybox_id) => ({
-        url: `/Analyze?buyboxId=${buybox_id}`,
+        url: `/analyze?buyboxId=${buybox_id}`,
         method: 'POST'
       }),
       transformResponse: (response: any) => response

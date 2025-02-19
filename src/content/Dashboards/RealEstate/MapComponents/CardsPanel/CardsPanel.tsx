@@ -74,7 +74,7 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
 
       if (!validValue(a[fieldName]) && validValue(b[fieldName])) return 1;
       if (validValue(a[fieldName]) && !validValue(b[fieldName])) return -1;
-      // if (a[fieldName] && b.arv_price) {
+      // if (a[fieldName] && b.arvPrice) {
       const arvPercentageA = (a[fieldName] - a.price) / a[fieldName];
       const arvPercentageB = (b[fieldName] - b.price) / b[fieldName];
       return arvPercentageB - arvPercentageA;

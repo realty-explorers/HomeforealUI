@@ -28,7 +28,7 @@ type CompsMapCardProps = {
 const CompsMapCard: React.FC<CompsMapCardProps> = (
   props: CompsMapCardProps
 ) => {
-  const [cardImage, setCardImage] = useState(props.property.primary_image);
+  const [cardImage, setCardImage] = useState(props.property.photos.primary);
 
   const showDistance = () => {
     try {
@@ -59,7 +59,7 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
 
   const locationStats = `${props.property.distance.toFixed(
     2
-  )} Miles ● ${readableDateDiff(props.property.list_date)}`;
+  )} Miles ● ${readableDateDiff(props.property.listDate)}`;
 
   return (
     <div className="flex rounded-xl bg-white w-80 h-40">
@@ -135,13 +135,13 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
           <Typography
             className={clsx([
               'font-poppins ml-2 font-bold',
-              getColorClass(props.property.similarity_color)
+              getColorClass(props.property.similarityColor)
             ])}
           >
-            {Math.round(props.property.similarity_score * 100)}% Similarity
+            {Math.round(props.property.similarityScore * 100)}% Similarity
           </Typography>
         </div>
-        {props.property.is_arv_25th && (
+        {props.property.isArv25th && (
           <div className="absolute bottom-1 right-1 bg-arv text-white font-poppins text-[0.7rem] px-2 rounded-lg font-semibold">
             25th ARV
           </div>

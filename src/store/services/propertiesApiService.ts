@@ -7,14 +7,29 @@ import {
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
 
-const baseUrl = process.env.NEXT_PUBLIC_ANALYSIS_API_URL;
+const baseUrl = `${process.env.NEXT_PUBLIC_ANALYSIS_API_URL}/api/v1/analysis`;
 const GENERAL_BUYBOX_ID = '3dbf8068-bfda-4422-af27-7597045dac6e';
 
 const API_KEY = 'o63cMy45PuLH8sRs8iEP';
 const baseQuery = fetchBaseQuery({
   baseUrl,
   prepareHeaders: async (headers, { getState }) => {
-    headers.set('X-Service', 'scraper');
+    let token = (getState() as RootState).auth.token;
+
+    if (!token) {
+      try {
+        const request = await fetch('/api/protected');
+        token = (await request.json()).accessToken;
+      } catch (e) {
+        console.log(e);
+      }
+    }
+
+    // If we have a token set in state, let's assume that we should be passing it.
+    if (token) {
+      headers.set('authorization', `Bearer ${token}`);
+    }
+
     return headers;
   }
 });
@@ -44,7 +59,7 @@ export const propertiesApi = createApi({
         buybox_id
       }) => {
         // `loc_properties?buybox_id=${GENERAL_BUYBOX_ID}&city=${city}&neighborhood=${"Central southwest"}`,
-        let queryUrl = '/Results';
+        let queryUrl = '/results';
         switch (type) {
           case 'city':
             queryUrl = new URLSearchParams({
@@ -61,7 +76,7 @@ export const propertiesApi = createApi({
             queryUrl = '';
             break;
         }
-        return `/Previews?buybox_id=${buybox_id}&${queryUrl}`;
+        return `/previews?buyboxId=${buybox_id}&${queryUrl}`;
       },
       transformResponse: (response: PropertyPreview[]) => {
         try {
@@ -97,7 +112,7 @@ export const propertiesApi = createApi({
             queryUrl = '';
             break;
         }
-        return `leads/?buybox_id=${GENERAL_BUYBOX_ID}&${queryUrl}`;
+        return `leads/?buyboxId=${GENERAL_BUYBOX_ID}&${queryUrl}`;
       },
       transformResponse: (response: AnalyzedProperty[]) => {
         try {
@@ -113,11 +128,11 @@ export const propertiesApi = createApi({
           // return set;
           // return response.slice(0, 50);
           response.sort((a, b) => {
-            if (a.arv_price && !b.arv_price) return -1;
-            if (!a.arv_price && b.arv_price) return 1;
-            if (!a.arv_price && !b.arv_price) return 0;
-            if (a.arv_price > b.arv_price) return 1;
-            if (a.arv_price < b.arv_price) return -1;
+            if (a.arvPrice && !b.arvPrice) return -1;
+            if (!a.arvPrice && b.arvPrice) return 1;
+            if (!a.arvPrice && !b.arvPrice) return 0;
+            if (a.arvPrice > b.arvPrice) return 1;
+            if (a.arvPrice < b.arvPrice) return -1;
             return 0;
           });
           return response;
@@ -129,7 +144,7 @@ export const propertiesApi = createApi({
 
     getProperty: builder.query({
       query: ({ buybox_id, property_id }) => {
-        return `/AnalyzedProperty/?resultId=${property_id}`;
+        return `/analyzed-property/${property_id}`;
       },
       transformResponse: (response: AnalyzedProperty) => {
         try {
