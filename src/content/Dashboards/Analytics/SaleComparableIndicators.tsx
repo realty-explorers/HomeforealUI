@@ -44,11 +44,11 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
   const { saleCalculatedProperty } = useSelector(selectProperties);
   const underARVPercentage = calculatePercentage(
     saleCalculatedProperty,
-    'arvPrice'
+    'arv25Price'
   );
   const underCompsPercentage = calculatePercentage(
     saleCalculatedProperty,
-    'salesCompsPrice'
+    'arvPrice'
   );
 
   return (
@@ -118,7 +118,7 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
     )
   );
   return (
-    saleCalculatedProperty?.sales_comps?.data?.length > 0 && (
+    saleCalculatedProperty?.?.data?.length > 0 && (
       <div className="flex w-full items-center gap-4 p-4 sticky top-0 z-[2] bg-[#f2f5f9]">
         <div className="grid grid-cols-2 gap-4 gap-x-20">
           <div className="flex">
@@ -134,7 +134,7 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
               ])}
             >
               {priceFormatter(
-                saleCalculatedProperty?.sales_comps_price.toFixed()
+                saleCalculatedProperty?.arvPrice.toFixed()
               )}
             </Typography>
           </div>
@@ -146,7 +146,7 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
           </div>
           <div className="flex">
             <Typography className={clsx([styles.indicator, 'bg-[#D6FCD0] '])}>
-              {priceFormatter(saleCalculatedProperty?.arv_price.toFixed())}
+              {priceFormatter(saleCalculatedProperty?.arvPrice.toFixed())}
             </Typography>
           </div>
         </div>

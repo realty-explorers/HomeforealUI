@@ -37,6 +37,7 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import TodayIcon from '@mui/icons-material/Today';
 import AssessmentIcon from '@mui/icons-material/Assessment';
 import { calculateArvPercentage } from '@/utils/calculationUtils';
+import { readableDateDiff } from '@/utils/dateUtils';
 
 const AddressLink = styled('h3')(({ theme }) => ({
   padding: 0,
@@ -74,11 +75,11 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   const stats = `${props.property?.beds} Beds ● ${props.property?.baths} Baths ● ${props.property?.area} Sqft`;
 
   const arvPercentage = calculateArvPercentage(
-    props.property.arv_price,
+    props.property.arvPrice,
     props.property.price
   );
   const compsPercentage = calculateArvPercentage(
-    props.property.arv_price,
+    props.property.arvPrice,
     props.property.price
   );
   const arvDiscount = `ARV ↓${arvPercentage.toFixed()}%`;
@@ -133,6 +134,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
         <div className="flex items-center mt-2 w-full gap-x-2 ">
           <TodayIcon fontSize="small" />
           <Typography className="text-xs font-poppins text-center">
+            {readableDateDiff(props.property.listDate)}
             {/* 3 Days Old */}
           </Typography>
         </div>
@@ -182,14 +184,14 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
         {/*       {priceFormatter(props.property?.sales_listing_price)} */}
         {/*     </Typography> */}
         {/*   </div> */}
-        {/*   {typeof props.property?.arv_price === "number" && ( */}
+        {/*   {typeof props.property?.arvPrice === "number" && ( */}
         {/*     <div className="flex flex-col"> */}
         {/*       <Typography className="font-poppins justify-center text-center"> */}
         {/*         ARV */}
         {/*       </Typography> */}
         {/**/}
         {/*       <Typography className="font-poppins font-bold"> */}
-        {/*         {priceFormatter(props.property?.arv_price)} */}
+        {/*         {priceFormatter(props.property?.arvPrice)} */}
         {/*       </Typography> */}
         {/*     </div> */}
         {/*   )} */}

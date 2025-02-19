@@ -5,7 +5,7 @@ import { FilteredComp } from '@/models/analyzedProperty';
 import { string } from 'zod';
 
 const marginPercentage = (property: PropertyPreview, strategyMode: string) => {
-  const fieldName = strategyMode === 'ARV' ? 'arv25_price' : 'arv_price';
+  const fieldName = strategyMode === 'ARV' ? 'arv25Price' : 'arvPrice';
   return (
     ((property?.[fieldName] > 0 && property[fieldName] - property.price) /
       property[fieldName]) *
@@ -39,7 +39,7 @@ const generateCompsGeoJson = (comp: FilteredComp) => {
     properties: {
       id: comp.id, // Generate a random ID
       index: comp.index + 1,
-      isARVCalculated: comp.is_arv_25th
+      isARVCalculated: comp.isArv25th
     },
     geometry: {
       type: 'Point',
