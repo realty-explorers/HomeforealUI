@@ -1,5 +1,5 @@
 interface LocationSuggestion {
-  display: string;
+  display?: string;
   type: string;
   address?: string;
   street?: string;

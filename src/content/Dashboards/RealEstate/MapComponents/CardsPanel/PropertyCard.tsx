@@ -132,16 +132,16 @@ const PropertyCard: React.FC<PropertyCardProps> = (
   }, [props.property]);
 
   const arvPercentage =
-    props.property?.arv25_price && props.property.arv25_price > 0
-      ? (Math.round(props.property.arv25_price - props.property.price) /
-          props.property.arv25_price) *
+    props.property?.arv25Price && props.property.arv25Price > 0
+      ? (Math.round(props.property.arv25Price - props.property.price) /
+          props.property.arv25Price) *
         100
       : 0;
 
   const compsPercentage =
-    props.property?.arv_price && props.property.arv_price > 0
-      ? (Math.round(props.property.arv_price - props.property.price) /
-          props.property.arv_price) *
+    props.property?.arvPrice && props.property.arvPrice > 0
+      ? (Math.round(props.property.arvPrice - props.property.price) /
+          props.property.arvPrice) *
         100
       : 0;
 
@@ -173,7 +173,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
       onClick={handlePropertySelected}
       // onMouseOver={() => props.setHoveredProperty(props.property)}
     >
-      {typeof props.property.arv25_price === 'number' && (
+      {typeof props.property.arv25Price === 'number' && (
         <Tooltip
           title={`Under ${strategyMode} by ${getStrategyValue().toFixed(2)}%`}
           placement="top"
@@ -231,14 +231,14 @@ const PropertyCard: React.FC<PropertyCardProps> = (
               Sales Comps:
             </Typography>
             <Typography className="text-black text-lg  text-left font-poppins">
-              {priceFormatter(props.property?.arv_price)}
+              {priceFormatter(props.property?.arvPrice)}
             </Typography>
 
             <Typography className="text-left text-black text-lg  font-poppins">
               ARV:
             </Typography>
             <Typography className="text-black text-lg  text-left font-poppins">
-              {priceFormatter(props.property?.arv25_price)}
+              {priceFormatter(props.property?.arv25Price)}
             </Typography>
 
             <Typography className="text-left text-black text-lg  font-poppins">
@@ -252,7 +252,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
             <div className="flex text-gray-500 items-center">
               <BedIcon />
               <Typography className="text-gray-500">
-                {props.property?.bedrooms} Beds
+                {props.property?.beds} Beds
               </Typography>
             </div>
 
@@ -260,14 +260,14 @@ const PropertyCard: React.FC<PropertyCardProps> = (
               {/* <BathtubIcon className="text-gray-500" /> */}
               <BathIcon />
               <Typography className="text-gray-500">
-                {props.property?.total_bathrooms} Baths
+                {props.property?.baths} Baths
               </Typography>
             </div>
             <div className="flex text-gray-500 items-center gap-x-2">
               {/* <AspectRatioIcon className="text-gray-500" /> */}
               <SizeIcon />
               <Typography className="text-gray-500">
-                {props.property?.building_area} Sqft
+                {props.property?.area} Sqft
               </Typography>
             </div>
           </div>
@@ -280,12 +280,12 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           </div>
           <div className={styles.cardInfoRow}>
             <Typography>Comps Sale</Typography>
-            <Typography>{priceFormatter(props.property?.arv_price)}</Typography>
+            <Typography>{priceFormatter(props.property?.arvPrice)}</Typography>
           </div>
           <div className={styles.cardInfoRow}>
             <Typography>ARV</Typography>
             <Typography>
-              {priceFormatter(props.property?.arv25_price)}
+              {priceFormatter(props.property?.arv25Price)}
             </Typography>
           </div>
           <div className={styles.cardInfoRow}>

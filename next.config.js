@@ -1,4 +1,4 @@
-const withImages = require("next-images");
+const withImages = require('next-images');
 
 // const redirects = {
 //   async redirects() {
@@ -16,27 +16,28 @@ module.exports = async (phase, { defaultConfig }) => {
    * @type {import('next').NextConfig}
    */
   const nextConfig = {
+    transpilePackages: ['next-auth'],
     typescript: {
-      ignoreBuildErrors: true,
+      ignoreBuildErrors: true
     },
 
     images: {
       remotePatterns: [
         {
-          protocol: "https",
-          hostname: "**",
+          protocol: 'https',
+          hostname: '**'
         },
 
         {
-          protocol: "http",
-          hostname: "**",
-        },
-      ],
+          protocol: 'http',
+          hostname: '**'
+        }
+      ]
       // images: {
       // loader: "custom",
       // loaderFile: "./public/static/images/placeholders/covers/house_bg.jpg",
       // },
-    },
+    }
   };
   return nextConfig;
 };

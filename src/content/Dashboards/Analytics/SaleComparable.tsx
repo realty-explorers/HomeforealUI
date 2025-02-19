@@ -60,7 +60,7 @@ const SaleComparable = (props: SaleComparableProps) => {
 
   const compsAverageDOM = selectedComps
     ? selectedComps?.reduce((acc, comp) => {
-        return acc + calcDays(comp.list_date);
+        return acc + calcDays(comp.listDate);
       }, 0) / selectedComps?.length
     : null;
 
@@ -120,7 +120,7 @@ const SaleComparable = (props: SaleComparableProps) => {
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <Typography className={styles.cellText}>
-                    {props.property.list_date}
+                    {props.property.listDate}
                   </Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">

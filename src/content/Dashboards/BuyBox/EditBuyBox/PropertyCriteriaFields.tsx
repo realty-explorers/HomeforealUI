@@ -28,7 +28,7 @@ const select_fields: {
 }[] = [
   {
     title: 'Property Types',
-    fieldName: 'property_criteria.property_types',
+    fieldName: 'propertyCriteria.propertyTypes',
     options: [
       { label: 'Single Family', value: 'single_family' }
       // { label: "Multi Family", value: "Multi Family" },
@@ -51,21 +51,21 @@ const range_fields: {
 }[] = [
   {
     title: 'Bedrooms',
-    fieldName: 'property_criteria.beds',
+    fieldName: 'propertyCriteria.beds',
     min: defaults.bedrooms.min,
     max: defaults.bedrooms.max,
     step: defaults.bedrooms.step
   },
   {
     title: 'Bathrooms',
-    fieldName: 'property_criteria.baths',
+    fieldName: 'propertyCriteria.baths',
     min: defaults.bathrooms.min,
     max: defaults.bathrooms.max,
     step: defaults.bathrooms.step
   },
   {
     title: 'Building Sqft',
-    fieldName: 'property_criteria.area',
+    fieldName: 'propertyCriteria.area',
     min: defaults.area.min,
     max: defaults.area.max,
     step: defaults.area.step,
@@ -73,7 +73,7 @@ const range_fields: {
   },
   {
     title: 'Lot Size',
-    fieldName: 'property_criteria.lot_area',
+    fieldName: 'propertyCriteria.lotArea',
     min: defaults.area.min,
     max: defaults.area.max,
     step: defaults.area.step,
@@ -81,14 +81,14 @@ const range_fields: {
   },
   {
     title: 'Year Built',
-    fieldName: 'property_criteria.year_built',
+    fieldName: 'propertyCriteria.yearBuilt',
     min: defaults.yearBuilt.min,
     max: defaults.yearBuilt.max,
     step: defaults.yearBuilt.step
   },
   {
     title: 'Listing Price',
-    fieldName: 'property_criteria.price',
+    fieldName: 'propertyCriteria.price',
     min: defaults.listingPrice.min,
     max: defaults.listingPrice.max,
     step: defaults.listingPrice.step,

@@ -36,7 +36,7 @@ const gridRows = (property: CompData) => [
   },
   {
     label: 'Lot Sqft',
-    value: property.lot_area
+    value: property.lotArea
   },
   {
     label: 'Building Sqft',
@@ -53,9 +53,9 @@ const gridRows = (property: CompData) => [
   {
     label: 'Year Built',
     value:
-      typeof property.year_built === 'string'
-        ? property.year_built.slice(0, 4)
-        : property.year_built
+      typeof property.yearBuilt === 'string'
+        ? property.yearBuilt.slice(0, 4)
+        : property.yearBuilt
   },
   {
     label: 'Hood',
@@ -135,7 +135,7 @@ const CompsCard = (props: CompsCardProps) => {
         <Typography className={styles.propertyHeader}>
           Comp {props.index + 1}
         </Typography>
-        {props.compsProperty.is_arv_25th && (
+        {props.compsProperty.isArv25th && (
           <Tooltip title="Included in 25th ARV Calculation">
             <div className="font-poppins font-semibold text-white bg-arv px-2 rounded-lg absolute top-0 right-0">
               25th ARV
@@ -240,10 +240,10 @@ const CompsCard = (props: CompsCardProps) => {
               className={clsx([
                 styles.propertyText,
                 'font-semibold',
-                getSimilarityValues(props.compsProperty.similarity_color).class
+                getSimilarityValues(props.compsProperty.similarityColor).class
               ])}
             >
-              {getSimilarityValues(props.compsProperty.similarity_color).label}
+              {getSimilarityValues(props.compsProperty.similarityColor).label}
             </Typography>
           </div>
         </>

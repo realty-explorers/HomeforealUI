@@ -8,15 +8,16 @@ import {
   MinField,
   minSchema
 } from './FormSchemas';
+import { targetLocationSchema } from './BuyBoxSchemas';
 
 const propertyCriteriaFormSchema = z
   .object({
-    property_types: listSchema,
+    propertyTypes: listSchema,
     beds: rangeSchema,
     baths: rangeSchema,
     area: rangeSchema,
-    lot_area: rangeSchema,
-    year_built: rangeSchema,
+    lotArea: rangeSchema,
+    yearBuilt: rangeSchema,
     price: rangeSchema
   })
   .transform((formData) => {
@@ -26,8 +27,9 @@ const propertyCriteriaFormSchema = z
       if (!value.enabled) return;
 
       if (rangeSchema.safeParse(value).success) {
-        transformed[`min_${key}`] = (value as RangeField).min;
-        transformed[`max_${key}`] = (value as RangeField).max;
+        const keyName = key.charAt(0).toUpperCase() + key.slice(1);
+        transformed[`min${keyName}`] = (value as RangeField).min;
+        transformed[`max${keyName}`] = (value as RangeField).max;
       } else if (listSchema.safeParse(value).success) {
         transformed[key] = (value as ListField).items;
       }
@@ -36,7 +38,7 @@ const propertyCriteriaFormSchema = z
   });
 
 const defaultPropertyCriteriaFormSchema = {
-  property_types: { enabled: false, items: ['single_family'] },
+  propertyTypes: { enabled: false, items: ['singleFamily'] },
   beds: {
     enabled: false,
     min: defaults.bedrooms.min,
@@ -48,12 +50,12 @@ const defaultPropertyCriteriaFormSchema = {
     max: defaults.bathrooms.max
   },
   area: { enabled: false, min: defaults.area.min, max: defaults.area.max },
-  lot_area: {
+  lotArea: {
     enabled: false,
     min: defaults.lotSize.min,
     max: defaults.lotSize.max
   },
-  year_built: {
+  yearBuilt: {
     enabled: false,
     min: defaults.yearBuilt.min,
     max: defaults.yearBuilt.max
@@ -67,9 +69,9 @@ const defaultPropertyCriteriaFormSchema = {
 
 const strategyFormSchema = z
   .object({
-    // property_types: listSchema,
-    min_arv: minSchema,
-    min_margin: minSchema
+    // propertyTypes: listSchema,
+    minArv: minSchema,
+    minMargin: minSchema
   })
   .transform((formData) => {
     const transformed: Record<string, any> = {};
@@ -85,21 +87,21 @@ const strategyFormSchema = z
   });
 
 const defaultStrategyFormSchema = {
-  min_arv: { enabled: true, value: defaults.arv.min },
-  min_margin: { enabled: false, value: defaults.margin.min }
+  minArv: { enabled: true, value: defaults.arv.min },
+  minMargin: { enabled: false, value: defaults.margin.min }
 };
 
 const similarityCriteriaFormSchema = z
   .object({
     enabled: z.boolean(),
-    same_property_type: z.boolean().optional(),
-    beds_offset: rangeSchema,
-    baths_offset: rangeSchema,
-    year_built_offset: rangeSchema,
-    area_offset: rangeSchema,
-    lot_area_offset: rangeSchema,
-    max_distance: minSchema,
-    max_listing_age_months: minSchema,
+    samePropertyType: z.boolean().optional(),
+    bedsOffset: rangeSchema,
+    bathsOffset: rangeSchema,
+    yearBuiltOffset: rangeSchema,
+    areaOffset: rangeSchema,
+    lotAreaOffset: rangeSchema,
+    maxDistance: minSchema,
+    maxListingAgeMonths: minSchema,
     weight: z.number()
   })
   .transform((formData) => {
@@ -108,10 +110,10 @@ const similarityCriteriaFormSchema = z
     Object.entries(formData).forEach(([key, value]) => {
       if (rangeSchema.safeParse(value).success) {
         if (!(value as RangeField).enabled) return;
-        const keyName = key.split('_')[0];
+        const keyName = key.substring(0, key.indexOf('Offset'));
         //INFO: The backend expects positive values, while the front displays and saves them as negative
-        transformed[`${keyName}_min_offset`] = -(value as RangeField).min;
-        transformed[`${keyName}_max_offset`] = (value as RangeField).max;
+        transformed[`${keyName}MinOffset`] = -(value as RangeField).min;
+        transformed[`${keyName}MaxOffset`] = (value as RangeField).max;
       } else if (minSchema.safeParse(value).success) {
         if (!(value as MinField).enabled) return;
         transformed[key] = (value as MinField).value;
@@ -124,14 +126,14 @@ const similarityCriteriaFormSchema = z
 
 const defaultSimilarityCriteriaFormSchemaFirstRank = {
   enabled: true,
-  same_property_type: false,
-  beds_offset: { enabled: false, min: -3, max: 3 },
-  baths_offset: { enabled: false, min: -3, max: 3 },
-  year_built_offset: { enabled: false, min: -100, max: 100 },
-  area_offset: { enabled: false, min: -100, max: 100 },
-  lot_area_offset: { enabled: false, min: -100, max: 100 },
-  max_distance: { enabled: false, value: 10 },
-  max_listing_age_months: { enabled: false, value: 36 },
+  samePropertyType: false,
+  bedsOffset: { enabled: false, min: -3, max: 3 },
+  bathsOffset: { enabled: false, min: -3, max: 3 },
+  yearBuiltOffset: { enabled: false, min: -100, max: 100 },
+  areaOffset: { enabled: false, min: -100, max: 100 },
+  lotAreaOffset: { enabled: false, min: -100, max: 100 },
+  maxDistance: { enabled: false, value: 10 },
+  maxListingAgeMonths: { enabled: false, value: 36 },
   weight: 1
 };
 
@@ -156,21 +158,21 @@ const formBuyBoxSchema = z.object({
     .min(3, 'Name must be at least 3 characters long')
     .default(''),
   description: z.string().optional(),
-  target_locations: z.array(z.object({})).optional(),
-  property_criteria: propertyCriteriaFormSchema,
+  targetLocations: z.array(targetLocationSchema),
+  propertyCriteria: propertyCriteriaFormSchema,
   strategy: strategyFormSchema.default(defaultStrategyFormSchema),
-  // similarity_criteria: similarityCriteriaFormSchema
-  similarity_criteria: z
+  // similarityCriteria: similarityCriteriaFormSchema
+  similarityCriteria: z
     .array(similarityCriteriaFormSchema)
     .transform((criteria) =>
       criteria
-        .filter((item) => item.enabled)
+        .filter((item) => item.enabled && item.enabled == true)
         .map((item) => {
           const { enabled, ...rest } = item;
           return rest;
         })
     )
-  // property_criteria: propertyCriteriaFormSchema.default(
+  // propertyCriteria: propertyCriteriaFormSchema.default(
   //   defaultPropertyCriteriaFormSchema
   // )
 });
@@ -179,10 +181,10 @@ const getDefaultBuyBoxFormData = () => {
   return {
     name: '',
     description: '',
-    target_locations: [],
-    property_criteria: defaultPropertyCriteriaFormSchema,
+    targetLocations: [],
+    propertyCriteria: defaultPropertyCriteriaFormSchema,
     strategy: defaultStrategyFormSchema,
-    similarity_criteria: [
+    similarityCriteria: [
       defaultSimilarityCriteriaFormSchemaFirstRank,
       defaultSimilarityCriteriaFormSchemaSecondRank,
       defaultSimilarityCriteriaFormSchemaThirdRank,

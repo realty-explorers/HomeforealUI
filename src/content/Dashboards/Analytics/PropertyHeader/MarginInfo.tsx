@@ -86,15 +86,15 @@ const MarginInfo = (props: MarginInfoProps) => {
         Sale Comparable
       </Typography>
       <MarginInfoChips
-        amount={saleCalculatedProperty?.arv_price}
+        amount={saleCalculatedProperty?.arvPrice}
         // percent={saleCalculatedProperty?.sales_comps_percentage.toFixed()}
         // margin={0}
         percent={calculateArvPercentage(
-          saleCalculatedProperty?.arv_price,
+          saleCalculatedProperty?.arvPrice,
           saleCalculatedProperty?.price
         ).toFixed()}
         margin={calculateMarginPercentage(
-          saleCalculatedProperty?.arv_price,
+          saleCalculatedProperty?.arvPrice,
           saleCalculatedProperty?.price,
           totalExpenses
         ).toFixed()}
@@ -107,16 +107,16 @@ const MarginInfo = (props: MarginInfoProps) => {
       </Typography>
 
       <MarginInfoChips
-        amount={saleCalculatedProperty?.arv_price}
+        amount={saleCalculatedProperty?.arvPrice}
         // percent={saleCalculatedProperty?.arv_percentage.toFixed()}
         // margin={0}
 
         percent={calculateArvPercentage(
-          saleCalculatedProperty?.arv25_price,
+          saleCalculatedProperty?.arv25Price,
           saleCalculatedProperty?.price
         ).toFixed()}
         margin={calculateMarginPercentage(
-          saleCalculatedProperty?.arv25_price,
+          saleCalculatedProperty?.arv25Price,
           saleCalculatedProperty?.price,
           totalExpenses
         ).toFixed()}

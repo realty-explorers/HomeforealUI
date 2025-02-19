@@ -29,7 +29,7 @@ type SingleRangeFieldProps<T> = {
   formatLabelAsNumber?: boolean;
   className?: string;
 } & SliderProps;
-const SingleRangeField = <T extends Record<string, any>>({
+const SingleRangeFieldConst = <T extends Record<string, any>>({
   min,
   max,
   fieldName,
@@ -48,12 +48,13 @@ const SingleRangeField = <T extends Record<string, any>>({
       render={({ field: { value, onChange }, fieldState: { error } }) => (
         <div className="grid grid-cols-[1fr_3fr_1fr] w-full gap-x-4 items-center">
           <TextField
-            label="Min"
+            label="Value"
             size="small"
-            value={value.value}
+            value={value}
             onChange={(e) => {
               const newValue = Math.max(min, Number(e.target.value));
-              onChange({ ...value, value: newValue });
+              // onChange({ ...value, value: newValue });
+              onChange(newValue);
             }}
             error={!!error}
             InputProps={{
@@ -68,12 +69,9 @@ const SingleRangeField = <T extends Record<string, any>>({
 
           <StyledSlider
             valueLabelDisplay="auto"
-            value={value.value || min}
+            value={value || min}
             onChange={(_, newValue) => {
-              onChange({
-                ...value,
-                value: newValue as number
-              });
+              onChange(newValue as Number);
             }}
             min={min}
             max={max}
@@ -92,4 +90,4 @@ const SingleRangeField = <T extends Record<string, any>>({
   );
 };
 
-export default SingleRangeField;
+export default SingleRangeFieldConst;

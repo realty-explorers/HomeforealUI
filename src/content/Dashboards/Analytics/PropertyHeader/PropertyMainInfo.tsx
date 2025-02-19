@@ -23,7 +23,7 @@ const PropertyMainInfo = (props: PropertyMainInfoProps) => {
         </Grid>
         <Grid item xs={12}>
           <Typography className={styles.infoDescription}>
-            {`${props.property.location.address}, ${props.property.location.city}, ${props.property.location.state} ${props.property.location.zip_code}`}
+            {`${props.property.location.address}, ${props.property.location.city}, ${props.property.location.state} ${props.property.location.zipCode}`}
           </Typography>
         </Grid>
       </Grid>

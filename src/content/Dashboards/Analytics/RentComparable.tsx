@@ -46,8 +46,8 @@ const RentComparable = (props: RentComparableProps) => {
   }
   const area = props.property.area;
   const rentListingPrice =
-    typeof props.property.rental_comps_price === 'number'
-      ? props.property.rental_comps_price
+    typeof props.property.rentalCompsPrice === 'number'
+      ? props.property.rentalCompsPrice
       : 0;
   const rentToSqft = area && area > 0 ? rentListingPrice / area : 0;
   const compsRentToSqft = selectedRentalComps
@@ -116,8 +116,8 @@ const RentComparable = (props: RentComparableProps) => {
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <Typography className={styles.cellText}>
-                    {typeof props.property.cap_rate === 'number'
-                      ? `${props.property.cap_rate.toFixed(2)}%`
+                    {typeof props.property.capRate === 'number'
+                      ? `${props.property.capRate.toFixed(2)}%`
                       : '-'}
                   </Typography>
                 </StyledTableCell>

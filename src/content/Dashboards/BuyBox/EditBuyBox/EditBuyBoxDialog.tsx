@@ -81,32 +81,34 @@ interface Location {
 const steps = [
   {
     title: 'General',
-    fields: ['buybox_name', 'description']
+    fields: ['buyboxName', 'description']
   },
   {
     title: 'Investment Strategy',
-    fields: ['opp.strategy', 'opp.fix_and_flip', 'opp.buy_and_hold']
+    fields: ['opp.strategy', 'opp.fixAndFlip', 'opp.buyAndHold']
   },
   {
     title: 'Location',
-    fields: ['target_location.locations']
+    fields: ['targetLocation.locations']
   },
   {
     title: 'Property Criteria',
     fields: [
-      'property.Listing Price',
-      'property.Beds',
-      'property.Baths',
-      'property.Sqft',
-      'property.Lot Size',
-      'property.Year Built'
+      'property.listingPrice',
+      'property.beds',
+      'property.baths',
+      'property.sqft',
+      'property.lotSize',
+      'property.yearBuilt'
     ]
   },
   {
     title: 'Comparables',
-    fields: ['opp.comparable_preferences']
+    fields: ['opp.comparablePreferences']
   }
 ];
+
+const EDITOR_ROLES = ['edit', 'maitainer', 'owner'];
 
 type editBuyBoxDialogProps = {
   buybox?: BuyBox;
@@ -148,53 +150,53 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const getSimilarityFieldProperties = (buyboxSimilarity: any) => {
     return {
       enabled: true,
-      same_property_type: buyboxSimilarity.same_property_type,
-      beds_offset: getRangeFieldProperties(
-        buyboxSimilarity.beds_min_offset
-          ? -buyboxSimilarity.beds_min_offset
+      samePropertyType: buyboxSimilarity.samePropertyType,
+      bedsOffset: getRangeFieldProperties(
+        buyboxSimilarity.bedsMinOffset
+          ? -buyboxSimilarity.bedsMinOffset
           : undefined,
-        buyboxSimilarity.beds_max_offset,
+        buyboxSimilarity.bedsMaxOffset,
         defaultSimilarityFields.bedrooms.min,
         defaultSimilarityFields.bedrooms.max
       ),
-      baths_offset: getRangeFieldProperties(
-        buyboxSimilarity.baths_min_offset
-          ? -buyboxSimilarity.baths_min_offset
+      bathsOffset: getRangeFieldProperties(
+        buyboxSimilarity.bathsMinOffset
+          ? -buyboxSimilarity.bathsMinOffset
           : undefined,
-        buyboxSimilarity.baths_max_offset,
+        buyboxSimilarity.bathsMaxOffset,
         defaultSimilarityFields.bathrooms.min,
         defaultSimilarityFields.bathrooms.max
       ),
-      area_offset: getRangeFieldProperties(
-        buyboxSimilarity.area_min_offset
-          ? -buyboxSimilarity.area_min_offset
+      areaOffset: getRangeFieldProperties(
+        buyboxSimilarity.areaMinOffset
+          ? -buyboxSimilarity.areaMinOffset
           : undefined,
-        buyboxSimilarity.area_max_offset,
+        buyboxSimilarity.areaMaxOffset,
         defaultSimilarityFields.area.min,
         defaultSimilarityFields.area.max
       ),
-      lot_area_offset: getRangeFieldProperties(
-        buyboxSimilarity.lot_area_min_offset
-          ? -buyboxSimilarity.lot_area_min_offset
+      lotAreaOffset: getRangeFieldProperties(
+        buyboxSimilarity.lotAreaMinOffset
+          ? -buyboxSimilarity.lotAreaMinOffset
           : undefined,
-        buyboxSimilarity.lot_area_max_offset,
+        buyboxSimilarity.lotAreaMaxOffset,
         defaultSimilarityFields.lotSize.min,
         defaultSimilarityFields.lotSize.max
       ),
-      year_built_offset: getRangeFieldProperties(
-        buyboxSimilarity.year_built_min_offset
-          ? -buyboxSimilarity.year_built_min_offset
+      yearBuiltOffset: getRangeFieldProperties(
+        buyboxSimilarity.yearBuiltMinOffset
+          ? -buyboxSimilarity.yearBuiltMinOffset
           : undefined,
-        buyboxSimilarity.year_built_max_offset,
+        buyboxSimilarity.yearBuiltMaxOffset,
         defaultSimilarityFields.yearBuilt.min,
         defaultSimilarityFields.yearBuilt.max
       ),
-      max_distance: getMinFieldProperties(
-        buyboxSimilarity.max_distance,
+      maxDistance: getMinFieldProperties(
+        buyboxSimilarity.maxDistance,
         defaultSimilarityFields.distance.min
       ),
-      max_listing_age_months: getMinFieldProperties(
-        buyboxSimilarity.max_listing_age_months,
+      maxListingAgeMonths: getMinFieldProperties(
+        buyboxSimilarity.maxListingAgeMonths,
         defaultSimilarityFields.saleDate.min
       ),
       weight: buyboxSimilarity.weight || 1
@@ -205,9 +207,9 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     const similarityFields: any[] = [];
     for (let i = 0; i < 4; i++) {
       let fieldsData = defaultSimilarityCriteriaFormSchemaFirstRank;
-      if (i < buyboxData.similarity_criteria.length) {
+      if (i < buyboxData.similarityCriteria.length) {
         fieldsData = getSimilarityFieldProperties(
-          buyboxData.similarity_criteria[i]
+          buyboxData.similarityCriteria[i]
         );
       }
       similarityFields.push(fieldsData);
@@ -219,61 +221,62 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     const buyboxFormData: BuyBoxFormData = {
       name: buyboxData.name,
       description: buyboxData.description,
-      property_criteria: {
-        property_types: {
-          enabled: Boolean(buyboxData.property_criteria.property_types),
+      propertyCriteria: {
+        propertyTypes: {
+          enabled: Boolean(buyboxData.propertyCriteria.propertyTypes),
           items:
-            buyboxData.property_criteria.property_types ||
+            buyboxData.propertyCriteria.propertyTypes ||
             defaults.propertyTypes.default
         },
         beds: getRangeFieldProperties(
-          buyboxData.property_criteria.min_beds,
-          buyboxData.property_criteria.max_beds,
+          buyboxData.propertyCriteria.minBeds,
+          buyboxData.propertyCriteria.maxBeds,
           defaults.bedrooms.min,
           defaults.bedrooms.max
         ),
         baths: getRangeFieldProperties(
-          buyboxData.property_criteria.min_baths,
-          buyboxData.property_criteria.max_baths,
+          buyboxData.propertyCriteria.minBaths,
+          buyboxData.propertyCriteria.maxBaths,
           defaults.bathrooms.min,
           defaults.bathrooms.max
         ),
         area: getRangeFieldProperties(
-          buyboxData.property_criteria.min_area,
-          buyboxData.property_criteria.max_area,
+          buyboxData.propertyCriteria.minArea,
+          buyboxData.propertyCriteria.maxArea,
           defaults.area.min,
           defaults.area.max
         ),
-        lot_area: getRangeFieldProperties(
-          buyboxData.property_criteria.min_lot_area,
-          buyboxData.property_criteria.max_lot_area,
+        lotArea: getRangeFieldProperties(
+          buyboxData.propertyCriteria.minLotArea,
+          buyboxData.propertyCriteria.maxLotArea,
           defaults.lotSize.min,
           defaults.lotSize.max
         ),
-        year_built: getRangeFieldProperties(
-          buyboxData.property_criteria.min_year_built,
-          buyboxData.property_criteria.max_year_built,
+        yearBuilt: getRangeFieldProperties(
+          buyboxData.propertyCriteria.minYearBuilt,
+          buyboxData.propertyCriteria.maxYearBuilt,
           defaults.yearBuilt.min,
           defaults.yearBuilt.max
         ),
         price: getRangeFieldProperties(
-          buyboxData.property_criteria.min_price,
-          buyboxData.property_criteria.max_price,
+          buyboxData.propertyCriteria.minPrice,
+          buyboxData.propertyCriteria.maxPrice,
           defaults.listingPrice.min,
           defaults.listingPrice.max
         )
       },
       strategy: {
-        min_arv: getMinFieldProperties(
-          buyboxData.strategy.min_arv,
+        minArv: getMinFieldProperties(
+          buyboxData.strategy.minArv,
           defaults.arv.min
         ),
-        min_margin: getMinFieldProperties(
-          buyboxData.strategy.min_margin,
+        minMargin: getMinFieldProperties(
+          buyboxData.strategy.minMargin,
           defaults.margin.min
         )
       },
-      similarity_criteria: getAllSimilarityFields(buyboxData)
+      similarityCriteria: getAllSimilarityFields(buyboxData),
+      targetLocations: buyboxData.targetLocations
     };
 
     return buyboxFormData;
@@ -326,8 +329,6 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
 
   const handleNextStep = async () => {
     // show form values
-    console.log(JSON.stringify(props.buybox, null, 2));
-    console.log(JSON.stringify(getValues(), null, 2));
     const fields = steps[activeStep].fields;
     const output = await trigger(fields as FieldName[], { shouldFocus: true });
     if (!output) {
@@ -354,8 +355,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
 
   const handleClose = () => {
     const viewOnlyBuyBox =
-      props.buybox?.permissions.length === 1 &&
-      props.buybox?.permissions[0] === 'view';
+      props.buybox && !EDITOR_ROLES.includes(props.buybox?.userAccess);
     if (viewOnlyBuyBox) {
       const originalFormValues = mapBuyBoxData(props.buybox?.parameters);
       reset(originalFormValues);
@@ -365,8 +365,10 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   };
 
   const onSubmit = async (data: any) => {
+    console.log(`meow: ${JSON.stringify(getValues(), null, 2)}`);
     try {
       if (props.buybox) {
+        console.log(`updating buybox: ${JSON.stringify(data)}`);
         await updateBuyBox({ id: props.buybox.id, parameters: data }).unwrap();
         enqueueSnackbar(`BuyBox Saved`, {
           variant: 'success'
@@ -383,7 +385,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
               buyBoxes.push({
                 ...data,
                 permissions: ['edit', 'view']
-                // buybox_name: data.buybox_name
+                // buyboxName: data.buyboxName
               });
               return buyBoxes;
             }
@@ -394,7 +396,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         });
       }
     } catch (error) {
-      if (error.status === 'FETCH_ERROR') {
+      if (error.status === 'FETCHERROR') {
         enqueueSnackbar(`Connection error - please try again later`, {
           variant: 'error'
         });
@@ -415,7 +417,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   //       variant: 'success'
   //     });
   //   } catch (error) {
-  //     if (error.status === 'FETCH_ERROR') {
+  //     if (error.status === 'FETCHERROR') {
   //       enqueueSnackbar(`Connection error - please try again later`, {
   //         variant: 'error'
   //       });
@@ -441,8 +443,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   };
 
   // const handleLocationsChanged = (event: any, value: any) => {
-  //   setValue("target_location.locations", value);
-  //   console.log(getValues("target_location.locations"));
+  //   setValue("targetLocation.locations", value);
+  //   console.log(getValues("targetLocation.locations"));
   // };
 
   // const getUniqueLocations = (locations: Location[]) => {
@@ -464,7 +466,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   //     case 1:
   //       return errors?.strategy;
   //     case 2:
-  //       return errors?.target_locations;
+  //       return errors?.targetLocations;
   //     default:
   //       return undefined;
   //   }
@@ -478,7 +480,15 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         case 1:
           return errors?.strategy;
         case 2:
-          return errors?.target_locations;
+          return errors?.targetLocations;
+        case 3:
+          console.log(getValues('propertyCriteria'));
+          console.log(JSON.stringify(errors));
+          return errors?.propertyCriteria;
+        case 4:
+          console.log(getValues('similarityCriteria'));
+          console.log(JSON.stringify(errors));
+          return errors?.similarityCriteria;
         default:
           return undefined;
       }
@@ -502,7 +512,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
             <HighlightOffOutlinedIcon />
           </IconButton>
           <DialogTitle
-            className={clsx([' text-2xl font-bold ', styles.font_poppins])}
+            className={clsx([' text-2xl font-bold ', styles.fontPoppins])}
           >
             BuyBox Config
           </DialogTitle>
@@ -514,7 +524,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
             {steps.map((step, index) => (
               <Step key={index} className="">
                 <StepLabel
-                  className={clsx([styles.font_poppins, 'cursor-pointer'])}
+                  className={clsx([styles.fontPoppins, 'cursor-pointer'])}
                   error={Boolean(getStepsErrors(index))}
                   onClick={() => setActiveStep(index)}
                 >
@@ -531,7 +541,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
               onClick={() => setActiveStep(index)}
               className={clsx([
                 ' text-white text-xl font-bold  h-24 rounded-[0] px-8 py-4 hover:bg-[#9747FF]',
-                styles.font_poppins,
+                styles.fontPoppins,
                 activeStep === index ? 'bg-[#9747FF]' : 'bg-transparent'
               ])}
             >
@@ -618,9 +628,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
                 {isDirty && (
                   <Button onClick={handleResetBuyBox} className={styles.button}>
                     <RestartAltOutlined className="h-4 w-4" />
-                    <Typography className={styles.button_text}>
-                      Reset
-                    </Typography>
+                    <Typography className={styles.buttonText}>Reset</Typography>
                   </Button>
                 )}
                 {activeStep === steps.length - 1 && !props.buybox && (
@@ -629,26 +637,27 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
                     className={styles.button}
                     loading={isSubmitting}
                   >
-                    <Typography className={styles.button_text}>
+                    <Typography className={styles.buttonText}>
                       Finish
                     </Typography>
                   </LoadingButton>
                 )}
-                {props.buybox && props.buybox?.permissions.includes('edit') && (
-                  <LoadingButton
-                    onClick={handleSubmitForm}
-                    className={styles.button}
-                    loading={isSubmitting}
-                  >
-                    <Typography className={styles.button_text}>
-                      {props.buybox ? 'Save & Finish' : 'Finish'}
-                    </Typography>
-                  </LoadingButton>
-                )}
+                {props.buybox &&
+                  EDITOR_ROLES.includes(props.buybox?.userAccess) && (
+                    <LoadingButton
+                      onClick={handleSubmitForm}
+                      className={styles.button}
+                      loading={isSubmitting}
+                    >
+                      <Typography className={styles.buttonText}>
+                        {props.buybox ? 'Save & Finish' : 'Finish'}
+                      </Typography>
+                    </LoadingButton>
+                  )}
 
                 {activeStep < steps.length - 1 && (
                   <Button onClick={handleNextStep} className={styles.button}>
-                    <Typography className={styles.button_text}>Next</Typography>
+                    <Typography className={styles.buttonText}>Next</Typography>
                     <ArrowForwardIos className="h-4 w-4" />
                   </Button>
                 )}

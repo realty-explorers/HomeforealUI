@@ -1,4 +1,5 @@
 import BuyBox from '@/models/buybox';
+import { signOut } from 'next-auth/react';
 import {
   BaseQueryApi,
   createApi,
@@ -6,6 +7,7 @@ import {
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
 import { logout } from '../slices/authSlice';
+import { getServerSession } from 'next-auth/next';
 
 const baseUrl = process.env.NEXT_PUBLIC_BUYBOX_API_URL;
 // const baseUrl = "http://localhost:8000/buybox";
@@ -30,8 +32,6 @@ const baseQuery = fetchBaseQuery({
       headers.set('authorization', `Bearer ${token}`);
     }
 
-    headers.set('X-Service', 'buybox');
-
     return headers;
   }
 });
@@ -45,6 +45,10 @@ const baseQueryWithReauth = async (
   if (result?.error?.status === 403) {
     //TODO: fetch new accessToken using refresh token and update auth state and recall the api
   } else if (result?.error?.status === 401) {
+    await signOut({
+      redirect: true,
+      callbackUrl: '/'
+    });
     api.dispatch(logout());
   }
   return result;
@@ -56,13 +60,13 @@ export const buyBoxApi = createApi({
   tagTypes: ['BuyBox'],
   endpoints: (builder) => ({
     getBuyBoxes: builder.query<BuyBox[], any>({
-      query: () => ({ url: '/api/v1/buybox' }),
+      query: () => ({ url: '/v1/buybox' }),
       transformResponse: (response: any) => response,
       providesTags: ['BuyBox']
     }),
     createBuyBox: builder.mutation({
       query: (body) => ({
-        url: '/api/v1/buybox',
+        url: '/v1/buybox',
         method: 'POST',
         body: { parameters: body }
       }),
@@ -71,7 +75,7 @@ export const buyBoxApi = createApi({
     }),
     updateBuyBox: builder.mutation({
       query: ({ id, parameters }) => ({
-        url: `/api/v1/buybox/${id}`,
+        url: `/v1/buybox/${id}`,
         method: 'PUT',
         body: { parameters }
       }),
@@ -108,7 +112,7 @@ export const buyBoxApi = createApi({
     }),
     deleteBuyBox: builder.mutation({
       query: (id) => ({
-        url: `/api/v1/buybox/${id}`,
+        url: `/v1/buybox/${id}`,
         method: 'DELETE'
       }),
       transformResponse: (response: any) => response

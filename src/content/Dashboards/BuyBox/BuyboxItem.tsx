@@ -38,7 +38,6 @@ import { useAnalyzeBuyBoxMutation } from '@/store/services/buyboxAnalysisApi';
 import { useDispatch } from 'react-redux';
 import { analysisApi } from '@/store/services/analysisApi';
 import { timeSince } from '@/utils/dateUtils';
-import { useUser } from '@auth0/nextjs-auth0/client';
 import Chip from '@/components/Chip';
 import BuyBoxStatistics from './BuyBoxStatistics';
 
@@ -74,6 +73,8 @@ const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
   }
 }));
 
+const EDITOR_ROLES = ['owner', 'editor', 'maintainer'];
+
 type BuyboxItemProps = {
   buybox: BuyBox;
   editBuyBox: (buybox: BuyBox) => void;
@@ -90,8 +91,6 @@ const BuyboxItem = (props: BuyboxItemProps) => {
   const [deleteBuyBox, deleteResult] = useDeleteBuyBoxMutation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [running, setRunning] = useState(false);
-
-  const { user } = useUser();
 
   const [analyzeBuyBox, analysisResult] = useAnalyzeBuyBoxMutation();
 
@@ -182,7 +181,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
     }
   };
 
-  const allowedToEdit = props.buybox.permissions.includes('edit');
+  const allowedToEdit = EDITOR_ROLES.includes(props.buybox.userAccess);
 
   const handleClick = () => {
     if (expanded) {
@@ -221,26 +220,15 @@ const BuyboxItem = (props: BuyboxItemProps) => {
               <Typography className="flex items-center w-40 text-ellipsis overflow-hidden">
                 {props.buybox.parameters.name}
               </Typography>
-              {!running && props.buybox?.execute_date && (
-                <div className="flex gap-x-4">
-                  <div className="flex items-center gap-x-4">
-                    <Typography className="text-gray-500">
-                      updated {timeSince(props?.buybox?.execute_date)}
-                    </Typography>
-                  </div>
-                  {/* {props.buybox?.new_deals && props.buybox.new_deals > 0 && ( */}
-                  {/*   <Tooltip */}
-                  {/*     title={`New leads since ${timeSince( */}
-                  {/*       props?.buybox?.execute_date */}
-                  {/*     )}`} */}
-                  {/*   > */}
-                  {/*     <div className="flex bg-secondary px-2 py-[0.2rem] rounded-3xl font-poppins font-semibold text-white text-xs "> */}
-                  {/*       {props.buybox?.new_deals} new leads */}
-                  {/*     </div> */}
-                  {/*   </Tooltip> */}
-                  {/* )} */}
-                </div>
-              )}
+              {/* {!running && props.buybox?.execute_date && ( */}
+              {/*   <div className="flex gap-x-4"> */}
+              {/*     <div className="flex items-center gap-x-4"> */}
+              {/*       <Typography className="text-gray-500"> */}
+              {/*         updated {timeSince(props?.buybox?.execute_date)} */}
+              {/*       </Typography> */}
+              {/*     </div> */}
+              {/*   </div> */}
+              {/* )} */}
             </div>
 
             {running ? (
@@ -295,8 +283,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
               )}
 
               {allowedToEdit &&
-                user?.user_roles &&
-                (user.user_roles as string[])?.includes('admin') &&
+                props.buybox.userAccess === 'admin' &&
                 (running ? (
                   <Button
                     startIcon={<StopCircleIcon />}

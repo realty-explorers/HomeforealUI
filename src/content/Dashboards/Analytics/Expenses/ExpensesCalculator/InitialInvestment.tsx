@@ -27,7 +27,7 @@ type InitialInvestmentProps = {
 };
 const InitialInvestment = (props: InitialInvestmentProps) => {
   const priceTypes = [
-    { label: 'ARV', value: props.property?.arv_price },
+    { label: 'ARV', value: props.property?.arvPrice },
     { label: 'Listing Price', value: props.property?.price || 0 }
   ];
 
@@ -38,9 +38,9 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
       {
         id: uuidv4(),
         label: 'Fixed Fee',
-        value: props.property?.expenses?.fixed_fee?.expense_amount || 0,
+        value: props.property?.expenses?.fixedFee?.expenseAmount || 0,
         priceType:
-          props.property.expenses?.fixed_fee?.expense_ref === 'arv'
+          props.property.expenses?.fixedFee?.expenseRef === 'arv'
             ? priceTypes[0]
             : priceTypes[1]
       },
@@ -50,7 +50,7 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
         // value: props.property?.expenses?.closing_fee?.expense_amount || 0,
         value: 1000,
         priceType:
-          props.property.expenses?.closing_fee?.expense_ref === 'arv'
+          props.property.expenses?.closingFee?.expenseRef === 'arv'
             ? priceTypes[0]
             : priceTypes[1]
       },
@@ -58,18 +58,18 @@ const InitialInvestment = (props: InitialInvestmentProps) => {
         id: uuidv4(),
         label: 'Selling Fee',
         // value: props.property?.expenses?.selling_fee?.expense_amount || 0,
-        value: props.property?.arv_price * 0.03,
+        value: props.property?.arvPrice * 0.03,
         priceType:
-          props.property.expenses?.selling_fee?.expense_ref === 'arv'
+          props.property.expenses?.sellingFee?.expenseRef === 'arv'
             ? priceTypes[0]
             : priceTypes[1]
       },
       {
         id: uuidv4(),
         label: 'Rehab',
-        value: props.property?.expenses?.rehab?.expense_amount || 0,
+        value: props.property?.expenses?.rehab?.expenseAmount || 0,
         priceType:
-          props.property.expenses?.rehab?.expense_ref === 'arv'
+          props.property.expenses?.rehab?.expenseRef === 'arv'
             ? priceTypes[0]
             : priceTypes[1]
       }

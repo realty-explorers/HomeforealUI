@@ -80,10 +80,10 @@ const PropertyFacts = (props: PropertyFactsProps) => {
             label: 'Type',
             value: props.property.type.replace('-', ' ')
           },
-          { label: 'Built', value: props.property.year_built },
+          { label: 'Built', value: props.property.yearBuilt },
           {
             label: 'DOM',
-            value: readableDateDiff(props.property?.list_date)
+            value: readableDateDiff(props.property?.listDate)
           }
         ]}
       />
@@ -96,7 +96,7 @@ const PropertyFacts = (props: PropertyFactsProps) => {
           },
           {
             label: 'Lot Size',
-            value: numberFormatter(props.property.lot_area)
+            value: numberFormatter(props.property.lotArea)
           },
           { label: 'Floors', value: props.property.floors }
         ]}

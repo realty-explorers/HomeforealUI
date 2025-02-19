@@ -135,7 +135,7 @@ const booleanFields = [
   },
   {
     label: 'Same Neighborhood',
-    fieldName: 'same_neighborhood'
+    fieldName: 'sameNeighborhood'
   }
 ];
 
