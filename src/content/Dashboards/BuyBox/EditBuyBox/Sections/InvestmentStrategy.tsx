@@ -18,10 +18,10 @@ import { getValue } from '@mui/system';
 import { BuyBoxFormData } from '@/schemas/BuyBoxFormSchema';
 
 const investmentTypes = [
-  { label: 'Fix and Flip', value: 'fix_and_flip' },
+  { label: 'Fix and Flip', value: 'fixAndFlip' },
   {
     label: 'Buy and Hold',
-    value: 'buy_and_hold',
+    value: 'buyAndHold',
     disabled: true,
     status: 'Coming Soon'
   },
@@ -29,7 +29,7 @@ const investmentTypes = [
   { label: 'ADU', value: 'adu', disabled: true, status: 'Coming soon' },
   {
     label: 'Short Term Rental',
-    value: 'short_term_rental',
+    value: 'shortTermRental',
     disabled: true,
     status: 'Coming soon'
   }
@@ -53,7 +53,7 @@ const InvestmentStrategy = ({
 }: InvestmentStrategyProps) => {
   const [selectedStrategy, setSelectedStrategy] = useState<string>(
     // getValues('opp.strategy') TODO: Need to add strategy selection
-    'fix_and_flip'
+    'fixAndFlip'
   );
   // const handleSelectStrategy = (strategy: string) => {
   //   if (selectedStrategy !== '') {
@@ -66,8 +66,8 @@ const InvestmentStrategy = ({
   return (
     <div
       className={clsx([
-        'grid grid-cols-[auto_1fr] pt-8 gap-x-8 px-4',
-        styles.font_poppins
+        'grid grid-cols-[auto1fr] pt-8 gap-x-8 px-4',
+        styles.fontPoppins
       ])}
     >
       <Typography className={clsx([styles.header, 'col-span-2 mb-4'])}>
@@ -104,7 +104,7 @@ const InvestmentStrategy = ({
             <Button
               className={clsx([
                 'text-gray-500 px-12 py-4 w-full',
-                'fix_and_flip' === type.value
+                'fixAndFlip' === type.value
                   ? 'ring ring-secondary'
                   : 'ring-1 ring-gray-500 '
               ])}
@@ -117,7 +117,7 @@ const InvestmentStrategy = ({
         ))}
       </div>
       <div>
-        {selectedStrategy === 'fix_and_flip' && (
+        {selectedStrategy === 'fixAndFlip' && (
           <FixAndFlip
             register={register}
             control={control}
@@ -127,7 +127,7 @@ const InvestmentStrategy = ({
           />
         )}
 
-        {selectedStrategy === 'buy_and_hold' && (
+        {selectedStrategy === 'buyAndHold' && (
           <BuyAndHold
             register={register}
             control={control}

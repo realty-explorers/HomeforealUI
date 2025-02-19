@@ -27,18 +27,18 @@ import {
   selectFilter,
   setArvMargin,
   setBuybox,
-  setCompsMargin,
   setFilteredProperties,
   setMaxBaths,
   setMaxBeds,
-  setMaxListingPrice,
-  setMaxSqft,
+  setMaxPrice,
+  setMinArea,
+  setMaxArea,
   setMinBaths,
   setMinBeds,
-  setMinListingPrice,
-  setMinSqft,
+  setMinPrice,
   setPropertyTypes,
-  setStrategyMode
+  setStrategyMode,
+  setArv25Margin
 } from '@/store/slices/filterSlice';
 import debounce from 'lodash.debounce';
 import { useDispatch, useSelector } from 'react-redux';
@@ -57,14 +57,15 @@ import { useSnackbar } from 'notistack';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { redirect, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
+import { signOut } from 'next-auth/react';
 
 const filterFieldNames = [
-  'arv_price',
-  'sales_comps_price',
-  'listing_price',
-  'building_area',
-  'bedrooms',
-  'total_bathrooms'
+  'arvPrice',
+  'arv25Price',
+  'price',
+  'area',
+  'beds',
+  'baths'
 ];
 
 type MainControlsProps = {};
@@ -75,15 +76,15 @@ const MainControls: React.FC<MainControlsProps> = (
 
   const {
     arvMargin,
-    compsMargin,
+    arv25Margin,
     maxBaths,
     minBaths,
     maxBeds,
     minBeds,
-    maxListingPrice,
-    minListingPrice,
-    minSqft,
-    maxSqft,
+    maxPrice,
+    minPrice,
+    minArea,
+    maxArea,
     propertyTypes,
     filteredProperties,
     buybox
@@ -157,7 +158,8 @@ const MainControls: React.FC<MainControlsProps> = (
           message = `Connection failed, try again later`;
         } else if (error.status === 401) {
           message = 'You were disconnected, please sign in again';
-          router.push('/api/auth/logout');
+          // router.push('/api/auth/logout');
+          // signOut();
         }
         enqueueSnackbar(message, {
           variant: 'error'
@@ -181,11 +183,11 @@ const MainControls: React.FC<MainControlsProps> = (
     // debounceUpdateArv(value);
   };
 
-  const strategyFilterFieldNames = ['arv_price', 'sales_comps_price'];
+  const strategyFilterFieldNames = ['arv25Price', 'arvPrice'];
 
   const strategyFilterFieldsMap = {
-    sales_comps_price: 'Comps',
-    arv_price: 'ARV'
+    arvPrice: 'Comps',
+    arv25Price: 'ARV'
   };
 
   const filterByStrategy = (
@@ -215,23 +217,23 @@ const MainControls: React.FC<MainControlsProps> = (
   };
 
   const getFilterValue = (fieldName, updatedFieldName, updatedValue) => {
-    if (fieldName === 'arv_price') {
-      return updatedFieldName === 'arv_price' ? updatedValue : arv;
+    if (fieldName === 'arv25Price') {
+      return updatedFieldName === 'arv25Price' ? updatedValue : arv;
     }
-    if (fieldName === 'sales_comps_price') {
-      return updatedFieldName === 'sales_comps_price' ? updatedValue : comps;
+    if (fieldName === 'arvPrice') {
+      return updatedFieldName === 'arvPrice' ? updatedValue : comps;
     }
-    if (fieldName === 'listing_price') {
-      return updatedFieldName === 'listing_price' ? updatedValue : price;
+    if (fieldName === 'price') {
+      return updatedFieldName === 'price' ? updatedValue : price;
     }
-    if (fieldName === 'building_area') {
-      return updatedFieldName === 'building_area' ? updatedValue : area;
+    if (fieldName === 'area') {
+      return updatedFieldName === 'area' ? updatedValue : area;
     }
-    if (fieldName === 'bedrooms') {
-      return updatedFieldName === 'bedrooms' ? updatedValue : beds;
+    if (fieldName === 'beds') {
+      return updatedFieldName === 'beds' ? updatedValue : beds;
     }
-    if (fieldName === 'total_bathrooms') {
-      return updatedFieldName === 'total_bathrooms' ? updatedValue : baths;
+    if (fieldName === 'baths') {
+      return updatedFieldName === 'baths' ? updatedValue : baths;
     }
     return 0;
   };
@@ -276,6 +278,7 @@ const MainControls: React.FC<MainControlsProps> = (
       }
     );
     dispatch(setFilteredProperties(filteredProperties));
+    // dispatch(setFilteredProperties(propertiesQuery.data));
   };
 
   const setValue = (setFunction, updateFunction, value, fieldName) => {
@@ -339,7 +342,7 @@ const MainControls: React.FC<MainControlsProps> = (
             fullWidth
             size="small"
             className="mb-2"
-            id="buybox_combobox"
+            id="buyboxCombobox"
           >
             <InputLabel>BuyBox</InputLabel>
             <Select
@@ -360,7 +363,7 @@ const MainControls: React.FC<MainControlsProps> = (
       <div className="flex w-full justify-center items-center mb-4">
         <ToggleButtonGroup
           color="primary"
-          id="strategy_toggle"
+          id="strategyToggle"
           value={strategy}
           exclusive
           onChange={handleChange}
@@ -419,9 +422,9 @@ const MainControls: React.FC<MainControlsProps> = (
               update={(value) =>
                 setValue(
                   () => setArv(value),
-                  () => dispatch(setArvMargin(value)),
+                  () => dispatch(setArv25Margin(value)),
                   value,
-                  'arv_price'
+                  'arv25Margin'
                 )
               }
             />
@@ -443,9 +446,9 @@ const MainControls: React.FC<MainControlsProps> = (
               update={(value) =>
                 setValue(
                   () => setComps(value),
-                  () => dispatch(setCompsMargin(value)),
+                  () => dispatch(setArvMargin(value)),
                   value,
-                  'sales_comps_price'
+                  'arvMargin'
                 )
               }
             />
@@ -467,11 +470,11 @@ const MainControls: React.FC<MainControlsProps> = (
               setValue(
                 () => setPrice(value),
                 () => {
-                  dispatch(setMinListingPrice(value[0]));
-                  dispatch(setMaxListingPrice(value[1]));
+                  dispatch(setMinPrice(value[0]));
+                  dispatch(setMaxPrice(value[1]));
                 },
                 value,
-                'listing_price'
+                'price'
               )
             }
             scale={{ scale: priceScale, reverseScale: priceReverseScale }}
@@ -496,7 +499,7 @@ const MainControls: React.FC<MainControlsProps> = (
                   dispatch(setMaxBaths(value[1]));
                 },
                 value,
-                'total_bathrooms'
+                'baths'
               )
             }
           />
@@ -519,7 +522,7 @@ const MainControls: React.FC<MainControlsProps> = (
                   dispatch(setMaxBeds(value[1]));
                 },
                 value,
-                'bedrooms'
+                'beds'
               )
             }
             // updateMinValue={(value) => dispatch(setMinBeds(value))}
@@ -542,11 +545,11 @@ const MainControls: React.FC<MainControlsProps> = (
               setValue(
                 () => setArea(value),
                 () => {
-                  dispatch(setMinSqft(value[0]));
-                  dispatch(setMaxSqft(value[1]));
+                  dispatch(setMinArea(value[0]));
+                  dispatch(setMaxArea(value[1]));
                 },
                 value,
-                'building_area'
+                'area'
               )
             }
             // updateMinValue={(value) => dispatch(setMinSqft(value))}

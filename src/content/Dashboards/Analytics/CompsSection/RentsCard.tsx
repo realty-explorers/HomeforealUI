@@ -28,7 +28,7 @@ const gridRows = (property: CompData) => [
   },
   {
     label: 'Lot Sqft',
-    value: property.lot_area
+    value: property.lotArea
   },
   {
     label: 'Building Sqft',
@@ -45,9 +45,9 @@ const gridRows = (property: CompData) => [
   {
     label: 'Year Built',
     value:
-      typeof property.year_built === 'string'
-        ? property.year_built.slice(0, 4)
-        : property.year_built
+      typeof property.yearBuilt === 'string'
+        ? property.yearBuilt.slice(0, 4)
+        : property.yearBuitl
   },
   {
     label: 'Hood',
@@ -105,7 +105,7 @@ type RentsCardProps = {
 };
 const RentsCard = (props: RentsCardProps) => {
   const [cardImage, setCardImage] = useState(
-    props.compsProperty.primary_image || defaultImage
+    props.compsProperty.photos.primary || defaultImage
   );
   return (
     <Card className={props.className}>
@@ -221,10 +221,10 @@ const RentsCard = (props: RentsCardProps) => {
               className={clsx([
                 styles.propertyText,
                 'font-semibold',
-                getSimilarityValues(props.compsProperty.similarity_color).class
+                getSimilarityValues(props.compsProperty.similarityColor).class
               ])}
             >
-              {getSimilarityValues(props.compsProperty.similarity_color).label}
+              {getSimilarityValues(props.compsProperty.similarityColor).label}
             </Typography>
           </div>
         </>

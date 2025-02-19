@@ -2,7 +2,7 @@ interface Location {
   address: string;
   neighborhood?: string;
   street?: string;
-  zip_code: string;
+  zipCode: string;
   state: string;
   city: string;
   county?: {

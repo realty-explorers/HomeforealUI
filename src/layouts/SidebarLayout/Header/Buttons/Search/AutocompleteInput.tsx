@@ -24,6 +24,7 @@ import { borderRadius, styled } from '@mui/system';
 import styles from './AutoComplete.module.scss';
 import locations from './locations.json';
 import Fuse from 'fuse.js';
+import { signOut } from 'next-auth/react';
 import { useDispatch } from 'react-redux';
 import { setSelectedPropertyPreview } from '@/store/slices/propertiesSlice';
 import clsx from 'clsx';
@@ -114,8 +115,8 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
             (error.response.status === 400 || error.response.status === 401)
           ) {
             alert('Unauthorized');
-            redirect('/api/auth/logout');
-            // signOut();
+            // redirect('/api/auth/logout');
+            signOut();
           } else console.log(error);
         }
       }, 400),

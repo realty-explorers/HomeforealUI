@@ -28,6 +28,8 @@ import { selectLocation } from '@/store/slices/locationSlice';
 import MakeOfferButton from '@/content/Dashboards/Analytics/Offer/MakeOfferButton';
 import OfferDialog from '@/content/Dashboards/Analytics/Offer/OfferDialog';
 
+// import { useSession, SessionProvider, signIn } from 'next-auth/react';
+
 const JoyRideNoSSR = dynamic(() => import('react-joyride'), { ssr: false });
 
 const steps = [
@@ -103,6 +105,8 @@ const steps = [
 ];
 
 const DashboardRealEstate = (props: any) => {
+  // const session = useSession();
+
   const [tour, setTour] = useState(false);
   const dispatch = useDispatch();
   const {
@@ -277,4 +281,4 @@ DashboardRealEstate.getLayout = (page) => <SidebarLayout>{page}</SidebarLayout>;
 
 // export default withPageAuthRequired(DashboardRealEstate, { returnTo: '' });
 export default DashboardRealEstate;
-export const getServerSideProps = withPageAuthRequired();
+// export const getServerSideProps = withPageAuthRequired();

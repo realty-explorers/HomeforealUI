@@ -23,13 +23,15 @@ import {
 import styles from './EditBuyBoxDialog.module.scss';
 // import { RangeField } from "./RangeField";
 import RangeField from '@/components/Form/RangeField';
-import { buyboxSchemaType } from '@/schemas/BuyBoxSchemas';
 import { defaultSimilarityFields } from '@/schemas/defaults';
 import SwitchField from '@/components/Form/SwitchField';
 import ArticleIcon from '@mui/icons-material/Article';
 import { styled } from '@mui/system';
 import RangeFieldV2 from '@/components/Form/RangeFieldV2';
 import SingleRangeField from '@/components/Form/SingleRangeField';
+import { BuyBoxFormData } from '@/schemas/BuyBoxFormSchema';
+import SliderField from '@/components/Form/SliderField';
+import SingleRangeFieldConst from '@/components/Form/SingleRangeFieldConst';
 
 const StyledTab = styled(Tab)(({ theme }) => ({
   '&.Mui-selected, &.Mui-selected:hover': {
@@ -41,7 +43,7 @@ const similarityTypes = ['green', 'yellow', 'orange', 'red'];
 const rangeFields = [
   {
     label: 'Bedrooms',
-    fieldName: 'beds_offset',
+    fieldName: 'bedsOffset',
     type: 'range',
     min: defaultSimilarityFields.bedrooms.min,
     max: defaultSimilarityFields.bedrooms.max,
@@ -49,7 +51,7 @@ const rangeFields = [
   },
   {
     label: 'Bathrooms',
-    fieldName: 'baths_offset',
+    fieldName: 'bathsOffset',
     type: 'range',
     min: defaultSimilarityFields.bathrooms.min,
     max: defaultSimilarityFields.bathrooms.max,
@@ -57,7 +59,7 @@ const rangeFields = [
   },
   {
     label: 'Building Sqft',
-    fieldName: 'area_offset',
+    fieldName: 'areaOffset',
     type: 'range',
     min: defaultSimilarityFields.area.min,
     max: defaultSimilarityFields.area.max,
@@ -66,7 +68,7 @@ const rangeFields = [
   },
   {
     label: 'Year Built',
-    fieldName: 'year_built_offset',
+    fieldName: 'yearBuiltOffset',
     type: 'range',
     min: defaultSimilarityFields.yearBuilt.min,
     max: defaultSimilarityFields.yearBuilt.max,
@@ -74,7 +76,7 @@ const rangeFields = [
   },
   {
     label: 'Lot Size',
-    fieldName: 'lot_area_offset',
+    fieldName: 'lotAreaOffset',
     type: 'range',
     min: defaultSimilarityFields.lotSize.min,
     max: defaultSimilarityFields.lotSize.max,
@@ -84,7 +86,7 @@ const rangeFields = [
   },
   {
     label: 'Distance',
-    fieldName: 'max_distance',
+    fieldName: 'maxDistance',
     type: 'single',
     min: defaultSimilarityFields.distance.min,
     max: defaultSimilarityFields.distance.max,
@@ -93,7 +95,7 @@ const rangeFields = [
   },
   {
     label: 'Sale Date',
-    fieldName: 'max_listing_age_months',
+    fieldName: 'maxListingAgeMonths',
     type: 'single',
     min: defaultSimilarityFields.saleDate.min,
     max: defaultSimilarityFields.saleDate.max,
@@ -114,11 +116,11 @@ const booleanFields = [
 //bg-green-500
 
 type ComparablePreferencesProps = {
-  register: UseFormRegister<buyboxSchemaType>;
-  control: Control<buyboxSchemaType>;
-  watch: UseFormWatch<buyboxSchemaType>;
-  setValue: UseFormSetValue<buyboxSchemaType>;
-  getValues: UseFormGetValues<buyboxSchemaType>;
+  register: UseFormRegister<BuyBoxFormData>;
+  control: Control<BuyBoxFormData>;
+  watch: UseFormWatch<BuyBoxFormData>;
+  setValue: UseFormSetValue<BuyBoxFormData>;
+  getValues: UseFormGetValues<BuyBoxFormData>;
 };
 const ComparablePreferences = ({
   register,
@@ -146,7 +148,7 @@ const ComparablePreferences = ({
                 className={clsx([' flex absolute top-0 left-0'])}
               >
                 <Controller
-                  name={`similarity_criteria.${index}.enabled`}
+                  name={`similarityCriteria.${index}.enabled`}
                   control={control}
                   render={({ field: { value, ...field } }) => (
                     <Checkbox {...field} checked={!!value} />
@@ -215,14 +217,14 @@ const ComparablePreferences = ({
                     className={clsx(['flex w-full item-center col-span-2'])}
                   >
                     <Controller
-                      name={`similarity_criteria.${index}.${similarityField.fieldName}.enabled`}
+                      name={`similarityCriteria.${index}.${similarityField.fieldName}.enabled`}
                       control={control}
                       render={({ field: { value, ...field } }) => (
                         <Switch
                           {...field}
                           checked={!!value}
                           disabled={
-                            !watch(`similarity_criteria.${index}.enabled`)
+                            !watch(`similarityCriteria.${index}.enabled`)
                           }
                         />
                       )}
@@ -240,11 +242,9 @@ const ComparablePreferences = ({
                       ])}
                     >
                       <SwitchField
-                        fieldName={`similarity_criteria.${index}.${similarityField.fieldName}.enabled`}
+                        fieldName={`similarityCriteria.${index}.${similarityField.fieldName}.enabled`}
                         control={control}
-                        disabled={
-                          !watch(`similarity_criteria.${index}.enabled`)
-                        }
+                        disabled={!watch(`similarityCriteria.${index}.enabled`)}
                       />
                       <Typography className={styles.label}>
                         {similarityField.label}
@@ -261,11 +261,11 @@ const ComparablePreferences = ({
                         formatLabelAsNumber={
                           similarityField.formatLabelAsNumber
                         }
-                        fieldName={`similarity_criteria.${index}.${similarityField.fieldName}`}
+                        fieldName={`similarityCriteria.${index}.${similarityField.fieldName}`}
                         control={control}
                         disabled={
                           !watch(
-                            `similarity_criteria.${index}.${similarityField.fieldName}.enabled`
+                            `similarityCriteria.${index}.${similarityField.fieldName}.enabled`
                           )
                         }
                       />
@@ -281,11 +281,11 @@ const ComparablePreferences = ({
                         formatLabelAsNumber={
                           similarityField.formatLabelAsNumber
                         }
-                        fieldName={`similarity_criteria.${index}.${similarityField.fieldName}`}
+                        fieldName={`similarityCriteria.${index}.${similarityField.fieldName}`}
                         control={control}
                         disabled={
                           !watch(
-                            `similarity_criteria.${index}.${similarityField.fieldName}.enabled`
+                            `similarityCriteria.${index}.${similarityField.fieldName}.enabled`
                           )
                         }
                       />
@@ -306,14 +306,14 @@ const ComparablePreferences = ({
                     Similarity Weight
                   </Typography>
                 </div>
-                <SingleRangeField
+                <SingleRangeFieldConst
                   key={index}
                   min={0}
                   max={1}
                   step={0.01}
-                  fieldName={`similarity_criteria.${index}.weight`}
+                  fieldName={`similarityCriteria.${index}.weight`}
                   control={control}
-                  disabled={!watch(`similarity_criteria.${index}.enabled`)}
+                  disabled={!watch(`similarityCriteria.${index}.enabled`)}
                 />
               </>
             )}

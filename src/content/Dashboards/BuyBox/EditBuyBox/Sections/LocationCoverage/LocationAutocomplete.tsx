@@ -92,8 +92,10 @@ const LocationAutocomplete: React.FC<LocationAutocompleteProps> = (
             searchTerm,
             true
           ).unwrap();
-          const allowedTypes = ['city', 'state', 'neighborhood', 'postal_code'];
-          const allowedStates = ['FL', 'AL', 'IL', 'TX', 'OH', 'NJ'];
+          const allowedTypes =
+            process.env.NEXT_PUBLIC_ALLOWED_LOCATION_TYPES.split(',');
+          const allowedStates =
+            process.env.NEXT_PUBLIC_ALLOWED_STATES.split(',');
           const relevantResultOptions = response.filter(
             (option) =>
               allowedTypes.includes(option.type) &&

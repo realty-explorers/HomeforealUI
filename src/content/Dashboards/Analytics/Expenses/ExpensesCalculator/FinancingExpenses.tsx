@@ -33,7 +33,7 @@ type FinancingExpensesProps = {
 
 const FinancingExpenses = (props: FinancingExpensesProps) => {
   const priceTypes = [
-    { label: 'ARV', value: props.property?.arv25_price },
+    { label: 'ARV', value: props.property?.arv25Price },
     { label: 'Listing Price', value: props.property?.price || 0 }
     // { label: "Loan Amount", value: },
   ];
@@ -41,9 +41,9 @@ const FinancingExpenses = (props: FinancingExpensesProps) => {
   const defaultLoanAmount = {
     id: uuidv4(),
     label: 'Loan Amount',
-    value: props.property?.loan?.amount?.expense_amount || 0,
+    value: props.property?.loan?.amount?.expenseAmount || 0,
     priceType:
-      props.property?.loan?.amount?.expense_ref === 'arv'
+      props.property?.loan?.amount?.expenseRef === 'arv'
         ? priceTypes[0]
         : priceTypes[1]
   };
@@ -53,7 +53,7 @@ const FinancingExpenses = (props: FinancingExpensesProps) => {
     label: 'Down Payment',
     value: defaultLoanAmount.priceType.value - defaultLoanAmount.value,
     priceType:
-      props.property?.loan?.down_payment?.expense_ref === 'arv'
+      props.property?.loan?.downPayment?.expenseRef === 'arv'
         ? priceTypes[0]
         : priceTypes[1]
   };
@@ -61,14 +61,14 @@ const FinancingExpenses = (props: FinancingExpensesProps) => {
   const defaultOriginationFee = {
     id: uuidv4(),
     label: 'Origination Fee',
-    value: props.property?.loan?.closing_cost?.expense_amount || 0,
+    value: props.property?.loan?.closingCost?.expenseAmount || 0,
     priceType:
-      props.property?.loan?.closing_cost?.expense_ref === 'arv'
+      props.property?.loan?.closingCost?.expenseRef === 'arv'
         ? priceTypes[0]
         : priceTypes[1]
   };
 
-  const defaultInterestRate = props.property?.loan?.interest_rate || 0;
+  const defaultInterestRate = props.property?.loan?.interestRate || 0;
   const defaultMonths = props.property?.loan?.duration || 0;
 
   const [downPayment, setDownPayment] = useState<Expense>({

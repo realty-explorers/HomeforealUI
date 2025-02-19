@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from 'react';
 
-import NextLink from "next/link";
+import NextLink from 'next/link';
 
-import useSWR from "swr";
+import useSWR from 'swr';
 import {
   Avatar,
   Box,
@@ -16,38 +16,39 @@ import {
   ListItem,
   ListItemText,
   Popover,
-  Typography,
-} from "@mui/material";
+  Typography
+} from '@mui/material';
 
-import InboxTwoToneIcon from "@mui/icons-material/InboxTwoTone";
-import { styled } from "@mui/material/styles";
-import ExpandMoreTwoToneIcon from "@mui/icons-material/ExpandMoreTwoTone";
-import AccountBoxTwoToneIcon from "@mui/icons-material/AccountBoxTwoTone";
-import LockOpenTwoToneIcon from "@mui/icons-material/LockOpenTwoTone";
-import AccountTreeTwoToneIcon from "@mui/icons-material/AccountTreeTwoTone";
-import { useUser } from "@auth0/nextjs-auth0/client";
-import { useDispatch, useSelector } from "react-redux";
-import { selectAuth, setToken } from "@/store/slices/authSlice";
+import InboxTwoToneIcon from '@mui/icons-material/InboxTwoTone';
+import { styled } from '@mui/material/styles';
+import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
+import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
+import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
+import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
+// import { useUser } from "@auth0/nextjs-auth0/client";
+import { useDispatch, useSelector } from 'react-redux';
+import { selectAuth, setToken } from '@/store/slices/authSlice';
+import { signOut, useSession } from 'next-auth/react';
 
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
         padding-left: ${theme.spacing(1)};
         padding-right: ${theme.spacing(1)};
-`,
+`
 );
 
 const MenuUserBox = styled(Box)(
   ({ theme }) => `
         background: ${theme.colors.alpha.black[5]};
         padding: ${theme.spacing(2)};
-`,
+`
 );
 
 const UserBoxText = styled(Box)(
   ({ theme }) => `
         text-align: left;
         padding-left: ${theme.spacing(1)};
-`,
+`
 );
 
 const UserBoxLabel = styled(Typography)(
@@ -55,13 +56,13 @@ const UserBoxLabel = styled(Typography)(
         font-weight: ${theme.typography.fontWeightBold};
         color: ${theme.palette.secondary.main};
         display: block;
-`,
+`
 );
 
 const UserBoxDescription = styled(Typography)(
   ({ theme }) => `
         color: ${lighten(theme.palette.secondary.main, 0.5)}
-`,
+`
 );
 
 function HeaderUserbox() {
@@ -70,8 +71,15 @@ function HeaderUserbox() {
   // });
   // const { user, isAuthenticated, isLoading, getAccessTokenSilently } =
   //   useAuth0();
-  const { user, isLoading } = useUser();
-  const avatar = "/static/images/avatars/1.jpg";
+  // const { user, isLoading } = useUser();
+  const { data, status } = useSession();
+  const user = data?.user;
+  // const user = {
+  //   name: 'John Doe',
+  //   picture: '/static/images/avatars/1.jpg',
+  //   user_roles: 'Admin'
+  // };
+  const avatar = '/static/images/avatars/1.jpg';
 
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -82,7 +90,7 @@ function HeaderUserbox() {
   };
 
   const dispatch = useDispatch();
-  const { data, error } = useSWR("/api/protected", fetcher);
+  // const { data, error } = useSWR('/api/protected', fetcher);
   const { token } = useSelector(selectAuth);
 
   const handleOpen = (): void => {
@@ -94,19 +102,17 @@ function HeaderUserbox() {
   };
 
   useEffect(() => {
-    if (error) {
-      alert(error);
-      alert(error.code);
+    if (data) {
+      //     //TODO: move this to a requireAuth wrapper, and check state of authSlice to see if you need to login
+      //     //      and refetch and accessToken
+      dispatch(setToken(data.user.accessToken));
     }
-    if (data?.accessToken) {
-      //TODO: move this to a requireAuth wrapper, and check state of authSlice to see if you need to login
-      //      and refetch and accessToken
-      dispatch(setToken(data.accessToken));
-    } else if (data?.error) {
-      if (data.error === "ERR_EXPIRED_ACCESS_TOKEN") {
-        location.href = "/api/auth/logout";
-      }
-    }
+    //   } else if (3 == 1) {
+    //     // if (data.error === 'ERR_EXPIRED_ACCESS_TOKEN') {
+    //     // signOut();
+    //     // location.href = '/api/auth/logout';
+    //     // }
+    //   }
   }, [data]);
 
   return (
@@ -114,14 +120,15 @@ function HeaderUserbox() {
       <UserBoxButton color="secondary" ref={ref} onClick={handleOpen} id="meow">
         <Avatar
           variant="rounded"
-          alt={user?.name}
-          src={user?.picture || avatar}
+          alt={user?.name || user?.email}
+          src={user?.image || avatar}
         />
         <Hidden mdDown>
           <UserBoxText>
-            <UserBoxLabel variant="body1">{user?.name}</UserBoxLabel>
-            <UserBoxDescription variant="body2">
-            </UserBoxDescription>
+            <UserBoxLabel variant="body1">
+              {user?.name || user?.email}
+            </UserBoxLabel>
+            <UserBoxDescription variant="body2"></UserBoxDescription>
           </UserBoxText>
         </Hidden>
         <Hidden smDown>
@@ -134,24 +141,26 @@ function HeaderUserbox() {
         open={isOpen}
         onClick={handleClose}
         anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
+          vertical: 'top',
+          horizontal: 'right'
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "right",
+          vertical: 'top',
+          horizontal: 'right'
         }}
       >
         <MenuUserBox sx={{ minWidth: 210 }} display="flex">
           <Avatar
             variant="rounded"
-            alt={user?.name}
-            src={user?.picture || avatar}
+            alt={user?.name || user?.email}
+            src={user?.image || avatar}
           />
           <UserBoxText>
-            <UserBoxLabel variant="body1">{user?.name}</UserBoxLabel>
+            <UserBoxLabel variant="body1">
+              {user?.name || user?.email}
+            </UserBoxLabel>
             <UserBoxDescription variant="body2">
-              {user?.user_roles}
+              {/* {user?.user_roles} */}
             </UserBoxDescription>
           </UserBoxText>
         </MenuUserBox>
@@ -173,7 +182,12 @@ function HeaderUserbox() {
         </List>
         <Divider />
         <Box sx={{ m: 1 }}>
-          <Button color="primary" fullWidth href="/api/auth/logout">
+          <Button
+            color="primary"
+            fullWidth
+            // href="/api/auth/logout"
+            onClick={() => signOut()}
+          >
             <LockOpenTwoToneIcon sx={{ mr: 1 }} />
             Sign out
           </Button>

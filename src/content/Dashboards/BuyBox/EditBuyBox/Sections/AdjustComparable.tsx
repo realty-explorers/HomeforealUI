@@ -37,7 +37,7 @@ const AdjustComparable = ({
           (green) to less great (red).
         </Typography>
         <div className="h-80 w-full pr-2">
-          <div className="w-full grid gap-2 grid-cols-[15rem_1.5fr] px-8 pt-4">
+          <div className="w-full grid gap-2 grid-cols-[15rem1.5fr] px-8 pt-4">
             <ComparablePreferences
               register={register}
               control={control}

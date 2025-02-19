@@ -17,6 +17,8 @@ import store from '@/store/store';
 import { UserProvider } from '@auth0/nextjs-auth0/client';
 import { Provider } from 'react-redux';
 import { SnackbarProvider } from 'notistack';
+
+import { SessionProvider } from 'next-auth/react';
 import clsx from 'clsx';
 import {
   nunito,
@@ -47,14 +49,15 @@ function HomeforealApp(props: HomeforealAppProps) {
   return (
     <Provider store={store}>
       <CacheProvider value={emotionCache}>
-        <UserProvider>
-          <Head>
-            <title>Homeforeal App</title>
-            <meta
-              name="viewport"
-              content="width=device-width, initial-scale=1, shrink-to-fit=no"
-            />
-          </Head>
+        {/* <UserProvider> */}
+        <Head>
+          <title>Homeforeal App</title>
+          <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1, shrink-to-fit=no"
+          />
+        </Head>
+        <SessionProvider session={pageProps.session}>
           <SidebarProvider>
             <ThemeProvider>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -74,7 +77,8 @@ function HomeforealApp(props: HomeforealAppProps) {
               </LocalizationProvider>
             </ThemeProvider>
           </SidebarProvider>
-        </UserProvider>
+        </SessionProvider>
+        {/* </UserProvider> */}
       </CacheProvider>
     </Provider>
   );

@@ -55,12 +55,12 @@ export const useProperty = () => {
             address: propertyData.location.address,
             coordinates: propertyData.location.geometry.coordinates,
             price: propertyData.price,
-            arv_price: propertyData.arv_price,
-            arv25_price: propertyData.arv25_price,
+            arvPrice: propertyData.arv_price,
+            arv25Price: propertyData.arv25_price,
             cap_rate: propertyData.cap_rate,
             image: propertyData.photos.primary,
             status: propertyData.status,
-            property_type: propertyData.type,
+            propertyType: propertyData.type,
             beds: propertyData.beds,
             baths: propertyData.baths
           } as PropertyPreview)

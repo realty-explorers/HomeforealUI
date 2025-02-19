@@ -1,36 +1,36 @@
-import RangeField from "@/components/Form/RangeField";
-import SwitchField from "@/components/Form/SwitchField";
-import { buyboxSchemaType } from "@/schemas/BuyBoxSchemas";
-import { defaults } from "@/schemas/defaults";
-import { Typography } from "@mui/material";
-import clsx from "clsx";
+import RangeField from '@/components/Form/RangeField';
+import SwitchField from '@/components/Form/SwitchField';
+import { buyboxSchemaType } from '@/schemas/BuyBoxSchemas';
+import { defaults } from '@/schemas/defaults';
+import { Typography } from '@mui/material';
+import clsx from 'clsx';
 import {
   Control,
   UseFormGetValues,
   UseFormRegister,
   UseFormSetValue,
-  UseFormWatch,
-} from "react-hook-form";
-import styles from "../../EditBuyBoxDialog.module.scss";
+  UseFormWatch
+} from 'react-hook-form';
+import styles from '../../EditBuyBoxDialog.module.scss';
 
 const grossYieldField = {
-  title: "Gross Yield",
-  fieldName: "opp.buy_and_hold.1.gross_yield",
-  type: "range",
+  title: 'Gross Yield',
+  fieldName: 'opp.buyAndHold.1.grossYield',
+  type: 'range',
   min: defaults.grossYield.min,
   max: defaults.grossYield.max,
   step: defaults.grossYield.step,
-  postfix: "%",
+  postfix: '%'
 };
 
 const capRateField = {
-  title: "Cap Rate",
-  fieldName: "opp.buy_and_hold.1.cap_rate",
-  type: "range",
+  title: 'Cap Rate',
+  fieldName: 'opp.buyAndHold.1.capRate',
+  type: 'range',
   min: defaults.capRate.min,
   max: defaults.capRate.max,
   step: defaults.capRate.step,
-  postfix: "%",
+  postfix: '%'
 };
 
 type BuyAndHoldProps = {
@@ -40,15 +40,19 @@ type BuyAndHoldProps = {
   setValue: UseFormSetValue<buyboxSchemaType>;
   getValues: UseFormGetValues<buyboxSchemaType>;
 };
-const BuyAndHold = (
-  { register, control, watch, setValue, getValues }: BuyAndHoldProps,
-) => {
+const BuyAndHold = ({
+  register,
+  control,
+  watch,
+  setValue,
+  getValues
+}: BuyAndHoldProps) => {
   return (
     <div className="ml-16">
-      <Typography className={styles.helper_text2}>
-        <span className={styles.highlighted}>Buy and Hold</span>{" "}
-        is a strategy where investors purchase properties and retain them for
-        the long term to generate rental income
+      <Typography className={styles.helperText2}>
+        <span className={styles.highlighted}>Buy and Hold</span> is a strategy
+        where investors purchase properties and retain them for the long term to
+        generate rental income
       </Typography>
       {/* <div className="flex items mt-8"> */}
       {/*   <SwitchField */}
@@ -88,7 +92,7 @@ const BuyAndHold = (
         </Typography>
       </div>
 
-      <div className={clsx(["flex my-4"])}>
+      <div className={clsx(['flex my-4'])}>
         <RangeField
           min={capRateField.min}
           max={capRateField.max}

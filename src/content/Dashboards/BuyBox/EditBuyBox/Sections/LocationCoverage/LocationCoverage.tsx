@@ -1,4 +1,3 @@
-import { buyboxSchemaType } from '@/schemas/BuyBoxSchemas';
 import { Autocomplete, TextField, Typography } from '@mui/material';
 import clsx from 'clsx';
 import {
@@ -16,14 +15,15 @@ import { useEffect, useState } from 'react';
 import LocationAutocomplete from './LocationAutocomplete';
 import LocationSuggestion from '@/models/location_suggestions';
 import { error } from 'console';
+import { BuyBoxFormData } from '@/schemas/BuyBoxFormSchema';
 
 type LocationCoverageProps = {
-  register: UseFormRegister<buyboxSchemaType>;
-  control: Control<buyboxSchemaType>;
-  watch: UseFormWatch<buyboxSchemaType>;
-  setValue: UseFormSetValue<buyboxSchemaType>;
-  getValues: UseFormGetValues<buyboxSchemaType>;
-  errors: FieldErrors<buyboxSchemaType>;
+  register: UseFormRegister<BuyBoxFormData>;
+  control: Control<BuyBoxFormData>;
+  watch: UseFormWatch<BuyBoxFormData>;
+  setValue: UseFormSetValue<BuyBoxFormData>;
+  getValues: UseFormGetValues<BuyBoxFormData>;
+  errors: FieldErrors<BuyBoxFormData>;
 };
 const LocationCoverage = ({
   register,
@@ -34,11 +34,11 @@ const LocationCoverage = ({
   errors
 }: LocationCoverageProps) => {
   const [locations, setLocations] = useState<LocationSuggestion[]>(
-    getValues('target_locations')
+    getValues('targetLocations') as LocationSuggestion[]
   );
   const locationsQuery = useGetLocationsQuery('');
   const handleSetLocations = (value: any) => {
-    setValue('target_locations', value, { shouldDirty: true });
+    setValue('targetLocations', value, { shouldDirty: true });
     setLocations(value);
   };
 
@@ -54,9 +54,6 @@ const LocationCoverage = ({
   //   return uniqueLocations;
   // };
 
-  useEffect(() => {
-    setLocations(getValues('target_locations'));
-  }, []);
   return (
     <div className={clsx(['flex flex-col px-4 pt-8 h-full gap-x-4 w-full'])}>
       <Typography className={clsx([styles.header, 'mb-12'])}>

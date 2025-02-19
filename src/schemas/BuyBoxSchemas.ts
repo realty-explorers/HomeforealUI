@@ -14,62 +14,62 @@ const propertyTypeEnum = z.enum([
 const locationTypeEnum = z.enum([
   'city',
   'neighborhood',
-  'zip_code',
+  'zipCode',
   'address',
   'street',
   'state'
 ]);
 
 const propertyCriteriaSchema = z.object({
-  property_types: z.array(propertyTypeEnum).optional(),
-  min_beds: z
+  propertyTypes: z.array(propertyTypeEnum).optional(),
+  minBeds: z
     .number()
     .min(defaults.bedrooms.min)
     .max(defaults.bedrooms.max)
     .optional(),
-  max_beds: z
+  maxBeds: z
     .number()
     .min(defaults.bedrooms.min)
     .max(defaults.bedrooms.max)
     .optional(),
-  min_baths: z
+  minBaths: z
     .number()
     .min(defaults.bathrooms.min)
     .max(defaults.bathrooms.max)
     .optional(),
-  max_baths: z
+  maxBaths: z
     .number()
     .min(defaults.bathrooms.min)
     .max(defaults.bathrooms.max)
     .optional(),
-  min_area: z.number().min(defaults.area.min).max(defaults.area.max).optional(),
-  max_area: z.number().min(defaults.area.min).max(defaults.area.max).optional(),
-  min_lot_area: z
+  minArea: z.number().min(defaults.area.min).max(defaults.area.max).optional(),
+  maxArea: z.number().min(defaults.area.min).max(defaults.area.max).optional(),
+  minLotArea: z
     .number()
     .min(defaults.lotSize.min)
     .max(defaults.lotSize.max)
     .optional(),
-  max_lot_area: z
+  maxLotArea: z
     .number()
     .min(defaults.lotSize.min)
     .max(defaults.lotSize.max)
     .optional(),
-  min_year_built: z
+  minYearBuilt: z
     .number()
     .min(defaults.yearBuilt.min)
     .max(defaults.yearBuilt.max)
     .optional(),
-  max_year_built: z
+  maxYearBuilt: z
     .number()
     .min(defaults.yearBuilt.min)
     .max(defaults.yearBuilt.max)
     .optional(),
-  min_price: z
+  minPrice: z
     .number()
     .min(defaults.listingPrice.min)
     .max(defaults.listingPrice.max)
     .optional(),
-  max_price: z
+  maxPrice: z
     .number()
     .min(defaults.listingPrice.min)
     .max(defaults.listingPrice.max)
@@ -77,24 +77,24 @@ const propertyCriteriaSchema = z.object({
 });
 
 const defaultPropertyCriteria = {
-  property_types: [],
-  min_beds: defaults.bedrooms.min,
-  max_beds: defaults.bedrooms.max,
-  min_baths: defaults.bathrooms.min,
-  max_baths: defaults.bathrooms.max,
-  min_area: defaults.area.min,
-  max_area: defaults.area.max,
-  min_lot_area: defaults.lotSize.min,
-  max_lot_area: defaults.lotSize.max,
-  min_year_built: defaults.yearBuilt.min,
-  max_year_built: defaults.yearBuilt.max,
-  min_price: defaults.listingPrice.min,
-  max_price: defaults.listingPrice.max
+  propertyTypes: [],
+  minBeds: defaults.bedrooms.min,
+  maxBeds: defaults.bedrooms.max,
+  minBaths: defaults.bathrooms.min,
+  maxBaths: defaults.bathrooms.max,
+  minArea: defaults.area.min,
+  maxArea: defaults.area.max,
+  minLotArea: defaults.lotSize.min,
+  maxLotArea: defaults.lotSize.max,
+  minYearBuilt: defaults.yearBuilt.min,
+  maxYearBuilt: defaults.yearBuilt.max,
+  minPrice: defaults.listingPrice.min,
+  maxPrice: defaults.listingPrice.max
 };
 
 const strategySchema = z.object({
-  min_arv: z.number().min(defaults.arv.min).max(defaults.arv.max).optional(),
-  min_margin: z
+  minArv: z.number().min(defaults.arv.min).max(defaults.arv.max).optional(),
+  minMargin: z
     .number()
     .min(defaults.margin.min)
     .max(defaults.margin.max)
@@ -102,69 +102,69 @@ const strategySchema = z.object({
 });
 
 const defaultStrategy = {
-  min_arv: defaults.arv.min,
-  min_margin: defaults.margin.min
+  minArv: defaults.arv.min,
+  minMargin: defaults.margin.min
 };
 
 const similarityCriteriaSchema = z.object({
-  same_property_type: z.boolean().default(false),
-  same_neighborhood: z.boolean().default(false),
-  beds_min_offset: z
+  samePropertyType: z.boolean().default(false),
+  sameNeighborhood: z.boolean().default(false),
+  bedsMinOffset: z
     .number()
     .min(defaults.bedrooms.min)
     .max(defaults.bedrooms.max)
     .optional(),
-  beds_max_offset: z
+  bedsMaxOffset: z
     .number()
     .min(defaults.bedrooms.min)
     .max(defaults.bedrooms.max)
     .optional(),
-  baths_min_offset: z
+  bathsMinOffset: z
     .number()
     .min(defaults.bathrooms.min)
     .max(defaults.bathrooms.max)
     .optional(),
-  baths_max_offset: z
+  bathsMaxOffset: z
     .number()
     .min(defaults.bathrooms.min)
     .max(defaults.bathrooms.max)
     .optional(),
-  area_min_offset: z
+  areaMinOffset: z
     .number()
     .min(defaults.area.min)
     .max(defaults.area.max)
     .optional(),
-  area_max_offset: z
+  areaMaxOffset: z
     .number()
     .min(defaults.area.min)
     .max(defaults.area.max)
     .optional(),
-  lot_area_min_offset: z
+  lotAreaMinOffset: z
     .number()
     .min(defaults.lotSize.min)
     .max(defaults.lotSize.max)
     .optional(),
-  lot_area_max_offset: z
+  lotAreaMaxOffset: z
     .number()
     .min(defaults.lotSize.min)
     .max(defaults.lotSize.max)
     .optional(),
-  year_built_min_offset: z
+  yearBuiltMinOffset: z
     .number()
     .min(defaults.yearBuilt.min)
     .max(defaults.yearBuilt.max)
     .optional(),
-  year_built_max_offset: z
+  yearBuiltMaxOffset: z
     .number()
     .min(defaults.yearBuilt.min)
     .max(defaults.yearBuilt.max)
     .optional(),
-  max_distance: z
+  maxDistance: z
     .number()
     .min(defaults.distance.min)
     .max(defaults.distance.max)
     .optional(),
-  max_listing_age_months: z
+  maxListingAgeMonths: z
     .number()
     .min(defaultSimilarityFields.saleDate.min)
     .max(defaultSimilarityFields.saleDate.max)
@@ -173,20 +173,20 @@ const similarityCriteriaSchema = z.object({
 });
 
 const defaultSimilarityCriteriaFirstRank = {
-  same_property_type: false,
-  same_neighborhood: false,
-  beds_min_offset: defaults.bedrooms.min,
-  beds_max_offset: defaults.bedrooms.max,
-  baths_min_offset: defaults.bathrooms.min,
-  baths_max_offset: defaults.bathrooms.max,
-  area_min_offset: defaults.area.min,
-  area_max_offset: defaults.area.max,
-  lot_area_min_offset: defaults.lotSize.min,
-  lot_area_max_offset: defaults.lotSize.max,
-  year_built_min_offset: defaults.yearBuilt.min,
-  year_built_max_offset: defaults.yearBuilt.max,
-  max_distance: defaultSimilarityFields.distance.max,
-  max_listing_age_months: defaultSimilarityFields.saleDate.max,
+  samePropertyType: false,
+  sameNeighborhood: false,
+  bedsMinOffset: defaults.bedrooms.min,
+  bedsMaxOffset: defaults.bedrooms.max,
+  bathsMinOffset: defaults.bathrooms.min,
+  bathsMaxOffset: defaults.bathrooms.max,
+  areaMinOffset: defaults.area.min,
+  areaMaxOffset: defaults.area.max,
+  lotAreaMinOffset: defaults.lotSize.min,
+  lotAreaMaxOffset: defaults.lotSize.max,
+  yearBuiltMinOffset: defaults.yearBuilt.min,
+  yearBuiltMaxOffset: defaults.yearBuilt.max,
+  maxDistance: defaultSimilarityFields.distance.max,
+  maxListingAgeMonths: defaultSimilarityFields.saleDate.max,
   weight: 1
 };
 
@@ -205,17 +205,17 @@ const defaultSimilarityCriteriaFourthRank = {
   weight: 0.3
 };
 
-const targetLocationSchema = z.object({
+export const targetLocationSchema = z.object({
   display: z.string(),
   type: locationTypeEnum,
-  address: z.string().optional(),
-  street: z.string().optional(),
-  neighborhood: z.string().optional(),
-  city: z.string().optional(),
-  state: z.string().optional(),
-  zip_code: z.string().optional(),
-  latitude: z.number().optional(),
-  longitude: z.number().optional()
+  address: z.string().nullish(),
+  street: z.string().nullish(),
+  neighborhood: z.string().nullish(),
+  city: z.string().nullish(),
+  state: z.string().nullish(),
+  zipCode: z.string().nullish(),
+  latitude: z.number().nullish(),
+  longitude: z.number().nullish()
 });
 
 const buyboxSchema = z.object({
@@ -224,10 +224,10 @@ const buyboxSchema = z.object({
     .min(3, 'Name must be at least 3 characters long')
     .default(''),
   description: z.string().optional(),
-  target_locations: z.array(targetLocationSchema).length(1).default([]),
-  property_criteria: propertyCriteriaSchema.default(defaultPropertyCriteria),
+  targetLocations: z.array(targetLocationSchema).length(1),
+  propertyCriteria: propertyCriteriaSchema.default(defaultPropertyCriteria),
   strategy: strategySchema.default(defaultStrategy),
-  similarity_criteria: z
+  similarityCriteria: z
     .array(similarityCriteriaSchema)
     .default([
       defaultSimilarityCriteriaFirstRank,
@@ -241,10 +241,10 @@ const getDefaultBuyBoxData = () => {
   const defaultData: BuyboxSchemaData = {
     name: '',
     description: '',
-    target_locations: [],
-    property_criteria: defaultPropertyCriteria,
+    targetLocations: [],
+    propertyCriteria: defaultPropertyCriteria,
     strategy: defaultStrategy,
-    similarity_criteria: []
+    similarityCriteria: []
   };
   return defaultData;
 };

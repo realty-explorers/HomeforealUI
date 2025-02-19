@@ -9,32 +9,31 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Typography,
-} from "@mui/material";
-import GridField from "@/components/Grid/GridField";
-import ValueCard from "@/components/Cards/ValueCard";
-import styled from "@emotion/styled";
-import analyticsStyles from "./Analytics.module.scss";
-import styles from "./SaleComparable.module.scss";
-import ThemedButton from "@/components/Buttons/ThemedButton";
-import AnalyzedProperty, { Property } from "@/models/analyzedProperty";
-import { numberStringUtil, priceFormatter } from "@/utils/converters";
-import clsx from "clsx";
-import { useSelector } from "react-redux";
-import { selectProperties } from "@/store/slices/propertiesSlice";
-import ArrowCircleDownIcon from "@mui/icons-material/ArrowCircleDown";
+  Typography
+} from '@mui/material';
+import GridField from '@/components/Grid/GridField';
+import ValueCard from '@/components/Cards/ValueCard';
+import styled from '@emotion/styled';
+import analyticsStyles from './Analytics.module.scss';
+import styles from './SaleComparable.module.scss';
+import ThemedButton from '@/components/Buttons/ThemedButton';
+import AnalyzedProperty, { Property } from '@/models/analyzedProperty';
+import { numberStringUtil, priceFormatter } from '@/utils/converters';
+import clsx from 'clsx';
+import { useSelector } from 'react-redux';
+import { selectProperties } from '@/store/slices/propertiesSlice';
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: "none",
+  borderBottom: 'none'
 }));
 
 const calculatePercentage = (property: AnalyzedProperty, fieldName: string) => {
-  const propertyValue = property.listing_price;
+  const propertyValue = property.price;
   const arvValue = property[fieldName];
   if (!propertyValue || !arvValue) return 0;
-  const percentage = propertyValue > 0
-    ? (arvValue - propertyValue) / arvValue * 100
-    : 0;
+  const percentage =
+    propertyValue > 0 ? ((arvValue - propertyValue) / arvValue) * 100 : 0;
   return percentage;
 };
 
@@ -45,94 +44,85 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
   const { saleCalculatedProperty } = useSelector(selectProperties);
   const underARVPercentage = calculatePercentage(
     saleCalculatedProperty,
-    "arv_price",
+    'arvPrice'
   );
   const underCompsPercentage = calculatePercentage(
     saleCalculatedProperty,
-    "sales_comps_price",
+    'salesCompsPrice'
   );
 
-  return (saleCalculatedProperty?.sales_comps?.data?.length > 0 && (
-    <div className="flex w-full gap-x-4 px-4 py-2 justify-center items-center sticky top-0 shadow z-[2] bg-off-white ">
-      <div className="flex flex-col w-full">
-        <div className="flex ">
-          <Typography className="font-poppins font-bold">
-            Sales Comps
-          </Typography>
+  return (
+    saleCalculatedProperty?.comps.filter((comp) => comp.type === 'sold')
+      ?.length > 0 && (
+      <div className="flex w-full gap-x-4 px-4 py-2 justify-center items-center sticky top-0 shadow z-[2] bg-off-white ">
+        <div className="flex flex-col w-full">
+          <div className="flex ">
+            <Typography className="font-poppins font-bold">
+              Sales Comps
+            </Typography>
 
-          <Typography className="font-poppins font-bold ml-4">
-            {priceFormatter(
-              saleCalculatedProperty?.sales_comps_price.toFixed(),
-            )}
-          </Typography>
+            <Typography className="font-poppins font-bold ml-4">
+              {priceFormatter(saleCalculatedProperty?.arvPrice.toFixed())}
+            </Typography>
 
-          <div className="px-2">
-            ●
+            <div className="px-2">●</div>
+
+            <Typography className="font-poppins font-bold">
+              Margin: {saleCalculatedProperty.marginPercentage?.toFixed()} %
+            </Typography>
           </div>
 
-          <Typography className="font-poppins font-bold">
-            Margin: {saleCalculatedProperty.margin_percentage?.toFixed()} %
-          </Typography>
+          <div className="flex items-center">
+            <LinearProgress
+              variant="determinate"
+              value={underCompsPercentage > 100 ? 100 : underCompsPercentage}
+              className="grow"
+            />
+
+            <Typography className="font-poppins font-bold ml-2">
+              <ArrowCircleDownIcon fontSize="small" />
+              {underCompsPercentage.toFixed()} %
+            </Typography>
+          </div>
         </div>
+        <div className="flex flex-col w-full">
+          <div className="flex ">
+            <Typography className="font-poppins font-bold">25th ARV</Typography>
 
-        <div className="flex items-center">
-          <LinearProgress
-            variant="determinate"
-            value={underCompsPercentage > 100 ? 100 : underCompsPercentage}
-            className="grow"
-          />
+            <Typography className="font-poppins font-bold ml-4">
+              {priceFormatter(saleCalculatedProperty?.arvPrice.toFixed())}
+            </Typography>
 
-          <Typography className="font-poppins font-bold ml-2">
-            <ArrowCircleDownIcon fontSize="small" />
-            {underCompsPercentage.toFixed()} %
-          </Typography>
-        </div>
-      </div>
-      <div className="flex flex-col w-full">
-        <div className="flex ">
-          <Typography className="font-poppins font-bold">
-            25th ARV
-          </Typography>
+            <div className="px-2">●</div>
 
-          <Typography className="font-poppins font-bold ml-4">
-            {priceFormatter(
-              saleCalculatedProperty?.arv_price.toFixed(),
-            )}
-          </Typography>
-
-          <div className="px-2">
-            ●
+            <Typography className="font-poppins font-bold ">
+              Margin: {saleCalculatedProperty.arvPercentage?.toFixed()} %
+            </Typography>
           </div>
 
-          <Typography className="font-poppins font-bold ">
-            Margin: {saleCalculatedProperty.arv_percentage?.toFixed()} %
-          </Typography>
-        </div>
+          <div className="flex items-center">
+            <LinearProgress
+              variant="determinate"
+              value={underARVPercentage > 100 ? 100 : underARVPercentage}
+              className="grow"
+              color="success"
+            />
 
-        <div className="flex items-center">
-          <LinearProgress
-            variant="determinate"
-            value={underARVPercentage > 100 ? 100 : underARVPercentage}
-            className="grow"
-            color="success"
-          />
-
-          <Typography className="font-poppins font-bold ml-2">
-            <ArrowCircleDownIcon fontSize="small" />
-            {underARVPercentage.toFixed()} %
-          </Typography>
+            <Typography className="font-poppins font-bold ml-2">
+              <ArrowCircleDownIcon fontSize="small" />
+              {underARVPercentage.toFixed()} %
+            </Typography>
+          </div>
         </div>
       </div>
-    </div>
-  ));
-  return (saleCalculatedProperty?.sales_comps?.data?.length > 0 &&
-    (
+    )
+  );
+  return (
+    saleCalculatedProperty?.sales_comps?.data?.length > 0 && (
       <div className="flex w-full items-center gap-4 p-4 sticky top-0 z-[2] bg-[#f2f5f9]">
         <div className="grid grid-cols-2 gap-4 gap-x-20">
           <div className="flex">
-            <Typography
-              className={clsx([styles.header])}
-            >
+            <Typography className={clsx([styles.header])}>
               Sale Comps
             </Typography>
           </div>
@@ -140,35 +130,29 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
             <Typography
               className={clsx([
                 styles.indicator,
-                "bg-[rgba(182,151,221,0.29)] ",
+                'bg-[rgba(182,151,221,0.29)] '
               ])}
             >
               {priceFormatter(
-                saleCalculatedProperty?.sales_comps_price.toFixed(),
+                saleCalculatedProperty?.sales_comps_price.toFixed()
               )}
             </Typography>
           </div>
 
           <div className="flex">
-            <Typography
-              className={clsx([styles.header])}
-            >
+            <Typography className={clsx([styles.header])}>
               Top 25th ARV
             </Typography>
           </div>
           <div className="flex">
-            <Typography
-              className={clsx([
-                styles.indicator,
-                "bg-[#D6FCD0] ",
-              ])}
-            >
+            <Typography className={clsx([styles.indicator, 'bg-[#D6FCD0] '])}>
               {priceFormatter(saleCalculatedProperty?.arv_price.toFixed())}
             </Typography>
           </div>
         </div>
       </div>
-    ));
+    )
+  );
 };
 
 export default SaleComparableIndicators;

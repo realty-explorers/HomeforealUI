@@ -3,7 +3,7 @@ import Location from './location';
 interface Property {
   id: string;
   location: Location;
-  list_date: string;
+  listDate: string;
   price: number;
   photos: {
     primary: string;
@@ -12,20 +12,20 @@ interface Property {
   status: string;
   type: string;
   area: number;
-  lot_area: number;
-  year_built: string;
+  lotArea: number;
+  yearBuilt: string;
   beds: number;
   baths: number;
   floors: number;
   garages: number;
   flags: {
-    is_coming_soon?: {
+    isComingSoon?: {
       date: string;
     };
-    is_pending: boolean;
-    is_foreclosure: boolean;
-    is_contingent: boolean;
-    is_price_reduced?: {
+    isPending: boolean;
+    isForeclosure: boolean;
+    isContingent: boolean;
+    isPriceReduced?: {
       amount: number;
     };
   };
@@ -33,9 +33,9 @@ interface Property {
 
 interface CompData extends Property {
   distance: number;
-  similarity_color: string;
-  similarity_score: number;
-  is_arv_25th: boolean;
+  similarityColor: string;
+  similarityScore: number;
+  isArv25th: boolean;
 }
 
 interface FilteredComp extends CompData {
@@ -43,45 +43,45 @@ interface FilteredComp extends CompData {
 }
 
 interface ExpensesData {
-  expense_type: string;
-  expense_ref: string;
-  expense_percentage: string | number;
-  expense_amount: number;
+  expenseType: string;
+  expenseRef: string;
+  expensePercentage: string | number;
+  expenseAmount: number;
 }
 
 interface LoanData {
   amount: ExpensesData;
-  down_payment: ExpensesData;
-  closing_cost: ExpensesData;
-  interest_rate: number;
+  downPayment: ExpensesData;
+  closingCost: ExpensesData;
+  interestRate: number;
   duration: number;
-  total_payment: number;
+  totalPayment: number;
 }
 
 interface AnalyzedProperty extends Property {
-  buybox_id: string;
-  analyzed_date: string;
+  buyboxId: string;
+  analyzedDate: string;
   comps: CompData[];
   expenses: {
-    fixed_fee: ExpensesData;
-    closing_fee: ExpensesData;
-    selling_fee: ExpensesData;
+    fixedFee: ExpensesData;
+    closingFee: ExpensesData;
+    sellingFee: ExpensesData;
     rehab: ExpensesData;
   };
   loan: LoanData;
-  arv_price: number;
-  arv25_price: number;
-  arv_ids: string[];
+  arvPrice: number;
+  arv25Price: number;
+  arvIds: string[];
   margin: number;
-  margin_percentage: number;
-  arv25_percentage: number;
-  arv_percentage: number;
-  rental_comps_price: number;
-  cap_rate: number | 'N/A';
+  marginPercentage: number;
+  arv25Percentage: number;
+  arvPercentage: number;
+  rentalCompsPrice: number;
+  capRate: number | 'N/A';
   noi: string | 'N/A';
   opportunities: string[]; // You may specify a more specific type for 'opportunities'.
-  operational_expenses: {
-    property_tax: ExpensesData;
+  operationalExpenses: {
+    propertyTax: ExpensesData;
     insurance: ExpensesData;
     maintenance: ExpensesData;
     management: ExpensesData;

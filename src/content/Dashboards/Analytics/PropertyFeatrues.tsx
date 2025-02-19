@@ -1,11 +1,11 @@
-import Property from "@/models/property";
-import { Button, Grid, Typography } from "@mui/material";
-import GridField from "@/components/Grid/GridField";
-import analyticsStyles from "./Analytics.module.scss";
-import ThemedButton from "@/components/Buttons/ThemedButton";
-import { useState } from "react";
-import ModalComponent from "@/components/Modals/ModalComponent";
-import AnalyzedProperty from "@/models/analyzedProperty";
+import Property from '@/models/property';
+import { Button, Grid, Typography } from '@mui/material';
+import GridField from '@/components/Grid/GridField';
+import analyticsStyles from './Analytics.module.scss';
+import ThemedButton from '@/components/Buttons/ThemedButton';
+import { useState } from 'react';
+import ModalComponent from '@/components/Modals/ModalComponent';
+import AnalyzedProperty from '@/models/analyzedProperty';
 
 type PropertyFeaturesProps = {
   property: AnalyzedProperty;
@@ -34,7 +34,7 @@ const PropertyFeatures = (props: PropertyFeaturesProps) => {
       </Grid>
 
       <Grid container justifyContent="flex-end">
-        <ThemedButton text="More" onClick={() => setOpen(!open)} />
+        <ThemedButton title="More" onClick={() => setOpen(!open)} />
       </Grid>
     </Grid>
   );

@@ -1,9 +1,9 @@
-import Property from "@/models/property";
-import { Button, Grid, Typography } from "@mui/material";
-import GridField from "@/components/Grid/GridField";
-import analyticsStyles from "./Analytics.module.scss";
-import ThemedButton from "@/components/Buttons/ThemedButton";
-import AnalyzedProperty from "@/models/analyzedProperty";
+import Property from '@/models/property';
+import { Button, Grid, Typography } from '@mui/material';
+import GridField from '@/components/Grid/GridField';
+import analyticsStyles from './Analytics.module.scss';
+import ThemedButton from '@/components/Buttons/ThemedButton';
+import AnalyzedProperty from '@/models/analyzedProperty';
 
 type OwnershipInfoProps = {
   property: AnalyzedProperty;
@@ -25,7 +25,7 @@ const OwnershipInfo = (props: OwnershipInfoProps) => {
         <Grid item xs={6}></Grid>
       </Grid>
       <Grid container justifyContent="flex-end">
-        <ThemedButton text="Owner Buy Box" />
+        <ThemedButton title="Owner Buy Box" />
       </Grid>
     </Grid>
   );

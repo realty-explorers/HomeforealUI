@@ -19,7 +19,7 @@ import styles from '../../EditBuyBoxDialog.module.scss';
 
 const field = {
   title: 'Listing Price',
-  fieldName: 'property_criteria.price' as Path<BuyBoxFormData>,
+  fieldName: 'propertyCriteria.price' as Path<BuyBoxFormData>,
   type: 'range',
   min: defaults.listingPrice.min,
   max: defaults.listingPrice.max,
@@ -30,7 +30,7 @@ const field = {
 
 const marginField = {
   title: 'Margin',
-  fieldName: 'strategy.min_margin' as Path<BuyBoxFormData>,
+  fieldName: 'strategy.minMargin' as Path<BuyBoxFormData>,
   type: 'range',
   min: defaults.margin.min,
   max: defaults.margin.max,
@@ -41,7 +41,7 @@ const marginField = {
 
 const arvField = {
   title: 'ARV',
-  fieldName: 'strategy.min_arv' as Path<BuyBoxFormData>,
+  fieldName: 'strategy.minArv' as Path<BuyBoxFormData>,
   type: 'range',
   min: defaults.arv.min,
   max: defaults.arv.max,
@@ -81,7 +81,7 @@ const FixAndFlip = ({
           step={field.step}
           prefix={field.prefix}
           formatLabelAsNumber={field.formatLabelAsNumber}
-          fieldName={`property_criteria.price`}
+          fieldName={`propertyCriteria.price`}
           control={control}
         />
 

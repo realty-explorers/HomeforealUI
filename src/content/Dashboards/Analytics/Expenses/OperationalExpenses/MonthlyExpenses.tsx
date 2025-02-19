@@ -27,11 +27,11 @@ type MonthlyExpensesProps = {
 };
 const MonthlyExpenses = (props: MonthlyExpensesProps) => {
   const priceTypes = [
-    { label: 'ARV', value: props.property?.arv_price },
+    { label: 'ARV', value: props.property?.arvPrice },
     { label: 'Listing Price', value: props.property?.price || 0 },
     {
       label: 'Annual Rent',
-      value: props.property?.rental_comps_price * 12 || 0
+      value: props.property?.rentalCompsPrice * 12 || 0
     }
     // {
     //   label: "Rental Price",
@@ -44,19 +44,17 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
   const [expenses, setExpenses] = useState<Expense[]>([]);
 
   useEffect(() => {
-    const defaultMaintenance = props.property?.rental_comps_price * 12 * 0.08;
-    const defaultManagement = props.property?.rental_comps_price * 12 * 0.1;
-    const defaultVacancy = props.property?.rental_comps_price * 12 * 0.07;
+    const defaultMaintenance = props.property?.rentalCompsPrice * 12 * 0.08;
+    const defaultManagement = props.property?.rentalCompsPrice * 12 * 0.1;
+    const defaultVacancy = props.property?.rentalCompsPrice * 12 * 0.07;
     const defaultExpenses = [
       {
         id: uuidv4(),
         label: 'Property Tax',
         value:
-          props.property?.operational_expenses?.property_tax?.expense_amount ||
-          0,
+          props.property?.operationalExpenses?.propertyTax?.expenseAmount || 0,
         priceType:
-          props.property.operational_expenses?.property_tax?.expense_ref ===
-          'arv'
+          props.property.operationalExpenses?.propertyTax?.expenseRef === 'arv'
             ? priceTypes[0]
             : priceTypes[1]
       },
@@ -64,9 +62,9 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
         id: uuidv4(),
         label: 'Insurance',
         value:
-          props.property?.operational_expenses?.insurance?.expense_amount || 0,
+          props.property?.operationalExpenses?.insurance?.expenseAmount || 0,
         priceType:
-          props.property?.operational_expenses?.insurance?.expense_ref === 'arv'
+          props.property?.operationalExpenses?.insurance?.expenseRef === 'arv'
             ? priceTypes[0]
             : priceTypes[1]
       },
@@ -74,11 +72,10 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
         id: uuidv4(),
         label: 'Maintenance',
         value:
-          props.property?.operational_expenses?.maintenance?.expense_amount ||
+          props.property?.operationalExpenses?.maintenance?.expenseAmount ||
           defaultMaintenance,
         priceType:
-          props.property.operational_expenses?.maintenance?.expense_ref ===
-          'arv'
+          props.property.operationalExpenses?.maintenance?.expenseRef === 'arv'
             ? priceTypes[0]
             : priceTypes[1]
       },
@@ -86,10 +83,10 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
         id: uuidv4(),
         label: 'Management',
         value:
-          props.property?.operational_expenses?.management?.expense_amount ||
+          props.property?.operationalExpenses?.management?.expenseAmount ||
           defaultManagement,
         priceType:
-          props.property.operational_expenses?.management?.expense_ref === 'arv'
+          props.property.operationalExpenses?.management?.expenseRef === 'arv'
             ? priceTypes[0]
             : priceTypes[2]
       },
@@ -97,10 +94,10 @@ const MonthlyExpenses = (props: MonthlyExpensesProps) => {
         id: uuidv4(),
         label: 'Vacancy',
         value:
-          props.property?.operational_expenses?.vacancy?.expense_amount ||
+          props.property?.operationalExpenses?.vacancy?.expenseAmount ||
           defaultVacancy,
         priceType:
-          props.property.operational_expenses?.vacancy?.expense_ref === 'arv'
+          props.property.operationalExpenses?.vacancy?.expenseRef === 'arv'
             ? priceTypes[0]
             : priceTypes[1]
       }
