@@ -24,12 +24,15 @@ const propertyCriteriaFormSchema = z
     const transformed: Record<string, any> = {};
 
     Object.entries(formData).forEach(([key, value]) => {
-      if (!value.enabled) return;
-
       if (rangeSchema.safeParse(value).success) {
         const keyName = key.charAt(0).toUpperCase() + key.slice(1);
-        transformed[`min${keyName}`] = (value as RangeField).min;
-        transformed[`max${keyName}`] = (value as RangeField).max;
+        if (!value.enabled) {
+          transformed[`min${keyName}`] = undefined;
+          transformed[`max${keyName}`] = undefined;
+        } else {
+          transformed[`min${keyName}`] = (value as RangeField).min;
+          transformed[`max${keyName}`] = (value as RangeField).max;
+        }
       } else if (listSchema.safeParse(value).success) {
         transformed[key] = (value as ListField).items;
       }
@@ -77,10 +80,12 @@ const strategyFormSchema = z
     const transformed: Record<string, any> = {};
 
     Object.entries(formData).forEach(([key, value]) => {
-      if (!value.enabled) return;
-
       if (minSchema.safeParse(value).success) {
-        transformed[key] = (value as MinField).value;
+        if (!value.enabled) {
+          transformed[key] = undefined;
+        } else {
+          transformed[key] = (value as MinField).value;
+        }
       }
     });
     return transformed;
@@ -109,14 +114,21 @@ const similarityCriteriaFormSchema = z
 
     Object.entries(formData).forEach(([key, value]) => {
       if (rangeSchema.safeParse(value).success) {
-        if (!(value as RangeField).enabled) return;
         const keyName = key.substring(0, key.indexOf('Offset'));
-        //INFO: The backend expects positive values, while the front displays and saves them as negative
-        transformed[`${keyName}MinOffset`] = -(value as RangeField).min;
-        transformed[`${keyName}MaxOffset`] = (value as RangeField).max;
+        if (!(value as RangeField).enabled) {
+          transformed[`${keyName}MinOffset`] = undefined;
+          transformed[`${keyName}MaxOffset`] = undefined;
+        } else {
+          //INFO: The backend expects positive values, while the front displays and saves them as negative
+          transformed[`${keyName}MinOffset`] = -(value as RangeField).min;
+          transformed[`${keyName}MaxOffset`] = (value as RangeField).max;
+        }
       } else if (minSchema.safeParse(value).success) {
-        if (!(value as MinField).enabled) return;
-        transformed[key] = (value as MinField).value;
+        if (!(value as MinField).enabled) {
+          transformed[key] = undefined;
+        } else {
+          transformed[key] = (value as MinField).value;
+        }
       } else {
         transformed[key] = value;
       }

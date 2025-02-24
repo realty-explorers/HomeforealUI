@@ -32,9 +32,9 @@ const AdjustComparable = ({
     <div className={clsx(['grow flex flex-col pt-8 h-full px-4'])}>
       <div className="h-full max-h-full overflow-y-auto">
         <Typography className={clsx([styles.header, 'mb-4'])}>
-          Homeforeal provides a unique CMA by categorizing comparables based on
-          their similarity to the target property, with four ranks from best
-          (green) to less great (red).
+          Realty Explorers platform provides a unique CMA by categorizing
+          comparables based on their similarity to the target property, with
+          four ranks from best (green) to less great (red).
         </Typography>
         <div className="h-80 w-full pr-2">
           <div className="w-full grid gap-2 grid-cols-[15rem1.5fr] px-8 pt-4">

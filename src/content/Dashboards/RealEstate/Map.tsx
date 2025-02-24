@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import MapBox, {
   FullscreenControl,
@@ -67,16 +69,18 @@ import { useLazyGetLocationsQuery } from '@/store/services/dataApiService';
 import PropertyLocationBoundsSource from './MapComponents/Sources/PropertyLocationBoundsSource';
 import useProperty from '@/hooks/useProperty';
 import { skipToken } from '@reduxjs/toolkit/query';
-import { useSearchParams } from 'next/navigation';
 import { useSnackbar } from 'notistack';
 import { setMapLoading } from '@/store/slices/mapSlice';
 import styles from './Map.module.scss';
+import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
+  const router = useRouter();
   const searchParams = useSearchParams();
-  const selectedBuyBoxId = searchParams.get('buybox_id');
-  const selectedPropertyId = searchParams.get('property_id');
+  const selectedBuyBoxId = searchParams.get('buybox_id') as string;
+  const selectedPropertyId = searchParams.get('property_id') as string;
 
   const mapRef = useRef<MapRef>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -325,8 +329,12 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   }
 
   useEffect(() => {
+    if (!router.isReady) return;
     //TODO: check auth
+    console.log('selectedBuyBoxId', selectedBuyBoxId);
+    console.log('selectedPropertyId', selectedPropertyId);
     if (selectedBuyBoxId && selectedPropertyId) {
+      console.log('selecting property');
       selectPropertyId(selectedBuyBoxId, selectedPropertyId);
     } else {
       dispatch(setSelectedPropertyPreview(null));
@@ -334,7 +342,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       dispatch(locationApi.util.invalidateTags(['Suggestion', 'LocationData']));
       dispatch(setSuggestion(null));
     }
-  }, []);
+  }, [router.isReady]);
 
   useEffect(() => {
     // if (mapRef.current?.getLayer("property-bounds-line")) {
@@ -464,8 +472,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     if (selectedPropertyPreview) {
       mapRef.current?.flyTo({
         center: selectedPropertyPreview?.coordinates,
-        zoom: 15,
-        pitch: 70,
+        zoom: selectedPropertyPreview.masked ? 12 : 15,
+        pitch: selectedPropertyPreview.masked ? 0 : 70,
         speed: 0.1,
         duration: 1500
       });
@@ -599,7 +607,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
         <CardsPanel open={Boolean(propertiesState.data)} />
         <PropertyLocationBoundsSource
-          show={!selecting && Boolean(selectedPropertyPreview)}
+          show={
+            !selecting &&
+            Boolean(selectedPropertyPreview) &&
+            !selectedPropertyPreview?.masked
+          }
           data={propertyBoundsData}
           map={mapRef.current?.getMap()}
         />

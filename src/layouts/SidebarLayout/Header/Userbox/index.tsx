@@ -29,6 +29,7 @@ import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAuth, setToken } from '@/store/slices/authSlice';
 import { signOut, useSession } from 'next-auth/react';
+import VerificationAlertBadge from './VerificationAlertBadge';
 
 const UserBoxButton = styled(Button)(
   ({ theme }) => `
@@ -79,7 +80,7 @@ function HeaderUserbox() {
   //   picture: '/static/images/avatars/1.jpg',
   //   user_roles: 'Admin'
   // };
-  const avatar = '/static/images/avatars/1.jpg';
+  const avatar = '/static/images/avatars/avatar2.png';
 
   const ref = useRef<any>(null);
   const [isOpen, setOpen] = useState<boolean>(false);
@@ -113,86 +114,106 @@ function HeaderUserbox() {
     //     // location.href = '/api/auth/logout';
     //     // }
     //   }
+    //
   }, [data]);
+
+  const handleSignOut = async () => {
+    await signOut({ redirect: false });
+    const awsDoman =
+      'https://us-east-2atdpsnua7.auth.us-east-2.amazoncognito.com';
+    const logoutUrl = `${awsDoman}/logout?client_id=f9c39cp5p9pmstb1a45lun2n4&logout_uri=${encodeURIComponent(
+      'http://localhost:3000'
+    )}`;
+    window.location.href = logoutUrl;
+  };
 
   return (
     <>
-      <UserBoxButton color="secondary" ref={ref} onClick={handleOpen} id="meow">
-        <Avatar
-          variant="rounded"
-          alt={user?.name || user?.email}
-          src={user?.image || avatar}
-        />
-        <Hidden mdDown>
-          <UserBoxText>
-            <UserBoxLabel variant="body1">
-              {user?.name || user?.email}
-            </UserBoxLabel>
-            <UserBoxDescription variant="body2"></UserBoxDescription>
-          </UserBoxText>
-        </Hidden>
-        <Hidden smDown>
-          <ExpandMoreTwoToneIcon sx={{ ml: 1 }} />
-        </Hidden>
-      </UserBoxButton>
-      <Popover
-        anchorEl={ref.current}
-        onClose={handleClose}
-        open={isOpen}
-        onClick={handleClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right'
-        }}
-      >
-        <MenuUserBox sx={{ minWidth: 210 }} display="flex">
+      <div className="flex items-center">
+        <VerificationAlertBadge />
+        <UserBoxButton
+          color="secondary"
+          ref={ref}
+          onClick={handleOpen}
+          id="meow"
+        >
           <Avatar
             variant="rounded"
             alt={user?.name || user?.email}
             src={user?.image || avatar}
           />
-          <UserBoxText>
-            <UserBoxLabel variant="body1">
-              {user?.name || user?.email}
-            </UserBoxLabel>
-            <UserBoxDescription variant="body2">
-              {/* {user?.user_roles} */}
-            </UserBoxDescription>
-          </UserBoxText>
-        </MenuUserBox>
-        <Divider sx={{ mb: 0 }} />
-        <List sx={{ p: 1 }} component="nav">
-          <NextLink href="/management/profile" passHref>
-            <ListItem button>
-              <AccountBoxTwoToneIcon fontSize="small" />
-              <ListItemText primary="My Profile" />
-            </ListItem>
-          </NextLink>
 
-          {/* <NextLink href="/management/profile/settings" passHref> */}
-          {/*   <ListItem button> */}
-          {/*     <AccountTreeTwoToneIcon fontSize="small" /> */}
-          {/*     <ListItemText primary="Account Settings" /> */}
-          {/*   </ListItem> */}
-          {/* </NextLink> */}
-        </List>
-        <Divider />
-        <Box sx={{ m: 1 }}>
-          <Button
-            color="primary"
-            fullWidth
-            // href="/api/auth/logout"
-            onClick={() => signOut()}
-          >
-            <LockOpenTwoToneIcon sx={{ mr: 1 }} />
-            Sign out
-          </Button>
-        </Box>
-      </Popover>
+          {/* <Hidden mdDown> */}
+          {/*   <UserBoxText> */}
+          {/*     <UserBoxLabel variant="body1"> */}
+          {/*       {user?.name || user?.email} */}
+          {/*     </UserBoxLabel> */}
+          {/*     <UserBoxDescription variant="body2"></UserBoxDescription> */}
+          {/*   </UserBoxText> */}
+          {/* </Hidden> */}
+          <Hidden smDown>
+            <ExpandMoreTwoToneIcon sx={{ ml: 1 }} />
+          </Hidden>
+        </UserBoxButton>
+        <Popover
+          anchorEl={ref.current}
+          onClose={handleClose}
+          open={isOpen}
+          onClick={handleClose}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+          transformOrigin={{
+            vertical: 'top',
+            horizontal: 'right'
+          }}
+        >
+          <MenuUserBox sx={{ minWidth: 210 }} display="flex">
+            <Avatar
+              variant="rounded"
+              alt={user?.name || user?.email}
+              src={user?.image || avatar}
+            />
+            <UserBoxText className="flex items-center">
+              <UserBoxLabel variant="body1">
+                {user?.name || user?.email}
+              </UserBoxLabel>
+              <UserBoxDescription variant="body2">
+                {/* {user?.user_roles} */}
+              </UserBoxDescription>
+            </UserBoxText>
+          </MenuUserBox>
+          <Divider sx={{ mb: 0 }} />
+          <List sx={{ p: 1 }} component="nav">
+            <NextLink href="/management/profile" passHref>
+              <ListItem button>
+                <AccountBoxTwoToneIcon fontSize="small" />
+                <ListItemText primary="My Profile" />
+              </ListItem>
+            </NextLink>
+
+            {/* <NextLink href="/management/profile/settings" passHref> */}
+            {/*   <ListItem button> */}
+            {/*     <AccountTreeTwoToneIcon fontSize="small" /> */}
+            {/*     <ListItemText primary="Account Settings" /> */}
+            {/*   </ListItem> */}
+            {/* </NextLink> */}
+          </List>
+          <Divider />
+          <Box sx={{ m: 1 }}>
+            <Button
+              color="primary"
+              fullWidth
+              // href="/api/auth/logout"
+              onClick={handleSignOut}
+            >
+              <LockOpenTwoToneIcon sx={{ mr: 1 }} />
+              Sign out
+            </Button>
+          </Box>
+        </Popover>
+      </div>
     </>
   );
 }

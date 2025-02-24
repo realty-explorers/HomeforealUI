@@ -6,6 +6,8 @@ import {
   FetchArgs,
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
+import { signOut } from 'next-auth/react';
+import { logout } from '../slices/authSlice';
 
 const baseUrl = `${process.env.NEXT_PUBLIC_ANALYSIS_API_URL}/api/v1/analysis`;
 const GENERAL_BUYBOX_ID = '3dbf8068-bfda-4422-af27-7597045dac6e';
@@ -43,7 +45,11 @@ const baseQueryWithReauth = async (
   if (result?.error?.status === 403) {
     //TODO: fetch new accessToken using refresh token and update auth state and recall the api
   } else if (result?.error?.status === 401) {
-    console.log('401');
+    await signOut({
+      redirect: true,
+      callbackUrl: '/'
+    });
+    api.dispatch(logout());
   }
   return result;
 };
@@ -144,7 +150,7 @@ export const propertiesApi = createApi({
 
     getProperty: builder.query({
       query: ({ buybox_id, property_id }) => {
-        return `/analyzed-property/${property_id}`;
+        return `/analyzed-property/${property_id}/essential`;
       },
       transformResponse: (response: AnalyzedProperty) => {
         try {

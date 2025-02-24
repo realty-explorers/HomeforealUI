@@ -1,16 +1,20 @@
-import { Action, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { AppState } from "../store";
+import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { AppState } from '../store';
 
 export interface Auth {
   token?: string;
+  verificationStep: number;
+  showVerificationDialog?: boolean;
 }
 
 const initialState: Auth = {
   token: null,
+  verificationStep: 1,
+  showVerificationDialog: true
 };
 
 export const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     setToken(state, action: PayloadAction<string>) {
@@ -19,11 +23,22 @@ export const authSlice = createSlice({
     logout(state, action: Action) {
       state.token = null;
     },
-  },
+    setVerificationStep(state, action: PayloadAction<number>) {
+      state.verificationStep = action.payload;
+    },
+    setShowVerificationDialog(state, action: PayloadAction<boolean>) {
+      state.showVerificationDialog = action.payload;
+    }
+  }
 });
 
 export const authReducer = authSlice.reducer;
-export const { setToken, logout } = authSlice.actions;
+export const {
+  setToken,
+  logout,
+  setVerificationStep,
+  setShowVerificationDialog
+} = authSlice.actions;
 export const selectAuth: (state: AppState) => Auth = (state: AppState) =>
   state.auth;
 

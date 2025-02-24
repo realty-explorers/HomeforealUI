@@ -5,7 +5,11 @@ interface PropertyPreview {
   arvPrice: number;
   arv25Price: number;
   cap_rate: string;
-  price: number;
+  price?: number;
+  priceGroup?: {
+    min: number;
+    max: number;
+  };
   image: string;
   area: number;
   status: string;
@@ -13,6 +17,7 @@ interface PropertyPreview {
   beds: number;
   baths: number;
   listDate: Date;
+  masked: boolean;
 }
 
 export default PropertyPreview;

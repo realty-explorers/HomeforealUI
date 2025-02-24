@@ -1,3 +1,4 @@
+import { createUser, getUser } from 'lib/auth/user';
 import NextAuth from 'next-auth';
 import CognitoProvider from 'next-auth/providers/cognito';
 
@@ -20,6 +21,7 @@ export const authOptions = {
   ],
 
   pages: {
+    newUser: '/auth/new-user'
     // signIn: '/auth/signin'
     // error: "/auth/error",
   },
@@ -49,16 +51,30 @@ export const authOptions = {
           id: token.sub,
           role: token.role,
           accessToken: token.accessToken,
-          idToken: token.idToken
+          idToken: token.idToken,
+          verified: token.verified,
+          newUser: token.newUser
         },
         error: token.error
       };
     },
 
     async jwt({ token, user, account }) {
+      console.log('**** jwt ****');
       if (account && user) {
+        let userData = await getUser(user.id, account.access_token);
+        // userData.newUser = true;
+        if (!userData) {
+          userData = await createUser(user.id, account.access_token);
+          console.log('Created user:', userData);
+          userData.newUser = true;
+        }
+        if (!userData) {
+          throw new Error('Failed to create user');
+        }
         return {
           ...token,
+          ...userData,
           accessToken: account.access_token,
           idToken: account.id_token,
           refreshToken: account.refresh_token,

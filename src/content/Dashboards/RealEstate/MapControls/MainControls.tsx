@@ -116,10 +116,13 @@ const MainControls: React.FC<MainControlsProps> = (
   const [baths, setBaths] = useState([0, 9]);
 
   const searchParams = useSearchParams();
-  const selectedBuyBoxId = searchParams.get('buybox_id');
+
   const router = useRouter();
+  const selectedBuyBoxId = router.query.buybox_id as string;
+  // const selectedBuyBoxId = searchParams.get('buybox_id');
 
   useEffect(() => {
+    if (!router.isReady) return;
     const getBuyBoxesData = async () => {
       try {
         const data = await getBuyBoxes('', true).unwrap();
@@ -136,9 +139,11 @@ const MainControls: React.FC<MainControlsProps> = (
               });
             }
           } else {
-            const defaultBuyBox = data.find(
-              (buybox) => buybox.parameters.name === 'General BuyBox'
-            );
+            // const defaultBuyBox = data.find(
+            //   (buybox) => buybox.parameters.name === 'General BuyBox'
+            // );
+
+            const defaultBuyBox = data[0];
             router.push(
               {
                 pathname: router.pathname,
@@ -154,6 +159,7 @@ const MainControls: React.FC<MainControlsProps> = (
         }
       } catch (error) {
         let message = 'Something went wrong, try again later :(';
+        console.error(error);
         if (error.status === 'FETCH_ERROR') {
           message = `Connection failed, try again later`;
         } else if (error.status === 401) {
@@ -167,7 +173,7 @@ const MainControls: React.FC<MainControlsProps> = (
       }
     };
     getBuyBoxesData();
-  }, []);
+  }, [router.isReady]);
 
   useEffect(() => {
     filterPropertiesByValue(0, '', strategy);
