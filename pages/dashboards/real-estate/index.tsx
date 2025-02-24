@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { Suspense, useEffect, useRef, useState } from 'react';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import SidebarLayout from '@/layouts/SidebarLayout';
 import { CircularProgress, IconButton } from '@mui/material';
@@ -27,6 +27,12 @@ import { ACTIONS, EVENTS } from 'react-joyride';
 import { selectLocation } from '@/store/slices/locationSlice';
 import MakeOfferButton from '@/content/Dashboards/Analytics/Offer/MakeOfferButton';
 import OfferDialog from '@/content/Dashboards/Analytics/Offer/OfferDialog';
+import IntroDialog from '@/components/Modals/Intro/IntroDialog';
+import {
+  selectAuth,
+  setShowVerificationDialog,
+  setVerificationStep
+} from '@/store/slices/authSlice';
 
 // import { useSession, SessionProvider, signIn } from 'next-auth/react';
 
@@ -116,6 +122,7 @@ const DashboardRealEstate = (props: any) => {
     selectedRentalComps,
     selecting
   } = useSelector(selectProperties);
+  const { verificationStep, showVerificationDialog } = useSelector(selectAuth);
   const [showGuide, setShowGuide] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [step2ready, setStep2Ready] = useState(false);
@@ -126,7 +133,7 @@ const DashboardRealEstate = (props: any) => {
 
   const selectedPropertyState =
     propertiesApiEndpoints.getProperty.useQueryState(
-      selectedPropertyPreview?.source_id
+      selectedPropertyPreview?.id
     );
 
   const handleSelectRentalComps = (compsProperties: FilteredComp[]) => {
@@ -171,7 +178,8 @@ const DashboardRealEstate = (props: any) => {
         continuous
         showProgress={true}
         showSkipButton={true}
-        run={!mapLoading && tour && showGuide && windowWidth > 768}
+        // run={!mapLoading && tour && showGuide && windowWidth > 768}
+        run={false}
         callback={(data) => {
           const { status, index, type, action } = data;
           // console.log(
@@ -226,6 +234,8 @@ const DashboardRealEstate = (props: any) => {
             />
           </IconButton>
 
+          <MakeOfferButton onClick={() => setShowOfferDialog(true)} />
+
           {/* <MakeOfferButton onClick={() => setShowOfferDialog(true)} /> */}
           <motion.div
             initial={{
@@ -249,7 +259,6 @@ const DashboardRealEstate = (props: any) => {
                   'duration-500 transition-opacity animate-fade relative'
                 ])}
               >
-                <MakeOfferButton onClick={() => setShowOfferDialog(true)} />
                 <MoreDetails
                   selectedProperty={selectedProperty}
                   selectedComps={selectedComps}
@@ -273,6 +282,12 @@ const DashboardRealEstate = (props: any) => {
         <Map />
       </div>
       <OfferDialog show={showOfferDialog} setShow={setShowOfferDialog} />
+      <IntroDialog
+        open={showVerificationDialog}
+        setOpen={(open) => dispatch(setShowVerificationDialog(open))}
+        step={verificationStep}
+        setStep={(step: number) => dispatch(setVerificationStep(step))}
+      />
     </div>
   );
 };

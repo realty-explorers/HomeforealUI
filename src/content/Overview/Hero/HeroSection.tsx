@@ -1,11 +1,11 @@
 /* eslint-disable react/jsx-no-undef */
-import ThemedButton from "@/components/Buttons/ThemedButton";
-import clsx from "clsx";
-import styles from "./LandingPage.module.scss";
-import PropertiesExample from "./PropertiesExample";
-import { TypeAnimation } from "react-type-animation";
-import Link from "next/link";
-import { Button, Typography } from "@mui/material";
+import ThemedButton from '@/components/Buttons/ThemedButton';
+import clsx from 'clsx';
+import styles from './LandingPage.module.scss';
+import PropertiesExample from './PropertiesExample';
+import { TypeAnimation } from 'react-type-animation';
+import Link from 'next/link';
+import { Button, Typography } from '@mui/material';
 
 const HeroSection = () => {
   return (
@@ -18,33 +18,35 @@ const HeroSection = () => {
           <div className="flex w-full items-center z-[2]">
             <Typography
               className={clsx([
-                "font-playfair text-[3rem] lg:text-[3.5rem] capitalize font-bold w-full  lg:text-left mb-4 text-white lg:text-black text-center",
+                'font-playfair text-[3rem] lg:text-[3.5rem] capitalize font-bold w-full  lg:text-left mb-4 text-white lg:text-black text-center'
               ])}
             >
               find untapped
-              <div className={clsx([styles.ball, "hidden lg:inline-flex"])}>
-              </div>
+              <div
+                className={clsx([styles.ball, 'hidden lg:inline-flex'])}
+              ></div>
               <br /> Investments
             </Typography>
           </div>
 
           <div className="flex px-4 ">
             <Typography className="font-poppins font-semibold lg:font-normal text-[1.5rem] lg:text-[2rem] text-white lg:text-black text-center lg:text-left">
-              Discover Real Estate Opportunities with Homeforeal.{" "}
-              <br />Let us do the work for you.<br />
+              Discover Real Estate Opportunities with Realty Explorers. <br />
+              Let us do the work for you.
+              <br />
               <TypeAnimation
                 sequence={[
-                  "Customize your deals", // Types 'One'
+                  'Customize your deals', // Types 'One'
                   2000, // Waits 1s
-                  "Save time", // Deletes 'One' and types 'Two'
+                  'Save time', // Deletes 'One' and types 'Two'
                   2000, // Waits 2s
-                  "Analyze with Insight", // Types 'Three' without deleting 'Two'
+                  'Analyze with Insight', // Types 'Three' without deleting 'Two'
                   2000, // Waits 2s
-                  "Unlock Opportunities", // Types 'Three' without deleting 'Two'
+                  'Unlock Opportunities', // Types 'Three' without deleting 'Two'
                   2000, // Waits 2s
                   () => {
-                    console.log("Sequence completed");
-                  },
+                    console.log('Sequence completed');
+                  }
                 ]}
                 wrapper="span"
                 cursor={true}
@@ -59,8 +61,8 @@ const HeroSection = () => {
               className="rounded-3xl font-poppins capitalize bg-white text-black font-bold px-4 py-2 text-lg shadow hover:ring transition-all hidden lg:flex"
               onClick={(e) => {
                 e.preventDefault();
-                document.querySelector("#contactUs").scrollIntoView({
-                  behavior: "smooth",
+                document.querySelector('#contactUs').scrollIntoView({
+                  behavior: 'smooth'
                 });
               }}
             >
@@ -69,7 +71,7 @@ const HeroSection = () => {
             <Button
               className={clsx([
                 // styles.cardInfoValue,
-                "text-white bg-secondary lg:bg-black lg:hover:bg-black px-4 py-2 rounded-3xl font-poppins font-bold capitalize mx-4 text-lg hover:ring transition-all no-underline w-full lg:w-auto",
+                'text-white bg-secondary lg:bg-black lg:hover:bg-black px-4 py-2 rounded-3xl font-poppins font-bold capitalize mx-4 text-lg hover:ring transition-all no-underline w-full lg:w-auto'
               ])}
               href="/dashboards/real-estate"
             >

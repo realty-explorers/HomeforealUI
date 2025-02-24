@@ -22,6 +22,7 @@ import Image from '@/components/Photos/Image';
 import clsx from 'clsx';
 import { selectFilter } from '@/store/slices/filterSlice';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import { calculateArvPercentage } from '@/utils/calculationUtils';
 
 const defaultImage =
   'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=';
@@ -131,24 +132,42 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     // console.log("rerender property card");
   }, [props.property]);
 
-  const arvPercentage =
-    props.property?.arv25Price && props.property.arv25Price > 0
-      ? (Math.round(props.property.arv25Price - props.property.price) /
-          props.property.arv25Price) *
-        100
-      : 0;
-
-  const compsPercentage =
-    props.property?.arvPrice && props.property.arvPrice > 0
-      ? (Math.round(props.property.arvPrice - props.property.price) /
-          props.property.arvPrice) *
-        100
-      : 0;
-
   // const profit = arvPercentage.toFixed(100);
   const profit = 3;
 
-  const getStrategyValue = () => {
+  const getStrategyValue = (fixed: number) => {
+    // const arvPercentage =
+    //   props.property?.arv25Price && props.property.arv25Price > 0
+    //     ? (Math.round(props.property.arv25Price - props.property.price) /
+    //         props.property.arv25Price) *
+    //       100
+    //     : 0;
+    //
+    // const compsPercentage =
+    //   props.property?.arvPrice && props.property.arvPrice > 0
+    //     ? (Math.round(props.property.arvPrice - props.property.price) /
+    //         props.property.arvPrice) *
+    //       100
+    //     : 0;
+    const arvPercentage = props.property?.masked
+      ? `up to ${calculateArvPercentage(
+          props.property.arv25Price,
+          props.property?.priceGroup.min
+        ).toFixed(fixed)}`
+      : `${calculateArvPercentage(
+          props.property.arv25Price,
+          props.property.price
+        ).toFixed(fixed)}`;
+
+    const compsPercentage = props.property?.masked
+      ? `up to ${calculateArvPercentage(
+          props.property.arvPrice,
+          props.property?.priceGroup.min
+        ).toFixed(fixed)}`
+      : `${calculateArvPercentage(
+          props.property.arvPrice,
+          props.property.price
+        ).toFixed(fixed)}`;
     switch (strategyMode) {
       case 'ARV':
         return arvPercentage;
@@ -175,7 +194,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     >
       {typeof props.property.arv25Price === 'number' && (
         <Tooltip
-          title={`Under ${strategyMode} by ${getStrategyValue().toFixed(2)}%`}
+          title={`Under ${strategyMode} by ${getStrategyValue(2)}`}
           placement="top"
           PopperProps={{
             modifiers: [
@@ -196,7 +215,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
           >
             <ArrowCircleDownIcon className="text-white text-[1rem]" />
             <Typography className="font-poppins font-semibold text-white">
-              {getStrategyValue().toFixed()}%
+              {getStrategyValue(0)}%
             </Typography>
           </div>
         </Tooltip>
@@ -219,7 +238,10 @@ const PropertyCard: React.FC<PropertyCardProps> = (
         />
         <div className="w-full flex flex-col md:hidden">
           <div className="font-poppins text-2xl text-secondary font-[900] text-left">
-            {priceFormatter(props.property?.price)}
+            {props.property?.price !== undefined
+              ? priceFormatter(props.property?.price)
+              : `${priceFormatter(props.property?.priceGroup.min)} -
+                  ${priceFormatter(props.property?.priceGroup.max)}`}
           </div>
           <div className="mt-2">
             <Typography className="font-poppins text-[1rem] text-gray-800 text-left">
@@ -276,7 +298,12 @@ const PropertyCard: React.FC<PropertyCardProps> = (
         <div className="hidden md:flex flex-col">
           <div className={styles.cardInfoRow}>
             <Typography>Price</Typography>
-            <Typography>{priceFormatter(props.property?.price)}</Typography>
+            <Typography>
+              {props.property?.price !== undefined
+                ? priceFormatter(props.property?.price)
+                : `${priceFormatter(props.property?.priceGroup.min)} -
+                  ${priceFormatter(props.property?.priceGroup.max)}`}
+            </Typography>
           </div>
           <div className={styles.cardInfoRow}>
             <Typography>Comps Sale</Typography>

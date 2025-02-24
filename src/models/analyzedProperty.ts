@@ -58,10 +58,10 @@ interface LoanData {
   totalPayment: number;
 }
 
-interface AnalyzedProperty extends Property {
+interface AnalyzedProperty extends Partial<Property> {
   buyboxId: string;
   analyzedDate: string;
-  comps: CompData[];
+  comps?: CompData[];
   expenses: {
     fixedFee: ExpensesData;
     closingFee: ExpensesData;
@@ -86,6 +86,10 @@ interface AnalyzedProperty extends Property {
     maintenance: ExpensesData;
     management: ExpensesData;
     vacancy: ExpensesData;
+  };
+  priceGroup?: {
+    min: number;
+    max: number;
   };
 }
 

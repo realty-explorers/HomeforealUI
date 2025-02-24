@@ -18,7 +18,7 @@ function Footer() {
       >
         <Box>
           <Typography variant="subtitle1">
-            &copy; 2023 - Homeforeal.com
+            &copy; 2025 - realtyexplore.com
           </Typography>
         </Box>
         <Typography

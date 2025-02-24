@@ -22,7 +22,7 @@ const PropertyHeader = (props: PropertyHeaderProps) => {
       ])}
     >
       <div className="flex">
-        <PropertyPhotos photos={props.property.photos.all} />
+        <PropertyPhotos photos={props.property.photos?.all || []} />
       </div>
       <PropertyTags property={props.property} />
       <PropertyMainInfo property={props.property || ({} as AnalyzedProperty)} />

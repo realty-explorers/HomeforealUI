@@ -131,7 +131,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     defaultMax: number
   ) => {
     return {
-      enabled: min !== undefined || max !== undefined,
+      enabled: Boolean(min) || Boolean(max),
       min: min || defaultMin,
       max: max || defaultMax
     };
@@ -142,7 +142,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     defaultMin: number
   ) => {
     return {
-      enabled: min !== undefined,
+      enabled: Boolean(min),
       value: min || defaultMin
     };
   };

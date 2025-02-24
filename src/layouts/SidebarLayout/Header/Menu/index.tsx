@@ -7,17 +7,17 @@ import {
   Menu,
   MenuItem,
   styled,
-  Typography,
-} from "@mui/material";
-import { useRef, useState } from "react";
+  Typography
+} from '@mui/material';
+import { useRef, useState } from 'react';
 // import Link from "src/components/Link";
-import Link from "next/link";
-import MenuIcon from "@mui/icons-material/Menu";
+import Link from 'next/link';
+import MenuIcon from '@mui/icons-material/Menu';
 
-import ExpandMoreTwoToneIcon from "@mui/icons-material/ExpandMoreTwoTone";
-import Logo from "@/components/Logo";
-import { usePathname } from "next/navigation";
-import clsx from "clsx";
+import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
+import Logo from '@/components/Logo';
+import { usePathname } from 'next/navigation';
+import clsx from 'clsx';
 
 const ListWrapper = styled(Box)(
   ({ theme }) => `
@@ -26,7 +26,7 @@ const ListWrapper = styled(Box)(
         }
         
         .MuiListItem-root {
-            transition: ${theme.transitions.create(["color", "fill"])};
+            transition: ${theme.transitions.create(['color', 'fill'])};
             
             &.MuiListItem-indicators {
                 padding: ${theme.spacing(1, 2)};
@@ -67,18 +67,18 @@ const ListWrapper = styled(Box)(
                 }
             }
         }
-`,
+`
 );
 
 const pages = [
   {
-    title: "Search",
-    href: "/dashboards/real-estate",
+    title: 'Search',
+    href: '/dashboards/real-estate'
   },
   {
-    title: "BuyBox",
-    href: "/dashboards/buybox",
-  },
+    title: 'BuyBox',
+    href: '/dashboards/buybox'
+  }
 ];
 
 function HeaderMenu() {
@@ -97,19 +97,14 @@ function HeaderMenu() {
 
   return (
     <div>
-      <ListWrapper
-        className="hidden md:flex"
-        ref={ref}
-      >
+      <ListWrapper className="hidden md:flex" ref={ref}>
+        <Logo />
         <List disablePadding component={Box} display="flex">
-          <Logo />
           {pages.map((page, index) => (
             <ListItem
               key={index}
-              classes={{ root: "MuiListItem-indicators" }}
-              className={clsx([
-                pathname === page.href && "active",
-              ])}
+              classes={{ root: 'MuiListItem-indicators' }}
+              className={clsx([pathname === page.href && 'active'])}
               component={Link}
               button
               href={page.href}
@@ -117,7 +112,7 @@ function HeaderMenu() {
               <ListItemText
                 primaryTypographyProps={{
                   noWrap: true,
-                  fontFamily: "var(--font-poppins)",
+                  fontFamily: 'var(--font-poppins)'
                 }}
                 primary={page.title}
               />
@@ -140,18 +135,18 @@ function HeaderMenu() {
           id="menu-appbar"
           anchorEl={ref.current}
           anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
+            vertical: 'bottom',
+            horizontal: 'left'
           }}
           keepMounted
           transformOrigin={{
-            vertical: "top",
-            horizontal: "left",
+            vertical: 'top',
+            horizontal: 'left'
           }}
           open={menuOpen}
           onClose={() => setMenuOpen(false)}
           sx={{
-            display: { xs: "block", md: "none" },
+            display: { xs: 'block', md: 'none' }
           }}
         >
           {pages.map((page, index) => (

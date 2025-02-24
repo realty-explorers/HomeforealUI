@@ -1,17 +1,17 @@
-import Tab from "@/content/Management/Users/profile/Tab";
-import SidebarLayout from "@/layouts/SidebarLayout";
-import { SvgIcon, Typography } from "@mui/material";
-import styles from "./Settings.module.scss";
-import PersonIcon from "@mui/icons-material/Person";
-import { useState } from "react";
-import Subscriptions from "@/content/Management/Users/profile/Subscriptions";
-import Invoice from "@/content/Management/Users/profile/Invoice";
-import UserManagement from "@/content/Management/Users/profile/UserManagement";
-import SubscriptionsIcon from "@mui/icons-material/Subscriptions";
-import ReceiptLongIcon from "@mui/icons-material/ReceiptLong";
-import { motion } from "framer-motion";
-import Lottie from "lottie-react";
-import profileAnimation from "@/static/animations/illustrations/profileAnimation.json";
+import Tab from '@/content/Management/Users/profile/Tab';
+import SidebarLayout from '@/layouts/SidebarLayout';
+import { SvgIcon, Typography } from '@mui/material';
+import styles from './Settings.module.scss';
+import PersonIcon from '@mui/icons-material/Person';
+import { useState } from 'react';
+import Invoice from '@/content/Management/Users/profile/Invoice';
+import UserManagement from '@/content/Management/Users/profile/UserManagement';
+import SubscriptionsIcon from '@mui/icons-material/Subscriptions';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import { motion } from 'framer-motion';
+import Lottie from 'lottie-react';
+import profileAnimation from '@/static/animations/illustrations/profileAnimation.json';
+import UserKyc from '@/content/Management/Users/profile/UserKYC';
 
 const ManagementUserProfile = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -57,7 +57,7 @@ const ManagementUserProfile = () => {
             exit={{ y: -20, opacity: 0 }}
             transition={{ duration: 0.3 }}
           >
-            {selectedIndex === 0 && <Subscriptions />}
+            {selectedIndex === 0 && <UserKyc />}
             {/* {selectedIndex === 1 && <Invoice />} */}
             {selectedIndex === 2 && <UserManagement />}
           </motion.div>

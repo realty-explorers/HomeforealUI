@@ -3,6 +3,7 @@ import {
   distanceFormatter,
   percentFormatter,
   priceFormatter,
+  priceGroupFormatter,
   validateValue
 } from '@/utils/converters';
 import {
@@ -76,11 +77,11 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
 
   const arvPercentage = calculateArvPercentage(
     props.property.arvPrice,
-    props.property.price
+    props.property.price ?? props.property.priceGroup.min
   );
   const compsPercentage = calculateArvPercentage(
     props.property.arvPrice,
-    props.property.price
+    props.property.price ?? props.property.priceGroup.min
   );
   const arvDiscount = `ARV ↓${arvPercentage.toFixed()}%`;
   const compsDiscount = `Comps ↓${compsPercentage.toFixed()}%`;
@@ -90,21 +91,6 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
   return (
     <div className="flex rounded-xl bg-white w-80 h-40">
       <div className="w-1/3 h-full relative">
-        {/* <Image */}
-        {/*   src={typeof cardImage === "string" ? cardImage : defaultImage} */}
-        {/*   alt={props.property.address} */}
-        {/*   // onError={() => */}
-        {/*   //   setCardImage( */}
-        {/*   //     "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=", */}
-        {/*   //   )} */}
-        {/*   fill */}
-        {/*   className="object-cover object-center w-full h-full rounded-l-xl" */}
-        {/* /> */}
-        {/* <img */}
-        {/*   src={cardImage} */}
-        {/*   className="w-full h-full rounded-l-xl object-cover object-center" */}
-        {/* /> */}
-
         <Image
           src={validateValue(cardImage, 'string', defaultImage)}
           alt={props.property?.address}
@@ -142,7 +128,11 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
         <div className="flex items-center mt-2 w-full">
           <LocalOfferIcon fontSize="small" />
           <Typography className="text-xs ml-2 font-poppins text-center">
-            {priceFormatter(props.property?.price)}
+            {priceGroupFormatter(
+              props.property.price,
+              props.property.priceGroup
+            )}
+            {/* {priceFormatter(props.property?.price)} */}
           </Typography>
         </div>
 

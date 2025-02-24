@@ -51,7 +51,7 @@ function HomeforealApp(props: HomeforealAppProps) {
       <CacheProvider value={emotionCache}>
         {/* <UserProvider> */}
         <Head>
-          <title>Homeforeal App</title>
+          <title>Realty Explorers</title>
           <meta
             name="viewport"
             content="width=device-width, initial-scale=1, shrink-to-fit=no"

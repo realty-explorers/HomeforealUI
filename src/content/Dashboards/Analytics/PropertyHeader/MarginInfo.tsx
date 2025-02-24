@@ -74,10 +74,10 @@ const MarginInfo = (props: MarginInfoProps) => {
 
   const { initialInvestment, financingCosts } = useSelector(selectExpenses);
   const totalExpenses = initialInvestment + financingCosts;
-  const soldComps = saleCalculatedProperty.comps.filter(
+  const soldComps = saleCalculatedProperty.comps?.filter(
     (comp) => comp.status === 'sold'
   );
-  if (soldComps.length === 0) {
+  if (!soldComps || soldComps?.length === 0) {
     return null;
   }
   return (

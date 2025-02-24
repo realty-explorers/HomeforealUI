@@ -213,14 +213,14 @@ const BuyboxList = (props: BuyboxListProps) => {
                 </motion.div>
               ))}
 
-              <motion.div variants={itemVariants}>
-                <ThemedButton onClick={() => props.editBuyBox()}>
-                  <AddCircleOutlineIcon className="mr-2" htmlColor="white" />
-                  <Typography className="text-white font-poppins">
-                    New Buybox
-                  </Typography>
-                </ThemedButton>
-              </motion.div>
+              {/* <motion.div variants={itemVariants}> */}
+              <ThemedButton onClick={() => props.editBuyBox()}>
+                <AddCircleOutlineIcon className="mr-2" htmlColor="white" />
+                <Typography className="text-white font-poppins">
+                  New Buybox
+                </Typography>
+              </ThemedButton>
+              {/* </motion.div> */}
             </motion.div>
           </motion.div>
         )}
