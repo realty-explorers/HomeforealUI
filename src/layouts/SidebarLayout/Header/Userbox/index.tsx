@@ -122,7 +122,7 @@ function HeaderUserbox() {
     const awsDoman =
       'https://us-east-2atdpsnua7.auth.us-east-2.amazoncognito.com';
     const logoutUrl = `${awsDoman}/logout?client_id=f9c39cp5p9pmstb1a45lun2n4&logout_uri=${encodeURIComponent(
-      'http://localhost:3000'
+      process.env.NEXT_PUBLIC_URL
     )}`;
     window.location.href = logoutUrl;
   };

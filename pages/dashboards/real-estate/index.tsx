@@ -133,7 +133,7 @@ const DashboardRealEstate = (props: any) => {
 
   const selectedPropertyState =
     propertiesApiEndpoints.getProperty.useQueryState(
-      selectedPropertyPreview?.id
+      selectedPropertyPreview?.source_id
     );
 
   const handleSelectRentalComps = (compsProperties: FilteredComp[]) => {
@@ -223,7 +223,7 @@ const DashboardRealEstate = (props: any) => {
       {openMoreDetails && (
         <>
           <IconButton
-            className="absolute top-1/2 left-full md:left-1/2 -translate-y-full -translate-x-full md:-translate-x-1/2 bg-white w-1 h-10 shadow z-[2] animate-fadeDelayed opacity-0 "
+            className="absolute top-1/2 left-full md:left-1/2 -translate-y-full -translate-x-full md:-translate-x-1/2 bg-white w-1 h-10 shadow z-[2] animate-fadeDelayed opacity-100 "
             onClick={handleHidePanel}
           >
             <ExpandMoreIcon

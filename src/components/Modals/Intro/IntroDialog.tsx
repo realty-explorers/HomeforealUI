@@ -24,7 +24,7 @@ import TermsOfService from './TermsOfService';
 import UserKyc from '@/content/Management/Users/profile/UserKYC';
 
 // Define types for better code clarity
-interface Step {
+interface DialogStep {
   id: number;
   title: string;
   icon: React.ComponentType<React.SVGProps<SVGSVGElement>>;
@@ -38,7 +38,7 @@ interface Benefit {
   animation: string;
 }
 
-const steps: Step[] = [
+const dialogSteps: DialogStep[] = [
   { id: 1, title: 'Welcome', icon: Home },
   { id: 2, title: 'Terms', icon: FileCheck2 },
   { id: 3, title: 'KYC', icon: Shield }
@@ -46,7 +46,7 @@ const steps: Step[] = [
 
 const benefits = [
   {
-    title: 'Double Your Wins: Earn Cashback on Every Deal 🏆',
+    title: 'Double Your Wins: Earn Cashback on Every Deal',
     description:
       'We scout top-tier properties AND slash fees—keep up to 2% cashback when you close. Think of it as a reward for being smart.',
     icon: Wallet,
@@ -54,7 +54,7 @@ const benefits = [
     animation: 'hover:scale-105 hover:rotate-2'
   },
   {
-    title: 'Your 24/7 Deal-Closing Sidekick 🤖',
+    title: 'Your 24/7 Deal-Closing Sidekick',
     description:
       'Our AI Realtor handles negotiations, paperwork, and deadlines—so you can focus on stacking profits.',
     icon: Bot,
@@ -62,7 +62,7 @@ const benefits = [
     animation: 'hover:-translate-y-1 hover:rotate-[-2deg]'
   },
   {
-    title: 'Secure Transactions Guaranteed 🛡️',
+    title: 'Secure Transactions Guaranteed',
     description:
       'Bank-grade security and smart contracts protect every deal. Rest easy knowing your investments are safe.',
     icon: Shield,
@@ -87,10 +87,10 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
   const [accepted, setAccepted] = useState<boolean>(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const progress = (step / steps.length) * 100;
+  const progress = (step / dialogSteps.length) * 100;
 
   const handleNext = () => {
-    if (step < steps.length) {
+    if (step < dialogSteps.length) {
       setStep(step + 1);
     } else {
       setOpen(false);
@@ -109,7 +109,9 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
                   key={index}
                   className={`group p-6 rounded-2xl bg-white border border-gray-100 shadow-lg transition-all duration-300 ${benefit.animation}`}
                 >
-                  <div className={`flex items-start space-x-4`}>
+                  <div
+                    className={`flex flex-col items-center md:flex-row  gap-y-2 space-x-4`}
+                  >
                     <div
                       className={`rounded-xl p-3 bg-gradient-to-r ${benefit.gradient} transform transition-transform duration-300 group-hover:scale-110`}
                     >
@@ -217,27 +219,29 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
         <div className="px-8 pt-4 m-4 md:m-0">
           <Progress value={progress} className="h-2" />
           <div className="grid grid-cols-3 justify-between mt-2 overflow-y-visible">
-            {steps.map((step) => {
-              const StepIcon = step.icon;
+            {dialogSteps.map((dialogStep) => {
+              const StepIcon = dialogStep.icon;
               return (
                 <div
-                  key={step.id}
+                  key={dialogStep.id}
                   className={`flex flex-col items-center ${
-                    step.id <= step ? 'text-primary' : 'text-gray-400'
+                    dialogStep.id <= step ? 'text-primary' : 'text-gray-400'
                   }`}
                 >
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${
-                      step.id <= step ? 'bg-primary text-white' : 'bg-gray-100'
+                      dialogStep.id <= step
+                        ? 'bg-primary text-white'
+                        : 'bg-gray-100'
                     }`}
                   >
-                    {step.id < step ? (
+                    {dialogStep.id < step ? (
                       <Check className="w-5 h-5" />
                     ) : (
                       <StepIcon className="w-5 h-5" />
                     )}
                   </div>
-                  <span className="text-sm">{step.title}</span>
+                  <span className="text-sm">{dialogStep.title}</span>
                 </div>
               );
             })}
