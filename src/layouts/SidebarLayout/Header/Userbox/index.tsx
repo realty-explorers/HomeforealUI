@@ -130,7 +130,7 @@ function HeaderUserbox() {
   return (
     <>
       <div className="flex items-center">
-        <VerificationAlertBadge />
+        {user && !user.verified && <VerificationAlertBadge />}
         <UserBoxButton
           color="secondary"
           ref={ref}

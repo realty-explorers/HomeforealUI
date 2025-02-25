@@ -10,7 +10,7 @@ export interface Auth {
 const initialState: Auth = {
   token: null,
   verificationStep: 1,
-  showVerificationDialog: true
+  showVerificationDialog: false
 };
 
 export const authSlice = createSlice({

@@ -15,8 +15,6 @@ export const locationApi = createApi({
         headers.set('authorization', `Bearer ${token}`);
       }
 
-      headers.set('X-Service', 'scraper');
-
       return headers;
     }
   }),

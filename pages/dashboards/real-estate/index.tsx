@@ -27,12 +27,6 @@ import { ACTIONS, EVENTS } from 'react-joyride';
 import { selectLocation } from '@/store/slices/locationSlice';
 import MakeOfferButton from '@/content/Dashboards/Analytics/Offer/MakeOfferButton';
 import OfferDialog from '@/content/Dashboards/Analytics/Offer/OfferDialog';
-import IntroDialog from '@/components/Modals/Intro/IntroDialog';
-import {
-  selectAuth,
-  setShowVerificationDialog,
-  setVerificationStep
-} from '@/store/slices/authSlice';
 
 // import { useSession, SessionProvider, signIn } from 'next-auth/react';
 
@@ -122,7 +116,6 @@ const DashboardRealEstate = (props: any) => {
     selectedRentalComps,
     selecting
   } = useSelector(selectProperties);
-  const { verificationStep, showVerificationDialog } = useSelector(selectAuth);
   const [showGuide, setShowGuide] = useState(false);
   const [stepIndex, setStepIndex] = useState(0);
   const [step2ready, setStep2Ready] = useState(false);
@@ -282,12 +275,6 @@ const DashboardRealEstate = (props: any) => {
         <Map />
       </div>
       <OfferDialog show={showOfferDialog} setShow={setShowOfferDialog} />
-      <IntroDialog
-        open={showVerificationDialog}
-        setOpen={(open) => dispatch(setShowVerificationDialog(open))}
-        step={verificationStep}
-        setStep={(step: number) => dispatch(setVerificationStep(step))}
-      />
     </div>
   );
 };
