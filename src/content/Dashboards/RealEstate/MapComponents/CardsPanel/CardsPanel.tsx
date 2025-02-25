@@ -18,7 +18,6 @@ import {
   setSelectedPropertyPreview,
   setSelecting
 } from '@/store/slices/propertiesSlice';
-import { useLazyGetPropertyQuery } from '@/store/services/propertiesApiService';
 import useProperty from '@/hooks/useProperty';
 import useHorizontalScroll from '@/hooks/useHorizontalScroll';
 import MobilePanel from './MobilePanel';
@@ -38,7 +37,6 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   const { selectedProperty, selectedPropertyPreview } =
     useSelector(selectProperties);
   const [selectedPropertyIndex, setSelectedIndex] = useState(-1);
-  const [getProperty, propertyState] = useLazyGetPropertyQuery();
   const dispatch = useDispatch();
   const { selectProperty, deselectProperty } = useProperty();
 
@@ -86,24 +84,10 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
 
   const handleSelectProperty = (property?: PropertyPreview) => {
     selectProperty(property);
-
-    // if (property) {
-    //   fetchPropertyData(property);
-    // } else {
-    //   dispatch(setSelectedProperty(null));
-    // }
   };
 
   const handleDeselectProperty = () => {
     deselectProperty();
-  };
-
-  const fetchPropertyData = async (property: PropertyPreview) => {
-    //TODO: Watch out here for race conditions when internet not stable
-    const propertyData = await getProperty(property?.id).unwrap();
-    dispatch(setSelectedProperty(propertyData));
-    dispatch(setSaleCalculatedProperty(propertyData));
-    dispatch(setRentalCalculatedProperty(propertyData));
   };
 
   const [notSelected, setNotSelected] = useState(true);

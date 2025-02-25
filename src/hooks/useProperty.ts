@@ -42,11 +42,16 @@ export const useProperty = () => {
     dispatch(setSelectedRentalComps(newRentalComps));
   };
 
-  const selectPropertyId = async (buybox_id: string, propertyId: string) => {
+  const selectPropertyId = async (
+    buybox_id: string,
+    propertyId: string,
+    masked: boolean
+  ) => {
     try {
       const propertyData: AnalyzedProperty = await getProperty({
         buybox_id,
-        property_id: propertyId
+        property_id: propertyId,
+        masked
       }).unwrap();
       if (propertyData) {
         dispatch(
@@ -89,7 +94,13 @@ export const useProperty = () => {
     try {
       dispatch(setSelectedPropertyPreview(property));
       const propertyData: AnalyzedProperty = await getProperty(
-        buybox ? { buybox_id: buybox.id, property_id: property.id } : skipToken
+        buybox
+          ? {
+              buybox_id: buybox.id,
+              property_id: property.id,
+              masked: property.masked
+            }
+          : skipToken
       ).unwrap();
       if (propertyData) {
         const location = {

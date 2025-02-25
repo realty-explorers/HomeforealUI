@@ -74,9 +74,11 @@ import { setMapLoading } from '@/store/slices/mapSlice';
 import styles from './Map.module.scss';
 import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
+  const { data: user, status } = useSession();
   const router = useRouter();
   const searchParams = useSearchParams();
   const selectedBuyBoxId = searchParams.get('buybox_id') as string;
@@ -148,20 +150,6 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const handleSelectProperty = async (property?: PropertyPreview) => {
     selectProperty(property);
-
-    // if (property) {
-    //   fetchPropertyData(property);
-    // } else {
-    //   dispatch(setSelectedProperty(null));
-    // }
-  };
-
-  const fetchPropertyData = async (property: PropertyPreview) => {
-    //TODO: Watch out here for race conditions when internet not stable
-    const propertyData = await getProperty(property?.id).unwrap();
-    dispatch(setSelectedProperty(propertyData));
-    dispatch(setSaleCalculatedProperty(propertyData));
-    dispatch(setRentalCalculatedProperty(propertyData));
   };
 
   const onMove = useCallback((viewState: ViewStateChangeEvent) => {
@@ -329,20 +317,24 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   }
 
   useEffect(() => {
-    if (!router.isReady) return;
+    if (!router.isReady || !user) return;
     //TODO: check auth
     console.log('selectedBuyBoxId', selectedBuyBoxId);
     console.log('selectedPropertyId', selectedPropertyId);
     if (selectedBuyBoxId && selectedPropertyId) {
       console.log('selecting property');
-      selectPropertyId(selectedBuyBoxId, selectedPropertyId);
+      selectPropertyId(
+        selectedBuyBoxId,
+        selectedPropertyId,
+        !user?.user?.verified || true
+      );
     } else {
       dispatch(setSelectedPropertyPreview(null));
       mapRef.current?.setPitch(0);
       dispatch(locationApi.util.invalidateTags(['Suggestion', 'LocationData']));
       dispatch(setSuggestion(null));
     }
-  }, [router.isReady]);
+  }, [router.isReady, user?.user?.verified]);
 
   useEffect(() => {
     // if (mapRef.current?.getLayer("property-bounds-line")) {

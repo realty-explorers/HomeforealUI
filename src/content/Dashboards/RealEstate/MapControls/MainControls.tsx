@@ -57,7 +57,7 @@ import { useSnackbar } from 'notistack';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { redirect, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 const filterFieldNames = [
   'arvPrice',
@@ -90,6 +90,7 @@ const MainControls: React.FC<MainControlsProps> = (
     buybox
   } = useSelector(selectFilter);
 
+  const { data, status } = useSession();
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
 
@@ -99,7 +100,13 @@ const MainControls: React.FC<MainControlsProps> = (
   //     suggestion && buybox ? { suggestion, buybox_id: buybox.id } : skipToken,
   //   );
   const propertiesQuery = useGetPropertiesPreviewsQuery(
-    suggestion && buybox ? { suggestion, buybox_id: buybox.id } : skipToken
+    suggestion && buybox && data?.user
+      ? {
+          suggestion,
+          buybox_id: buybox.id,
+          masked: !data?.user?.verified
+        }
+      : skipToken
   );
   locationApiEndpoints.getLocationData.useQuerySubscription(
     suggestion || skipToken

@@ -62,7 +62,8 @@ export const propertiesApi = createApi({
     getPropertiesPreviews: builder.query({
       query: ({
         suggestion: { type, state, city, zipCode, neighborhood },
-        buybox_id
+        buybox_id,
+        masked
       }) => {
         // `loc_properties?buybox_id=${GENERAL_BUYBOX_ID}&city=${city}&neighborhood=${"Central southwest"}`,
         let queryUrl = '/results';
@@ -82,7 +83,7 @@ export const propertiesApi = createApi({
             queryUrl = '';
             break;
         }
-        return `/previews?buyboxId=${buybox_id}&${queryUrl}`;
+        return `/previews?buyboxId=${buybox_id}&${queryUrl}&masked=${masked}`;
       },
       transformResponse: (response: PropertyPreview[]) => {
         try {
@@ -149,8 +150,10 @@ export const propertiesApi = createApi({
     }),
 
     getProperty: builder.query({
-      query: ({ buybox_id, property_id }) => {
-        return `/analyzed-property/${property_id}/essential`;
+      query: ({ buybox_id, property_id, masked }) => {
+        return `/analyzed-property/${property_id}/${
+          masked ? 'essential' : 'full'
+        }`;
       },
       transformResponse: (response: AnalyzedProperty) => {
         try {

@@ -26,7 +26,8 @@ const SelectedPropertyMarker = ({
     return myCircle;
   }, [selectedProperty]);
   return (
-    selectedProperty && (
+    selectedProperty &&
+    (selectedProperty.masked ? (
       <Source id="circle-source" type="geojson" data={circleData}>
         <Layer
           id="circle-layer"
@@ -48,10 +49,7 @@ const SelectedPropertyMarker = ({
           }}
         />
       </Source>
-    )
-  );
-  return (
-    selectedProperty && (
+    ) : (
       <Marker
         longitude={selectedProperty.coordinates[0]}
         latitude={selectedProperty.coordinates[1]}
@@ -61,7 +59,7 @@ const SelectedPropertyMarker = ({
       >
         <img src="/static/images/pins/homePin.png" width={60} height={60} />
       </Marker>
-    )
+    ))
   );
 };
 
