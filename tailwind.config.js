@@ -80,8 +80,12 @@ module.exports = {
       gradients: {
         'purple-pink': ['45deg', '#3023AE 0%', '#FF0099 100%']
       },
-      keyframes:
-        '(theme) => ({\n        fadeOut: {\n          "0%": { opacity: 0 },\n          "100%": { opacity: 1 },\n        },\n      })',
+      keyframes: {
+        fadeOut: {
+          '0%': { opacity: 0 }, // Changed from 0 to 1 for fadeOut
+          '100%': { opacity: 1 } // Changed from 1 to 0 for fadeOut
+        }
+      },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',

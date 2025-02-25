@@ -126,7 +126,7 @@ const DashboardRealEstate = (props: any) => {
 
   const selectedPropertyState =
     propertiesApiEndpoints.getProperty.useQueryState(
-      selectedPropertyPreview?.source_id
+      selectedPropertyPreview?.id
     );
 
   const handleSelectRentalComps = (compsProperties: FilteredComp[]) => {
