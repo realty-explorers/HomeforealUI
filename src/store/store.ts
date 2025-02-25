@@ -10,7 +10,6 @@ import { analysisApi } from './services/analysisApi';
 import { authReducer } from './slices/authSlice';
 import { buyBoxesReducer } from './slices/buyBoxesSlice';
 import { mapReducer } from './slices/mapSlice';
-import { dataApi } from './services/dataApiService';
 import { buyboxAnalysisApi } from './services/buyboxAnalysisApi';
 import { userApi } from './services/userApi';
 
@@ -27,7 +26,6 @@ export const store = configureStore({
     [propertiesApi.reducerPath]: propertiesApi.reducer,
     [buyBoxApi.reducerPath]: buyBoxApi.reducer,
     [analysisApi.reducerPath]: analysisApi.reducer,
-    [dataApi.reducerPath]: dataApi.reducer,
     [buyboxAnalysisApi.reducerPath]: buyboxAnalysisApi.reducer,
     [userApi.reducerPath]: userApi.reducer
   },
@@ -37,7 +35,6 @@ export const store = configureStore({
       .concat(propertiesApi.middleware)
       .concat(analysisApi.middleware)
       .concat(buyBoxApi.middleware)
-      .concat(dataApi.middleware)
       .concat(buyboxAnalysisApi.middleware)
       .concat(userApi.middleware),
   devTools: true

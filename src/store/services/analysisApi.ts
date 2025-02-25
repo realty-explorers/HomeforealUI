@@ -6,7 +6,7 @@ import {
 } from '@reduxjs/toolkit/query/react';
 import { logout } from '../slices/authSlice';
 
-const baseUrl = process.env.NEXT_PUBLIC_OLD_API_URL;
+const baseUrl = '';
 
 const baseQuery = fetchBaseQuery({
   baseUrl,

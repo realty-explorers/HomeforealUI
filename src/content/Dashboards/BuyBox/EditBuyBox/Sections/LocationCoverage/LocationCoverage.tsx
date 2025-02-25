@@ -10,7 +10,6 @@ import {
 } from 'react-hook-form';
 import styles from '../../EditBuyBoxDialog.module.scss';
 import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
-import { useGetLocationsQuery } from '@/store/services/dataApiService';
 import { useEffect, useState } from 'react';
 import LocationAutocomplete from './LocationAutocomplete';
 import LocationSuggestion from '@/models/location_suggestions';
@@ -36,7 +35,6 @@ const LocationCoverage = ({
   const [locations, setLocations] = useState<LocationSuggestion[]>(
     getValues('targetLocations') as LocationSuggestion[]
   );
-  const locationsQuery = useGetLocationsQuery('');
   const handleSetLocations = (value: any) => {
     setValue('targetLocations', value, { shouldDirty: true });
     setLocations(value);

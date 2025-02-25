@@ -45,10 +45,6 @@ import {
   useUpdateBuyBoxMutation
 } from '@/store/services/buyboxApiService';
 import { useSnackbar } from 'notistack';
-import {
-  useGetLocationsQuery,
-  useLazyGetLocationsQuery
-} from '@/store/services/dataApiService';
 import clsx from 'clsx';
 import GeneralSection from './Sections/GeneralSection';
 import InvestmentStrategy from './Sections/InvestmentStrategy';
@@ -121,7 +117,6 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const [createBuyBox, createResult] = useCreateBuyBoxMutation();
   const [updateBuyBox, updateResult] = useUpdateBuyBoxMutation();
   const [deleteBuyBox, deleteResult] = useDeleteBuyBoxMutation();
-  const locationsQuery = useGetLocationsQuery(props.buybox?.id);
   const dispatch = useDispatch<any>();
 
   const getRangeFieldProperties = (

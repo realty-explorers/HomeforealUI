@@ -22,6 +22,13 @@ import {
 } from '@/components/ui/tooltip';
 import TermsOfService from './TermsOfService';
 import UserKyc from '@/content/Management/Users/profile/UserKYC';
+import { useSelector } from 'react-redux';
+import {
+  selectAuth,
+  setShowVerificationDialog,
+  setVerificationStep
+} from '@/store/slices/authSlice';
+import { useAppDispatch } from '@/store/hooks';
 
 // Define types for better code clarity
 interface DialogStep {
@@ -41,7 +48,7 @@ interface Benefit {
 const dialogSteps: DialogStep[] = [
   { id: 1, title: 'Welcome', icon: Home },
   { id: 2, title: 'Terms', icon: FileCheck2 },
-  { id: 3, title: 'KYC', icon: Shield }
+  { id: 3, title: 'Verification', icon: Shield }
 ];
 
 const benefits = [
@@ -71,34 +78,38 @@ const benefits = [
   }
 ];
 
-interface IntroDialogProps {
-  open: boolean;
-  setOpen: (open: boolean) => void;
-  step: number;
-  setStep: (step: number) => void;
-}
+interface IntroDialogProps {}
 
-const IntroDialog: React.FC<IntroDialogProps> = ({
-  open,
-  setOpen,
-  step,
-  setStep
-}) => {
+const IntroDialog: React.FC<IntroDialogProps> = ({}) => {
+  const { verificationStep, showVerificationDialog } = useSelector(selectAuth);
+  const dispatch = useAppDispatch();
+
+  const setOpen = (open: boolean) => {
+    dispatch(setShowVerificationDialog(open));
+  };
+
+  const setStep = (step: number) => {
+    dispatch(setVerificationStep(step));
+  };
   const [accepted, setAccepted] = useState<boolean>(false);
   const contentRef = useRef<HTMLDivElement>(null);
 
-  const progress = (step / dialogSteps.length) * 100;
+  const progress = (verificationStep / dialogSteps.length) * 100;
 
   const handleNext = () => {
-    if (step < dialogSteps.length) {
-      setStep(step + 1);
+    if (verificationStep < dialogSteps.length) {
+      dispatch(
+        setVerificationStep(
+          verificationStep < dialogSteps.length ? verificationStep + 1 : 1
+        )
+      );
     } else {
       setOpen(false);
     }
   };
 
-  const renderStepContent = () => {
-    switch (step) {
+  const renderverificationStepContent = () => {
+    switch (verificationStep) {
       case 1:
         return (
           <div className="grid gap-4 mb-8">
@@ -156,11 +167,12 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
                 </div>
               </div>
               <h3 className="font-semibold text-lg mb-2">
-                Fast & Secure KYC Process
+                Fast & Secure Identity Verification Process
               </h3>
               <p className="text-gray-600 text-sm mb-6">
-                Our AI-powered verification takes less than 2 minutes! No more
-                endless form filling - just snap, verify, and you're done! 🚀
+                We need to verify your identity to ensure a secure experience.
+                <br />
+                Our AI-powered verification takes less than 2 minutes!
               </p>
               <UserKyc />
               {/* <Button */}
@@ -181,11 +193,11 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
   };
 
   const getNextButtonText = () => {
-    switch (step) {
+    switch (verificationStep) {
       case 1:
         return 'Review Terms';
       case 2:
-        return 'Start KYC';
+        return 'Start Verification';
       case 3:
         return 'Complete Setup';
       default:
@@ -197,10 +209,10 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
     if (contentRef.current) {
       contentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [step]);
+  }, [verificationStep]);
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={showVerificationDialog} onOpenChange={setOpen}>
       <DialogContent className="bg-white rounded-2xl w-[90%] md:w-full max-w-2xl overflow-hidden shadow-2xl animate-fade-up max-h-[70%] flex flex-col p-0">
         <div className="hidden md:flex bg-gradient-to-r p-8 relative overflow-hidden justify-center">
           <div className="relative z-10">
@@ -225,17 +237,19 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
                 <div
                   key={dialogStep.id}
                   className={`flex flex-col items-center ${
-                    dialogStep.id <= step ? 'text-primary' : 'text-gray-400'
+                    dialogStep.id <= verificationStep
+                      ? 'text-primary'
+                      : 'text-gray-400'
                   }`}
                 >
                   <div
                     className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${
-                      dialogStep.id <= step
+                      dialogStep.id <= verificationStep
                         ? 'bg-primary text-white'
                         : 'bg-gray-100'
                     }`}
                   >
-                    {dialogStep.id < step ? (
+                    {dialogStep.id < verificationStep ? (
                       <Check className="w-5 h-5" />
                     ) : (
                       <StepIcon className="w-5 h-5" />
@@ -249,7 +263,7 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
         </div>
         {/* Content */}
         <div className="px-8 pt-8 flex-grow overflow-y-auto" ref={contentRef}>
-          {renderStepContent()}
+          {renderverificationStepContent()}
         </div>
         <div className="pb-8 px-4 pt-0">
           {/* Action buttons */}
@@ -266,7 +280,7 @@ const IntroDialog: React.FC<IntroDialogProps> = ({
                 <TooltipTrigger asChild>
                   <Button
                     onClick={handleNext}
-                    disabled={step === 2 && !accepted}
+                    disabled={verificationStep === 2 && !accepted}
                     className="bg-gradient-to-r from-primary to-secondary text-white px-6 py-2 rounded-xl hover:opacity-90 transition-all duration-300 flex items-center shadow-lg hover:shadow-xl disabled:opacity-50"
                   >
                     <span>{getNextButtonText()}</span>
