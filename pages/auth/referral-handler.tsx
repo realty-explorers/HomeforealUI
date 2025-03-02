@@ -110,8 +110,8 @@ export default function ReferralHandler() {
       )}
 
       {status === 'AUTH_SUCCESS' && (
-        <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
-          <div className="max-w-md w-full mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 animate-fade-in flex flex-col justify-center items-center">
+        <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-gray-50 to-gray-100 ">
+          <div className="max-w-md w-full mx-auto bg-white rounded-xl shadow-sm p-8 animate-fade-in flex flex-col justify-center items-center">
             <h1 className="text-2xl font-medium mb-6 text-center">
               Authentication Complete
             </h1>
@@ -126,8 +126,8 @@ export default function ReferralHandler() {
       )}
 
       {status === 'AUTH_FAILED' && (
-        <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950">
-          <div className="max-w-md w-full mx-auto bg-white dark:bg-gray-800 rounded-xl shadow-sm p-8 animate-fade-in flex flex-col justify-center items-center">
+        <div className="min-h-screen flex flex-col items-center justify-center p-6 bg-gradient-to-b from-gray-50 to-gray-100 ">
+          <div className="max-w-md w-full mx-auto bg-white rounded-xl shadow-sm p-8 animate-fade-in flex flex-col justify-center items-center">
             <h1 className="text-2xl font-medium mb-6 text-center">
               Authentication Failed
             </h1>

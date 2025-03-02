@@ -1,9 +1,19 @@
 import { NextResponse } from 'next/server';
 import { NextRequestWithAuth, withAuth } from 'next-auth/middleware';
+import { getToken } from 'next-auth/jwt';
 
 // First, handle the referral parameter without the withAuth wrapper
-export function middleware(req: NextRequestWithAuth) {
+export async function middleware(req: NextRequestWithAuth) {
+  console.log('hi');
   const url = req.nextUrl;
+  const token = await getToken({
+    req,
+    secret: process.env.NEXTAUTH_SECRET
+  });
+
+  if (token) {
+    return NextResponse.next();
+  }
 
   // Check for referral parameter first, before any auth checks
   if (url.searchParams.get('referral') === 'projo') {

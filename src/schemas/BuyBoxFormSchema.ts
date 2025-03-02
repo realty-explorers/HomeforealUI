@@ -41,7 +41,7 @@ const propertyCriteriaFormSchema = z
   });
 
 const defaultPropertyCriteriaFormSchema = {
-  propertyTypes: { enabled: false, items: ['singleFamily'] },
+  propertyTypes: { enabled: false, items: ['single_family'] },
   beds: {
     enabled: false,
     min: defaults.bedrooms.min,

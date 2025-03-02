@@ -207,7 +207,7 @@ const defaultSimilarityFields = {
     name: 'Sale Date',
     type: 'range',
     min: 0,
-    max: 12,
+    max: 36,
     step: 1
   }
 };
