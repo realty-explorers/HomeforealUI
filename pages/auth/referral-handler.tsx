@@ -36,8 +36,9 @@ export default function ReferralHandler() {
     // Function to check localStorage for token
     const checkForToken = (returnTo: string) => {
       try {
-        const token = localStorage.getItem('authToken');
+        // const token = localStorage.getItem('authToken');
         const email = localStorage.getItem('email');
+        const token = '1234';
         if (token && status !== 'Token found, authenticating...') {
           // setStatus('Token found, authenticating...');
           console.log('found token, current status:', status);
