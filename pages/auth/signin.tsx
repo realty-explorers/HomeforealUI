@@ -1,33 +1,25 @@
-import { signIn } from 'next-auth/react';
+// pages/auth/signin.js
 import { useEffect } from 'react';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import { useSearchParams } from 'next/navigation';
 
-export default function CustomSignIn() {
+export default function SignIn() {
+  const router = useRouter();
+
+  const searchParams = useSearchParams();
+
+  const callbackUrl = router.query.callbackUrl as string;
+
+  useEffect(() => {
+    const callbackUrl = searchParams.get('callbackUrl') || '';
+    // Automatically trigger Cognito sign-in as soon as the component mounts
+    signIn('cognito', { callbackUrl: callbackUrl || '/' });
+  }, [callbackUrl]);
+
   return (
-    <div className="custom-auth-form">
-      <h1>Welcome to My App</h1>
-
-      {/* Custom Email/Password Form */}
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          signIn('cognito', {}); // Triggers Cognito flow without hosted UI
-        }}
-      >
-        <input name="email" placeholder="Email" />
-        <input name="password" type="password" placeholder="Password" />
-        <button type="submit">Sign In</button>
-      </form>
-
-      {/* Social Login Buttons */}
-      <button
-        onClick={() =>
-          signIn('cognito', {
-            identity_provider: 'Google'
-          })
-        }
-      >
-        Continue with Google
-      </button>
+    <div>
+      <p>Initiating sign-in with Cognito...</p>
     </div>
   );
 }
