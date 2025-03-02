@@ -26,7 +26,7 @@ export function middleware(req: NextRequestWithAuth) {
   // This will only run for protected routes defined in the matcher
   if (url.pathname.startsWith('/dashboards/real-estate')) {
     // Let withAuth handle this route
-    return withAuth(req, 'cognito');
+    return withAuth(req);
   }
 
   // For all other routes, just proceed normally
