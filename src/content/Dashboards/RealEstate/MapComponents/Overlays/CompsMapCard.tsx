@@ -141,7 +141,7 @@ const CompsMapCard: React.FC<CompsMapCardProps> = (
             {Math.round(props.property.similarityScore * 100)}% Similarity
           </Typography>
         </div>
-        {props.property.isArv25th && (
+        {props.property.isArv25 && (
           <div className="absolute bottom-1 right-1 bg-arv text-white font-poppins text-[0.7rem] px-2 rounded-lg font-semibold">
             25th ARV
           </div>

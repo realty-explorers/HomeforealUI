@@ -35,7 +35,7 @@ interface CompData extends Property {
   distance: number;
   similarityColor: string;
   similarityScore: number;
-  isArv25th: boolean;
+  isArv25: boolean;
 }
 
 interface FilteredComp extends CompData {

@@ -135,7 +135,7 @@ const CompsCard = (props: CompsCardProps) => {
         <Typography className={styles.propertyHeader}>
           Comp {props.index + 1}
         </Typography>
-        {props.compsProperty.isArv25th && (
+        {props.compsProperty.isArv25 && (
           <Tooltip title="Included in 25th ARV Calculation">
             <div className="font-poppins font-semibold text-white bg-arv px-2 rounded-lg absolute top-0 right-0">
               25th ARV
