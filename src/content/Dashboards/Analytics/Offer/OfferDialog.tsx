@@ -106,13 +106,13 @@ const OfferDialog = (props: OfferDialogProps) => {
   const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmitForm = async () => {
-    const completeOutput = await trigger();
-    if (!completeOutput) {
-      enqueueSnackbar(`Some steps are not completed`, {
-        variant: 'error'
-      });
-      return;
-    }
+    // const completeOutput = await trigger();
+    // if (!completeOutput) {
+    //   enqueueSnackbar(`Some steps are not completed`, {
+    //     variant: 'error'
+    //   });
+    //   return;
+    // }
     await handleSubmit(onSubmit)();
   };
 

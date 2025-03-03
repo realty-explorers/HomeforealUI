@@ -53,7 +53,7 @@ export const OfferSchema = z.object({
   propertyTerms: z.object({
     conductInspection: z.boolean(),
     isInspectionContingent: z.boolean().optional(),
-    inspectionDurationDays: daysSchema.optional(),
+    inspectionDurationDays: z.number().nonnegative().optional(),
     lease: z.boolean()
   }),
 
