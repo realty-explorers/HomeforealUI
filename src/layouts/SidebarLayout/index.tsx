@@ -12,6 +12,7 @@ import IntroDialog from '@/components/Modals/Intro/IntroDialog';
 import { useSession } from 'next-auth/react';
 import { useAppDispatch } from '@/store/hooks';
 import { setShowVerificationDialog } from '@/store/slices/authSlice';
+import { useLazyCheckUserVerifiedQuery } from '@/store/services/userApi';
 
 const drawerWidth = 240;
 
@@ -42,12 +43,31 @@ interface SidebarLayoutProps {
 const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
   const theme = useTheme();
   const [open, setOpen] = useState<boolean>(false);
-  const { data, status } = useSession();
+  const { data, status, update } = useSession();
   const dispatch = useAppDispatch();
 
+  const [getVerification, verificationStatus] = useLazyCheckUserVerifiedQuery();
+
   useEffect(() => {
-    if (data?.user && !data?.user?.verified) {
-      dispatch(setShowVerificationDialog(true));
+    if (!data?.user) return;
+    const fetchVerification = async () => {
+      const response = await getVerification({}).unwrap();
+      if (response === true) {
+        update({
+          ...data,
+          user: {
+            ...data.user,
+            verified: true
+          }
+        });
+      } else {
+        dispatch(setShowVerificationDialog(true));
+      }
+      console.log('response', response);
+      return response === true;
+    };
+    if (!data?.user?.verified) {
+      fetchVerification();
     }
   }, [data?.user?.verified]);
 

@@ -33,7 +33,7 @@ const MoreDetails = ({
         {/* <PropertyDetails */}
         {/*   property={props.property || ({} as AnalyzedProperty)} */}
         {/* /> */}
-        {/* <SaleComparableIndicators property={selectedProperty} /> */}
+        <SaleComparableIndicators property={selectedProperty} />
         <PropertyFacts property={selectedProperty} />
         <SaleComparable property={selectedProperty} />
         <SalesComps />

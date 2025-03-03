@@ -105,7 +105,7 @@ export const authOptions = {
       };
     },
 
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account, session, trigger }) {
       console.log('**** jwt ****');
       if (account && user) {
         let userData;
@@ -165,6 +165,9 @@ export const authOptions = {
         //   ...userData,
         //   user
         // };
+      }
+      if (trigger === 'update' && session?.user?.verified !== undefined) {
+        token.verified = session.user.verified;
       }
       if (Date.now() < token.accessTokenExpires) {
         return token;

@@ -29,6 +29,9 @@ import {
   setVerificationStep
 } from '@/store/slices/authSlice';
 import { useAppDispatch } from '@/store/hooks';
+import { useLazyGetLocationDataQuery } from '@/store/services/locationApiService';
+import { useLazyCheckUserVerifiedQuery } from '@/store/services/userApi';
+import { useSession } from 'next-auth/react';
 
 // Define types for better code clarity
 interface DialogStep {
@@ -81,6 +84,7 @@ const benefits = [
 interface IntroDialogProps {}
 
 const IntroDialog: React.FC<IntroDialogProps> = ({}) => {
+  const session = useSession();
   const { verificationStep, showVerificationDialog } = useSelector(selectAuth);
   const dispatch = useAppDispatch();
 
@@ -205,11 +209,21 @@ const IntroDialog: React.FC<IntroDialogProps> = ({}) => {
     }
   };
 
+  const [getVerification, verificationStatus] = useLazyCheckUserVerifiedQuery();
+
   useEffect(() => {
+    if (!session?.user?.user) return;
+    if (!session.user.user.verified) {
+      const fetchVerification = async () => {
+        const response = await getVerification({}).unwrap();
+        console.log('response', response);
+      };
+      fetchVerification();
+    }
     if (contentRef.current) {
       contentRef.current.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [verificationStep]);
+  }, [verificationStep, session?.user?.user?.verified]);
 
   return (
     <Dialog open={showVerificationDialog} onOpenChange={setOpen}>

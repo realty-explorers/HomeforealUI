@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const getUser = async (userId: string, token: string) => {
   try {
-    const url = `${process.env.NEXT_PUBLIC_USER_SERVICE_URL}/v1/user/${userId}`;
+    const url = `${process.env.NEXT_PUBLIC_USER_SERVICE_URL}/v1/user/user/${userId}`;
     const response = await axios.get(url, {
       headers: {
         Authorization: `Bearer ${token}`

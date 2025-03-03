@@ -62,10 +62,15 @@ export const userApi = createApi({
         method: 'POST',
         body
       })
+    }),
+
+    checkUserVerified: builder.query({
+      query: () => ({ url: '/v1/user/verified' })
     })
   })
 });
 
 export const userApiEndpoints = userApi.endpoints;
 
-export const { useCreateKYCSessionMutation } = userApi;
+export const { useCreateKYCSessionMutation, useLazyCheckUserVerifiedQuery } =
+  userApi;
