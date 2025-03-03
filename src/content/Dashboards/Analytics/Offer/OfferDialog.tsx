@@ -30,7 +30,7 @@ import { motion } from 'framer-motion';
 import { useSnackbar } from 'notistack';
 import clsx from 'clsx';
 import { ArrowForwardIos, RestartAltOutlined } from '@mui/icons-material';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import OfferFinancing from './OfferSteps/OfferFinancing';
 import {
   defaultOfferData,
@@ -41,6 +41,9 @@ import OfferPropertyDetails from './OfferSteps/OfferPropertyDetails';
 import OfferPartyDetails from './OfferSteps/OfferPartyDetails';
 import OfferFinalSteps from './OfferSteps/OfferFinalSteps';
 import OfferDialogTitle from './OfferDialogTitle';
+import { useCreateOfferMutation } from '@/store/services/offersApi';
+import { selectProperties } from '@/store/slices/propertiesSlice';
+import { useSession } from 'next-auth/react';
 
 const steps: {
   title: string;
@@ -75,7 +78,12 @@ type OfferDialogProps = {
 };
 
 const OfferDialog = (props: OfferDialogProps) => {
+  const session = useSession();
+  const [createOffer, offerState] = useCreateOfferMutation();
   const [activeStep, setActiveStep] = useState(0);
+
+  const { selectedPropertyPreview, selectedProperty } =
+    useSelector(selectProperties);
 
   const {
     register,
@@ -141,7 +149,30 @@ const OfferDialog = (props: OfferDialogProps) => {
   };
 
   const onSubmit = async (data: any) => {
-    handleClose();
+    try {
+      const userId = session.data.user.id;
+      const analysisId = selectedProperty.id;
+      const response = await createOffer({
+        userId,
+        analysisId,
+        offerData: data
+      }).unwrap();
+      enqueueSnackbar(`Offer created successfully`, {
+        variant: 'success'
+      });
+    } catch (error) {
+      const statusCode = error?.status;
+      if (statusCode === 409) {
+        enqueueSnackbar(`You already sent an offer for this property`, {
+          variant: 'warning'
+        });
+      } else {
+        enqueueSnackbar(`Error creating offer`, {
+          variant: 'error'
+        });
+      }
+    }
+    // handleClose();
   };
 
   const handleResetBuyBox = () => {
@@ -308,19 +339,19 @@ const OfferDialog = (props: OfferDialogProps) => {
             >
               {StepSections}
               {FormFooter}
-              <pre>
-                {Object.entries(errors).map(([key, error]) => (
-                  <li key={key}>
-                    {key}:{' '}
-                    {Object.entries(error).map(([key, value]) => (
-                      <li key={key}>
-                        {key}: {value.message}
-                      </li>
-                    ))}
-                    )
-                  </li>
-                ))}
-              </pre>
+              {/* <pre> */}
+              {/*   {Object.entries(errors).map(([key, error]) => ( */}
+              {/*     <li key={key}> */}
+              {/*       {key}:{' '} */}
+              {/*       {Object.entries(error).map(([key, value]) => ( */}
+              {/*         <li key={key}> */}
+              {/*           {key}: {value.message} */}
+              {/*         </li> */}
+              {/*       ))} */}
+              {/*       ) */}
+              {/*     </li> */}
+              {/*   ))} */}
+              {/* </pre> */}
             </form>
           </div>
         </div>
