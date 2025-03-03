@@ -103,6 +103,19 @@ const OfferDialog = (props: OfferDialogProps) => {
     // defaultValues: getDefaultData(),
   });
 
+  useEffect(() => {
+    reset({
+      ...defaultOfferData,
+      buyerDetails: {
+        email: session?.data?.user?.email || ''
+      },
+      financialDetails: {
+        ...defaultOfferData.financialDetails,
+        purchasePrice: selectedPropertyPreview?.price || 0
+      }
+    });
+  }, [selectedPropertyPreview]);
+
   const { enqueueSnackbar } = useSnackbar();
 
   const handleSubmitForm = async () => {
