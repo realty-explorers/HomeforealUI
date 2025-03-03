@@ -107,7 +107,7 @@ const MarginInfo = (props: MarginInfoProps) => {
       </Typography>
 
       <MarginInfoChips
-        amount={saleCalculatedProperty?.arvPrice}
+        amount={saleCalculatedProperty?.arv25Price}
         // percent={saleCalculatedProperty?.arv_percentage.toFixed()}
         // margin={0}
 
