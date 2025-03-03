@@ -22,9 +22,9 @@ interface LoadingScreenProps {
 
 const LoadingScreen = ({
   companyOneLogoUrl = '/company-logo-1.svg',
-  companyTwoLogoUrl = '/company-logo-2.svg',
+  companyTwoLogoUrl,
   companyOneName = 'Company One',
-  companyTwoName = 'Company Two',
+  companyTwoName,
   message = 'Authenticating your session'
 }: LoadingScreenProps) => {
   // const [dots, setDots] = useState('');
@@ -63,35 +63,39 @@ const LoadingScreen = ({
               />
             </div>
 
-            <div className="relative h-10 w-10 flex items-center justify-center">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <CustomSpinner color="#9b87f5" size={40} />
-              </div>
-              <div className="z-10 w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center">
-                <LogIn size={20} color="#9b87f5" />
-              </div>
-            </div>
+            {companyTwoLogoUrl && (
+              <>
+                <div className="relative h-10 w-10 flex items-center justify-center">
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <CustomSpinner color="#9b87f5" size={40} />
+                  </div>
+                  <div className="z-10 w-8 h-8 rounded-full bg-white shadow-sm flex items-center justify-center">
+                    <LogIn size={20} color="#9b87f5" />
+                  </div>
+                </div>
 
-            <div
-              className="w-20 h-20 flex items-center justify-center ml-3 p-2 bg-white rounded-lg shadow-sm animate-fade-in"
-              style={{ animationDelay: '0.2s' }}
-            >
-              <Image
-                src={companyTwoImgSrc}
-                alt={companyTwoName}
-                width={80}
-                height={80}
-                className="max-w-full max-h-full object-contain"
-                onError={() => {
-                  setCompanyTwoImgSrc(
-                    `https://via.placeholder.com/100?text=${companyTwoName.charAt(
-                      0
-                    )}`
-                  );
-                }}
-                priority
-              />
-            </div>
+                <div
+                  className="w-20 h-20 flex items-center justify-center ml-3 p-2 bg-white rounded-lg shadow-sm animate-fade-in"
+                  style={{ animationDelay: '0.2s' }}
+                >
+                  <Image
+                    src={companyTwoImgSrc}
+                    alt={companyTwoName}
+                    width={80}
+                    height={80}
+                    className="max-w-full max-h-full object-contain"
+                    onError={() => {
+                      setCompanyTwoImgSrc(
+                        `https://via.placeholder.com/100?text=${companyTwoName.charAt(
+                          0
+                        )}`
+                      );
+                    }}
+                    priority
+                  />
+                </div>
+              </>
+            )}
           </div>
 
           {/* Loading message */}

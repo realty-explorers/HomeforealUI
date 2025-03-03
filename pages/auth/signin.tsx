@@ -3,6 +3,7 @@ import { useEffect } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
+import LoadingScreen from '@/components/Auth/LoadingScreen';
 
 export default function SignIn() {
   const router = useRouter();
@@ -18,8 +19,11 @@ export default function SignIn() {
   }, [callbackUrl]);
 
   return (
-    <div>
-      <p>Initiating sign-in with Cognito...</p>
+    <div className="min-h-screen">
+      <LoadingScreen
+        message="Authenticating..."
+        companyOneLogoUrl="/static/images/logo/hlogo.png"
+      />
     </div>
   );
 }
