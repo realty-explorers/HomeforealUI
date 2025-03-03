@@ -27,18 +27,18 @@ const LoadingScreen = ({
   companyTwoName = 'Company Two',
   message = 'Authenticating your session'
 }: LoadingScreenProps) => {
-  const [dots, setDots] = useState('');
+  // const [dots, setDots] = useState('');
   const [companyOneImgSrc, setCompanyOneImgSrc] = useState(companyOneLogoUrl);
   const [companyTwoImgSrc, setCompanyTwoImgSrc] = useState(companyTwoLogoUrl);
 
   // Animated dots for the loading message
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setDots((prev) => (prev.length < 3 ? prev + '.' : ''));
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, []);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     setDots((prev) => (prev.length < 3 ? prev + '.' : ''));
+  //   }, 500);
+  //
+  //   return () => clearInterval(interval);
+  // }, []);
 
   return (
     <div className="fixed inset-0 w-full h-full flex items-center justify-center bg-gradient-to-b from-gray-50 to-gray-100 z-50">
@@ -98,7 +98,7 @@ const LoadingScreen = ({
           <div className="text-center mb-6">
             <h2 className="text-xl font-medium mb-1 text-gray-800 dark:text-gray-100">
               {message}
-              <span>{dots}</span>
+              {/* <span>{dots}</span> */}
             </h2>
             <p className="text-sm text-gray-500 dark:text-gray-400">
               Establishing secure connection between systems

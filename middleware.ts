@@ -4,7 +4,6 @@ import { getToken } from 'next-auth/jwt';
 
 // First, handle the referral parameter without the withAuth wrapper
 export async function middleware(req: NextRequestWithAuth) {
-  console.log('hi');
   const url = req.nextUrl;
   const token = await getToken({
     req,

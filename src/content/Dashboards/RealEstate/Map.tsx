@@ -317,7 +317,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   }
 
   useEffect(() => {
-    if (!router.isReady || !user) return;
+    if (!router.isReady || !user?.user) return;
     //TODO: check auth
     console.log('selectedBuyBoxId', selectedBuyBoxId);
     console.log('selectedPropertyId', selectedPropertyId);
@@ -326,7 +326,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       selectPropertyId(
         selectedBuyBoxId,
         selectedPropertyId,
-        !user?.user?.verified || true
+        !user.user.verified
       );
     } else {
       dispatch(setSelectedPropertyPreview(null));

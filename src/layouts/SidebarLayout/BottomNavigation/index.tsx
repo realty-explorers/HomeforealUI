@@ -1,19 +1,19 @@
-import { useContext, useState } from "react";
+import { useContext, useState } from 'react';
 
 import {
   BottomNavigation as MuiBottomNavigation,
   BottomNavigationAction,
-  useTheme,
-} from "@mui/material";
-import { SidebarContext } from "src/contexts/SidebarContext";
-import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
-import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
-import Inventory2RoundedIcon from "@mui/icons-material/Inventory2Rounded";
-import MapRoundedIcon from "@mui/icons-material/MapRounded";
-import SearchIcon from "@mui/icons-material/Search";
-import { usePathname } from "next/navigation";
-import clsx from "clsx";
-import SvgIcon from "@mui/material/SvgIcon";
+  useTheme
+} from '@mui/material';
+import { SidebarContext } from 'src/contexts/SidebarContext';
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
+import Inventory2RoundedIcon from '@mui/icons-material/Inventory2Rounded';
+import MapRoundedIcon from '@mui/icons-material/MapRounded';
+import SearchIcon from '@mui/icons-material/Search';
+import { usePathname, useSearchParams } from 'next/navigation';
+import clsx from 'clsx';
+import SvgIcon from '@mui/material/SvgIcon';
 
 const HomeIcon = (props) => {
   return (
@@ -75,24 +75,30 @@ const ProfileIcon = () => {
 
 type BottomNavigationProps = {};
 const BottomNavigation = (props: BottomNavigationProps) => {
+  const searchParams = useSearchParams();
+  const referral = searchParams.get('referral');
   const { sidebarToggle, toggleSidebar } = useContext(SidebarContext);
   const theme = useTheme();
   const pathname = usePathname();
 
   const getValue = () => {
     switch (pathname) {
-      case "/":
+      case '/':
         return 0;
-      case "/dashboards/real-estate":
+      case '/dashboards/real-estate':
         return 1;
-      case "/dashboards/buybox":
+      case '/dashboards/buybox':
         return 2;
-      case "/management/profile":
+      case '/management/profile':
         return 3;
       default:
         return 0;
     }
   };
+
+  if (referral === 'projo') {
+    return null;
+  }
 
   return (
     <div className="flex md:hidden bottom-0 w-full z-[1]">

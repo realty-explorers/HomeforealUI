@@ -105,8 +105,6 @@ const steps = [
 ];
 
 const DashboardRealEstate = (props: any) => {
-  // const session = useSession();
-
   const [tour, setTour] = useState(false);
   const dispatch = useDispatch();
   const {
@@ -125,9 +123,9 @@ const DashboardRealEstate = (props: any) => {
   const openMoreDetails = selectedPropertyPreview;
 
   const selectedPropertyState =
-    propertiesApiEndpoints.getProperty.useQueryState(
-      selectedPropertyPreview?.id
-    );
+    propertiesApiEndpoints.getProperty.useQueryState({
+      property_id: selectedPropertyPreview?.id
+    });
 
   const handleSelectRentalComps = (compsProperties: FilteredComp[]) => {
     dispatch(setSelectedRentalComps(compsProperties));
