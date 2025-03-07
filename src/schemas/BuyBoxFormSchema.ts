@@ -8,7 +8,8 @@ import {
   MinField,
   minSchema
 } from './FormSchemas';
-import { targetLocationSchema } from './BuyBoxSchemas';
+import { targetLocationSchema, weightSchema } from './BuyBoxSchemas';
+import { DEFAULT_ATTRIBUTES, PropertyWeights } from '@/utils/propertyUtils';
 
 const propertyCriteriaFormSchema = z
   .object({
@@ -170,23 +171,28 @@ const formBuyBoxSchema = z.object({
     .min(3, 'Name must be at least 3 characters long')
     .default(''),
   description: z.string().optional(),
-  targetLocations: z.array(targetLocationSchema),
+  targetLocations: z
+    .array(targetLocationSchema)
+    .min(1, 'At least one location is required')
+    .max(3, 'No more than three locations are allowed'),
   propertyCriteria: propertyCriteriaFormSchema,
   strategy: strategyFormSchema.default(defaultStrategyFormSchema),
-  // similarityCriteria: similarityCriteriaFormSchema
-  similarityCriteria: z
-    .array(similarityCriteriaFormSchema)
-    .transform((criteria) =>
-      criteria
-        .filter((item) => item.enabled && item.enabled == true)
-        .map((item) => {
-          const { enabled, ...rest } = item;
-          return rest;
-        })
-    )
-  // propertyCriteria: propertyCriteriaFormSchema.default(
-  //   defaultPropertyCriteriaFormSchema
-  // )
+  weights: weightSchema.default(
+    DEFAULT_ATTRIBUTES.reduce((acc, attr) => {
+      acc[attr.id] = attr.defaultWeight;
+      return acc;
+    }, {} as PropertyWeights)
+  )
+  // similarityCriteria: z
+  //   .array(similarityCriteriaFormSchema)
+  //   .transform((criteria) =>
+  //     criteria
+  //       .filter((item) => item.enabled && item.enabled == true)
+  //       .map((item) => {
+  //         const { enabled, ...rest } = item;
+  //         return rest;
+  //       })
+  //   )
 });
 
 const getDefaultBuyBoxFormData = () => {
@@ -196,12 +202,16 @@ const getDefaultBuyBoxFormData = () => {
     targetLocations: [],
     propertyCriteria: defaultPropertyCriteriaFormSchema,
     strategy: defaultStrategyFormSchema,
-    similarityCriteria: [
-      defaultSimilarityCriteriaFormSchemaFirstRank,
-      defaultSimilarityCriteriaFormSchemaSecondRank,
-      defaultSimilarityCriteriaFormSchemaThirdRank,
-      defaultSimilarityCriteriaFormSchemaFourthRank
-    ]
+    weights: DEFAULT_ATTRIBUTES.reduce((acc, attr) => {
+      acc[attr.id] = attr.defaultWeight;
+      return acc;
+    }, {} as PropertyWeights)
+    // similarityCriteria: [
+    //   defaultSimilarityCriteriaFormSchemaFirstRank,
+    //   defaultSimilarityCriteriaFormSchemaSecondRank,
+    //   defaultSimilarityCriteriaFormSchemaThirdRank,
+    //   defaultSimilarityCriteriaFormSchemaFourthRank
+    // ]
   };
 };
 

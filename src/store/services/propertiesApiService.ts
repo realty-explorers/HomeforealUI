@@ -155,7 +155,7 @@ export const propertiesApi = createApi({
           masked ? 'essential' : 'full'
         }`;
       },
-      transformResponse: (response: AnalyzedProperty) => {
+      transformResponse: async (response: AnalyzedProperty) => {
         try {
           return response;
         } catch (e) {

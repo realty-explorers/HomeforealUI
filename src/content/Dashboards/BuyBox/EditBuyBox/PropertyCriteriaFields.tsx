@@ -140,7 +140,11 @@ const PropertyCriteriaFields = ({
       {range_fields.map((field, index) => {
         return (
           <>
-            <div className={clsx(['flex w-full item-center'])}>
+            <div
+              className={clsx([
+                'flex w-full item-center justify-center lg:justify-normal'
+              ])}
+            >
               <SwitchField
                 fieldName={`${field.fieldName}.enabled`}
                 control={control}
@@ -156,6 +160,7 @@ const PropertyCriteriaFields = ({
               prefix={field.prefix}
               formatLabelAsNumber={field.formatLabelAsNumber}
               fieldName={`${field.fieldName}`}
+              className="hidden md:flex"
               disabled={
                 !watch(`${field.fieldName}.enabled` as Path<BuyBoxFormData>)
               }

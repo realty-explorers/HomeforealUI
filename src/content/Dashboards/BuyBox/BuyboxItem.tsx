@@ -14,12 +14,13 @@ import {
   Typography
 } from '@mui/material';
 
+import { Button as ShadButton } from '@/components/ui/button';
+
 import LinearProgress from '@mui/material/LinearProgress';
 import styles from './BuyboxItem.module.scss';
 import clsx from 'clsx';
 import BuyBox from '@/models/buybox';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
-import SettingsOutlinedIcon from '@mui/icons-material/SettingsOutlined';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
@@ -40,6 +41,7 @@ import { analysisApi } from '@/store/services/analysisApi';
 import { timeSince } from '@/utils/dateUtils';
 import Chip from '@/components/Chip';
 import BuyBoxStatistics from './BuyBoxStatistics';
+import { Trash2, Settings } from 'lucide-react';
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -240,7 +242,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
                     >
                       Analyzing BuyBox
                     </Typography>
-                    <SettingsOutlinedIcon
+                    <Settings
                       fontSize="small"
                       className={clsx([styles.loading, 'text-white mx-2'])}
                     />
@@ -260,26 +262,25 @@ const BuyboxItem = (props: BuyboxItemProps) => {
             )}
             <div className="flex gap-x-2">
               {allowedToEdit && !running && (
-                <Button
-                  startIcon={<DeleteForeverIcon />}
+                <ShadButton
                   className="bg-red-500 hover:bg-red-700 text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
                   onClick={handleDeleteClick}
                 >
-                  Remove
-                </Button>
+                  <Trash2 className="h-5 w-5" />
+                  <span className="hidden md:flex">Remove</span>
+                </ShadButton>
               )}
               {!running && (
-                <Button
-                  startIcon={
-                    allowedToEdit ? (
-                      <SettingsOutlinedIcon className="className" />
-                    ) : null
-                  }
+                <ShadButton
                   className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
                   onClick={handleEditBuyBox}
                 >
-                  {allowedToEdit ? 'Configure' : 'View'}
-                </Button>
+                  {allowedToEdit ? <Settings className="h-5 w-5" /> : null}
+
+                  <span className="hidden md:flex">
+                    {allowedToEdit ? 'Configure' : 'View'}
+                  </span>
+                </ShadButton>
               )}
 
               {allowedToEdit &&

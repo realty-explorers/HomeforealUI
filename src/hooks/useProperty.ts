@@ -71,10 +71,11 @@ export const useProperty = () => {
           } as PropertyPreview)
         );
         const location = {
-          type: 'neighborhood',
+          type: propertyData.location.neighborhood ? 'neighborhood' : 'zipcode',
           city: propertyData.location.city,
           state: propertyData.location.state,
-          neighborhood: propertyData.location.neighborhood
+          neighborhood: propertyData.location.neighborhood,
+          zipcode: propertyData.location.zipCode
         };
         const locationData = await getLocationData(location).unwrap();
         dispatch(setSelectedPropertyLocation(locationData));
@@ -104,10 +105,11 @@ export const useProperty = () => {
       ).unwrap();
       if (propertyData) {
         const location = {
-          type: 'neighborhood',
+          type: propertyData.location.neighborhood ? 'neighborhood' : 'zipcode',
           city: propertyData.location.city,
           state: propertyData.location.state,
-          neighborhood: propertyData.location.neighborhood
+          neighborhood: propertyData.location.neighborhood,
+          zipcode: propertyData.location.zipCode
         };
         const locationData = await getLocationData(location).unwrap();
         dispatch(setSelectedPropertyLocation(locationData));
@@ -140,7 +142,9 @@ export const useProperty = () => {
   return {
     selectProperty,
     deselectProperty,
-    selectPropertyId
+    selectPropertyId,
+    propertyState,
+    locationState
   };
 };
 

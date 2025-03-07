@@ -1,5 +1,24 @@
 import z from 'zod';
 import { defaults, defaultSimilarityFields } from './defaults';
+import { DEFAULT_ATTRIBUTES, PropertyWeights } from '@/utils/propertyUtils';
+
+export const weightSchema = z
+  .record(
+    z.string(),
+    z
+      .number()
+      .min(0, { message: 'Weight cannot be negative' })
+      .max(100, { message: 'Weight cannot exceed 100' })
+  )
+  .transform((weights: Record<string, number>) => {
+    return Object.keys(weights).reduce(
+      (acc, key) => {
+        acc[key] = weights[key] / 100;
+        return acc;
+      },
+      {} as Record<string, number>
+    );
+  });
 
 const propertyTypeEnum = z.enum([
   'single_family',
@@ -224,17 +243,18 @@ const buyboxSchema = z.object({
     .min(3, 'Name must be at least 3 characters long')
     .default(''),
   description: z.string().optional(),
-  targetLocations: z.array(targetLocationSchema).length(1),
+  targetLocations: z.array(targetLocationSchema).min(1).max(3),
   propertyCriteria: propertyCriteriaSchema.default(defaultPropertyCriteria),
   strategy: strategySchema.default(defaultStrategy),
-  similarityCriteria: z
-    .array(similarityCriteriaSchema)
-    .default([
-      defaultSimilarityCriteriaFirstRank,
-      defaultSimilarityCriteriaSecondRank,
-      defaultSimilarityCriteriaThirdRank,
-      defaultSimilarityCriteriaFourthRank
-    ])
+  weights: weightSchema
+  // similarityCriteria: z
+  //   .array(similarityCriteriaSchema)
+  //   .default([
+  //     defaultSimilarityCriteriaFirstRank,
+  //     defaultSimilarityCriteriaSecondRank,
+  //     defaultSimilarityCriteriaThirdRank,
+  //     defaultSimilarityCriteriaFourthRank
+  //   ])
 });
 
 const getDefaultBuyBoxData = () => {
@@ -244,7 +264,11 @@ const getDefaultBuyBoxData = () => {
     targetLocations: [],
     propertyCriteria: defaultPropertyCriteria,
     strategy: defaultStrategy,
-    similarityCriteria: []
+    weights: DEFAULT_ATTRIBUTES.reduce((acc, attr) => {
+      acc[attr.id] = attr.defaultWeight;
+      return acc;
+    }, {} as PropertyWeights)
+    // similarityCriteria: []
   };
   return defaultData;
 };

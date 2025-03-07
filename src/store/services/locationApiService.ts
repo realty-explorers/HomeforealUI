@@ -29,7 +29,7 @@ export const locationApi = createApi({
     }),
     getLocationData: builder.query({
       // query: ({ display, type, city, state }) => ({ url: "data", params: { display, type, city, state } }),
-      query: ({ type, state, city, zipCode, neighborhood }) => {
+      query: ({ type, state, city, zipcode, neighborhood }) => {
         let queryUrl = '';
         switch (type) {
           case 'city':
@@ -43,6 +43,9 @@ export const locationApi = createApi({
               neighborhood
             }).toString();
             break;
+          case 'zipcode':
+            queryUrl = new URLSearchParams({ type, zipcode }).toString();
+            break;
           default:
             queryUrl = new URLSearchParams({ type, state }).toString();
             break;
@@ -50,7 +53,9 @@ export const locationApi = createApi({
         return `data?${queryUrl}`;
         // return `data?display=&type=${type}&city=${city}&state=${state}`;
       },
-      transformResponse: (response: any) => response,
+      transformResponse: async (response: any) => {
+        return response;
+      },
       providesTags: ['LocationData']
     })
   })

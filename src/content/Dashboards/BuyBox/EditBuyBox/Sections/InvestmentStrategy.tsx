@@ -66,7 +66,7 @@ const InvestmentStrategy = ({
   return (
     <div
       className={clsx([
-        'grid grid-cols-[auto1fr] pt-8 gap-x-8 px-4',
+        'flex flex-col lg:grid lg:grid-cols-[auto_1fr] pt-8 gap-x-8 px-4 gap-y-8',
         styles.fontPoppins
       ])}
     >
@@ -76,7 +76,7 @@ const InvestmentStrategy = ({
           {errors?.strategy?.message?.toString()}
         </span>
       </Typography>
-      <div className="flex flex-col gap-y-4">
+      <div className="flex md:flex-col gap-y-4 gap-x-8 flex-wrap justify-center">
         {investmentTypes.map((type, index) => (
           <Badge
             key={index}

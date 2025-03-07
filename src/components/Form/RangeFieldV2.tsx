@@ -46,7 +46,7 @@ const RangeFieldV2 = <T extends Record<string, any>>({
       name={fieldName}
       control={control}
       render={({ field: { value, onChange }, fieldState: { error } }) => (
-        <div className="grid grid-cols-[1fr_3fr_1fr] w-full gap-x-4 items-center">
+        <div className="flex justify-center md:grid md:grid-cols-[1fr_3fr_1fr] w-full gap-x-4 gap-y-4 items-center">
           <TextField
             label="Min"
             size="small"
