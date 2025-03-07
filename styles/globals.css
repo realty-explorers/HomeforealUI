@@ -271,3 +271,64 @@ img {
 .animate-indeterminate {
   animation: indeterminate-progress 2s ease-in-out infinite;
 }
+
+@layer components {
+  .glass-card {
+    @apply bg-white/60 backdrop-blur-md border border-white/30 shadow-lg;
+  }
+
+  .purple-gradient {
+    @apply bg-gradient-to-r from-violet-600 to-fuchsia-600;
+  }
+
+  .purple-gradient-text {
+    @apply bg-gradient-to-r from-violet-700 to-fuchsia-600 bg-clip-text text-transparent;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .animate-pulse-subtle {
+    animation: pulse-subtle 2s ease-in-out infinite;
+  }
+  .slider-thumb {
+    transition:
+      transform 125ms cubic-bezier(0.4, 0, 0.2, 1),
+      box-shadow 125ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .slider-track {
+    transition: width 125ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  @keyframes float {
+    0% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+    100% {
+      transform: translateY(0px);
+    }
+  }
+
+  @keyframes pulse-subtle {
+    0%,
+    100% {
+      opacity: 1;
+      transform: scale(1);
+    }
+    50% {
+      opacity: 0.85;
+      transform: scale(1.05);
+    }
+  }
+}

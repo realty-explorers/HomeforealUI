@@ -65,7 +65,7 @@ const FixAndFlip = ({
   getValues
 }: FixAndFlipProps) => {
   return (
-    <div className="ml-16">
+    <div className="lg:pl-16 w-full">
       <Typography className={styles.helper_text2}>
         <span className={styles.highlighted}>Fix and Flip</span> is a real
         estate strategy where investors buy rundown properties, renovate them,

@@ -88,7 +88,6 @@ const PropertyPhotos = (props: PropertyPhotosProps) => {
             onClick={() => setOpen(!open)}
             defaultSrc={defaultImage}
           />
-          <p>hi</p>
           {props.photos?.length > 3 && (
             <ThemedButton
               onClick={() => setOpen(!open)}

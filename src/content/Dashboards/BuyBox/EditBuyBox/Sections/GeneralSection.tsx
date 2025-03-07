@@ -29,8 +29,12 @@ const GeneralSection = ({
   errors
 }: GeneralSectionProps) => {
   return (
-    <div className={clsx(['flex justify-center px-4 pt-8 grow gap-x-4'])}>
-      <div className="flex flex-col  h-full w-1/2">
+    <div
+      className={clsx([
+        'flex flex-col sm:flex-row items-center w-full justify-center px-4 pt-8 grow gap-x-4'
+      ])}
+    >
+      <div className="flex flex-col  h-full w-full sm:w-1/2">
         <Typography className={clsx([styles.header, 'mb-12'])}>
           Let’s build your Buy Box preferences
         </Typography>
@@ -61,7 +65,7 @@ const GeneralSection = ({
           className="mb-4"
         />
       </div>
-      <div className="flex w-1/2">
+      <div className="flex w-full sm:w-1/2">
         <HelpOutlineOutlinedIcon className="text-gray-400" />
         <Typography className={styles.helper_text}>
           As an agent your investors have different preferences, help them to

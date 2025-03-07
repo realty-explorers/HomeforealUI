@@ -27,7 +27,7 @@ const gridRows = (property: AnalyzedProperty) => [
   },
   {
     label: 'Lot Sqft',
-    value: property.lot_area,
+    value: property.lotArea,
     averageProperty: 'lot_area'
   },
   {
@@ -48,9 +48,9 @@ const gridRows = (property: AnalyzedProperty) => [
   {
     label: 'Year Built',
     value:
-      typeof property.year_built === 'string'
-        ? property.year_built.slice(0, 4)
-        : property.year_built,
+      typeof property.yearBuilt === 'string'
+        ? property.yearBuilt.slice(0, 4)
+        : property.yearBuilt,
     averageProperty: 'year_built'
   },
   // {

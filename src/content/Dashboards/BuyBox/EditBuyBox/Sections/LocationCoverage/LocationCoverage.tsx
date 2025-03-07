@@ -61,7 +61,7 @@ const LocationCoverage = ({
         locations={locations}
         setLocations={handleSetLocations}
       />
-      <span className="text-red-400"></span>
+      <span className="text-red-400">{errors?.targetLocations?.message}</span>
 
       {/* <Autocomplete */}
       {/*   multiple */}

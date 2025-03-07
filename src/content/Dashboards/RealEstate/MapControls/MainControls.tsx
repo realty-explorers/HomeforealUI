@@ -104,7 +104,8 @@ const MainControls: React.FC<MainControlsProps> = (
       ? {
           suggestion,
           buybox_id: buybox.id,
-          masked: !data?.user?.verified
+          // masked: !data?.user?.verified
+          masked: false
         }
       : skipToken
   );
@@ -127,60 +128,6 @@ const MainControls: React.FC<MainControlsProps> = (
   const router = useRouter();
   const selectedBuyBoxId = router.query.buybox_id as string;
   // const selectedBuyBoxId = searchParams.get('buybox_id');
-
-  useEffect(() => {
-    if (!router.isReady) return;
-    const getBuyBoxesData = async () => {
-      try {
-        const data = await getBuyBoxes('', true).unwrap();
-        if (data && data.length > 0) {
-          if (selectedBuyBoxId) {
-            const selectedBuyBox = data.find(
-              (buybox) => buybox.id === selectedBuyBoxId
-            );
-            if (selectedBuyBox) {
-              dispatch(setBuybox(selectedBuyBox));
-            } else {
-              enqueueSnackbar(`BuyBox not found in your allowed BuyBoxes`, {
-                variant: 'warning'
-              });
-            }
-          } else {
-            // const defaultBuyBox = data.find(
-            //   (buybox) => buybox.parameters.name === 'General BuyBox'
-            // );
-
-            const defaultBuyBox = data[0];
-            router.push(
-              {
-                pathname: router.pathname,
-                query: {
-                  buybox_id: defaultBuyBox.id
-                }
-              },
-              undefined,
-              { shallow: true }
-            );
-            dispatch(setBuybox(defaultBuyBox));
-          }
-        }
-      } catch (error) {
-        let message = 'Something went wrong, try again later :(';
-        console.error(error);
-        if (error.status === 'FETCH_ERROR') {
-          message = `Connection failed, try again later`;
-        } else if (error.status === 401) {
-          message = 'You were disconnected, please sign in again';
-          // router.push('/api/auth/logout');
-          // signOut();
-        }
-        enqueueSnackbar(message, {
-          variant: 'error'
-        });
-      }
-    };
-    getBuyBoxesData();
-  }, [router.isReady]);
 
   useEffect(() => {
     filterPropertiesByValue(0, '', strategy);

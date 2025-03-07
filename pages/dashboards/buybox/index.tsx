@@ -1,15 +1,15 @@
-import BuyboxStatus from "@/content/Dashboards/BuyBox/BuyboxStatus";
-import EditBuyBoxDialog from "@/content/Dashboards/BuyBox/EditBuyBox/EditBuyBoxDialog";
-import SidebarLayout from "@/layouts/SidebarLayout";
-import { Grid } from "@mui/material";
-import dynamic from "next/dynamic";
-import { useState } from "react";
+import BuyboxStatus from '@/content/Dashboards/BuyBox/BuyboxStatus';
+import EditBuyBoxDialog from '@/content/Dashboards/BuyBox/EditBuyBox/EditBuyBoxDialog';
+import SidebarLayout from '@/layouts/SidebarLayout';
+import { Grid } from '@mui/material';
+import dynamic from 'next/dynamic';
+import { useState } from 'react';
 
 const BuyboxList = dynamic(
-  () => import("@/content/Dashboards/BuyBox/BuyboxList"),
+  () => import('@/content/Dashboards/BuyBox/BuyboxList'),
   {
-    ssr: false,
-  },
+    ssr: false
+  }
 );
 
 const Buybox = () => {
@@ -23,7 +23,7 @@ const Buybox = () => {
 
   return (
     <div className="flex w-full">
-      <div className="hidden md:flex flex-col w-full items-stretch">
+      <div className="flex flex-col w-full items-stretch">
         {/* <div className=""> */}
         {/*   <BuyboxStatus /> */}
         {/* </div> */}
@@ -35,9 +35,6 @@ const Buybox = () => {
           showEditBuybox={showEditBuyBox}
           setShowEditBuybox={setShowEditBuyBox}
         />
-      </div>
-      <div className="flex md:hidden">
-        Please use a larger screen to view this page
       </div>
     </div>
   );

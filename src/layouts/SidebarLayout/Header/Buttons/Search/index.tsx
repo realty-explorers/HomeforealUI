@@ -1,4 +1,4 @@
-import { forwardRef, ReactElement, Ref, useEffect, useState } from "react";
+import { forwardRef, ReactElement, Ref, useEffect, useState } from 'react';
 import {
   Box,
   Button,
@@ -13,33 +13,31 @@ import {
   Slide,
   TextField,
   Tooltip,
-  Typography,
-} from "@mui/material";
-import { styled } from "@mui/material/styles";
-import { TransitionProps } from "@mui/material/transitions";
-import SearchTwoToneIcon from "@mui/icons-material/SearchTwoTone";
-import FindInPageTwoToneIcon from "@mui/icons-material/FindInPageTwoTone";
+  Typography
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { TransitionProps } from '@mui/material/transitions';
+import SearchTwoToneIcon from '@mui/icons-material/SearchTwoTone';
+import FindInPageTwoToneIcon from '@mui/icons-material/FindInPageTwoTone';
 
-import ChevronRightTwoToneIcon from "@mui/icons-material/ChevronRightTwoTone";
-import SearchForm from "./SearchForm";
-import AutocompleteInput from "./AutocompleteInput";
-import { useDispatch, useSelector } from "react-redux";
-import LocationSuggestion from "@/models/location_suggestions";
+import ChevronRightTwoToneIcon from '@mui/icons-material/ChevronRightTwoTone';
+import SearchForm from './SearchForm';
+import AutocompleteInput from './AutocompleteInput';
+import { useDispatch, useSelector } from 'react-redux';
+import LocationSuggestion from '@/models/location_suggestions';
 import {
   useGetLocationDataQuery,
   useGetLocationSuggestionQuery,
   useLazyGetLocationDataQuery,
-  useLazyGetLocationSuggestionQuery,
-} from "@/store/services/locationApiService";
-import { get } from "http";
-import {
-  useLazyGetPropertiesQuery,
-} from "@/store/services/propertiesApiService";
-import { selectLocation, setSuggestion } from "@/store/slices/locationSlice";
+  useLazyGetLocationSuggestionQuery
+} from '@/store/services/locationApiService';
+import { get } from 'http';
+import { useLazyGetPropertiesQuery } from '@/store/services/propertiesApiService';
+import { selectLocation, setSuggestion } from '@/store/slices/locationSlice';
 
 const Transition = forwardRef(function Transition(
   props: TransitionProps & { children: ReactElement<any, any> },
-  ref: Ref<unknown>,
+  ref: Ref<unknown>
 ) {
   return <Slide direction="down" ref={ref} {...props} />;
 });
@@ -54,7 +52,7 @@ const DialogWrapper = styled(Dialog)(
       position: absolute;
       top: 64px;
     }
-`,
+`
 );
 
 const SearchInputWrapper = styled(TextField)(
@@ -64,14 +62,14 @@ const SearchInputWrapper = styled(TextField)(
     .MuiInputBase-input {
         font-size: ${theme.typography.pxToRem(17)};
     }
-`,
+`
 );
 
 const DialogTitleWrapper = styled(DialogTitle)(
   ({ theme }) => `
     background: ${theme.colors.alpha.black[5]};
     padding: ${theme.spacing(3)}
-`,
+`
 );
 
 function HeaderSearch() {
@@ -89,7 +87,7 @@ function HeaderSearch() {
   // };
   // const { searchProperties, searchDeals, searching } = useSearch();
   const [open, setOpen] = useState(false);
-  const [meow, setMeow] = useState("");
+  const [meow, setMeow] = useState('');
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -100,7 +98,16 @@ function HeaderSearch() {
   };
 
   const handleSearch = async () => {
-    const locationDataRequest = getLocationData(suggestion, true);
+    const locationDataRequest = getLocationData(
+      {
+        type: suggestion.type,
+        city: suggestion.city,
+        state: suggestion.state,
+        neighborhood: suggestion.neighborhood,
+        zipcode: suggestion.zipcode
+      },
+      true
+    );
     const propertiesDataRequest = getPropertiesData(suggestion);
 
     await Promise.all([locationDataRequest, propertiesDataRequest]);
@@ -136,18 +143,20 @@ function HeaderSearch() {
             // location={searchData.location}
             location={suggestion}
             setLocation={(location: LocationSuggestion) =>
-              dispatch(setSuggestion(location))}
+              dispatch(setSuggestion(location))
+            }
           />
         </DialogTitleWrapper>
         <Divider />
         {/* <DialogContent><SearchForm /></DialogContent> */}
-        <DialogActions sx={{ display: "flex", justifyContent: "center" }}>
-          <Box sx={{ m: 1, position: "relative" }}>
+        <DialogActions sx={{ display: 'flex', justifyContent: 'center' }}>
+          <Box sx={{ m: 1, position: 'relative' }}>
             <Button
               variant="contained"
               // sx={buttonSx}
-              disabled={locationDataState.isFetching ||
-                propertiesDataState.isFetching}
+              disabled={
+                locationDataState.isFetching || propertiesDataState.isFetching
+              }
               onClick={handleSearch}
             >
               Search
@@ -157,20 +166,18 @@ function HeaderSearch() {
               <CircularProgress
                 size={24}
                 sx={{
-                  position: "absolute",
-                  top: "50%",
-                  left: "50%",
-                  marginTop: "-12px",
-                  marginLeft: "-12px",
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  marginTop: '-12px',
+                  marginLeft: '-12px'
                 }}
               />
             )}
           </Box>
-          {
-            /* <Button onClick={handleSearch} variant="outlined">
+          {/* <Button onClick={handleSearch} variant="outlined">
             Search
-          </Button> */
-          }
+          </Button> */}
         </DialogActions>
       </DialogWrapper>
     </>

@@ -13,6 +13,7 @@ import {
   Toolbar,
   Typography
 } from '@mui/material';
+import { Button as ShadButton } from '@/components/ui/button';
 import Stepper from '@mui/material/Stepper';
 import Step from '@mui/material/Step';
 import StepButton from '@mui/material/StepButton';
@@ -28,7 +29,7 @@ import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
 import { useEffect, useMemo, useState } from 'react';
-import { Controller, FieldName, useForm } from 'react-hook-form';
+import { Controller, FieldName, FormProvider, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from './EditBuyBoxDialog.module.scss';
 
@@ -67,6 +68,10 @@ import {
 } from '@/schemas/BuyBoxFormSchema';
 import { defaults, defaultSimilarityFields } from '@/schemas/defaults';
 import de from 'date-fns/esm/locale/de/index';
+import AdjustComparables from './Sections/AdjustComparables';
+import EditBuyboxDialogTitle from './EditBuyboxDialogTitle';
+import { useIsMobile } from '@/hooks/useMobile';
+import { ChevronRight, Loader2, RotateCcw, Save } from 'lucide-react';
 
 interface Location {
   type: string;
@@ -198,18 +203,26 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     };
   };
 
-  const getAllSimilarityFields = (buyboxData: BuyboxSchemaData) => {
-    const similarityFields: any[] = [];
-    for (let i = 0; i < 4; i++) {
-      let fieldsData = defaultSimilarityCriteriaFormSchemaFirstRank;
-      if (i < buyboxData.similarityCriteria.length) {
-        fieldsData = getSimilarityFieldProperties(
-          buyboxData.similarityCriteria[i]
-        );
-      }
-      similarityFields.push(fieldsData);
+  // const getAllSimilarityFields = (buyboxData: BuyboxSchemaData) => {
+  //   const similarityFields: any[] = [];
+  //   for (let i = 0; i < 4; i++) {
+  //     let fieldsData = defaultSimilarityCriteriaFormSchemaFirstRank;
+  //     if (i < buyboxData.similarityCriteria.length) {
+  //       fieldsData = getSimilarityFieldProperties(
+  //         buyboxData.similarityCriteria[i]
+  //       );
+  //     }
+  //     similarityFields.push(fieldsData);
+  //   }
+  //   return similarityFields;
+  // };
+  //
+  const convertBuyboxWeights = (weights: Record<string, number>) => {
+    const newWeights: Record<string, number> = {};
+    for (const [key, value] of Object.entries(weights)) {
+      newWeights[key] = value * 100;
     }
-    return similarityFields;
+    return newWeights;
   };
 
   const mapBuyBoxData = (buyboxData: BuyboxSchemaData) => {
@@ -270,27 +283,47 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           defaults.margin.min
         )
       },
-      similarityCriteria: getAllSimilarityFields(buyboxData),
-      targetLocations: buyboxData.targetLocations
+      // similarityCriteria: getAllSimilarityFields(buyboxData),
+      targetLocations: buyboxData.targetLocations,
+      weights: convertBuyboxWeights(buyboxData.weights)
     };
 
     return buyboxFormData;
   };
 
-  const getDefaultFormValues = () => {
-    if (props.buybox) {
-      const mappedBuyBoxData = mapBuyBoxData(props.buybox.parameters);
-      const fullData = _.merge(
-        {},
-        getDefaultBuyBoxFormData(),
-        mappedBuyBoxData
-      );
-      return fullData;
-    } else {
-      const defaultData = getDefaultBuyBoxFormData();
-      return defaultData;
+  const mappedBuyBoxData = useMemo(() => {
+    if (!props.buybox) return null;
+    return mapBuyBoxData(props.buybox.parameters);
+  }, [props.buybox]);
+
+  const defaultFormValues = useMemo(() => {
+    if (props.buybox && mappedBuyBoxData) {
+      return _.merge({}, getDefaultBuyBoxFormData(), mappedBuyBoxData);
     }
-  };
+    return getDefaultBuyBoxFormData();
+  }, [props.buybox, mappedBuyBoxData]);
+
+  // const getDefaultFormValues = () => {
+  //   if (props.buybox) {
+  //     const mappedBuyBoxData = mapBuyBoxData(props.buybox.parameters);
+  //     const fullData = _.merge(
+  //       {},
+  //       getDefaultBuyBoxFormData(),
+  //       mappedBuyBoxData
+  //     );
+  //     return fullData;
+  //   } else {
+  //     const defaultData = getDefaultBuyBoxFormData();
+  //     return defaultData;
+  //   }
+  // };
+
+  const formMethods = useForm<BuyBoxFormData>({
+    // defaultValues: { emailActive: true, email: "meow@meow.com", name: "" },
+    resolver: zodResolver(formBuyBoxSchema),
+    defaultValues: defaultFormValues
+    // defaultValues: getDefaultData(),
+  });
 
   const {
     register,
@@ -302,12 +335,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     watch,
     control,
     trigger
-  } = useForm<BuyBoxFormData>({
-    // defaultValues: { emailActive: true, email: "meow@meow.com", name: "" },
-    resolver: zodResolver(formBuyBoxSchema),
-    defaultValues: getDefaultFormValues()
-    // defaultValues: getDefaultData(),
-  });
+  } = formMethods;
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -432,8 +460,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   }, [props.buybox]);
 
   const handleResetBuyBox = () => {
-    const defaultData = getDefaultFormValues();
-    reset(defaultData);
+    // const defaultData = getDefaultFormValues();
+    reset(defaultFormValues);
     setActiveStep(0);
   };
 
@@ -467,7 +495,6 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   //   }
   // };
   const getStepsErrors = useMemo(() => {
-    console.log(JSON.stringify(errors.strategy));
     return (step: number) => {
       switch (step) {
         case 0:
@@ -481,184 +508,183 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           console.log(JSON.stringify(errors));
           return errors?.propertyCriteria;
         case 4:
-          console.log(getValues('similarityCriteria'));
+          console.log(getValues('weights'));
           console.log(JSON.stringify(errors));
-          return errors?.similarityCriteria;
+          return errors?.weights;
         default:
           return undefined;
       }
     };
   }, [errors]);
 
+  const StepSections = (
+    <motion.div
+      key={activeStep}
+      className="grow w-full flex justify-center"
+      initial={{ y: 20, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      exit={{ y: -20, opacity: 0 }}
+      transition={{ duration: 0.3 }}
+    >
+      {activeStep === 0 && (
+        <GeneralSection
+          register={register}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+          getValues={getValues}
+          errors={errors}
+        />
+      )}
+      {activeStep === 1 && (
+        <InvestmentStrategy
+          register={register}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+          getValues={getValues}
+          errors={errors}
+        />
+      )}
+      {activeStep === 2 && (
+        <LocationCoverage
+          register={register}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+          getValues={getValues}
+          errors={errors}
+        />
+      )}
+
+      {activeStep === 3 && (
+        <PropertyCriteria
+          register={register}
+          control={control}
+          watch={watch}
+          setValue={setValue}
+          getValues={getValues}
+        />
+      )}
+      {activeStep === 4 && (
+        <AdjustComparables
+        // register={register}
+        // control={control}
+        // watch={watch}
+        // setValue={setValue}
+        // getValues={getValues}
+        />
+      )}
+    </motion.div>
+  );
+
+  const FormFooter = (
+    <div className="w-full flex flex-wrap justify-between py-4 px-4 gap-y-2">
+      <div className="flex gap-x-2">
+        {activeStep === 0 ? (
+          <div></div>
+        ) : (
+          <ShadButton
+            type="button"
+            onClick={handleBackStep}
+            className="w-full bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
+          >
+            <span className="text-base">Back</span>
+          </ShadButton>
+        )}
+      </div>
+      <div className="flex flex-wrap gap-x-2">
+        {isDirty && (
+          <ShadButton
+            type="button"
+            onClick={handleResetBuyBox}
+            className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
+          >
+            <RotateCcw className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+            <span className="hidden md:flex text-base">Reset</span>
+          </ShadButton>
+        )}
+
+        <ShadButton
+          className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
+          type="button"
+          onClick={handleSubmitForm}
+        >
+          {isSubmitting ? (
+            <Loader2 className="animate-spin" />
+          ) : (
+            <Save className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+          )}
+          <Typography className="hidden md:flex">
+            {isDirty ? 'Save & Finish' : 'Finish'}
+          </Typography>
+        </ShadButton>
+
+        {activeStep < steps.length - 1 && (
+          <ShadButton
+            type="button"
+            onClick={handleNextStep}
+            className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
+          >
+            <Typography className={styles.button_text}>Next</Typography>
+            <ChevronRight className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+          </ShadButton>
+        )}
+      </div>
+    </div>
+  );
+
+  const StepButtons = (
+    <div className="hidden md:flex flex-col bg-[rgba(151,71,255,0.7)] pb-8 h-full">
+      {steps.map((step, index) => (
+        <Button
+          key={index}
+          onClick={() => setActiveStep(index)}
+          className={clsx([
+            ' text-white text-xl font-bold  h-24 rounded-[0] px-8 py-4 hover:bg-[#9747FF]',
+            styles.font_poppins,
+            activeStep === index ? 'bg-[#9747FF]' : 'bg-transparent'
+          ])}
+        >
+          {steps[index].title}
+        </Button>
+      ))}
+    </div>
+  );
+
+  const isMobile = useIsMobile();
+
   return (
     <Dialog
       open={props.showEditBuybox}
       onClose={handleClose}
       fullWidth
+      fullScreen={isMobile}
       maxWidth="lg"
       className={clsx[poppins.variable]}
     >
-      <div className="w-full h-full grid grid-cols-[15rem_1fr]  gap-x-0 overflow-hidden">
-        <div className="col-span-2 w-full flex justify-center items-center shadow">
-          <IconButton
-            className="absolute top-0 right-0 w-8 h-8 rounded-3xl"
-            onClick={handleClose}
-          >
-            <HighlightOffOutlinedIcon />
-          </IconButton>
-          <DialogTitle
-            className={clsx([' text-2xl font-bold ', styles.fontPoppins])}
-          >
-            BuyBox Config
-          </DialogTitle>
-          <Stepper
-            nonLinear
-            activeStep={activeStep}
-            className="grow px-8 bg-transparent"
-          >
-            {steps.map((step, index) => (
-              <Step key={index} className="">
-                <StepLabel
-                  className={clsx([styles.fontPoppins, 'cursor-pointer'])}
-                  error={Boolean(getStepsErrors(index))}
-                  onClick={() => setActiveStep(index)}
-                >
-                  {step.title}
-                </StepLabel>
-              </Step>
-            ))}
-          </Stepper>
-        </div>
-        <div className="flex flex-col bg-[rgba(151,71,255,0.7)] pb-8">
-          {steps.map((step, index) => (
-            <Button
-              key={index}
-              onClick={() => setActiveStep(index)}
-              className={clsx([
-                ' text-white text-xl font-bold  h-24 rounded-[0] px-8 py-4 hover:bg-[#9747FF]',
-                styles.fontPoppins,
-                activeStep === index ? 'bg-[#9747FF]' : 'bg-transparent'
-              ])}
-            >
-              {steps[index].title}
-            </Button>
-          ))}
-        </div>
-        <div className="h-full">
-          <form
-            className="h-full flex flex-col"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <motion.div
-              key={activeStep}
-              className="grow w-full flex"
-              initial={{ y: 20, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -20, opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              {activeStep === 0 && (
-                <GeneralSection
-                  register={register}
-                  control={control}
-                  watch={watch}
-                  setValue={setValue}
-                  getValues={getValues}
-                  errors={errors}
-                />
-              )}
-              {activeStep === 1 && (
-                <InvestmentStrategy
-                  register={register}
-                  control={control}
-                  watch={watch}
-                  setValue={setValue}
-                  getValues={getValues}
-                  errors={errors}
-                />
-              )}
-              {activeStep === 2 && (
-                <LocationCoverage
-                  register={register}
-                  control={control}
-                  watch={watch}
-                  setValue={setValue}
-                  getValues={getValues}
-                  errors={errors}
-                />
-              )}
+      <div className="h-full md:h-[80vh] w-full flex flex-col gap-x-0 overflow-hidden">
+        <EditBuyboxDialogTitle
+          steps={steps}
+          activeStep={activeStep}
+          setActiveStep={setActiveStep}
+          errors={errors}
+          handleClose={handleClose}
+        />
 
-              {activeStep === 3 && (
-                <PropertyCriteria
-                  register={register}
-                  control={control}
-                  watch={watch}
-                  setValue={setValue}
-                  getValues={getValues}
-                />
-              )}
-              {activeStep === 4 && (
-                <AdjustComparable
-                  register={register}
-                  control={control}
-                  watch={watch}
-                  setValue={setValue}
-                  getValues={getValues}
-                />
-              )}
-            </motion.div>
-            <div className="w-full flex justify-between py-4 px-4">
-              <div className="flex gap-x-2">
-                {activeStep === 0 ? (
-                  <div></div>
-                ) : (
-                  <Button onClick={handleBackStep} className={styles.button}>
-                    <ArrowBackIosOutlinedIcon className="h-4 w-4" />
-                    Back
-                  </Button>
-                )}
-              </div>
-
-              <div className="flex gap-x-2">
-                {isDirty && (
-                  <Button onClick={handleResetBuyBox} className={styles.button}>
-                    <RestartAltOutlined className="h-4 w-4" />
-                    <Typography className={styles.buttonText}>Reset</Typography>
-                  </Button>
-                )}
-                {activeStep === steps.length - 1 && !props.buybox && (
-                  <LoadingButton
-                    onClick={handleSubmitForm}
-                    className={styles.button}
-                    loading={isSubmitting}
-                  >
-                    <Typography className={styles.buttonText}>
-                      Finish
-                    </Typography>
-                  </LoadingButton>
-                )}
-                {props.buybox &&
-                  EDITOR_ROLES.includes(props.buybox?.userAccess) && (
-                    <LoadingButton
-                      onClick={handleSubmitForm}
-                      className={styles.button}
-                      loading={isSubmitting}
-                    >
-                      <Typography className={styles.buttonText}>
-                        {props.buybox ? 'Save & Finish' : 'Finish'}
-                      </Typography>
-                    </LoadingButton>
-                  )}
-
-                {activeStep < steps.length - 1 && (
-                  <Button onClick={handleNextStep} className={styles.button}>
-                    <Typography className={styles.buttonText}>Next</Typography>
-                    <ArrowForwardIos className="h-4 w-4" />
-                  </Button>
-                )}
-              </div>
-            </div>
-          </form>
+        <div className="flex w-full flex-grow overflow-hidden">
+          {StepButtons}
+          <div className=" w-full overflow-y-auto">
+            <FormProvider {...formMethods}>
+              <form
+                className="flex min-h-full flex-col"
+                onSubmit={handleSubmit(onSubmit)}
+              >
+                {StepSections}
+                {FormFooter}
+              </form>
+            </FormProvider>
+          </div>
         </div>
       </div>
     </Dialog>

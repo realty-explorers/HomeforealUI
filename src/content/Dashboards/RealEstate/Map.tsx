@@ -65,7 +65,6 @@ import { CircularProgress } from '@mui/material';
 import CompMarkersPopup from './MapComponents/Overlays/CompMarkerPopup';
 import LoadingSpinner from './MapComponents/Overlays/LoadingSpinner';
 import RentalsSource from './MapComponents/Sources/RentalsSource';
-import { useLazyGetLocationsQuery } from '@/store/services/dataApiService';
 import PropertyLocationBoundsSource from './MapComponents/Sources/PropertyLocationBoundsSource';
 import useProperty from '@/hooks/useProperty';
 import { skipToken } from '@reduxjs/toolkit/query';
@@ -75,6 +74,7 @@ import styles from './Map.module.scss';
 import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useLazyGetBuyBoxesQuery } from '@/store/services/buyboxApiService';
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
@@ -132,9 +132,10 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     selecting
   } = useSelector(selectProperties);
 
-  const { selectProperty, deselectProperty, selectPropertyId } = useProperty();
+  const { selectProperty, deselectProperty, selectPropertyId, propertyState } =
+    useProperty();
 
-  const [getProperty, propertyState] = useLazyGetPropertyQuery();
+  // const [getProperty, propertyState] = useLazyGetPropertyQuery();
   const locationState = locationApiEndpoints.getLocationData.useQueryState(
     suggestion || skipToken
   );
@@ -316,11 +317,61 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     alert(mapRef?.current);
   }
 
+  const [getBuyBoxes, buyBoxesState] = useLazyGetBuyBoxesQuery();
+
   useEffect(() => {
     if (!router.isReady || !user?.user) return;
-    //TODO: check auth
-    console.log('selectedBuyBoxId', selectedBuyBoxId);
-    console.log('selectedPropertyId', selectedPropertyId);
+    const getBuyBoxesData = async () => {
+      try {
+        const data = await getBuyBoxes('', true).unwrap();
+        if (data && data.length > 0) {
+          if (selectedBuyBoxId) {
+            const selectedBuyBox = data.find(
+              (buybox) => buybox.id === selectedBuyBoxId
+            );
+            if (selectedBuyBox) {
+              dispatch(setBuybox(selectedBuyBox));
+            } else {
+              enqueueSnackbar(`BuyBox not found in your allowed BuyBoxes`, {
+                variant: 'warning'
+              });
+            }
+          } else {
+            // const defaultBuyBox = data.find(
+            //   (buybox) => buybox.parameters.name === 'General BuyBox'
+            // );
+
+            const defaultBuyBox = data[0];
+            router.push(
+              {
+                pathname: router.pathname,
+                query: {
+                  buybox_id: defaultBuyBox.id
+                }
+              },
+              undefined,
+              { shallow: true }
+            );
+            dispatch(setBuybox(defaultBuyBox));
+          }
+        }
+      } catch (error) {
+        let message = 'Something went wrong, try again later :(';
+        console.error(error);
+        if (error.status === 'FETCH_ERROR') {
+          message = `Connection failed, try again later`;
+        } else if (error.status === 401) {
+          message = 'You were disconnected, please sign in again';
+          // router.push('/api/auth/logout');
+          // signOut();
+        }
+        enqueueSnackbar(message, {
+          variant: 'error'
+        });
+      }
+    };
+    getBuyBoxesData();
+
     if (selectedBuyBoxId && selectedPropertyId) {
       console.log('selecting property');
       selectPropertyId(
@@ -334,50 +385,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       dispatch(locationApi.util.invalidateTags(['Suggestion', 'LocationData']));
       dispatch(setSuggestion(null));
     }
-  }, [router.isReady, user?.user?.verified]);
-
-  useEffect(() => {
-    // if (mapRef.current?.getLayer("property-bounds-line")) {
-    //   var step = 0;
-    //   let dashArraySeq = [
-    //     [0, 4, 3],
-    //     [1, 4, 2],
-    //     [2, 4, 1],
-    //     [3, 4, 0],
-    //     [0, 1, 3, 3],
-    //     [0, 2, 3, 2],
-    //     [0, 3, 3, 1],
-    //   ];
-    //   let blurs = [
-    //     0,
-    //     1,
-    //     2,
-    //     3,
-    //     4,
-    //     3,
-    //     2,
-    //     1,
-    //   ];
-    //
-    //   const intervarl = setInterval(() => {
-    //     console.log("meow");
-    //     step = (step + 1) % dashArraySeq.length;
-    //     mapRef?.current?.getMap().setPaintProperty(
-    //       "property-bounds-line",
-    //       "line-dasharray",
-    //       dashArraySeq[step],
-    //     );
-    //
-    //     // step = (step + 1) % blurs.length;
-    //     // mapRef?.current?.getMap().setPaintProperty(
-    //     //   "property-bounds-line",
-    //     //   "line-blur",
-    //     //   blurs[step],
-    //     // );
-    //   }, 50);
-    //   return () => clearInterval(intervarl);
-    // }
-  }, [selectedPropertyPreview, selecting]);
+  }, [router.isReady, user?.user, user?.user?.verified]);
 
   useEffect(() => {
     mapRef?.current?.on('render', handleRender);
@@ -557,7 +565,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   return (
     <>
-      {loading && (
+      {(loading || propertyState.isFetching) && (
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  z-50 flex items-center justify-center">
           <CircularProgress />
         </div>
