@@ -120,10 +120,8 @@ const TemplateSelection: React.FC = () => {
       <p className="wizard-subtitle">
         Select a template to start with or create a custom offer
       </p>
-      {selectedTemplateId}
 
       <ScrollArea className="h-[350px] pr-4">
-        {selectedTemplateId}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           {templates.map((template) => (
             <TemplateCard
