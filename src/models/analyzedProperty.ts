@@ -59,6 +59,7 @@ interface LoanData {
 }
 
 interface AnalyzedProperty extends Partial<Property> {
+  propertyId: string;
   buyboxId: string;
   analyzedDate: string;
   comps?: CompData[];

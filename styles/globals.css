@@ -284,6 +284,125 @@ img {
   .purple-gradient-text {
     @apply bg-gradient-to-r from-violet-700 to-fuchsia-600 bg-clip-text text-transparent;
   }
+  .wizard-card {
+    @apply bg-white shadow-lg rounded-xl border border-gray-100 p-6;
+  }
+
+  .form-group {
+    @apply space-y-1.5 mb-4;
+  }
+
+  .step-indicator {
+    @apply h-2 rounded-full bg-muted overflow-hidden;
+  }
+
+  .step-indicator-progress {
+    @apply h-full bg-gradient-to-r from-brand-main to-brand-light transition-all duration-500 ease-in-out;
+  }
+
+  .wizard-icon {
+    @apply text-brand-main h-6 w-6;
+  }
+
+  .wizard-title {
+    @apply text-2xl font-bold bg-clip-text text-transparent bg-purple-gradient mb-2;
+  }
+
+  .wizard-subtitle {
+    @apply text-sm text-gray-500 mb-6;
+  }
+
+  /* New fancy classes */
+  .glass-card {
+    @apply backdrop-blur-md bg-white/70 border border-white/20 shadow-xl;
+  }
+
+  .glow-effect {
+    @apply relative;
+  }
+
+  .glow-effect::after {
+    @apply content-[''] absolute inset-0 rounded-lg opacity-0 transition-opacity duration-300 
+           bg-gradient-to-r from-brand-accent/30 to-brand-main/30 blur-xl -z-10;
+  }
+
+  .glow-effect:hover::after {
+    @apply opacity-100;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent bg-purple-gradient;
+  }
+
+  .pulse-border {
+    animation: pulse-border 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes pulse-border {
+    0%,
+    100% {
+      box-shadow: 0 0 0 0 rgba(155, 135, 245, 0.5);
+    }
+    50% {
+      box-shadow: 0 0 0 4px rgba(155, 135, 245, 0.5);
+    }
+  }
+
+  .floating {
+    animation: floating 6s ease-in-out infinite;
+  }
+
+  @keyframes floating {
+    0%,
+    100% {
+      transform: translateY(0px);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* Material UI Stepper specific styles */
+  .stepper-container {
+    @apply flex items-center justify-between w-full overflow-x-auto py-4;
+  }
+
+  .stepper-step {
+    @apply flex flex-col items-center;
+  }
+
+  .stepper-circle {
+    @apply relative flex items-center justify-center rounded-full z-10 
+           w-10 h-10 md:w-12 md:h-12 transition-colors duration-300;
+  }
+
+  .stepper-circle-completed {
+    @apply bg-stepper-completed;
+  }
+
+  .stepper-circle-active {
+    @apply bg-gradient-to-r from-brand-main to-brand-accent animate-stepper-glow;
+  }
+
+  .stepper-circle-pending {
+    @apply bg-stepper-pending;
+  }
+
+  .stepper-line {
+    @apply flex-1 h-1 bg-stepper-line relative mx-2;
+  }
+
+  .stepper-line-progress {
+    @apply absolute inset-0 bg-stepper-line-completed rounded-full transition-all duration-500;
+  }
+
+  .stepper-title {
+    @apply mt-2 text-xs md:text-sm font-medium;
+  }
+
+  .stepper-dot {
+    @apply absolute top-1/2 transform -translate-y-1/2 bg-brand-accent rounded-full w-2 h-2;
+  }
 }
 
 @layer utilities {

@@ -27,6 +27,7 @@ import { ACTIONS, EVENTS } from 'react-joyride';
 import { selectLocation } from '@/store/slices/locationSlice';
 import MakeOfferButton from '@/content/Dashboards/Analytics/Offer/MakeOfferButton';
 import OfferDialog from '@/content/Dashboards/Analytics/Offer/OfferDialog';
+import Wizard from '@/content/Dashboards/Analytics/Offer2';
 
 // import { useSession, SessionProvider, signIn } from 'next-auth/react';
 
@@ -272,7 +273,11 @@ const DashboardRealEstate = (props: any) => {
       >
         <Map />
       </div>
-      <OfferDialog show={showOfferDialog} setShow={setShowOfferDialog} />
+      {/* <OfferDialog show={showOfferDialog} setShow={setShowOfferDialog} /> */}
+      <Wizard
+        open={showOfferDialog}
+        onClose={() => setShowOfferDialog(false)}
+      />
     </div>
   );
 };
