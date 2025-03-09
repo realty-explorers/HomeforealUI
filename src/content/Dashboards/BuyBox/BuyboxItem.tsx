@@ -41,7 +41,7 @@ import { analysisApi } from '@/store/services/analysisApi';
 import { timeSince } from '@/utils/dateUtils';
 import Chip from '@/components/Chip';
 import BuyBoxStatistics from './BuyBoxStatistics';
-import { Trash2, Settings } from 'lucide-react';
+import { Trash2, Settings, BookOpenText } from 'lucide-react';
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -275,7 +275,11 @@ const BuyboxItem = (props: BuyboxItemProps) => {
                   className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
                   onClick={handleEditBuyBox}
                 >
-                  {allowedToEdit ? <Settings className="h-5 w-5" /> : null}
+                  {allowedToEdit ? (
+                    <Settings className="h-5 w-5" />
+                  ) : (
+                    <BookOpenText className="h-5 w-5" />
+                  )}
 
                   <span className="hidden md:flex">
                     {allowedToEdit ? 'Configure' : 'View'}
