@@ -193,7 +193,7 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
   return (
     <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-4xl p-0 overflow-hidden bg-gradient-to-br from-white to-purple-50">
-        <div className="p-6 h-full md:max-h-[80vh] overflow-y-auto">
+        <div className="p-6 h-[100dvh] md:max-h-[80vh] overflow-y-auto">
           {/* Header */}
           <DialogHeader className="mb-6 relative">
             <DialogTitle className="text-2xl font-bold bg-clip-text bg-purple-gradient">
