@@ -275,7 +275,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
                   className="bg-[#9747FF] hover:bg-[#5500c4] text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
                   onClick={handleEditBuyBox}
                 >
-                  {allowedToEdit ? (
+                  {allowedToEdit || !props.buybox ? (
                     <Settings className="h-5 w-5" />
                   ) : (
                     <BookOpenText className="h-5 w-5" />
