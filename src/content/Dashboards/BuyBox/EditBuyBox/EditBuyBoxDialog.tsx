@@ -605,7 +605,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           </ShadButton>
         )}
 
-        {props.buybox.userAccess !== 'viewer' && (
+        {props.buybox && props.buybox.userAccess !== 'viewer' && (
           <ShadButton
             className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
             type="button"
