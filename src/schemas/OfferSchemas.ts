@@ -1,31 +1,23 @@
 import { z } from 'zod';
 
-// Helper schemas for common patterns
-const moneySchema = z.number().positive('Amount must be greater than 0');
-const daysSchema = z.number().min(0).max(365);
-
-const financingTypesSchema = z.enum([
-  'CONVENTIONAL LOAN',
-  'SELLER FINANCE',
-  'SUBJECT TO',
-  'CASH'
-]);
-export const financingTypeLabels = financingTypesSchema.options;
-
-const surveyorChoiceSchema = z.enum(['buyer', 'seller', 'shared']);
-export const surveyorChoiceLabels = surveyorChoiceSchema.options;
+const moneySchema = z
+  .number()
+  .min(1, { message: 'Amount must be greater than 0' });
+const financingTypesSchema = z.enum(['Cash', 'Mortgage', 'Other']);
+const surveyorChoiceSchema = z.enum(['Buyer', 'Seller', 'Mutual']);
+const daysSchema = z.number().int().positive();
 
 export const OfferSchema = z.object({
   // Purchase Price and Financing
   financialDetails: z.object({
     purchasePrice: moneySchema,
-    financingType: financingTypesSchema.optional(),
+    financingType: financingTypesSchema,
     loanAmount: z.number().nonnegative().optional()
   }),
 
   // Deposit
   deposit: z.object({
-    depositAmount: moneySchema,
+    depositAmount: z.number().nonnegative(),
     holderName: z.string(),
     holderAddress: z.string(),
     holderPhone: z.string().optional(),
@@ -81,10 +73,12 @@ export const OfferSchema = z.object({
   }),
 
   buyerDetails: z.object({
-    name: z.string(),
+    name: z
+      .string()
+      .min(2, { message: 'Name must be at least 2 characters long' }),
     address: z.string(),
     phone: z.string().optional(),
-    email: z.union([z.string().email().optional(), z.literal('')])
+    email: z.string().email('Invalid email address')
   }),
 
   settlementExpenses: z.object({
@@ -107,77 +101,4 @@ export const OfferSchema = z.object({
   })
 });
 
-export type OfferSchemaType = z.infer<typeof OfferSchema>;
-
-export const defaultOfferData: OfferSchemaType = {
-  financialDetails: {
-    purchasePrice: 0,
-    financingType: 'CONVENTIONAL LOAN',
-    loanAmount: 0
-  },
-  deposit: {
-    depositAmount: 0,
-    holderName: '',
-    holderAddress: '',
-    holderPhone: undefined,
-    holderEmail: undefined
-  },
-  conditions: {
-    subjectProperty: false,
-    exludedFixtures: []
-  },
-  landSurvey: {
-    requireNewSurvey: false,
-    surveyorChoice: 'buyer'
-  },
-  legalDescription: {
-    description: ''
-  },
-  propertyTerms: {
-    conductInspection: false,
-    isInspectionContingent: false,
-    inspectionDurationDays: 0,
-    lease: false
-  },
-  propertyConditions: {
-    isNew: false,
-    disclosureTopics: {
-      occupancyAndProperty: false,
-      fixturesAndItems: false,
-      roof: false,
-      additionsAndAlterations: false,
-      soilTreeAndVegetation: false,
-      woodDestroyingOrganisms: false,
-      floodAndMoisture: false,
-      toxicMaterialAndSubstances: false,
-      covenantsFeesAndAssessments: false,
-      plumbing: false,
-      insulation: false,
-      miscellaneous: false,
-      additionalDisclosures: ''
-    },
-    sellerRepairs: '',
-    conductEndangeredSpeciesReport: false,
-    conductEnvironmnetalReport: false,
-    requireResidentialServiceContract: false
-  },
-  buyerDetails: {
-    name: '',
-    address: ''
-  },
-  settlementExpenses: {
-    sellerPaysSettlementExpenses: false,
-    settlementAmount: 0
-  },
-  closingDetails: {
-    closingDate: '',
-    possesionOnClosing: false,
-    optionToTerminate: false,
-    additionalClause: ''
-  },
-  terminationOption: {
-    allowTermination: false,
-    terminationFee: 0,
-    terminationPeriodDays: 0
-  }
-};
+export type OfferFormData = z.infer<typeof OfferSchema>;

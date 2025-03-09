@@ -605,20 +605,22 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           </ShadButton>
         )}
 
-        <ShadButton
-          className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
-          type="button"
-          onClick={handleSubmitForm}
-        >
-          {isSubmitting ? (
-            <Loader2 className="animate-spin" />
-          ) : (
-            <Save className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
-          )}
-          <Typography className="hidden md:flex">
-            {isDirty ? 'Save & Finish' : 'Finish'}
-          </Typography>
-        </ShadButton>
+        {props.buybox.userAccess !== 'viewer' && (
+          <ShadButton
+            className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
+            type="button"
+            onClick={handleSubmitForm}
+          >
+            {isSubmitting ? (
+              <Loader2 className="animate-spin" />
+            ) : (
+              <Save className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+            )}
+            <Typography className="hidden md:flex">
+              {isDirty ? 'Save & Finish' : 'Finish'}
+            </Typography>
+          </ShadButton>
+        )}
 
         {activeStep < steps.length - 1 && (
           <ShadButton

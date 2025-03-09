@@ -25,14 +25,12 @@ module.exports = {
       },
       colors: {
         primary: {
-          // DEFAULT: 'hsl(var(--primary))',
           DEFAULT: '#590d82',
           light: '#6f1d96',
           dark: '#450a68',
           foreground: 'hsl(var(--primary-foreground))'
         },
         secondary: {
-          // DEFAULT: 'hsl(var(--secondary))',
           DEFAULT: '#9b51e0',
           light: '#ab69e6',
           dark: '#8c39d9',
@@ -75,21 +73,57 @@ module.exports = {
       },
       animation: {
         fadeDelayed: 'fadeOut 0s 0.5s ease-in-out forwards',
-        fade: 'fadeOut 0.3s ease-in-out forwards'
+        fade: 'fadeOut 0.3s ease-in-out forwards',
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out'
       },
       gradients: {
         'purple-pink': ['45deg', '#3023AE 0%', '#FF0099 100%']
       },
       keyframes: {
         fadeOut: {
-          '0%': { opacity: 0 }, // Changed from 0 to 1 for fadeOut
-          '100%': { opacity: 1 } // Changed from 1 to 0 for fadeOut
+          '0%': {
+            opacity: 0
+          },
+          '100%': {
+            opacity: 1
+          }
+        },
+        'accordion-down': {
+          from: {
+            height: '0'
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)'
+          }
+        },
+        'accordion-up': {
+          from: {
+            height: 'var(--radix-accordion-content-height)'
+          },
+          to: {
+            height: '0'
+          }
         }
       },
       borderRadius: {
         lg: 'var(--radius)',
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)'
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'gradient-conic':
+          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        'gradient-shine':
+          'linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent)',
+        'hero-pattern': "url('/images/hero-pattern.svg')",
+        'purple-gradient': 'linear-gradient(90deg, #590d82 0%, #9b87f5 100%)',
+        'blue-purple-gradient':
+          'linear-gradient(90deg, #33C3F0 0%, #9b87f5 100%)',
+        'pink-purple-gradient':
+          'linear-gradient(90deg, #D946EF 0%, #9b87f5 100%)',
+        'stepper-line-completed': 'var(--stepper-line-completed)'
       }
     }
   },

@@ -134,6 +134,14 @@ const MainControls: React.FC<MainControlsProps> = (
     // dispatch(setFilteredProperties(propertiesState.data));
   }, [propertiesQuery.data]);
 
+  useEffect(() => {
+    if (propertiesQuery.error) {
+      enqueueSnackbar(' Error fetching properties, please try again later', {
+        variant: 'error'
+      });
+    }
+  }, [propertiesQuery.error]);
+
   const updateArv = (value: number) => {
     setArv(value);
 

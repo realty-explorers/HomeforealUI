@@ -117,6 +117,28 @@ const priceGroupFormatter = (
     : `${priceFormatter(priceGroup.min)} - ${priceFormatter(priceGroup.max)}`;
 };
 
+export function formatCurrency(value: number | undefined): string {
+  if (value === undefined || value === null) return '$0.00';
+
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  }).format(value);
+}
+
+/**
+ * Converts a currency string back to a number
+ */
+export function parseCurrency(value: string): number {
+  // Remove non-numeric characters except decimal point
+  const numericValue = value.replace(/[^0-9.]/g, '');
+
+  // Convert to number or return 0 if invalid
+  return numericValue ? parseFloat(numericValue) : 0;
+}
+
 export {
   ageFormatter,
   ageReverseScale,
