@@ -62,6 +62,9 @@ export const buyBoxApi = createApi({
     getBuyBoxes: builder.query<BuyBox[], any>({
       query: () => ({ url: '/v1/buybox' }),
       transformResponse: (response: any) => response,
+      extraOptions: {
+        fixedCacheKey: 'sharedBuyBoxesData'
+      },
       providesTags: ['BuyBox']
     }),
     createBuyBox: builder.mutation({

@@ -52,7 +52,11 @@ import {
   useGetPropertiesPreviewsQuery
 } from '@/store/services/propertiesApiService';
 import PropertyPreview from '@/models/propertyPreview';
-import { useLazyGetBuyBoxesQuery } from '@/store/services/buyboxApiService';
+import {
+  buyBoxApiEndpoints,
+  useGetBuyBoxesQuery,
+  useLazyGetBuyBoxesQuery
+} from '@/store/services/buyboxApiService';
 import { useSnackbar } from 'notistack';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { redirect, useSearchParams } from 'next/navigation';
@@ -94,7 +98,11 @@ const MainControls: React.FC<MainControlsProps> = (
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
 
-  const [getBuyBoxes, buyBoxesState] = useLazyGetBuyBoxesQuery();
+  // const selectBuyBoxesResult = buyBoxApiEndpoints.getBuyBoxes.select('');
+  const buyBoxesState = buyBoxApiEndpoints.getBuyBoxes.useQueryState('');
+
+  // const [getBuyBoxes, buyBoxesState] = useLazyGetBuyBoxesQuery();
+
   // const propertiesState = propertiesApiEndpoints.getPropertiesPreviews
   //   .useQueryState(
   //     suggestion && buybox ? { suggestion, buybox_id: buybox.id } : skipToken,
