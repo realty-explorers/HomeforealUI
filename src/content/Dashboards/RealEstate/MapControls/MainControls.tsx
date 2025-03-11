@@ -112,8 +112,7 @@ const MainControls: React.FC<MainControlsProps> = (
       ? {
           suggestion,
           buybox_id: buybox.id,
-          // masked: !data?.user?.verified
-          masked: false
+          masked: !data?.user?.verified
         }
       : skipToken
   );

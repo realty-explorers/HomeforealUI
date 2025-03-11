@@ -1,10 +1,6 @@
+import { authenticateProjoUser, singinUser } from 'lib/auth/auth';
 import { refreshAccessToken, updateRefreshToken } from 'lib/auth/tokens';
-import {
-  authenticateProjoUser,
-  createUser,
-  getUser,
-  getUserByEmail
-} from 'lib/auth/user';
+import { createUser, getUser, getUserByEmail } from 'lib/auth/user';
 import NextAuth from 'next-auth';
 import CognitoProvider from 'next-auth/providers/cognito';
 import CredentialsProvider from 'next-auth/providers/credentials';
@@ -14,13 +10,14 @@ export const authOptions = {
 
   providers: [
     CredentialsProvider({
-      name: 'Credentials',
+      id: 'referral',
+      name: 'Referral Login',
       credentials: {
         token: { label: 'Token', type: 'text' },
-        email: { label: 'Email', type: 'email' }
+        referral: { label: 'Referral', type: 'text' }
       },
       async authorize(credentials) {
-        if (credentials.token) {
+        if (credentials.referral && credentials.token) {
           try {
             // Validate token with your backend
             // const response = await fetch('', {
@@ -28,10 +25,8 @@ export const authOptions = {
             //   headers: { 'Content-Type': 'application/json' },
             //   body: JSON.stringify({ token: credentials.token })
             // });
-            const user = await authenticateProjoUser(
-              credentials.email,
-              credentials.token
-            );
+            const email = credentials.referral;
+            const user = await authenticateProjoUser(email, credentials.token);
 
             // const user = await response.json();
 
@@ -51,6 +46,37 @@ export const authOptions = {
         return null;
       }
     }),
+
+    CredentialsProvider({
+      id: 'login',
+      name: 'Login',
+      credentials: {
+        email: { label: 'Email', type: 'email' },
+        password: { label: 'Password', type: 'password' }
+      },
+      async authorize(credentials) {
+        try {
+          const { email, password } = credentials;
+          const user = await singinUser(email, password);
+
+          if (user) {
+            user.access_token = user.accessToken;
+            user.id_token = user.idToken;
+            user.refresh_token = user.refreshToken;
+            user.id = user.userId;
+            user.expires_at = user.expiresIn;
+            user.email = credentials.email;
+            return user;
+          }
+        } catch (error) {
+          console.error('Authentication error:', error);
+          throw new Error(
+            error?.response?.data?.message || 'Authentication failed'
+          );
+        }
+        return null;
+      }
+    }),
     CognitoProvider({
       clientId: process.env.COGNITO_CLIENT_ID,
       clientSecret: process.env.COGNITO_CLIENT_SECRET!,
@@ -58,7 +84,9 @@ export const authOptions = {
       checks: ['nonce'],
       authorization: {
         params: {
-          scope: 'openid email profile' // Recommended scopes
+          response_type: 'code',
+          scope: 'openid email profile',
+          identity_provider: 'Google'
         }
       }
     })
@@ -120,14 +148,13 @@ export const authOptions = {
         // userData.newUser = true;
         if (!userData) {
           console.log('User not found, creating user');
-          console.log('user', user);
           userData = await createUser(
             user.id,
             user.email,
+            user.source || 'realty-explorers',
             account.access_token || user.accessToken
           );
-          console.log('Created user:', userData);
-          userData.newUser = true;
+          // userData.newUser = true;
         }
         if (!userData) {
           throw new Error('Failed to create user');
@@ -149,7 +176,6 @@ export const authOptions = {
           // user
         };
       } else if (user && !account) {
-        console.log('user', user);
         throw new Error('User not authenticated');
         // let userData = await getUser(user.id, user.accessToken);
         // if (!userData) {

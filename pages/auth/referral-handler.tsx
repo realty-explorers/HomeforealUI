@@ -31,6 +31,8 @@ export default function ReferralHandler() {
     // const returnTo = searchParams.get('returnTo') || '/';
     console.log('returnTo:', returnTo);
 
+    // if (url.searchParams.get('referral') === 'projo') {
+
     setStatus('AUTHENTICATING');
 
     // Function to check localStorage for token

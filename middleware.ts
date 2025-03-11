@@ -14,20 +14,13 @@ export async function middleware(req: NextRequestWithAuth) {
     return NextResponse.next();
   }
 
-  // Check for referral parameter first, before any auth checks
+  // Automatically signin users from projo
   if (url.searchParams.get('referral') === 'projo') {
     console.log('Referral from projo detected, redirecting to handler');
-
-    // Create auth handler URL with returnTo parameter
-    const authUrl = new URL('/auth/referral-handler', req.url);
-
-    // Store the original path (without the referral parameter)
+    const authUrl = new URL('/auth/referral-handler?referral=projo', req.url);
     const returnUrl = new URL(url);
     returnUrl.searchParams.delete('referral');
-
-    // Set the returnTo parameter to the cleaned original path
     authUrl.searchParams.set('returnTo', returnUrl.pathname + returnUrl.search);
-
     return NextResponse.redirect(authUrl);
   }
 
@@ -66,7 +59,9 @@ const withAuthMiddleware = withAuth(
 export const config = {
   matcher: [
     // Protected routes
-    '/dashboards/real-estate',
+    '/dashboards/:path*',
+    '/auth/:path*',
+    '/managements/:path*',
     // Add any other routes that might have the referral parameter
     '/((?!api|_next/static|_next/image|favicon.ico|auth/handler).*)'
   ]

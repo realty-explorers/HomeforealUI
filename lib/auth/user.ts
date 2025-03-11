@@ -42,7 +42,12 @@ const getUserByEmail = async (email: string, token: string) => {
   }
 };
 
-const createUser = async (userId: string, userEmail: string, token: string) => {
+const createUser = async (
+  userId: string,
+  userEmail: string,
+  source: string,
+  token: string
+) => {
   try {
     const url = `${process.env.NEXT_PUBLIC_USER_SERVICE_URL}/v1/user`;
     const response = await axios.post(
@@ -50,7 +55,7 @@ const createUser = async (userId: string, userEmail: string, token: string) => {
       {
         userId,
         email: userEmail,
-        source: 'realty-explorers'
+        source
       },
       {
         headers: {
@@ -65,25 +70,4 @@ const createUser = async (userId: string, userEmail: string, token: string) => {
   }
 };
 
-const authenticateProjoUser = async (email: string, token: string) => {
-  try {
-    const url = `${process.env.NEXT_PUBLIC_USER_SERVICE_URL}/v1/user/cognito-authenticate`;
-    const response = await axios.post(
-      url,
-      {
-        email
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-};
-
-export { getUser, createUser, authenticateProjoUser, getUserByEmail };
+export { getUser, createUser, getUserByEmail };

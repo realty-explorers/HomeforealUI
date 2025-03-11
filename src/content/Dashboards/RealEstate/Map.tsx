@@ -23,6 +23,7 @@ import {
 } from '@/store/services/locationApiService';
 import {
   propertiesApiEndpoints,
+  useGetPropertiesPreviewsQuery,
   useLazyGetPropertyQuery
 } from '@/store/services/propertiesApiService';
 import { useDispatch, useSelector } from 'react-redux';
@@ -140,9 +141,17 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     suggestion || skipToken
   );
 
+  // const propertiesState = useGetPropertiesPreviewsQuery(
+  //   suggestion && buybox && user?.user
+  //     ? { suggestion, buybox_id: buybox?.id, masked: true }
+  //     : skipToken
+  // );
+
   const propertiesState =
     propertiesApiEndpoints.getPropertiesPreviews.useQueryState(
-      suggestion && buybox ? { suggestion, buybox_id: buybox?.id } : skipToken
+      suggestion && buybox && user?.user
+        ? { suggestion, buybox_id: buybox?.id, masked: !user?.user?.verified }
+        : skipToken
     );
 
   const handleDeselectProperty = () => {
@@ -377,7 +386,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       selectPropertyId(
         selectedBuyBoxId,
         selectedPropertyId,
-        !user.user.verified
+        true
+        // !user.user.verified
       );
     } else {
       dispatch(setSelectedPropertyPreview(null));
