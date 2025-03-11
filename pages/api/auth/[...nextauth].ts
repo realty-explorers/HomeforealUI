@@ -1,4 +1,4 @@
-import { authenticateProjoUser, singinUser } from 'lib/auth/auth';
+import { authenticateReferredUser, singinUser } from 'lib/auth/auth';
 import { refreshAccessToken, updateRefreshToken } from 'lib/auth/tokens';
 import { createUser, getUser, getUserByEmail } from 'lib/auth/user';
 import NextAuth from 'next-auth';
@@ -19,16 +19,8 @@ export const authOptions = {
       async authorize(credentials) {
         if (credentials.referral && credentials.token) {
           try {
-            // Validate token with your backend
-            // const response = await fetch('', {
-            //   method: 'POST',
-            //   headers: { 'Content-Type': 'application/json' },
-            //   body: JSON.stringify({ token: credentials.token })
-            // });
-            const email = credentials.referral;
-            const user = await authenticateProjoUser(email, credentials.token);
-
-            // const user = await response.json();
+            const { referral, token } = credentials;
+            const user = await authenticateReferredUser(referral, token);
 
             if (user) {
               user.access_token = user.accessToken;
@@ -36,11 +28,13 @@ export const authOptions = {
               user.refresh_token = user.refreshToken;
               user.id = user.userId;
               user.expires_at = user.expiresIn;
-              user.email = credentials.email;
               return user;
             }
           } catch (error) {
             console.error('Token validation error:');
+            throw new Error(
+              error?.response?.data?.message || 'Token validation failed'
+            );
           }
         }
         return null;

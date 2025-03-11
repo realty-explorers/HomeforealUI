@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
 import LoadingScreen from '@/components/Auth/LoadingScreen';
 import { ShieldCheck, ShieldX } from 'lucide-react';
+import { checkProjoAuthToken } from 'lib/integrations/projo/auth';
 
 const authStatus = {
   INITIALIZING: 'Initializing authentication...',
@@ -27,80 +28,43 @@ export default function ReferralHandler() {
 
   useEffect(() => {
     if (!returnTo) return;
-    // Get the return path from URL query parameter
-    // const returnTo = searchParams.get('returnTo') || '/';
     console.log('returnTo:', returnTo);
-
-    // if (url.searchParams.get('referral') === 'projo') {
-
     setStatus('AUTHENTICATING');
-
-    // Function to check localStorage for token
-    const checkForToken = (returnTo: string) => {
+    const checkForToken = async (returnTo: string) => {
       try {
-        // const token = localStorage.getItem('authToken');
-        const email = localStorage.getItem('email');
-        const token = '1234';
-        if (token && status !== 'Token found, authenticating...') {
-          // setStatus('Token found, authenticating...');
+        const referral = searchParams.get('referral');
+        const token = searchParams.get('token');
+        if (referral && token) {
           console.log('found token, current status:', status);
           console.log('redirecting to', returnTo);
 
           // Authenticate with NextAuth
-          signIn('credentials', {
-            token,
-            email,
-            redirect: false
-          })
-            .then((result) => {
-              if (result?.ok) {
-                setStatus('AUTH_SUCCESS');
+          const result = await signIn('referral', {
+            redirect: false,
+            referral,
+            token
+          });
 
-                const meow = searchParams.get('returnTo') || '/';
-                console.log('Authentication successful, redirecting to', meow);
-                // Redirect to the original URL
-                router.push(meow);
-              } else {
-                setStatus('Authentication failed');
-                setError(result?.error || 'Unknown authentication error');
-              }
-            })
-            .catch((err) => {
-              setStatus('AUTH_FAILED');
-              setError(err.message || 'An unexpected error occurred');
-            });
-          return true;
+          if (!result.ok) {
+            console.log(JSON.stringify(result));
+            setStatus('AUTH_FAILED');
+            setError(result?.error || 'Unknown authentication error');
+          } else {
+            setStatus('AUTH_SUCCESS');
+
+            const meow = searchParams.get('returnTo') || '/';
+            console.log('Authentication successful, redirecting to', meow);
+            // Redirect to the original URL
+            router.push(meow);
+          }
         }
-        return false;
       } catch (err) {
         setStatus('Error accessing localStorage');
         setError(err.message);
-        return true; // Return true to stop polling
       }
     };
-
-    if (!checkForToken(returnTo)) {
-      // setStatus('Waiting for token...');
-
-      // Set up polling
-      const interval = setInterval(() => {
-        if (checkForToken(returnTo)) {
-          clearInterval(interval);
-        }
-      }, 500);
-
-      const timeout = setTimeout(() => {
-        clearInterval(interval);
-        setStatus('AUTH_FAILED');
-        setError('No authentication token was detected within the time limit');
-      }, 30000);
-
-      return () => {
-        clearInterval(interval);
-        clearTimeout(timeout);
-      };
-    }
-  }, [router, searchParams]);
+    checkForToken(returnTo);
+  }, [searchParams, returnTo]);
 
   return (
     <div className="min-h-screen">
@@ -141,9 +105,9 @@ export default function ReferralHandler() {
             <div className="flex justify-center">
               <button
                 className="px-5 py-2.5 bg-gradient-to-r from-blue-500 to-violet-500 text-white rounded-lg shadow-sm hover:from-blue-600 hover:to-violet-600 transition-all duration-300"
-                onClick={() => router.push('/')}
+                onClick={() => router.push('/auth/signin')}
               >
-                Return to Home
+                Return to Sign In
               </button>
             </div>
           </div>

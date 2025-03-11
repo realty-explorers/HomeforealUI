@@ -49,25 +49,13 @@ const confirmForgotPassword = async (
   return response.data;
 };
 
-const authenticateProjoUser = async (email: string, token: string) => {
-  try {
-    const url = `${process.env.NEXT_PUBLIC_USER_SERVICE_URL}/v1/user/cognito-authenticate`;
-    const response = await axios.post(
-      url,
-      {
-        email
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
+const authenticateReferredUser = async (referral: string, token: string) => {
+  const url = `${process.env.NEXT_PUBLIC_USER_SERVICE_URL}/v1/user/authenticate-referred-user`;
+  const response = await axios.post(url, {
+    referral,
+    token
+  });
+  return response.data;
 };
 
 export {
@@ -76,5 +64,5 @@ export {
   confirmUser,
   forgotPassword,
   confirmForgotPassword,
-  authenticateProjoUser
+  authenticateReferredUser
 };

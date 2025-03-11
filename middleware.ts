@@ -14,10 +14,14 @@ export async function middleware(req: NextRequestWithAuth) {
     return NextResponse.next();
   }
 
-  // Automatically signin users from projo
-  if (url.searchParams.get('referral') === 'projo') {
-    console.log('Referral from projo detected, redirecting to handler');
-    const authUrl = new URL('/auth/referral-handler?referral=projo', req.url);
+  const referral = url.searchParams.get('referral');
+  if (referral) {
+    console.log('Referral detected:', referral);
+    const token = url.searchParams.get('token');
+    const authUrl = new URL(
+      `/auth/referral-handler?referral=${referral}&token=${token}`,
+      req.url
+    );
     const returnUrl = new URL(url);
     returnUrl.searchParams.delete('referral');
     authUrl.searchParams.set('returnTo', returnUrl.pathname + returnUrl.search);
@@ -60,9 +64,9 @@ export const config = {
   matcher: [
     // Protected routes
     '/dashboards/:path*',
-    '/auth/:path*',
+    // '/auth/:path*',
     '/managements/:path*',
     // Add any other routes that might have the referral parameter
-    '/((?!api|_next/static|_next/image|favicon.ico|auth/handler).*)'
+    '/((?!api|_next/static|_next/image|favicon.ico|).*)'
   ]
 };
