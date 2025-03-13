@@ -386,8 +386,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       selectPropertyId(
         selectedBuyBoxId,
         selectedPropertyId,
-        true
-        // !user.user.verified
+        !user.user.verified
       );
     } else {
       dispatch(setSelectedPropertyPreview(null));
