@@ -158,10 +158,10 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
     try {
       console.log('Form submitted:', data);
       const userId = session.user.id;
-      const analysisId = selectedProperty.propertyId;
+      const propertyId = selectedProperty.propertyId;
       const response = await createOffer({
         userId,
-        analysisId,
+        propertyId,
         offerData: data
       }).unwrap();
       enqueueSnackbar(`Offer created successfully`, {
