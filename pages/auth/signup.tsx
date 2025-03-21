@@ -48,7 +48,7 @@ const SignUp = () => {
             className="mt-8 text-center text-sm text-secondary/90 animate-fade-in"
             style={{ animationDelay: '0.4s' }}
           >
-            <p>© 2023 Nova. All rights reserved.</p>
+            <p>© 2025 Realty Explorers. All rights reserved.</p>
           </div>
         </div>
       </div>
