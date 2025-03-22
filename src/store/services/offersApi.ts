@@ -54,7 +54,7 @@ const baseQueryWithReauth = async (
 export const offerApi = createApi({
   reducerPath: 'offerApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Offer'],
+  tagTypes: ['Offer', 'Realtor'],
   endpoints: (builder) => ({
     createOffer: builder.mutation({
       query: (body) => ({
@@ -63,13 +63,54 @@ export const offerApi = createApi({
         body
       })
     }),
+    approveOffer: builder.mutation({
+      query: ({ offerId }) => ({
+        url: `/offers/${offerId}/approve`,
+        method: 'POST'
+      }),
+      invalidatesTags: ['Offer']
+    }),
+
+    deleteOffer: builder.mutation({
+      query: ({ offerId }) => ({
+        url: `/offers/${offerId}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['Offer']
+    }),
 
     getOffers: builder.query({
       query: () => ({ url: '/offers' })
+    }),
+
+    getAllOffers: builder.query({
+      query: () => ({ url: '/offers/all' }),
+      providesTags: ['Offer']
+    }),
+    getAllRealtors: builder.query({
+      query: () => ({ url: '/realtors' }),
+      providesTags: ['Realtor']
+    }),
+    approveRealtor: builder.mutation({
+      query: ({ realtorId }) => ({
+        url: `/realtors/${realtorId}/approve`,
+        method: 'POST'
+      }),
+      invalidatesTags: ['Realtor']
     })
   })
 });
 
 export const offerApiEndpoints = offerApi.endpoints;
 
-export const { useCreateOfferMutation, useLazyGetOffersQuery } = offerApi;
+export const {
+  useCreateOfferMutation,
+  useLazyGetOffersQuery,
+  useLazyGetAllOffersQuery,
+  useLazyGetAllRealtorsQuery,
+  useGetAllOffersQuery,
+  useGetAllRealtorsQuery,
+  useApproveOfferMutation,
+  useApproveRealtorMutation,
+  useDeleteOfferMutation
+} = offerApi;

@@ -27,7 +27,7 @@ import {
   Tooltip
 } from 'recharts';
 import { useWizardNavigation } from '@/contexts/OfferFormContext';
-import { OfferFormData } from '@/schemas/OfferSchemas';
+import { OfferFormData } from '@/schemas/OfferDataSchemas';
 
 const Settlement: React.FC = () => {
   const { nextStep, prevStep } = useWizardNavigation();

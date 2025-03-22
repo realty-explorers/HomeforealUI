@@ -403,6 +403,95 @@ img {
   .stepper-dot {
     @apply absolute top-1/2 transform -translate-y-1/2 bg-brand-accent rounded-full w-2 h-2;
   }
+
+  /* Admin Panel specific styles */
+  .story-link {
+    @apply relative inline-block after:content-[''] after:absolute after:w-full after:scale-x-0 after:h-0.5 after:bottom-0 after:left-0 after:bg-primary after:origin-bottom-right after:transition-transform after:duration-300 hover:after:scale-x-100 hover:after:origin-bottom-left;
+  }
+
+  .hover-scale {
+    @apply transition-transform duration-200 hover:scale-105;
+  }
+
+  .hover-opacity {
+    @apply transition-opacity duration-200 hover:opacity-80;
+  }
+
+  .glass-card {
+    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg;
+  }
+
+  .status-badge {
+    @apply inline-flex items-center justify-center rounded-full px-2.5 py-0.5 text-xs font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2;
+  }
+
+  .status-badge-pending {
+    @apply bg-yellow-100 text-yellow-800;
+  }
+
+  .status-badge-in-review {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  .status-badge-realtor-contacted {
+    @apply bg-purple-100 text-purple-800;
+  }
+
+  .status-badge-realtor-review {
+    @apply bg-indigo-100 text-indigo-800;
+  }
+
+  .status-badge-final-sign-off {
+    @apply bg-orange-100 text-orange-800;
+  }
+
+  .status-badge-accepted {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .status-badge-rejected {
+    @apply bg-red-100 text-red-800;
+  }
+
+  .status-badge-pending-intro {
+    @apply bg-gray-100 text-gray-800;
+  }
+
+  .status-badge-intro-sent {
+    @apply bg-blue-100 text-blue-800;
+  }
+
+  .status-badge-intro-received {
+    @apply bg-indigo-100 text-indigo-800;
+  }
+
+  .status-badge-interested {
+    @apply bg-green-100 text-green-800;
+  }
+
+  .status-badge-not-interested {
+    @apply bg-red-100 text-red-800;
+  }
+
+  .nav-item {
+    @apply flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-all hover:bg-accent;
+  }
+
+  .nav-item-active {
+    @apply bg-accent text-accent-foreground;
+  }
+
+  .page-transition {
+    @apply animate-enter;
+  }
+
+  .stat-card {
+    @apply rounded-lg border p-4 shadow-sm transition-all hover:shadow-md;
+  }
+
+  .table-container {
+    @apply rounded-md border bg-card shadow-sm;
+  }
 }
 
 @layer utilities {

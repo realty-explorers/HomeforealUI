@@ -72,6 +72,7 @@ module.exports = {
         }
       },
       animation: {
+        'caret-blink': 'caret-blink 1.25s ease-out infinite',
         fadeDelayed: 'fadeOut 0s 0.5s ease-in-out forwards',
         fade: 'fadeOut 0.3s ease-in-out forwards',
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -81,6 +82,10 @@ module.exports = {
         'purple-pink': ['45deg', '#3023AE 0%', '#FF0099 100%']
       },
       keyframes: {
+        'caret-blink': {
+          '0%,70%,100%': { opacity: '1' },
+          '20%,50%': { opacity: '0' }
+        },
         fadeOut: {
           '0%': {
             opacity: 0

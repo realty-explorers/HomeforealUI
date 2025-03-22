@@ -9,7 +9,7 @@ import {
   useFormContext
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { OfferSchema, OfferFormData } from '@/schemas/OfferSchemas';
+import { OfferSchema, OfferFormData } from '@/schemas/OfferDataSchemas';
 import { offerTemplates, emptyTemplate } from '@/data/offerTemplates';
 
 interface FormProviderProps<T extends FieldValues> {

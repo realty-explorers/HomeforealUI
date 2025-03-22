@@ -5,7 +5,7 @@ import FormField from '@/components/FormField';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Upload, User } from 'lucide-react';
-import { OfferFormData } from '@/schemas/OfferSchemas';
+import { OfferFormData } from '@/schemas/OfferDataSchemas';
 
 const BuyerDetails: React.FC = () => {
   const {

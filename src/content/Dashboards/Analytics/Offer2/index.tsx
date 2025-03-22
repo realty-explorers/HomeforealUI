@@ -28,7 +28,7 @@ import {
   TemplateSelectionProvider,
   useTemplateSelectionContext
 } from '@/contexts/OfferFormContext';
-import { OfferFormData } from '@/schemas/OfferSchemas';
+import { OfferFormData } from '@/schemas/OfferDataSchemasemas';
 import { emptyTemplate } from '@/data/offerTemplates';
 
 // Import all wizard step components
@@ -286,7 +286,9 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
                   )}
                   {/* <div id="errors"> */}
                   {/*   {methods.formState.errors */}
-                  {/*     ? Object.keys(methods.formState.errors) */}
+                  {/*     ? Object.keys( */}
+                  {/*         methods.formState.errors?.buyerDetails || {} */}
+                  {/*       ) */}
                   {/*     : 'No errors'} */}
                   {/* </div> */}
                 </div>

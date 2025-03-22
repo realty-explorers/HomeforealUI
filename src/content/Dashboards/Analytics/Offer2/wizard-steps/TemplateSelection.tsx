@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Building2, Home, MapPin, Plus } from 'lucide-react';
-import { OfferFormData } from '@/schemas/OfferSchemas';
+import { OfferFormData } from '@/schemas/OfferDataSchemas';
 import { useSession } from 'next-auth/react';
 import { selectProperties } from '@/store/slices/propertiesSlice';
 import { useAppSelector } from '@/store/hooks';

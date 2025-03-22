@@ -7,7 +7,7 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { CreditCard, DollarSign } from 'lucide-react';
-import { OfferFormData } from '@/schemas/OfferSchemas';
+import { OfferFormData } from '@/schemas/OfferDataSchemas';
 
 const Financing: React.FC<{
   selectedTemplateId: string | null;

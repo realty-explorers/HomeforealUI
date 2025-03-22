@@ -18,6 +18,7 @@ import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 import Logo from '@/components/Logo';
 import { usePathname } from 'next/navigation';
 import clsx from 'clsx';
+import { useSession } from 'next-auth/react';
 
 const ListWrapper = styled(Box)(
   ({ theme }) => `
@@ -78,6 +79,11 @@ const pages = [
   {
     title: 'BuyBox',
     href: '/dashboards/buybox'
+  },
+  {
+    title: 'Admin',
+    href: '/dashboards/admin',
+    requireAdmin: true
   }
 ];
 
@@ -86,6 +92,7 @@ function HeaderMenu() {
   const [isOpen, setOpen] = useState<boolean>(false);
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const pathname = usePathname();
+  const { data: session } = useSession();
 
   const handleOpen = (): void => {
     setOpen(true);
@@ -100,24 +107,30 @@ function HeaderMenu() {
       <ListWrapper className="hidden md:flex" ref={ref}>
         <Logo />
         <List disablePadding component={Box} display="flex">
-          {pages.map((page, index) => (
-            <ListItem
-              key={index}
-              classes={{ root: 'MuiListItem-indicators' }}
-              className={clsx([pathname === page.href && 'active'])}
-              component={Link}
-              button
-              href={page.href}
-            >
-              <ListItemText
-                primaryTypographyProps={{
-                  noWrap: true,
-                  fontFamily: 'var(--font-poppins)'
-                }}
-                primary={page.title}
-              />
-            </ListItem>
-          ))}
+          {pages
+            .filter(
+              (page) =>
+                !page.requireAdmin ||
+                (page.requireAdmin && session?.user?.roles?.includes('admin'))
+            )
+            .map((page, index) => (
+              <ListItem
+                key={index}
+                classes={{ root: 'MuiListItem-indicators' }}
+                className={clsx([pathname === page.href && 'active'])}
+                component={Link}
+                button
+                href={page.href}
+              >
+                <ListItemText
+                  primaryTypographyProps={{
+                    noWrap: true,
+                    fontFamily: 'var(--font-poppins)'
+                  }}
+                  primary={page.title}
+                />
+              </ListItem>
+            ))}
         </List>
       </ListWrapper>
       <Box className="grow flex md:hidden">

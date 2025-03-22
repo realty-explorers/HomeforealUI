@@ -23,7 +23,7 @@ import {
   AlertTriangle,
   Check
 } from 'lucide-react';
-import { OfferFormData } from '@/schemas/OfferSchemas';
+import { OfferFormData } from '@/schemas/OfferDataSchemas';
 
 const disclosureTopics = [
   'occupancyAndProperty',

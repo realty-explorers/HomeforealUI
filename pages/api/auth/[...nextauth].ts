@@ -117,7 +117,7 @@ export const authOptions = {
         user: {
           ...session.user,
           id: token.sub,
-          role: token.role,
+          roles: token.roles,
           accessToken: token.accessToken,
           idToken: token.idToken,
           verified: token.verified,
