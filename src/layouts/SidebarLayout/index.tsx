@@ -60,6 +60,7 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
             verified: true
           }
         });
+        window.location.reload();
       } else {
         dispatch(setShowVerificationDialog(true));
       }
