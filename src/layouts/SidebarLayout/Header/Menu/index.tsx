@@ -162,16 +162,22 @@ function HeaderMenu() {
             display: { xs: 'block', md: 'none' }
           }}
         >
-          {pages.map((page, index) => (
-            <MenuItem
-              key={index}
-              href={page.href}
-              component={Link}
-              onClick={() => setMenuOpen(false)}
-            >
-              <Typography textAlign="center">{page.title}</Typography>
-            </MenuItem>
-          ))}
+          {pages
+            .filter(
+              (page) =>
+                !page.requireAdmin ||
+                (page.requireAdmin && session?.user?.roles?.includes('admin'))
+            )
+            .map((page, index) => (
+              <MenuItem
+                key={index}
+                href={page.href}
+                component={Link}
+                onClick={() => setMenuOpen(false)}
+              >
+                <Typography textAlign="center">{page.title}</Typography>
+              </MenuItem>
+            ))}
         </Menu>
       </Box>
     </div>
