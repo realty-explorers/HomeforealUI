@@ -20,15 +20,67 @@ const verificationSchema = z.object({
   code: z.string().min(6, { message: 'Please enter a valid verification code' })
 });
 
+const cognitoPasswordPolicy = {
+  minimumLength: 8,
+  requireUppercase: true,
+  requireLowercase: true,
+  requireNumbers: true,
+  requireSpecialCharacters: true
+};
+
+// Reusable function for Cognito password validation
+const validateCognitoPassword = (password: string, ctx: z.RefinementCtx) => {
+  if (password.length < cognitoPasswordPolicy.minimumLength) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.too_small,
+      minimum: cognitoPasswordPolicy.minimumLength,
+      type: 'string',
+      inclusive: true,
+      message: `Password must be at least ${cognitoPasswordPolicy.minimumLength} characters`
+    });
+  }
+
+  if (cognitoPasswordPolicy.requireUppercase && !/[A-Z]/.test(password)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Password must contain at least one uppercase letter'
+    });
+  }
+
+  if (cognitoPasswordPolicy.requireLowercase && !/[a-z]/.test(password)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Password must contain at least one lowercase letter'
+    });
+  }
+
+  if (cognitoPasswordPolicy.requireNumbers && !/[0-9]/.test(password)) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Password must contain at least one number'
+    });
+  }
+
+  if (
+    cognitoPasswordPolicy.requireSpecialCharacters &&
+    !/[^A-Za-z0-9]/.test(password)
+  ) {
+    ctx.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: 'Password must contain at least one special character'
+    });
+  }
+};
+
+const cognitoPasswordSchema = z.string().superRefine(validateCognitoPassword);
+
 // New password schema
 const passwordSchema = z
   .object({
     code: z
       .string()
       .min(6, { message: 'Please enter a valid verification code' }),
-    password: z
-      .string()
-      .min(8, { message: 'Password must be at least 8 characters' }),
+    password: cognitoPasswordSchema,
     confirmPassword: z
       .string()
       .min(8, { message: 'Confirm password must be at least 8 characters' })
