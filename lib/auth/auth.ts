@@ -30,7 +30,7 @@ const confirmUser = async (username: string, code: string) => {
 const forgotPassword = async (email: string) => {
   const url = `${process.env.NEXT_PUBLIC_USER_SERVICE_URL}/v1/user/forgot-password`;
   const response = await axios.post(url, {
-    email
+    username: email
   });
   return response.data;
 };
@@ -43,7 +43,7 @@ const confirmForgotPassword = async (
   const url = `${process.env.NEXT_PUBLIC_USER_SERVICE_URL}/v1/user/confirm-forgot-password`;
   const response = await axios.post(url, {
     username,
-    code,
+    confirmationCode: code,
     newPassword
   });
   return response.data;

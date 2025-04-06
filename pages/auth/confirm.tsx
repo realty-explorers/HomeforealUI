@@ -1,18 +1,17 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import ConfirmAccountForm from '@/components/Auth/ConfirmAccountForm';
 import BackgroundAnimation from '@/components/Auth/BackgroundAnimation';
 import Logo from '@/components/Auth/Logo';
-import ForgotPasswordForm from '@/components/Auth/ForgotPasswordForm';
-import { useSnackbar } from 'notistack';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
 
-const ForgotPassword = () => {
-  const { enqueueSnackbar } = useSnackbar();
-
+const ConfirmAccount = () => {
   return (
     <div className="min-h-screen w-full flex items-center justify-center p-4 overflow-hidden">
       {/* Animated background */}
       <BackgroundAnimation />
 
-      {/* Form container */}
+      {/* Sign-up container */}
       <div className="w-full max-w-md z-10">
         <div className="relative">
           {/* Logo */}
@@ -27,7 +26,21 @@ const ForgotPassword = () => {
             className="p-8 rounded-xl morphic-card animate-fade-in shadow-xl bg-gradient-to-b from-white/95 to-white/90"
             style={{ animationDelay: '0.2s' }}
           >
-            <ForgotPasswordForm />
+            <ConfirmAccountForm />
+          </div>
+
+          {/* Back to sign in link */}
+          <div
+            className="mt-4 text-center animate-fade-in"
+            style={{ animationDelay: '0.3s' }}
+          >
+            <Link
+              href="/"
+              className="inline-flex items-center text-sm text-secondary hover:text-primary-purple transition-colors duration-300"
+            >
+              <ArrowLeft className="mr-1 h-4 w-4" />
+              Back to sign in
+            </Link>
           </div>
 
           {/* Footer */}
@@ -35,7 +48,7 @@ const ForgotPassword = () => {
             className="mt-8 text-center text-sm text-secondary/90 animate-fade-in"
             style={{ animationDelay: '0.4s' }}
           >
-            <p>© 2025 Reatly Explorers. All rights reserved.</p>
+            <p>© 2025 Realty Explorers. All rights reserved.</p>
           </div>
         </div>
       </div>
@@ -43,4 +56,4 @@ const ForgotPassword = () => {
   );
 };
 
-export default ForgotPassword;
+export default ConfirmAccount;

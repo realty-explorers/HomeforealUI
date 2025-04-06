@@ -23,6 +23,7 @@ export const authOptions = {
             const user = await authenticateReferredUser(referral, token);
 
             if (user) {
+              user.referral = referral;
               user.access_token = user.accessToken;
               user.id_token = user.idToken;
               user.refresh_token = user.refreshToken;
@@ -145,7 +146,7 @@ export const authOptions = {
           userData = await createUser(
             user.id,
             user.email,
-            user.source || 'realty-explorers',
+            user.referral || 'realty-explorers',
             account.access_token || user.accessToken
           );
           // userData.newUser = true;

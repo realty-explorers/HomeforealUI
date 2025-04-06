@@ -8,6 +8,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useSnackbar } from 'notistack';
 import Link from 'next/link';
+import { confirmForgotPassword, forgotPassword } from 'lib/auth/auth';
 
 // Email step schema
 const emailSchema = z.object({
@@ -22,6 +23,9 @@ const verificationSchema = z.object({
 // New password schema
 const passwordSchema = z
   .object({
+    code: z
+      .string()
+      .min(6, { message: 'Please enter a valid verification code' }),
     password: z
       .string()
       .min(8, { message: 'Password must be at least 8 characters' }),
@@ -85,19 +89,13 @@ const ForgotPasswordForm = () => {
 
     try {
       // Simulate API call to send verification code
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-
-      // In a real app, you'd call an API to send a verification code
-      // const response = await fetch('/api/send-verification', {
-      //   method: 'POST',
-      //   body: JSON.stringify({ email: data.email }),
-      // });
+      await forgotPassword(data.email);
 
       setEmail(data.email);
       enqueueSnackbar('Verification code sent', {
         variant: 'success'
       });
-      setCurrentStep(ResetStep.VERIFICATION);
+      setCurrentStep(ResetStep.NEW_PASSWORD);
     } catch (error) {
       setError('Failed to send verification code. Please try again.');
       console.error(error);
@@ -113,7 +111,6 @@ const ForgotPasswordForm = () => {
 
     try {
       // Simulate API call to verify code
-      await new Promise((resolve) => setTimeout(resolve, 1500));
 
       // In a real app, you'd verify the code with your API
       // const response = await fetch('/api/verify-code', {
@@ -150,7 +147,7 @@ const ForgotPasswordForm = () => {
 
     try {
       // Simulate API call to reset password
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      await confirmForgotPassword(email, data.code, data.password);
 
       // In a real app, you'd reset the password with your API
       // const response = await fetch('/api/reset-password', {
@@ -189,15 +186,6 @@ const ForgotPasswordForm = () => {
             </h1>
             <p className="text-muted-foreground">
               Enter your email to receive a verification code
-            </p>
-          </>
-        );
-      case ResetStep.VERIFICATION:
-        return (
-          <>
-            <h1 className="text-3xl font-bold tracking-tight">Verification</h1>
-            <p className="text-muted-foreground">
-              Enter the code we sent to your email
             </p>
           </>
         );
@@ -352,6 +340,27 @@ const ForgotPasswordForm = () => {
             )}
 
             <div className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="code">Verification Code</Label>
+                <div className="relative">
+                  <KeyRound className="absolute left-3 top-2.5 h-5 w-5 text-muted-foreground" />
+                  <Input
+                    id="code"
+                    placeholder="Enter verification code"
+                    className={`pl-10 transition-all duration-300 border-muted-foreground/20 focus:border-primary ${
+                      passwordForm.formState.errors.code
+                        ? 'border-destructive focus:border-destructive'
+                        : ''
+                    }`}
+                    {...passwordForm.register('code')}
+                  />
+                </div>
+                {passwordForm.formState.errors.code && (
+                  <p className="text-sm font-medium text-destructive mt-1">
+                    {passwordForm.formState.errors.code.message}
+                  </p>
+                )}
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="password">New Password</Label>
                 <div className="relative">
