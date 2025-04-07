@@ -3,19 +3,30 @@ import { z } from 'zod';
 const moneySchema = z
   .number()
   .min(1, { message: 'Amount must be greater than 0' });
-const financingTypesSchema = z.enum(['Cash', 'Mortgage', 'Other']);
+const financingTypesSchema = z.enum(['Cash', 'Loan', 'Other']);
 const surveyorChoiceSchema = z.enum(['Buyer', 'Seller', 'Mutual']);
 const daysSchema = z.number().int().positive();
 
 export const OfferSchema = z.object({
+  buyerDetails: z.object({
+    name: z
+      .string()
+      .min(2, { message: 'Name must be at least 2 characters long' }),
+    address: z.string().optional(),
+    phone: z.string().optional(),
+    email: z.string().email('Invalid email address')
+  }),
   // Purchase Price and Financing
   financialDetails: z.object({
     purchasePrice: moneySchema,
-    financingType: financingTypesSchema,
+    financingType: z.string().min(2, 'Financing type is required'),
+    financingTypeOther: z
+      .string()
+      .min(2, 'Financing type must be atleast 2 characters')
+      .optional(),
     loanAmount: z.number().nonnegative().optional()
   }),
 
-  // Deposit
   deposit: z.object({
     depositAmount: z.number().nonnegative(),
     holderName: z.string(),
@@ -24,76 +35,79 @@ export const OfferSchema = z.object({
     holderEmail: z.union([z.string().email().optional(), z.literal('')])
   }),
 
-  // Conditions
   conditions: z.object({
-    subjectProperty: z.boolean().optional(),
-    exludedFixtures: z.array(z.string()).optional()
+    subjectProperty: z.object({
+      exists: z.boolean(),
+      address: z.string().min(2, { message: 'Address is required' }).optional()
+    }),
+    excludeFixtures: z.object({
+      exclude: z.boolean(),
+      fixtures: z.string().optional()
+    }),
+    propertyState: z.object({
+      isNew: z.boolean(),
+      requestBuilderWarrany: z.boolean()
+    }),
+    sellerRepairs: z.object({
+      isRequired: z.boolean(),
+      repairsDetails: z.string().optional()
+    }),
+    residentialServiceContract: z.object({
+      exists: z.boolean(),
+      maximumReimbursement: z.number().nonnegative().optional()
+    })
   }),
 
-  // Land Survey
+  propertyDisclosures: z.object({
+    occupancyAndProperty: z.boolean(),
+    fixturesAndItems: z.boolean(),
+    roof: z.boolean(),
+    additionsAndAlterations: z.boolean(),
+    soilTreeAndVegetation: z.boolean(),
+    woodDestroyingOrganisms: z.boolean(),
+    floodAndMoisture: z.boolean(),
+    toxicMaterialAndSubstances: z.boolean(),
+    covenantsFeesAndAssessments: z.boolean(),
+    plumbing: z.boolean(),
+    insulation: z.boolean(),
+    miscellaneous: z.boolean(),
+    additionalDisclosures: z.string().optional()
+  }),
+
+  propertyReports: z.object({
+    endangeredSpeciesReport: z.boolean(),
+    environmnetalReport: z.boolean()
+  }),
+
   landSurvey: z.object({
     requireNewSurvey: z.boolean(),
     surveyorChoice: surveyorChoiceSchema
   }),
 
-  // Property Description
   legalDescription: z.object({
     description: z.string().optional()
   }),
 
-  // Inspection Period
   propertyTerms: z.object({
     conductInspection: z.boolean(),
     isInspectionContingent: z.boolean().optional(),
-    inspectionDurationDays: z.number().nonnegative().optional(),
-    lease: z.boolean()
-  }),
-
-  propertyConditions: z.object({
-    isNew: z.boolean(),
-    disclosureTopics: z.object({
-      occupancyAndProperty: z.boolean(),
-      fixturesAndItems: z.boolean(),
-      roof: z.boolean(),
-      additionsAndAlterations: z.boolean(),
-      soilTreeAndVegetation: z.boolean(),
-      woodDestroyingOrganisms: z.boolean(),
-      floodAndMoisture: z.boolean(),
-      toxicMaterialAndSubstances: z.boolean(),
-      covenantsFeesAndAssessments: z.boolean(),
-      plumbing: z.boolean(),
-      insulation: z.boolean(),
-      miscellaneous: z.boolean(),
-      additionalDisclosures: z.string().optional()
-    }),
-    sellerRepairs: z.string().optional(),
-    conductEndangeredSpeciesReport: z.boolean(),
-    conductEnvironmnetalReport: z.boolean(),
-    requireResidentialServiceContract: z.boolean()
-  }),
-
-  buyerDetails: z.object({
-    name: z
-      .string()
-      .min(2, { message: 'Name must be at least 2 characters long' }),
-    address: z.string(),
-    phone: z.string().optional(),
-    email: z.string().email('Invalid email address')
+    inspectionDurationDays: z.number().nonnegative().optional()
   }),
 
   settlementExpenses: z.object({
-    sellerPaysSettlementExpenses: z.boolean(),
-    settlementAmount: z.number().nonnegative().optional()
+    sellerPaysFixedAmount: z.boolean(),
+    sellerCostsFixed: z.number().nonnegative().optional(),
+    sellerCostsPercentage: z.number().min(0).max(100).optional()
   }),
 
   closingDetails: z.object({
+    closeByDate: z.boolean(),
     closingDate: z.string().optional(),
-    possesionOnClosing: z.boolean(),
+    closingDeadline: z.number().nonnegative().optional(),
     optionToTerminate: z.boolean(),
     additionalClause: z.string().optional()
   }),
 
-  // Option to Terminate
   terminationOption: z.object({
     allowTermination: z.boolean(),
     terminationFee: z.number().nonnegative().optional(),

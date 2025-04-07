@@ -1,3 +1,5 @@
+import { OfferFormData } from '@/schemas/OfferDataSchemas';
+
 type TemplateType = 'residential' | 'commercial' | 'vacant-land' | 'custom';
 
 export interface OfferTemplate {
@@ -6,242 +8,183 @@ export interface OfferTemplate {
   name: string;
   description: string;
   icon: string;
-  data: {
-    financialDetails: {
-      purchasePrice: number;
-      financingType?: 'Cash' | 'Mortgage' | 'Other';
-      loanAmount?: number;
-    };
-    deposit: {
-      depositAmount: number;
-      holderName: string;
-      holderAddress: string;
-      holderPhone?: string;
-      holderEmail?: string;
-    };
-    conditions: {
-      subjectProperty?: boolean;
-      exludedFixtures?: string[];
-    };
-    landSurvey: {
-      requireNewSurvey: boolean;
-      surveyorChoice: 'Buyer' | 'Seller' | 'Mutual';
-    };
-    legalDescription: {
-      description?: string;
-    };
-    propertyTerms: {
-      conductInspection: boolean;
-      isInspectionContingent?: boolean;
-      inspectionDurationDays?: number;
-      lease: boolean;
-    };
-    propertyConditions: {
-      isNew: boolean;
-      disclosureTopics: {
-        occupancyAndProperty: boolean;
-        fixturesAndItems: boolean;
-        roof: boolean;
-        additionsAndAlterations: boolean;
-        soilTreeAndVegetation: boolean;
-        woodDestroyingOrganisms: boolean;
-        floodAndMoisture: boolean;
-        toxicMaterialAndSubstances: boolean;
-        covenantsFeesAndAssessments: boolean;
-        plumbing: boolean;
-        insulation: boolean;
-        miscellaneous: boolean;
-        additionalDisclosures?: string;
-      };
-      sellerRepairs?: string;
-      conductEndangeredSpeciesReport: boolean;
-      conductEnvironmnetalReport: boolean;
-      requireResidentialServiceContract: boolean;
-    };
-    buyerDetails: {
-      name: string;
-      address: string;
-      phone?: string;
-      email?: string;
-    };
-    settlementExpenses: {
-      sellerPaysSettlementExpenses: boolean;
-      settlementAmount?: number;
-    };
-    closingDetails: {
-      closingDate?: string;
-      possesionOnClosing: boolean;
-      optionToTerminate: boolean;
-      additionalClause?: string;
-    };
-    terminationOption: {
-      allowTermination: boolean;
-      terminationFee?: number;
-      terminationPeriodDays?: number;
-    };
-  };
+  data: OfferFormData;
 }
 
 export const offerTemplates: OfferTemplate[] = [
   {
-    id: 'cash-offer',
+    id: 'cash-offer-residential',
     type: 'residential',
     name: 'Cash Offer',
-    description: 'Quick closing with no financing contingency',
-    icon: '💰',
+    description:
+      'A straightforward all-cash offer with minimal contingencies for quick closing',
+    icon: 'dollar-sign',
     data: {
+      buyerDetails: {
+        name: '[Buyer Name]',
+        address: '[Buyer Address]',
+        email: 'buyer@example.com'
+      },
       financialDetails: {
-        purchasePrice: 250000,
+        purchasePrice: 100000,
         financingType: 'Cash',
         loanAmount: 0
       },
       deposit: {
-        depositAmount: 25000,
-        holderName: 'ABC Title Company',
-        holderAddress: '123 Main St, City, State 12345',
-        holderPhone: '(555) 123-4567',
-        holderEmail: 'escrow@abctitle.com'
+        depositAmount: 5000,
+        holderName: 'Escrow Company',
+        holderAddress: '123 Escrow St, City, State, ZIP',
+        holderEmail: 'escrow@example.com'
       },
       conditions: {
-        subjectProperty: false,
-        exludedFixtures: []
+        subjectProperty: {
+          exists: false
+        },
+        excludeFixtures: {
+          exclude: false
+        },
+        propertyState: {
+          isNew: false,
+          requestBuilderWarrany: false
+        },
+        sellerRepairs: {
+          isRequired: false
+        },
+        residentialServiceContract: {
+          exists: false
+        }
+      },
+      propertyDisclosures: {
+        occupancyAndProperty: true,
+        fixturesAndItems: true,
+        roof: true,
+        additionsAndAlterations: true,
+        soilTreeAndVegetation: true,
+        woodDestroyingOrganisms: true,
+        floodAndMoisture: true,
+        toxicMaterialAndSubstances: true,
+        covenantsFeesAndAssessments: true,
+        plumbing: true,
+        insulation: true,
+        miscellaneous: true
+      },
+      propertyReports: {
+        endangeredSpeciesReport: false,
+        environmnetalReport: false
       },
       landSurvey: {
-        requireNewSurvey: true,
+        requireNewSurvey: false,
         surveyorChoice: 'Buyer'
       },
-      legalDescription: {
-        description: ''
-      },
+      legalDescription: {},
       propertyTerms: {
         conductInspection: true,
-        isInspectionContingent: true,
-        inspectionDurationDays: 10,
-        lease: false
-      },
-      propertyConditions: {
-        isNew: false,
-        disclosureTopics: {
-          occupancyAndProperty: true,
-          fixturesAndItems: true,
-          roof: true,
-          additionsAndAlterations: true,
-          soilTreeAndVegetation: true,
-          woodDestroyingOrganisms: true,
-          floodAndMoisture: true,
-          toxicMaterialAndSubstances: true,
-          covenantsFeesAndAssessments: true,
-          plumbing: true,
-          insulation: true,
-          miscellaneous: true,
-          additionalDisclosures: ''
-        },
-        sellerRepairs: '',
-        conductEndangeredSpeciesReport: false,
-        conductEnvironmnetalReport: true,
-        requireResidentialServiceContract: false
-      },
-      buyerDetails: {
-        name: '',
-        address: '',
-        phone: '',
-        email: ''
+        isInspectionContingent: false,
+        inspectionDurationDays: 7
       },
       settlementExpenses: {
-        sellerPaysSettlementExpenses: false,
-        settlementAmount: 0
+        sellerPaysFixedAmount: false,
+        sellerCostsFixed: 0
       },
       closingDetails: {
-        closingDate: '',
-        possesionOnClosing: true,
-        optionToTerminate: true,
-        additionalClause: ''
+        closeByDate: true,
+        closingDeadline: 30,
+        optionToTerminate: true
       },
       terminationOption: {
         allowTermination: true,
         terminationFee: 1000,
-        terminationPeriodDays: 5
+        terminationPeriodDays: 10
       }
     }
   },
   {
-    id: 'mortgage-offer',
-    type: 'commercial',
+    id: 'mortgage-offer-residential',
+    type: 'residential',
     name: 'Mortgage Offer',
-    description: 'Standard offer with financing contingency',
-    icon: '🏦',
+    description:
+      'Standard financing offer with loan contingencies for traditional purchases',
+    icon: 'home-loan',
     data: {
+      buyerDetails: {
+        name: '[Buyer Name]',
+        address: '[Buyer Address]',
+        email: 'buyer@example.com'
+      },
       financialDetails: {
-        purchasePrice: 300000,
-        financingType: 'Mortgage',
-        loanAmount: 240000
+        purchasePrice: 250000,
+        financingType: 'Loan',
+        loanAmount: 200000
       },
       deposit: {
-        depositAmount: 15000,
-        holderName: 'XYZ Escrow Services',
-        holderAddress: '456 Oak St, City, State 12345',
-        holderPhone: '(555) 987-6543',
-        holderEmail: 'info@xyzescrow.com'
+        depositAmount: 5000,
+        holderName: 'Escrow Company',
+        holderAddress: '123 Escrow St, City, State, ZIP',
+        holderEmail: 'escrow@example.com'
       },
       conditions: {
-        subjectProperty: true,
-        exludedFixtures: ['Refrigerator', 'Washer', 'Dryer']
+        subjectProperty: {
+          exists: false
+        },
+        excludeFixtures: {
+          exclude: false
+        },
+        propertyState: {
+          isNew: false,
+          requestBuilderWarrany: false
+        },
+        sellerRepairs: {
+          isRequired: true,
+          repairsDetails: 'Any repairs required by lender appraisal'
+        },
+        residentialServiceContract: {
+          exists: true,
+          maximumReimbursement: 500
+        }
+      },
+      propertyDisclosures: {
+        occupancyAndProperty: true,
+        fixturesAndItems: true,
+        roof: true,
+        additionsAndAlterations: true,
+        soilTreeAndVegetation: true,
+        woodDestroyingOrganisms: true,
+        floodAndMoisture: true,
+        toxicMaterialAndSubstances: true,
+        covenantsFeesAndAssessments: true,
+        plumbing: true,
+        insulation: true,
+        miscellaneous: true
+      },
+      propertyReports: {
+        endangeredSpeciesReport: false,
+        environmnetalReport: false
       },
       landSurvey: {
         requireNewSurvey: true,
-        surveyorChoice: 'Mutual'
+        surveyorChoice: 'Seller'
       },
-      legalDescription: {
-        description: ''
-      },
+      legalDescription: {},
       propertyTerms: {
         conductInspection: true,
         isInspectionContingent: true,
-        inspectionDurationDays: 14,
-        lease: false
-      },
-      propertyConditions: {
-        isNew: false,
-        disclosureTopics: {
-          occupancyAndProperty: true,
-          fixturesAndItems: true,
-          roof: true,
-          additionsAndAlterations: true,
-          soilTreeAndVegetation: true,
-          woodDestroyingOrganisms: true,
-          floodAndMoisture: true,
-          toxicMaterialAndSubstances: true,
-          covenantsFeesAndAssessments: true,
-          plumbing: true,
-          insulation: true,
-          miscellaneous: true,
-          additionalDisclosures: ''
-        },
-        sellerRepairs: '',
-        conductEndangeredSpeciesReport: false,
-        conductEnvironmnetalReport: false,
-        requireResidentialServiceContract: true
-      },
-      buyerDetails: {
-        name: '',
-        address: '',
-        phone: '',
-        email: ''
+        inspectionDurationDays: 10
       },
       settlementExpenses: {
-        sellerPaysSettlementExpenses: true,
-        settlementAmount: 3000
+        sellerPaysFixedAmount: true,
+        sellerCostsFixed: 3000
       },
       closingDetails: {
-        closingDate: '',
-        possesionOnClosing: true,
+        closeByDate: true,
+        closingDeadline: 45,
         optionToTerminate: true,
-        additionalClause: ''
+        additionalClause:
+          'This offer is contingent upon buyer obtaining financing at an interest rate not to exceed 7% within 30 days.'
       },
       terminationOption: {
         allowTermination: true,
-        terminationFee: 2000,
-        terminationPeriodDays: 10
+        terminationFee: 1000,
+        terminationPeriodDays: 15
       }
     }
   }
@@ -316,7 +259,6 @@ export const offerTemplates: OfferTemplate[] = [
   //     },
   //     closingDetails: {
   //       closingDate: '',
-  //       possesionOnClosing: false,
   //       optionToTerminate: true,
   //       additionalClause:
   //         'Subject to review of current tenant leases and rental income verification'
@@ -399,7 +341,6 @@ export const offerTemplates: OfferTemplate[] = [
   //     },
   //     closingDetails: {
   //       closingDate: '',
-  //       possesionOnClosing: true,
   //       optionToTerminate: true,
   //       additionalClause:
   //         'Final walkthrough to be conducted no more than 3 days before closing'
@@ -418,53 +359,70 @@ export const emptyTemplate: Omit<
   'id' | 'name' | 'description' | 'icon' | 'type'
 > = {
   data: {
+    buyerDetails: {
+      name: '',
+      address: '',
+      email: ''
+    },
     financialDetails: {
-      purchasePrice: 0
+      purchasePrice: 1,
+      financingType: ''
     },
     deposit: {
       depositAmount: 0,
       holderName: '',
-      holderAddress: ''
+      holderAddress: '',
+      holderEmail: ''
     },
-    conditions: {},
+    conditions: {
+      subjectProperty: {
+        exists: false
+      },
+      excludeFixtures: {
+        exclude: false
+      },
+      propertyState: {
+        isNew: false,
+        requestBuilderWarrany: false
+      },
+      sellerRepairs: {
+        isRequired: false
+      },
+      residentialServiceContract: {
+        exists: false
+      }
+    },
+    propertyDisclosures: {
+      occupancyAndProperty: false,
+      fixturesAndItems: false,
+      roof: false,
+      additionsAndAlterations: false,
+      soilTreeAndVegetation: false,
+      woodDestroyingOrganisms: false,
+      floodAndMoisture: false,
+      toxicMaterialAndSubstances: false,
+      covenantsFeesAndAssessments: false,
+      plumbing: false,
+      insulation: false,
+      miscellaneous: false
+    },
+    propertyReports: {
+      endangeredSpeciesReport: false,
+      environmnetalReport: false
+    },
     landSurvey: {
       requireNewSurvey: false,
       surveyorChoice: 'Buyer'
     },
     legalDescription: {},
     propertyTerms: {
-      conductInspection: false,
-      lease: false
-    },
-    propertyConditions: {
-      isNew: false,
-      disclosureTopics: {
-        occupancyAndProperty: false,
-        fixturesAndItems: false,
-        roof: false,
-        additionsAndAlterations: false,
-        soilTreeAndVegetation: false,
-        woodDestroyingOrganisms: false,
-        floodAndMoisture: false,
-        toxicMaterialAndSubstances: false,
-        covenantsFeesAndAssessments: false,
-        plumbing: false,
-        insulation: false,
-        miscellaneous: false
-      },
-      conductEndangeredSpeciesReport: false,
-      conductEnvironmnetalReport: false,
-      requireResidentialServiceContract: false
-    },
-    buyerDetails: {
-      name: '',
-      address: ''
+      conductInspection: false
     },
     settlementExpenses: {
-      sellerPaysSettlementExpenses: false
+      sellerPaysFixedAmount: true
     },
     closingDetails: {
-      possesionOnClosing: true,
+      closeByDate: true,
       optionToTerminate: false
     },
     terminationOption: {

@@ -1,5 +1,12 @@
 // contexts/FormProvider.tsx
-import { createContext, useContext, ReactNode, useState } from 'react';
+import {
+  createContext,
+  useContext,
+  ReactNode,
+  useState,
+  useRef,
+  useCallback
+} from 'react';
 import {
   useForm,
   FormProvider,
@@ -29,23 +36,6 @@ export function OfferFormProvider<T extends FieldValues>({
 
   return <FormProvider {...methods}>{children}</FormProvider>;
 }
-
-// Custom hook for wizard navigation
-export const useWizardNavigation = () => {
-  const [currentStep, setCurrentStep] = useState(0);
-
-  const nextStep = () => setCurrentStep((prev) => prev + 1);
-  const prevStep = () => setCurrentStep((prev) => Math.max(0, prev - 1));
-  const goToStep = (step: number) => setCurrentStep(step);
-
-  return {
-    currentStep,
-    setCurrentStep,
-    nextStep,
-    prevStep,
-    goToStep
-  };
-};
 
 // Custom hook for template selection
 export const useTemplateSelection = (methods: UseFormReturn<OfferFormData>) => {

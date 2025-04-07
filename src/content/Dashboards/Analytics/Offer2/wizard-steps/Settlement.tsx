@@ -26,8 +26,10 @@ import {
   Legend,
   Tooltip
 } from 'recharts';
-import { useWizardNavigation } from '@/contexts/OfferFormContext';
 import { OfferFormData } from '@/schemas/OfferDataSchemas';
+import PercentageInput from '@/components/PercentageInput';
+import { useWizardNavigation } from '@/contexts/WizardNavigationContext';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 
 const Settlement: React.FC = () => {
   const { nextStep, prevStep } = useWizardNavigation();
@@ -36,48 +38,44 @@ const Settlement: React.FC = () => {
     handleSubmit,
     formState: { errors },
     watch,
-    trigger
+    trigger,
+    setValue
   } = useFormContext<OfferFormData>();
 
-  const sellerPaysSettlementExpenses = watch(
-    'settlementExpenses.sellerPaysSettlementExpenses'
-  );
   const allowTermination = watch('terminationOption.allowTermination');
   const optionToTerminate = watch('closingDetails.optionToTerminate');
 
   // Calculate total purchase price and deposit from formData
   const purchasePrice = watch('financialDetails.purchasePrice') || 0;
   const depositAmount = watch('deposit.depositAmount') || 0;
-  const settlementAmount = watch('settlementExpenses.settlementAmount') || 0;
 
   // Calculate remaining amount
-  const remainingAmount = purchasePrice - depositAmount - settlementAmount;
 
   // Prepare chart data
-  const chartData = [
-    { name: 'Deposit', value: depositAmount },
-    { name: 'Settlement', value: settlementAmount },
-    { name: 'Remaining', value: remainingAmount > 0 ? remainingAmount : 0 }
-  ].filter((item) => item.value > 0);
-
-  const COLORS = ['#590d82', '#6f1d96', '#8e44ad', '#9b59b6'];
 
   const handleNext = async () => {
-    const isValid = await trigger(
-      [
-        'legalDescription.description',
-        'propertyConditions.disclosureTopics.additionalDisclosures',
-        'propertyConditions.sellerRepairs',
-        'landSurvey.surveyorChoice'
-      ],
-      { shouldFocus: true }
-    );
-    if (isValid) {
-      nextStep();
-    }
+    // const isValid = await trigger(
+    //   [
+    //     'legalDescription.description',
+    //     'propertyConditions.disclosureTopics.additionalDisclosures',
+    //     'propertyConditions.sellerRepairs',
+    //     'landSurvey.surveyorChoice'
+    //   ],
+    //   { shouldFocus: true }
+    // );
+    // if (isValid) {
+    nextStep();
+    // }
   };
 
   const onSubmit = () => handleNext();
+
+  const handleClosingByDateChange = (value: string) => {
+    const closingByDate = value === 'Date';
+    setValue('closingDetails.closeByDate', closingByDate, {
+      shouldValidate: true
+    });
+  };
 
   return (
     <motion.div
@@ -101,88 +99,81 @@ const Settlement: React.FC = () => {
           </h3>
 
           <div className="lg:flex gap-6">
-            <div className="lg:w-1/2 space-y-4">
+            <div className="w-full space-y-4">
               <Controller
-                name="settlementExpenses.sellerPaysSettlementExpenses"
+                name="settlementExpenses.sellerPaysFixedAmount"
                 control={control}
                 render={({ field }) => (
-                  <div className="flex items-center justify-between rounded-lg border p-4 shadow-sm">
+                  <div className="flex flex-col  justify-between rounded-lg border p-4 shadow-sm gap-y-4">
                     <div className="space-y-0.5">
                       <Label htmlFor="sellerPaysSettlementExpenses">
-                        Seller Pays Settlement
+                        Closing expenses paid by seller
                       </Label>
+                    </div>
+                    <div className="flex gap-x-4">
+                      <p className="text-sm text-muted-foreground">Fixed</p>
+                      <Switch
+                        id="sellerPaysSettlementExpenses"
+                        checked={field.value}
+                        onCheckedChange={field.onChange}
+                      />
+
                       <p className="text-sm text-muted-foreground">
-                        Does the seller pay for settlement expenses?
+                        Percentage
                       </p>
                     </div>
-                    <Switch
-                      id="sellerPaysSettlementExpenses"
-                      checked={field.value}
-                      onCheckedChange={field.onChange}
-                    />
                   </div>
                 )}
               />
 
-              <Controller
-                name="settlementExpenses.settlementAmount"
-                control={control}
-                render={({ field }) => (
-                  <FormField
-                    id="settlementAmount"
-                    label="Settlement Amount"
-                    error={errors.settlementExpenses?.settlementAmount?.message}
-                  >
-                    <CurrencyInput
+              {watch('settlementExpenses.sellerPaysFixedAmount') && (
+                <Controller
+                  name="settlementExpenses.sellerCostsPercentage"
+                  control={control}
+                  render={({ field }) => (
+                    <FormField
                       id="settlementAmount"
-                      value={field.value || 0}
-                      onChange={field.onChange}
-                      error={!!errors.settlementExpenses?.settlementAmount}
-                    />
-                  </FormField>
-                )}
-              />
-            </div>
-
-            <div className="lg:w-1/2 mt-4 lg:mt-0">
-              <div className="bg-white rounded-lg border p-4 shadow-sm h-full">
-                <h4 className="text-sm font-medium mb-3">Payment Breakdown</h4>
-                <div className="h-[200px]">
-                  {chartData.length > 0 ? (
-                    <ResponsiveContainer width="100%" height="100%">
-                      <PieChart>
-                        <Pie
-                          data={chartData}
-                          cx="50%"
-                          cy="50%"
-                          innerRadius={60}
-                          outerRadius={80}
-                          paddingAngle={5}
-                          dataKey="value"
-                          label={({ name, percent }) =>
-                            `${name}: ${(percent * 100).toFixed(0)}%`
-                          }
-                        >
-                          {chartData.map((entry, index) => (
-                            <Cell
-                              key={`cell-${index}`}
-                              fill={COLORS[index % COLORS.length]}
-                            />
-                          ))}
-                        </Pie>
-                        <Tooltip
-                          formatter={(value) => `$${value.toLocaleString()}`}
-                        />
-                        <Legend />
-                      </PieChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <div className="h-full flex items-center justify-center text-gray-400">
-                      No payment data available
-                    </div>
+                      label="Maximum settlement amount paid by seller (%)"
+                      error={
+                        errors.settlementExpenses?.sellerCostsPercentage
+                          ?.message
+                      }
+                    >
+                      <PercentageInput
+                        id="settlementAmount"
+                        value={field.value || 0}
+                        onChange={field.onChange}
+                        error={
+                          !!errors.settlementExpenses?.sellerCostsPercentage
+                        }
+                      />
+                    </FormField>
                   )}
-                </div>
-              </div>
+                />
+              )}
+
+              {!watch('settlementExpenses.sellerPaysFixedAmount') && (
+                <Controller
+                  name="settlementExpenses.sellerCostsFixed"
+                  control={control}
+                  render={({ field }) => (
+                    <FormField
+                      id="settlementAmount"
+                      label="Maximum settlement amount paid by seller ($)"
+                      error={
+                        errors.settlementExpenses?.sellerCostsFixed?.message
+                      }
+                    >
+                      <CurrencyInput
+                        id="settlementAmount"
+                        value={field.value || 0}
+                        onChange={field.onChange}
+                        error={!!errors.settlementExpenses?.sellerCostsFixed}
+                      />
+                    </FormField>
+                  )}
+                />
+              )}
             </div>
           </div>
         </div>
@@ -194,68 +185,101 @@ const Settlement: React.FC = () => {
             Closing Details
           </h3>
 
-          <div className="space-y-4">
-            <Controller
-              name="closingDetails.closingDate"
-              control={control}
-              render={({ field }) => (
-                <FormField
-                  id="closingDate"
-                  label="Closing Date"
-                  error={errors.closingDetails?.closingDate?.message}
-                >
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant={'outline'}
-                        className={`w-full justify-start text-left font-normal ${
-                          !field.value ? 'text-muted-foreground' : ''
-                        }`}
-                      >
-                        <CalendarIcon className="mr-2 h-4 w-4" />
-                        {field.value
-                          ? format(new Date(field.value), 'PPP')
-                          : 'Select date'}
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0">
-                      <Calendar
-                        mode="single"
-                        selected={
-                          field.value ? new Date(field.value) : undefined
-                        }
-                        onSelect={(date) =>
-                          field.onChange(date ? date.toISOString() : '')
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                </FormField>
-              )}
-            />
+          <FormField
+            id="settlementAmount"
+            label="Choose closing type"
+            required
+            error={errors.closingDetails?.closeByDate?.message}
+          >
+            <RadioGroup
+              onValueChange={handleClosingByDateChange}
+              value={watch('closingDetails.closeByDate') ? 'Date' : 'Days'}
+              className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4"
+            >
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Date" id="date" />
+                <Label htmlFor="date" className="cursor-pointer">
+                  Date
+                </Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <RadioGroupItem value="Days" id="days" />
+                <Label htmlFor="days" className="cursor-pointer">
+                  Days
+                </Label>
+              </div>
+            </RadioGroup>
+          </FormField>
 
-            <Controller
-              name="closingDetails.possesionOnClosing"
-              control={control}
-              render={({ field }) => (
-                <div className="flex items-center justify-between rounded-lg border p-4 shadow-sm">
-                  <div className="space-y-0.5">
-                    <Label htmlFor="possesionOnClosing">
-                      Possession on Closing
-                    </Label>
-                    <p className="text-sm text-muted-foreground">
-                      Does the buyer take possession upon closing?
-                    </p>
-                  </div>
-                  <Switch
-                    id="possesionOnClosing"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                </div>
-              )}
-            />
+          <div className="space-y-4">
+            {watch('closingDetails.closeByDate') ? (
+              <Controller
+                name="closingDetails.closingDate"
+                control={control}
+                render={({ field }) => (
+                  <FormField
+                    id="closingDate"
+                    label="Closing Date"
+                    error={errors.closingDetails?.closingDate?.message}
+                  >
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant={'outline'}
+                          className={`w-full justify-start text-left font-normal ${
+                            !field.value ? 'text-muted-foreground' : ''
+                          }`}
+                        >
+                          <CalendarIcon className="mr-2 h-4 w-4" />
+                          {field.value
+                            ? format(new Date(field.value), 'PPP')
+                            : 'Select date'}
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent className="w-auto p-0">
+                        <Calendar
+                          mode="single"
+                          selected={
+                            field.value ? new Date(field.value) : undefined
+                          }
+                          onSelect={(date) =>
+                            field.onChange(date ? date.toISOString() : '')
+                          }
+                          initialFocus
+                        />
+                      </PopoverContent>
+                    </Popover>
+                  </FormField>
+                )}
+              />
+            ) : (
+              <Controller
+                name="closingDetails.closingDeadline"
+                control={control}
+                render={({ field }) => (
+                  <FormField
+                    id="closingDate"
+                    label="Closing Date"
+                    error={errors.closingDetails?.closingDeadline?.message}
+                  >
+                    <Input
+                      id="terminationPeriodDays"
+                      type="number"
+                      placeholder="Enter number of days from contract execution"
+                      value={field.value || ''}
+                      onChange={(e) =>
+                        field.onChange(parseInt(e.target.value) || 0)
+                      }
+                      className={
+                        errors?.closingDetails?.closingDeadline
+                          ? 'border-red-500'
+                          : ''
+                      }
+                    />
+                  </FormField>
+                )}
+              />
+            )}
 
             <Controller
               name="closingDetails.optionToTerminate"

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import {
@@ -23,12 +23,11 @@ import { useSnackbar } from 'notistack';
 import { useForm, useFormContext } from 'react-hook-form';
 import {
   OfferFormProvider,
-  useWizardNavigation,
   useTemplateSelection,
   TemplateSelectionProvider,
   useTemplateSelectionContext
 } from '@/contexts/OfferFormContext';
-import { OfferFormData } from '@/schemas/OfferDataSchemasemas';
+import { OfferFormData } from '@/schemas/OfferDataSchemas';
 import { emptyTemplate } from '@/data/offerTemplates';
 
 // Import all wizard step components
@@ -42,6 +41,11 @@ import { useAppSelector } from '@/store/hooks';
 import { selectProperties } from '@/store/slices/propertiesSlice';
 import { useSelector } from 'react-redux';
 import { useCreateOfferMutation } from '@/store/services/offersApi';
+import WizardNavigationFooter from './WizardNavigationFooter';
+import {
+  useWizardNavigation,
+  WizardNavigationProvider
+} from '@/contexts/WizardNavigationContext';
 
 const steps = [
   {
@@ -75,7 +79,7 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
   // const { selectedTemplateId, selectTemplate } = useTemplateSelection(methods);
   const { selectTemplate } = useTemplateSelectionContext();
 
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
 
   const [createOffer, offerState] = useCreateOfferMutation();
   const { selectedProperty } = useSelector(selectProperties);
@@ -88,11 +92,17 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
     }
   };
 
+  const componentRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     console.log('User form data:', userFormData);
     selectTemplate('custom', { ...userFormData });
     setCurrentStep(0);
   }, [session?.user, selectedProperty]);
+
+  useEffect(() => {
+    componentRef?.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [currentStep]);
 
   const triggerByStep = async (step: number) => {
     switch (step) {
@@ -101,7 +111,12 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
       case 2:
         return methods.trigger('financialDetails');
       case 3:
-        return methods.trigger('propertyTerms');
+        return (
+          methods.trigger('propertyTerms') &&
+          methods.trigger('conditions') &&
+          methods.trigger('propertyDisclosures') &&
+          methods.trigger('propertyReports')
+        );
       case 4:
         return methods.trigger('settlementExpenses');
       default:
@@ -196,7 +211,10 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
         <div className="p-6 h-[100dvh] md:max-h-[80vh] overflow-y-auto">
           {/* Header */}
           <DialogHeader className="mb-6 relative">
-            <DialogTitle className="text-2xl font-bold bg-clip-text bg-purple-gradient">
+            <DialogTitle
+              className="text-2xl font-bold bg-clip-text bg-purple-gradient"
+              ref={componentRef}
+            >
               Create Legal Offer
             </DialogTitle>
 
@@ -237,62 +255,20 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
                 </motion.div>
               </AnimatePresence>
 
-              {/* Wizard navigation */}
-              <div className="flex justify-between items-center mt-8 pt-4 border-t border-gray-200">
-                <div>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={handleReset}
-                    className="flex items-center gap-1 hover:bg-red-50 hover:text-red-600 transition-colors"
-                  >
-                    <RefreshCw className="h-4 w-4" /> Reset
-                  </Button>
-                </div>
-                <div className="flex gap-2">
-                  {currentStep > 0 && (
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={prevStep}
-                      className="flex items-center gap-1"
-                    >
-                      <ChevronLeft className="h-4 w-4" /> Back
-                    </Button>
-                  )}
+              <WizardNavigationFooter
+                handleReset={handleReset}
+                currentStep={currentStep}
+                totalSteps={steps.length}
+                handleGoToBack={prevStep}
+                handleGoToNext={handleGoToNext}
+                handleSubmit={methods.handleSubmit(onSubmit)}
+                loading={offerState.isLoading}
+              />
 
-                  {currentStep < steps.length - 1 ? (
-                    <Button
-                      type="button"
-                      variant="default"
-                      onClick={handleGoToNext}
-                      className="flex items-center gap-1"
-                    >
-                      Next <ChevronRight className="h-4 w-4" />
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={methods.handleSubmit(onSubmit)}
-                      type="button"
-                      variant="default"
-                      className="flex items-center gap-1"
-                      disabled={offerState.isLoading}
-                    >
-                      {offerState.isLoading && (
-                        <LoaderCircle className="h-4 w-4 animate-spin" />
-                      )}
-                      Submit <Check className="h-4 w-4" />
-                    </Button>
-                  )}
-                  {/* <div id="errors"> */}
-                  {/*   {methods.formState.errors */}
-                  {/*     ? Object.keys( */}
-                  {/*         methods.formState.errors?.buyerDetails || {} */}
-                  {/*       ) */}
-                  {/*     : 'No errors'} */}
-                  {/* </div> */}
-                </div>
-              </div>
+              {/* {methods.formState.errors && ( */}
+              {/*   <pre>{JSON.stringify(methods.formState.errors, null, 2)}</pre> */}
+              {/* )} */}
+              {/* Wizard navigation */}
             </form>
           </div>
         </div>
@@ -305,7 +281,9 @@ const Wizard = (props: WizardProps) => {
   return (
     <OfferFormProvider defaultValues={emptyTemplate.data as OfferFormData}>
       <TemplateSelectionProvider>
-        <WizardContent {...props} />
+        <WizardNavigationProvider>
+          <WizardContent {...props} />
+        </WizardNavigationProvider>
       </TemplateSelectionProvider>
     </OfferFormProvider>
   );

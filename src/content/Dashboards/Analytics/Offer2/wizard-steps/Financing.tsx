@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { useFormContext } from 'react-hook-form';
+import { Controller, useFormContext } from 'react-hook-form';
 import FormField from '@/components/FormField';
 import CurrencyInput from '@/components/CurrencyInput';
 import { Input } from '@/components/ui/input';
@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { CreditCard, DollarSign } from 'lucide-react';
 import { OfferFormData } from '@/schemas/OfferDataSchemas';
+import PercentageInput from '@/components/PercentageInput';
 
 const Financing: React.FC<{
   selectedTemplateId: string | null;
@@ -18,21 +19,27 @@ const Financing: React.FC<{
     watch,
     formState: { errors },
     setValue,
-    getValues
+    getValues,
+    control
   } = useFormContext<OfferFormData>();
 
   const financingType = watch('financialDetails.financingType');
   const purchasePrice = watch('financialDetails.purchasePrice');
 
   const handleFinancingTypeChange = (value: string) => {
+    if (value !== 'Other') {
+      setValue('financialDetails.financingTypeOther', undefined);
+    }
     setValue(
       'financialDetails.financingType',
-      value as 'Cash' | 'Mortgage' | 'Other',
+      value as 'Cash' | 'Loan' | 'Other',
       {
         shouldValidate: true
       }
     );
   };
+
+  const depositAmount = watch('deposit.depositAmount');
 
   return (
     <motion.div
@@ -92,9 +99,9 @@ const Financing: React.FC<{
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <RadioGroupItem value="Mortgage" id="mortgage" />
-                  <Label htmlFor="mortgage" className="cursor-pointer">
-                    Mortgage
+                  <RadioGroupItem value="Loan" id="loan" />
+                  <Label htmlFor="loan" className="cursor-pointer">
+                    Loan
                   </Label>
                 </div>
                 <div className="flex items-center space-x-2">
@@ -106,7 +113,27 @@ const Financing: React.FC<{
               </RadioGroup>
             </FormField>
 
-            {(financingType === 'Mortgage' || financingType === 'Other') && (
+            {financingType === 'Other' && (
+              <FormField
+                id="financialDetails.otherDescription"
+                label="Describe your financing method"
+                error={
+                  errors.financialDetails?.financingTypeOther?.message as string
+                }
+              >
+                <Input
+                  id="financialDetails.otherDescription"
+                  placeholder="Enter description"
+                  {...register('financialDetails.financingTypeOther')}
+                  className={
+                    errors.financialDetails?.financingTypeOther
+                      ? 'border-red-500'
+                      : ''
+                  }
+                />
+              </FormField>
+            )}
+            {financingType === 'Loan' && (
               <FormField
                 id="financialDetails.loanAmount"
                 label="Loan Amount"
@@ -135,36 +162,57 @@ const Financing: React.FC<{
           </h3>
 
           <div className="space-y-4">
-            <FormField
-              id="deposit.depositAmount"
-              label="Deposit Amount"
-              required
-              tooltip={
-                purchasePrice > 0
-                  ? `${(
-                      (watch('deposit.depositAmount') / purchasePrice) *
-                      100
-                    ).toFixed(1)}% of purchase price`
-                  : undefined
-              }
-              error={errors.deposit?.depositAmount?.message as string}
-            >
-              <CurrencyInput
+            <div className="flex items-end w-full justify-between gap-x-4">
+              <FormField
                 id="deposit.depositAmount"
-                value={watch('deposit.depositAmount') || 0}
-                onChange={(value) =>
-                  setValue('deposit.depositAmount', value, {
-                    shouldValidate: true
-                  })
-                }
-                error={!!errors.deposit?.depositAmount}
-              />
-            </FormField>
+                className="w-full"
+                label="Deposit Amount"
+                error={errors.deposit?.depositAmount?.message as string}
+              >
+                <CurrencyInput
+                  id="deposit.depositAmount"
+                  value={depositAmount || 0}
+                  onChange={(value) =>
+                    setValue('deposit.depositAmount', value, {
+                      shouldValidate: true
+                    })
+                  }
+                  error={!!errors.deposit?.depositAmount}
+                />
+              </FormField>
+
+              <FormField
+                id="deposit.depositAmount"
+                className="w-full"
+                label="Deposit Percentage"
+                error={errors.deposit?.depositAmount?.message as string}
+              >
+                <PercentageInput
+                  id="deposit.depositAmount"
+                  key={`percent-${depositAmount}-${purchasePrice}`}
+                  value={
+                    purchasePrice > 0
+                      ? (depositAmount / purchasePrice) * 100
+                      : 0
+                  }
+                  onChange={(value) =>
+                    setValue(
+                      'deposit.depositAmount',
+                      (value / 100) * purchasePrice,
+
+                      {
+                        shouldValidate: true
+                      }
+                    )
+                  }
+                  error={!!errors.deposit?.depositAmount}
+                />
+              </FormField>
+            </div>
 
             <FormField
               id="deposit.holderName"
               label="Deposit Holder Name"
-              required
               error={errors.deposit?.holderName?.message as string}
             >
               <Input
@@ -178,7 +226,6 @@ const Financing: React.FC<{
             <FormField
               id="deposit.holderAddress"
               label="Deposit Holder Address"
-              required
               error={errors.deposit?.holderAddress?.message as string}
             >
               <Input
