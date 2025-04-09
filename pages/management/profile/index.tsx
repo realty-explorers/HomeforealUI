@@ -17,6 +17,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import PremiumCard from './PremiumCard';
+import OfferCard from './OfferCard';
 
 const ManagementUserProfile = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -33,11 +34,14 @@ const ManagementUserProfile = () => {
     <div className="min-h-screen p-8">
       <h1 className="text-4xl font-bold mb-8">Your Offers</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {offersState.data?.offers.map((offer, index) => (
-          <div className="group perspective" key={index}>
-            <PremiumCard id={offer.analysisId} title="Offer Details" />
-          </div>
-        ))}
+        {offersState.data?.offers
+          .filter((offer) => offer.propertyDetails)
+          .map((offer, index) => (
+            <div className="group perspective" key={index}>
+              {/* <PremiumCard id={offer.analysisId} title="Offer Details" /> */}
+              {offer?.propertyDetails && <OfferCard offer={offer} />}
+            </div>
+          ))}
       </div>
     </div>
   );

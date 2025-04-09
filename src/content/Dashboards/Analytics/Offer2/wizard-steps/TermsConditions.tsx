@@ -58,8 +58,29 @@ const TermsConditions: React.FC = () => {
     setValue
   } = useFormContext<OfferFormData>();
 
-  const handleTabChange = (value: string) => {
-    alert(value);
+  const getTriggerValueByTab = (tab: number) => {
+    switch (tab) {
+      case 0:
+        return ['legalDescription', 'conditions'];
+      case 1:
+        return ['propertyTerms', 'landSurvey'];
+      case 2:
+        return ['propertyDisclosures'];
+      default:
+        return ['propertyDetails'];
+    }
+  };
+
+  const handleTabChange = async (value: string) => {
+    const triggerValues = getTriggerValueByTab(currentTab);
+    for (const triggerValue of triggerValues) {
+      const triggerResult = await trigger(triggerValue as keyof OfferFormData);
+      if (!triggerResult) {
+        setCurrentTab(currentTab);
+        return;
+      } else {
+      }
+    }
     setCurrentTab(Number(value));
   };
   const componentRef = React.useRef<HTMLDivElement>(null);

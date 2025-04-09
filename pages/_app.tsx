@@ -26,6 +26,7 @@ import {
   playfairDisplay,
   poppins
 } from '@/components/Fonts';
+import { TooltipProvider } from '@/components/ui/tooltip';
 
 const clientSideEmotionCache = createEmotionCache();
 
@@ -62,17 +63,19 @@ function HomeforealApp(props: HomeforealAppProps) {
             <ThemeProvider>
               <LocalizationProvider dateAdapter={AdapterDateFns}>
                 <SnackbarProvider>
-                  <CssBaseline />
-                  <div
-                    className={clsx([
-                      poppins.variable,
-                      playfairDisplay.variable,
-                      oleoScript.variable,
-                      nunito.variable
-                    ])}
-                  >
-                    {getLayout(<Component {...pageProps} />)}
-                  </div>
+                  <TooltipProvider>
+                    <CssBaseline />
+                    <div
+                      className={clsx([
+                        poppins.variable,
+                        playfairDisplay.variable,
+                        oleoScript.variable,
+                        nunito.variable
+                      ])}
+                    >
+                      {getLayout(<Component {...pageProps} />)}
+                    </div>
+                  </TooltipProvider>
                 </SnackbarProvider>
               </LocalizationProvider>
             </ThemeProvider>

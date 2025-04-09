@@ -95,7 +95,6 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
   const componentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    console.log('User form data:', userFormData);
     selectTemplate('custom', { ...userFormData });
     setCurrentStep(0);
   }, [session?.user, selectedProperty]);
@@ -169,6 +168,8 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
     });
   };
 
+  const getErrors = () => {};
+
   const onSubmit = async (data: OfferFormData) => {
     try {
       console.log('Form submitted:', data);
@@ -197,6 +198,13 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
     }
 
     // Close the wizard after successful submission
+  };
+
+  const onError = (errors, e) => {
+    console.log('Form submission errors:', errors);
+    enqueueSnackbar('Please fill out the required fields', {
+      variant: 'error'
+    });
   };
 
   // Calculate progress percentage
@@ -239,7 +247,7 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                methods.handleSubmit(onSubmit);
+                methods.handleSubmit(onSubmit, onError);
               }}
             >
               <AnimatePresence mode="wait">
@@ -261,7 +269,7 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
                 totalSteps={steps.length}
                 handleGoToBack={prevStep}
                 handleGoToNext={handleGoToNext}
-                handleSubmit={methods.handleSubmit(onSubmit)}
+                handleSubmit={methods.handleSubmit(onSubmit, onError)}
                 loading={offerState.isLoading}
               />
 
