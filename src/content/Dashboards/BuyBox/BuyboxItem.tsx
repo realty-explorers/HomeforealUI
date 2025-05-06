@@ -220,7 +220,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
         >
           <div className="flex justify-between w-full">
             <div className="flex items-center ">
-              <Typography className="flex items-center w-40 text-ellipsis overflow-hidden">
+              <Typography className="flex items-center text-ellipsis overflow-hidden">
                 {props.buybox.parameters.name}
               </Typography>
               {/* {!running && props.buybox?.execute_date && ( */}
