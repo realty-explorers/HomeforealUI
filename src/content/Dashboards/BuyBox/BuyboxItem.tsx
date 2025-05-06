@@ -22,7 +22,6 @@ import clsx from 'clsx';
 import BuyBox from '@/models/buybox';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
 import StopCircleIcon from '@mui/icons-material/StopCircle';
 import BallotIcon from '@mui/icons-material/Ballot';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
@@ -41,7 +40,8 @@ import { analysisApi } from '@/store/services/analysisApi';
 import { timeSince } from '@/utils/dateUtils';
 import Chip from '@/components/Chip';
 import BuyBoxStatistics from './BuyBoxStatistics';
-import { Trash2, Settings, BookOpenText } from 'lucide-react';
+import { Trash2, Settings, BookOpenText, CirclePlayIcon } from 'lucide-react';
+import { useSession } from 'next-auth/react';
 
 const StyledAccordion = styled((props: AccordionProps) => (
   <Accordion disableGutters elevation={0} square {...props} />
@@ -93,6 +93,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
   const [deleteBuyBox, deleteResult] = useDeleteBuyBoxMutation();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [running, setRunning] = useState(false);
+  const { data: session } = useSession();
 
   const [analyzeBuyBox, analysisResult] = useAnalyzeBuyBoxMutation();
 
@@ -287,25 +288,20 @@ const BuyboxItem = (props: BuyboxItemProps) => {
                 </ShadButton>
               )}
 
+              {}
+
               {allowedToEdit &&
-                props.buybox.userAccess === 'admin' &&
+                session?.user?.roles?.includes('admin') &&
                 (running ? (
-                  <Button
-                    startIcon={<StopCircleIcon />}
-                    className="bg-red-500 hover:bg-red-700 text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
-                    onClick={handleEditBuyBox}
-                    disabled
-                  >
-                    Cancel
-                  </Button>
+                  <></>
                 ) : (
-                  <Button
-                    startIcon={<PlayCircleIcon />}
-                    className="bg-green-500 hover:bg-green-700 text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
+                  <ShadButton
+                    className="bg-[#4CAF50] hover:bg-[#388E3C] text-[#FFFDFD] rounded-3xl p-2 px-4 font-poppins font-semibold  "
                     onClick={handleAnalyzeBuyBoxClick}
                   >
-                    Run
-                  </Button>
+                    <CirclePlayIcon className="h-5 w-5" />
+                    <span className="hidden md:flex">Analyze</span>
+                  </ShadButton>
                 ))}
             </div>
           </div>

@@ -4,6 +4,7 @@ import { createUser, getUser, getUserByEmail } from 'lib/auth/user';
 import NextAuth from 'next-auth';
 import CognitoProvider from 'next-auth/providers/cognito';
 import CredentialsProvider from 'next-auth/providers/credentials';
+import PostHogClient from 'src/lib/posthog';
 
 export const authOptions = {
   // Configure one or more authentication providers
@@ -113,6 +114,19 @@ export const authOptions = {
     //   return session;
     // },
     async session({ token, session, account }) {
+      // When session is created or updated, we have a verified user
+      if (token.sub && process.env.NODE_ENV === 'production') {
+        const posthog = PostHogClient();
+        // Identify the user with their unique ID and properties
+        posthog.identify(token.sub, {
+          email: session.user?.email,
+          name: session.user?.name,
+          roles: token.roles,
+          verified: token.verified,
+          newUser: token.newUser
+        });
+      }
+      
       return {
         ...session,
         user: {
