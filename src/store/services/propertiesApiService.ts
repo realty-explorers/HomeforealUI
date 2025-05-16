@@ -9,10 +9,10 @@ import {
 import { signOut } from 'next-auth/react';
 import { logout } from '../slices/authSlice';
 
-const baseUrl = `${process.env.NEXT_PUBLIC_ANALYSIS_API_URL}/api/v1/analysis`;
+const baseUrl = `${process.env.NEXT_PUBLIC_ANALYSIS_API_URL}/v1/analysis`;
 const GENERAL_BUYBOX_ID = '3dbf8068-bfda-4422-af27-7597045dac6e';
 
-const API_KEY = 'o63cMy45PuLH8sRs8iEP';
+const API_KEY = 'test-api-key';
 const baseQuery = fetchBaseQuery({
   baseUrl,
   prepareHeaders: async (headers, { getState }) => {
@@ -66,24 +66,26 @@ export const propertiesApi = createApi({
         masked
       }) => {
         // `loc_properties?buybox_id=${GENERAL_BUYBOX_ID}&city=${city}&neighborhood=${"Central southwest"}`,
-        let queryUrl = '/results';
+        const query = {};
         switch (type) {
           case 'city':
-            queryUrl = new URLSearchParams({
-              city: city.toLowerCase()
-            }).toString();
+            query['city'] = city.toLowerCase();
             break;
           case 'neighborhood':
-            queryUrl = new URLSearchParams({
-              city: city.toLowerCase(),
-              neighborhood
-            }).toString();
+            query['city'] = city.toLowerCase();
+            query['neighborhood'] = neighborhood;
             break;
           default:
-            queryUrl = '';
             break;
         }
-        return `/previews?buyboxId=${buybox_id}&${queryUrl}&masked=${masked}`;
+        if (!masked) {
+          query['masked'] = masked;
+        }
+        let queryUrl = '';
+        if (Object.keys(query).length > 0) {
+          queryUrl = `?${new URLSearchParams(query).toString()}`;
+        }
+        return `/previews/buybox/${buybox_id}${queryUrl}`;
       },
       transformResponse: (response: PropertyPreview[]) => {
         try {
@@ -107,18 +109,19 @@ export const propertiesApi = createApi({
     getProperties: builder.query({
       query: ({ type, state, city, zipCode, neighborhood }) => {
         // `loc_properties?buybox_id=${GENERAL_BUYBOX_ID}&city=${city}&neighborhood=${"Central southwest"}`,
-        let queryUrl = '';
+        const query = {};
         switch (type) {
           case 'city':
-            queryUrl = new URLSearchParams({ city }).toString();
+            query['city'] = city.toLowerCase();
             break;
           case 'neighborhood':
-            queryUrl = new URLSearchParams({ city, neighborhood }).toString();
+            query['city'] = city.toLowerCase();
+            query['neighborhood'] = neighborhood;
             break;
           default:
-            queryUrl = '';
             break;
         }
+        const queryUrl = new URLSearchParams(query).toString();
         return `leads/?buyboxId=${GENERAL_BUYBOX_ID}&${queryUrl}`;
       },
       transformResponse: (response: AnalyzedProperty[]) => {
@@ -151,9 +154,16 @@ export const propertiesApi = createApi({
 
     getProperty: builder.query({
       query: ({ buybox_id, property_id, masked }) => {
-        return `/analyzed-property/${property_id}/${
-          masked ? 'essential' : 'full'
-        }`;
+        const query = {};
+        if (!masked) {
+          query['masked'] = masked;
+        }
+
+        let queryUrl = '';
+        if (Object.keys(query).length > 0) {
+          queryUrl = `?${new URLSearchParams(query).toString()}`;
+        }
+        return `/${property_id}${queryUrl}`;
       },
       transformResponse: async (response: AnalyzedProperty) => {
         try {

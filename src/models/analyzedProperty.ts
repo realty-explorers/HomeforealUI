@@ -16,6 +16,7 @@ interface Property {
   yearBuilt: string;
   beds: number;
   baths: number;
+  description: string;
   floors: number;
   garages: number;
   flags: {
@@ -95,4 +96,4 @@ interface AnalyzedProperty extends Partial<Property> {
 }
 
 export default AnalyzedProperty;
-export type { CompData, ExpensesData, FilteredComp, LoanData };
+export type { CompData, ExpensesData, FilteredComp, LoanData, Property };

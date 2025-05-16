@@ -306,11 +306,11 @@ const PropertyCard: React.FC<PropertyCardProps> = (
             </Typography>
           </div>
           <div className={styles.cardInfoRow}>
-            <Typography>Comps Sale</Typography>
+            <Typography>ARV</Typography>
             <Typography>{priceFormatter(props.property?.arvPrice)}</Typography>
           </div>
           <div className={styles.cardInfoRow}>
-            <Typography>ARV</Typography>
+            <Typography>25th ARV</Typography>
             <Typography>
               {priceFormatter(props.property?.arv25Price)}
             </Typography>

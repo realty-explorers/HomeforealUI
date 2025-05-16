@@ -179,9 +179,10 @@ const MainControls: React.FC<MainControlsProps> = (
       if (typeof propertyValue !== 'number') {
         return false;
       }
+      const propertyPrice = property.price || property.priceGroup.min;
       const percentage =
         propertyValue > 0
-          ? ((propertyValue - property.price) / propertyValue) * 100
+          ? ((propertyValue - propertyPrice) / propertyValue) * 100
           : 0;
 
       if (filterValue > percentage) {
@@ -226,7 +227,10 @@ const MainControls: React.FC<MainControlsProps> = (
             updatedFieldName,
             value
           );
-          const propertyValue = property[fieldName];
+          let propertyValue = property[fieldName];
+          if (fieldName === 'price' && !property.price) {
+            propertyValue = property.priceGroup.min;
+          }
           const validStrategyValue = filterByStrategy(
             filterValue,
             property,
