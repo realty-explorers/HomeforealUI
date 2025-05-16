@@ -10,6 +10,7 @@ import SaleComparableIndicators from '../../Analytics/SaleComparableIndicators';
 import OperationalExpenses from '@/content/Dashboards/Analytics/Expenses/OperationalExpenses';
 import MarginInfo from '../../Analytics/PropertyHeader/MarginInfo';
 
+//test
 type MoreDetailsProps = {
   selectedProperty: any;
   selectedComps: any;
