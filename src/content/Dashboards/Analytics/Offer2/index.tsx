@@ -172,7 +172,6 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
 
   const onSubmit = async (data: OfferFormData) => {
     try {
-      console.log('Form submitted:', data);
       const userId = session.user.id;
       const propertyId = selectedProperty.propertyId;
       const response = await createOffer({

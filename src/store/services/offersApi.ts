@@ -80,7 +80,7 @@ export const offerApi = createApi({
     }),
 
     getOffers: builder.query({
-      query: () => ({ url: '/offers/full' })
+      query: ({ userId }) => ({ url: `/offers/user/${userId}/detailed` })
     }),
 
     getAllOffers: builder.query({

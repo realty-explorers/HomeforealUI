@@ -18,13 +18,16 @@ import { Badge } from '@/components/ui/badge';
 import { cn } from '@/lib/utils';
 import PremiumCard from './PremiumCard';
 import OfferCard from './OfferCard';
+import { useSession } from 'next-auth/react';
 
 const ManagementUserProfile = () => {
+  const session = useSession();
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [getOffers, offersState] = useLazyGetOffersQuery();
 
   useEffect(() => {
-    getOffers({});
+    const userId = session.data?.user?.id;
+    getOffers({ userId });
   }, []);
 
   if (offersState.isLoading) {
