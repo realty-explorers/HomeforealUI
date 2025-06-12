@@ -89,7 +89,7 @@ const Financing: React.FC<{
             >
               <RadioGroup
                 onValueChange={handleFinancingTypeChange}
-                value={financingType || ''}
+                value={financingType}
                 className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4"
               >
                 <div className="flex items-center space-x-2">

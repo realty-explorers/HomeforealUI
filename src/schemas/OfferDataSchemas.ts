@@ -103,7 +103,7 @@ export const OfferSchema = z.object({
   closingDetails: z.object({
     closeByDate: z.boolean(),
     closingDate: z.string().optional(),
-    closingDeadline: z.number().nonnegative().optional(),
+    closingDeadline: z.number().min(1).optional(),
     optionToTerminate: z.boolean(),
     additionalClause: z.string().optional()
   }),

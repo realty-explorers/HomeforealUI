@@ -18,6 +18,7 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod';
 import { OfferSchema, OfferFormData } from '@/schemas/OfferDataSchemas';
 import { offerTemplates, emptyTemplate } from '@/data/offerTemplates';
+import { merge } from 'lodash';
 
 interface FormProviderProps<T extends FieldValues> {
   children: ReactNode;
@@ -57,9 +58,9 @@ export const useTemplateSelection = (methods: UseFormReturn<OfferFormData>) => {
 
     const template = offerTemplates.find((t) => t.id === id);
     if (template) {
-      reset({ ...template.data, ...defaultData });
+      reset(merge({}, template.data, defaultData));
     } else {
-      reset({ ...emptyTemplate.data, ...defaultData });
+      reset(merge({}, emptyTemplate.data, defaultData));
     }
   };
 

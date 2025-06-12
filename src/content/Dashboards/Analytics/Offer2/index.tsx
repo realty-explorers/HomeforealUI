@@ -89,6 +89,12 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
     },
     financialDetails: {
       purchasePrice: selectedProperty?.price || 0
+    },
+    closingDetails: {
+      closingDate: new Date(new Date().setMonth(new Date().getMonth() + 1))
+        .toISOString()
+        .split('T')[0],
+      closingDeadline: 30
     }
   };
 
