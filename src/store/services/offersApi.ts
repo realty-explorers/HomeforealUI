@@ -54,7 +54,7 @@ const baseQueryWithReauth = async (
 export const offerApi = createApi({
   reducerPath: 'offerApi',
   baseQuery: baseQueryWithReauth,
-  tagTypes: ['Offer', 'Realtor'],
+  tagTypes: ['Offer', 'Realtor', 'OfferTemplates'],
   endpoints: (builder) => ({
     createOffer: builder.mutation({
       query: (body) => ({
@@ -97,6 +97,35 @@ export const offerApi = createApi({
         method: 'POST'
       }),
       invalidatesTags: ['Realtor']
+    }),
+    getUserTemplates: builder.query({
+      query: () => ({
+        url: `/offers/template`
+      }),
+      providesTags: ['OfferTemplates']
+    }),
+    updateTemplate: builder.mutation({
+      query: ({ templateId, body }) => ({
+        url: `/offers/template/${templateId}`,
+        method: 'PUT',
+        body
+      }),
+      invalidatesTags: ['OfferTemplates']
+    }),
+    createTemplate: builder.mutation({
+      query: (body) => ({
+        url: `/offers/template`,
+        method: 'POST',
+        body
+      }),
+      invalidatesTags: ['OfferTemplates']
+    }),
+    deleteTemplate: builder.mutation({
+      query: ({ templateId }) => ({
+        url: `/offers/template/${templateId}`,
+        method: 'DELETE'
+      }),
+      invalidatesTags: ['OfferTemplates']
     })
   })
 });
@@ -112,5 +141,9 @@ export const {
   useGetAllRealtorsQuery,
   useApproveOfferMutation,
   useApproveRealtorMutation,
-  useDeleteOfferMutation
+  useDeleteOfferMutation,
+  useGetUserTemplatesQuery,
+  useUpdateTemplateMutation,
+  useCreateTemplateMutation,
+  useDeleteTemplateMutation
 } = offerApi;

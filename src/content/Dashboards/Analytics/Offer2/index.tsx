@@ -101,7 +101,7 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
   const componentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    selectTemplate('custom', { ...userFormData });
+    selectTemplate(null, { ...userFormData });
     setCurrentStep(0);
   }, [session?.user, selectedProperty]);
 

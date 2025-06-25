@@ -5,8 +5,10 @@ import {
   ReactNode,
   useState,
   useRef,
-  useCallback
+  useCallback,
+  useEffect
 } from 'react';
+import { useSnackbar } from 'notistack';
 import {
   useForm,
   FormProvider,
@@ -17,8 +19,15 @@ import {
 } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { OfferSchema, OfferFormData } from '@/schemas/OfferDataSchemas';
-import { offerTemplates, emptyTemplate } from '@/data/offerTemplates';
+import { emptyTemplate } from '@/data/offerTemplates';
+import {
+  useGetUserTemplatesQuery,
+  useCreateTemplateMutation,
+  useUpdateTemplateMutation,
+  useDeleteTemplateMutation
+} from '@/store/services/offersApi';
 import { merge } from 'lodash';
+import { OfferTemplate } from 'types/offers/offer-template';
 
 interface FormProviderProps<T extends FieldValues> {
   children: ReactNode;
@@ -43,7 +52,31 @@ export const useTemplateSelection = (methods: UseFormReturn<OfferFormData>) => {
   const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
     null
   );
-  const { reset } = methods;
+  const [templates, setTemplates] = useState([]);
+  const { reset, getValues } = methods;
+  const { enqueueSnackbar } = useSnackbar();
+
+  // Use the RTK Query hooks
+  const {
+    data: apiTemplates,
+    isLoading,
+    isSuccess
+  } = useGetUserTemplatesQuery({});
+
+  const [createTemplate, { isLoading: isCreating }] =
+    useCreateTemplateMutation();
+  const [updateTemplate, { isLoading: isUpdating }] =
+    useUpdateTemplateMutation();
+  const [deleteTemplateMutation, { isLoading: isDeleting }] =
+    useDeleteTemplateMutation();
+  const isSaving = isCreating || isUpdating || isDeleting;
+
+  // Load templates from API when available
+  useEffect(() => {
+    if (isSuccess && apiTemplates) {
+      setTemplates(apiTemplates);
+    }
+  }, [apiTemplates, isSuccess]);
 
   const selectTemplate = (
     id: string | null,
@@ -56,7 +89,7 @@ export const useTemplateSelection = (methods: UseFormReturn<OfferFormData>) => {
       return;
     }
 
-    const template = offerTemplates.find((t) => t.id === id);
+    const template = templates.find((t) => t._id === id);
     if (template) {
       reset(merge({}, template.data, defaultData));
     } else {
@@ -65,14 +98,100 @@ export const useTemplateSelection = (methods: UseFormReturn<OfferFormData>) => {
   };
 
   const selectedTemplate = selectedTemplateId
-    ? offerTemplates.find((t) => t.id === selectedTemplateId) || null
+    ? templates.find((t) => t._id === selectedTemplateId) || null
     : null;
 
+  const deleteTemplate = async (templateId: string) => {
+    try {
+      const result = await deleteTemplateMutation({ templateId }).unwrap();
+
+      // If the deleted template was selected, reset to custom template
+      if (selectedTemplateId === templateId) {
+        setSelectedTemplateId(null);
+        reset(emptyTemplate.data);
+      }
+      
+      enqueueSnackbar('Template deleted successfully', { variant: 'success' });
+      return { success: true, data: result };
+    } catch (error) {
+      enqueueSnackbar('Failed to delete template', { variant: 'error' });
+      return { success: false, error };
+    }
+  };
+
+  const saveTemplate = async (
+    name: string,
+    description: string,
+    templateId?: string
+  ) => {
+    try {
+      const currentFormData = getValues();
+      delete currentFormData.deposit;
+      delete currentFormData.financialDetails;
+      let closingDays = 30;
+      if (
+        currentFormData.closingDetails?.closeByDate &&
+        currentFormData.closingDetails.closingDate
+      ) {
+        const closeByDate = new Date(
+          currentFormData.closingDetails.closingDate
+        );
+        const today = new Date();
+        closingDays = Math.ceil(
+          (closeByDate.getTime() - today.getTime()) / (1000 * 3600 * 24)
+        );
+      } else if (currentFormData.closingDetails?.closingDeadline) {
+        closingDays = currentFormData.closingDetails.closingDeadline;
+      }
+      currentFormData.closingDetails.closeByDate = false;
+      currentFormData.closingDetails.closingDeadline = closingDays;
+      console.log('Saving template with data:', currentFormData);
+
+      let result;
+
+      // If templateId is provided, update the existing template
+      if (templateId) {
+        result = await updateTemplate({
+          templateId,
+          body: {
+            name,
+            description,
+            data: currentFormData
+          }
+        }).unwrap();
+      } else {
+        // Otherwise create a new template
+        result = await createTemplate({
+          name,
+          description,
+          data: currentFormData
+        }).unwrap();
+      }
+
+      // Select the newly created/updated template
+      if (result._id) {
+        setSelectedTemplateId(result._id);
+      }
+      
+      const action = templateId ? 'updated' : 'saved';
+      enqueueSnackbar(`Template ${action} successfully`, { variant: 'success' });
+      return { success: true, data: result };
+    } catch (error) {
+      const action = templateId ? 'update' : 'save';
+      enqueueSnackbar(`Failed to ${action} template`, { variant: 'error' });
+      return { success: false, error };
+    }
+  };
+
   return {
-    templates: offerTemplates,
+    templates,
     selectedTemplateId,
     selectedTemplate,
-    selectTemplate
+    selectTemplate,
+    saveTemplate,
+    deleteTemplate,
+    isLoading,
+    isSaving
   };
 };
 
