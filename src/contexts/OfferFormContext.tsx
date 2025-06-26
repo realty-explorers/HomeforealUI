@@ -110,7 +110,7 @@ export const useTemplateSelection = (methods: UseFormReturn<OfferFormData>) => {
         setSelectedTemplateId(null);
         reset(emptyTemplate.data);
       }
-      
+
       enqueueSnackbar('Template deleted successfully', { variant: 'success' });
       return { success: true, data: result };
     } catch (error) {
@@ -126,26 +126,23 @@ export const useTemplateSelection = (methods: UseFormReturn<OfferFormData>) => {
   ) => {
     try {
       const currentFormData = getValues();
-      delete currentFormData.deposit;
-      delete currentFormData.financialDetails;
+      const templateData = JSON.parse(JSON.stringify(currentFormData));
+      delete templateData.financialDetails.purchasePrice;
       let closingDays = 30;
       if (
-        currentFormData.closingDetails?.closeByDate &&
-        currentFormData.closingDetails.closingDate
+        templateData.closingDetails?.closeByDate &&
+        templateData.closingDetails.closingDate
       ) {
-        const closeByDate = new Date(
-          currentFormData.closingDetails.closingDate
-        );
+        const closeByDate = new Date(templateData.closingDetails.closingDate);
         const today = new Date();
         closingDays = Math.ceil(
           (closeByDate.getTime() - today.getTime()) / (1000 * 3600 * 24)
         );
-      } else if (currentFormData.closingDetails?.closingDeadline) {
-        closingDays = currentFormData.closingDetails.closingDeadline;
+      } else if (templateData.closingDetails?.closingDeadline) {
+        closingDays = templateData.closingDetails.closingDeadline;
       }
-      currentFormData.closingDetails.closeByDate = false;
-      currentFormData.closingDetails.closingDeadline = closingDays;
-      console.log('Saving template with data:', currentFormData);
+      templateData.closingDetails.closeByDate = false;
+      templateData.closingDetails.closingDeadline = closingDays;
 
       let result;
 
@@ -154,7 +151,7 @@ export const useTemplateSelection = (methods: UseFormReturn<OfferFormData>) => {
         result = await updateTemplate({
           templateId,
           body: {
-            name,
+            newName: name,
             description,
             data: currentFormData
           }
@@ -169,12 +166,14 @@ export const useTemplateSelection = (methods: UseFormReturn<OfferFormData>) => {
       }
 
       // Select the newly created/updated template
-      if (result._id) {
-        setSelectedTemplateId(result._id);
+      if (!templateId && result._id) {
+        selectTemplate(result._id, currentFormData);
       }
-      
+
       const action = templateId ? 'updated' : 'saved';
-      enqueueSnackbar(`Template ${action} successfully`, { variant: 'success' });
+      enqueueSnackbar(`Template ${action} successfully`, {
+        variant: 'success'
+      });
       return { success: true, data: result };
     } catch (error) {
       const action = templateId ? 'update' : 'save';

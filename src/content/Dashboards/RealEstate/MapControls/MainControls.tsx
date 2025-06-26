@@ -62,6 +62,7 @@ import { skipToken } from '@reduxjs/toolkit/query';
 import { redirect, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
+import { useLazyGetOffersQuery } from '@/store/services/offersApi';
 
 const filterFieldNames = [
   'arvPrice',
@@ -77,6 +78,7 @@ const MainControls: React.FC<MainControlsProps> = (
   props: MainControlsProps
 ) => {
   const { enqueueSnackbar } = useSnackbar();
+  const [getOffers] = useLazyGetOffersQuery();
 
   const {
     arvMargin,
@@ -138,8 +140,12 @@ const MainControls: React.FC<MainControlsProps> = (
 
   useEffect(() => {
     filterPropertiesByValue(0, '', strategy);
+    // Also fetch user's offers when property previews are fetched, using cache
+    if (data?.user?.id) {
+      getOffers({ userId: data.user.id }, true); // Use cached data if available
+    }
     // dispatch(setFilteredProperties(propertiesState.data));
-  }, [propertiesQuery.data]);
+  }, [propertiesQuery.data, data?.user?.id, getOffers]);
 
   useEffect(() => {
     if (propertiesQuery.error) {

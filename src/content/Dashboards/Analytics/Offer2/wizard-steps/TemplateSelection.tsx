@@ -196,7 +196,6 @@ const TemplateSelection: React.FC = () => {
             isSelected={selectedTemplateId === null}
             onSelect={() => selectTemplate(null, userFormData)}
           />
-          {selectedTemplateId}
         </div>
       </ScrollArea>
 

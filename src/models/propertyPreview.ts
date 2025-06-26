@@ -1,5 +1,6 @@
 interface PropertyPreview {
   id: string;
+  propertyId: string;
   address: string;
   coordinates: [number, number];
   arvPrice: number;

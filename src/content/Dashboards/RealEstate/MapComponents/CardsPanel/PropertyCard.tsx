@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useState } from 'react';
 import PropertyPreview from '@/models/propertyPreview';
 import { openGoogleSearch } from '@/utils/windowFunctions';
+import { usePropertyOffers } from '@/utils/offerUtils';
 import {
   Button,
   CardProps,
@@ -22,7 +23,9 @@ import Image from '@/components/Photos/Image';
 import clsx from 'clsx';
 import { selectFilter } from '@/store/slices/filterSlice';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import { calculateArvPercentage } from '@/utils/calculationUtils';
+import { ClipboardCheck } from 'lucide-react';
 
 const defaultImage =
   'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=';
@@ -105,6 +108,8 @@ const PropertyCard: React.FC<PropertyCardProps> = (
     validateValue(props.property?.image, 'string', defaultImage)
   );
   const { strategyMode } = useSelector(selectFilter);
+  const { hasOffer } = usePropertyOffers();
+  // The hook will automatically fetch offers when needed
   const handlePropertySelected = async () => {
     if (props.selected) {
       props.deselectProperty(props.property);
@@ -217,6 +222,28 @@ const PropertyCard: React.FC<PropertyCardProps> = (
             <Typography className="font-poppins font-semibold text-white">
               {getStrategyValue(0)}%
             </Typography>
+          </div>
+        </Tooltip>
+      )}
+
+      {/* Show offer icon if property has an offer */}
+      {hasOffer(props.property.propertyId) && (
+        <Tooltip
+          title="You have an offer for this property"
+          placement="top"
+          PopperProps={{
+            modifiers: [
+              {
+                name: 'offset',
+                options: {
+                  offset: [0, -10]
+                }
+              }
+            ]
+          }}
+        >
+          <div className="flex absolute top-1 right-1 z-[1] rounded-full p-1.5 items-center justify-center bg-orange-400 shadow-md">
+            <ClipboardCheck className="text-white text-[0.8rem]" />
           </div>
         </Tooltip>
       )}

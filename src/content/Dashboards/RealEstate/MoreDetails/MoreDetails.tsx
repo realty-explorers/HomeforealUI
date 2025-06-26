@@ -9,6 +9,11 @@ import SaleComparable from '../../Analytics/SaleComparable';
 import SaleComparableIndicators from '../../Analytics/SaleComparableIndicators';
 import OperationalExpenses from '@/content/Dashboards/Analytics/Expenses/OperationalExpenses';
 import MarginInfo from '../../Analytics/PropertyHeader/MarginInfo';
+import { usePropertyOffers } from '@/utils/offerUtils';
+import { useEffect } from 'react';
+import { Tooltip, Box } from '@mui/material';
+import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
+import { ClipboardCheck } from 'lucide-react';
 
 //test
 type MoreDetailsProps = {
@@ -23,9 +28,37 @@ const MoreDetails = ({
   selectedRentalComps,
   setSelectedRentalComps
 }: MoreDetailsProps) => {
+  const { hasOffer } = usePropertyOffers();
+  // The hook will automatically fetch offers when needed
+
+  const propertyHasOffer = selectedProperty?.propertyId
+    ? hasOffer(selectedProperty.propertyId)
+    : false;
   return selectedProperty ? (
     <>
-      <PropertyHeader property={selectedProperty} />
+      <div className="relative">
+        <PropertyHeader property={selectedProperty} />
+        {propertyHasOffer && (
+          <Tooltip title="You have an offer for this property">
+            <Box
+              className="bg-orange-400"
+              sx={{
+                position: 'absolute',
+                top: '10px',
+                right: '10px',
+                borderRadius: '50%',
+                padding: '8px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: '0px 2px 4px rgba(0,0,0,0.2)'
+              }}
+            >
+              <ClipboardCheck className="text-white" />
+            </Box>
+          </Tooltip>
+        )}
+      </div>
       {/* <PropertyFeatures property={selectedProperty} /> */}
       {/* <EnvironmentalIndicators property={selectedProperty} /> */}
       {/* <OwnershipInfo property={selectedProperty} /> */}

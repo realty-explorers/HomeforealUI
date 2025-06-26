@@ -61,7 +61,8 @@ export const offerApi = createApi({
         url: '/offers',
         method: 'POST',
         body
-      })
+      }),
+      invalidatesTags: ['Offer']
     }),
     approveOffer: builder.mutation({
       query: ({ offerId }) => ({
@@ -80,7 +81,8 @@ export const offerApi = createApi({
     }),
 
     getOffers: builder.query({
-      query: ({ userId }) => ({ url: `/offers/user/${userId}/detailed` })
+      query: ({ userId }) => ({ url: `/offers/user/${userId}/detailed` }),
+      providesTags: ['Offer']
     }),
 
     getAllOffers: builder.query({

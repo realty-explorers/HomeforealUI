@@ -77,7 +77,7 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
   const { currentStep, setCurrentStep, nextStep, prevStep, goToStep } =
     useWizardNavigation();
   // const { selectedTemplateId, selectTemplate } = useTemplateSelection(methods);
-  const { selectTemplate } = useTemplateSelectionContext();
+  const { selectTemplate, templates } = useTemplateSelectionContext();
 
   const { data: session, status } = useSession();
 
@@ -101,7 +101,9 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
   const componentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    selectTemplate(null, { ...userFormData });
+    selectTemplate(templates.length > 0 ? templates[0]._id : null, {
+      ...userFormData
+    });
     setCurrentStep(0);
   }, [session?.user, selectedProperty]);
 
