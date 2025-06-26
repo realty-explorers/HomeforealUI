@@ -1,38 +1,38 @@
-import useProperty from "@/hooks/useProperty";
-import PropertyPreview from "@/models/propertyPreview";
-import { selectFilter } from "@/store/slices/filterSlice";
-import { Global } from "@emotion/react";
+import useProperty from '@/hooks/useProperty';
+import PropertyPreview from '@/models/propertyPreview';
+import { selectFilter } from '@/store/slices/filterSlice';
+import { Global } from '@emotion/react';
 import {
   Box,
   Skeleton,
   styled,
   SwipeableDrawer,
-  Typography,
-} from "@mui/material";
-import { memo, useState } from "react";
-import { useSelector } from "react-redux";
-import AutoSizer from "react-virtualized-auto-sizer";
-import { FixedSizeList } from "react-window";
-import PropertyCard from "./PropertyCard";
-import { useDrag } from "@use-gesture/react";
-import { a, config, useSpring } from "@react-spring/web";
-import styles from "./MobilePanel.module.scss";
+  Typography
+} from '@mui/material';
+import { memo, useState } from 'react';
+import { useSelector } from 'react-redux';
+import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeList } from 'react-window';
+import PropertyCard from './PropertyCard';
+import { useDrag } from '@use-gesture/react';
+import { a, config, useSpring } from '@react-spring/web';
+import styles from './MobilePanel.module.scss';
 
 // const drawerBleeding = 56;
 const drawerBleeding = 112;
 const drawerHeight = 56;
 const StyledBox = styled(Box)(({ theme }) => ({
-  backgroundColor: "white",
+  backgroundColor: 'white'
 }));
 
 const Puller = styled(Box)(({ theme }) => ({
   width: 30,
   height: 6,
-  backgroundColor: "#9B51E0",
+  backgroundColor: '#9B51E0',
   borderRadius: 3,
-  position: "absolute",
+  position: 'absolute',
   top: 8,
-  left: "calc(50% - 15px)",
+  left: 'calc(50% - 15px)'
 }));
 
 type MobilePanelProps = {
@@ -56,8 +56,8 @@ const MobilePanel = ({ sortedProperties }: MobilePanelProps) => {
     // setOpen(newOpen);
   };
 
-  const mapContainer = document.getElementById("main");
-  const windowWidth = typeof window !== "undefined" ? window.innerWidth : 0;
+  const mapContainer = document.getElementById('main');
+  const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
 
   const { filteredProperties, strategyMode } = useSelector(selectFilter);
 
@@ -95,28 +95,26 @@ const MobilePanel = ({ sortedProperties }: MobilePanelProps) => {
     api.start({
       y: 0,
       immediate: false,
-      config: canceled ? config.wobbly : config.stiff,
+      config: canceled ? config.wobbly : config.stiff
     });
   };
   const close = (velocity = 0) => {
     api.start({
       y: height - 100,
       immediate: false,
-      config: { ...config.stiff, velocity },
+      config: { ...config.stiff, velocity }
     });
   };
 
   const bind = useDrag(
-    (
-      {
-        last,
-        velocity: [, vy],
-        direction: [, dy],
-        offset: [, oy],
-        cancel,
-        canceled,
-      },
-    ) => {
+    ({
+      last,
+      velocity: [, vy],
+      direction: [, dy],
+      offset: [, oy],
+      cancel,
+      canceled
+    }) => {
       // if the user drags up passed a threshold, then we cancel
       // the drag so that the sheet resets to its open position
       if (scrollTop && dy < 0) cancel();
@@ -138,18 +136,18 @@ const MobilePanel = ({ sortedProperties }: MobilePanelProps) => {
       filterTaps: true,
       bounds: { top: 0 },
       rubberband: true,
-      axis: "y",
-      enabled: false,
-    },
+      axis: 'y',
+      enabled: false
+    }
   );
 
-  const display = y.to((py) => (py < height ? "block" : "none"));
+  const display = y.to((py) => (py < height ? 'block' : 'none'));
   const bgStyle = {
-    transform: y.to([0, height], [
-      "translateY(-8%) scale(1.16)",
-      "translateY(0px) scale(1.05)",
-    ]),
-    opacity: y.to([0, height], [0.4, 1], "clamp"),
+    transform: y.to(
+      [0, height],
+      ['translateY(-8%) scale(1.16)', 'translateY(0px) scale(1.05)']
+    ),
+    opacity: y.to([0, height], [0.4, 1], 'clamp')
   };
 
   const handleScroll = (e) => {
@@ -158,22 +156,23 @@ const MobilePanel = ({ sortedProperties }: MobilePanelProps) => {
       e.target.scrollHeight - e.target.scrollTop === e.target.clientHeight;
     if (atTop) {
       setScrollTop(true);
-      console.log("at top");
     } else {
       setScrollTop(false);
     }
     if (atBottom) {
       setScrollBottom(true);
-      console.log("at bottom");
     } else {
       setScrollBottom(false);
     }
   };
 
   return (
-    <div className="flex" style={{ overflow: "hidden" }}>
-      <a.div className={styles.bg} onClick={() => close()} style={bgStyle}>
-      </a.div>
+    <div className="flex" style={{ overflow: 'hidden' }}>
+      <a.div
+        className={styles.bg}
+        onClick={() => close()}
+        style={bgStyle}
+      ></a.div>
       <div className={styles.actionBtn} onClick={open} />
       <a.div
         className={styles.sheet}
@@ -183,12 +182,11 @@ const MobilePanel = ({ sortedProperties }: MobilePanelProps) => {
           bottom: `calc(-100vh + ${height - 100}px)`,
           y,
           // touchAction: "pan-y",
-          overflowY: "auto",
+          overflowY: 'auto'
         }}
         onScroll={handleScroll}
       >
-        <div className="w-full h-[100rem] bg-red-500">
-        </div>
+        <div className="w-full h-[100rem] bg-red-500"></div>
       </a.div>
     </div>
   );
@@ -197,30 +195,31 @@ const MobilePanel = ({ sortedProperties }: MobilePanelProps) => {
 
   // This is used only for the example
   return (
-    windowWidth < 768 && filteredProperties?.length > 0 && (
+    windowWidth < 768 &&
+    filteredProperties?.length > 0 && (
       <div className="flex md:hidden">
         <Global
           styles={{
-            ".MuiDrawer-root": {
+            '.MuiDrawer-root': {
               // position: "absolute !important",
             },
-            ".MuiDrawer-root > .MuiPaper-root": {
+            '.MuiDrawer-root > .MuiPaper-root': {
               height: `calc(75% - ${drawerHeight}px)`,
-              overflow: "visible",
+              overflow: 'visible',
               // marginBottom: drawerHeight,
               // zIndex: 0,
-              position: "absolute",
+              position: 'absolute'
               // top: `100%`,
             },
-            ".MuiDrawer-root > .MuiBackdrop-root": {
+            '.MuiDrawer-root > .MuiBackdrop-root': {
               // position: "absolute",
             },
-            ".MuiDrawer-modal": {
+            '.MuiDrawer-modal': {
               // position: "static !important",
             },
-            ".MuiBackdrop-root": {
-              display: "none",
-            },
+            '.MuiBackdrop-root': {
+              display: 'none'
+            }
           }}
         />
         <SwipeableDrawer
@@ -234,25 +233,25 @@ const MobilePanel = ({ sortedProperties }: MobilePanelProps) => {
           ModalProps={{
             keepMounted: true,
             BackdropProps: {
-              invisible: true,
-            },
+              invisible: true
+            }
           }}
           sx={{
-            zIndex: 2,
+            zIndex: 2
           }}
         >
           <StyledBox
             sx={{
-              position: "absolute",
+              position: 'absolute',
               // marginTop: -drawerHeight * 2,
               top: -drawerHeight,
               borderTopLeftRadius: 8,
               borderTopRightRadius: 8,
-              visibility: "visible",
+              visibility: 'visible',
               right: 0,
               left: 0,
               // borderTop: "30px solid #E5E7EB",
-              borderTop: "5px solid #E5E7EB",
+              borderTop: '5px solid #E5E7EB'
             }}
           >
             <Puller />
@@ -262,7 +261,7 @@ const MobilePanel = ({ sortedProperties }: MobilePanelProps) => {
                 className="font-poppins text-gray-500 text-center mt-1"
               >
                 {sortedProperties?.length} Home Results
-                {mapContainer ? "in" : "out"}
+                {mapContainer ? 'in' : 'out'}
               </Typography>
             )}
           </StyledBox>

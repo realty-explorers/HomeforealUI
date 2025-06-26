@@ -382,7 +382,6 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     getBuyBoxesData();
 
     if (selectedBuyBoxId && selectedPropertyId) {
-      console.log('selecting property');
       selectPropertyId(
         selectedBuyBoxId,
         selectedPropertyId,

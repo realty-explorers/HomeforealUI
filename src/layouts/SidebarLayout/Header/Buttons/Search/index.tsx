@@ -111,13 +111,6 @@ function HeaderSearch() {
     const propertiesDataRequest = getPropertiesData(suggestion);
 
     await Promise.all([locationDataRequest, propertiesDataRequest]);
-
-    // const meow = await getDealsData(suggestion).unwrap();
-    // const response = await getDealsData(suggestion).unwrap();
-    // console.log(`deals resonse: ${isError}, ${error}, ${status}`, response);
-
-    // const response = await getDealsData(suggestion).unwrap();
-    // console.log('response from auto: ', response);
   };
 
   return (

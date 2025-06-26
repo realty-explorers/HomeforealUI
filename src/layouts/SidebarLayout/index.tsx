@@ -64,7 +64,6 @@ const SidebarLayout: FC<SidebarLayoutProps> = ({ children }) => {
       } else {
         dispatch(setShowVerificationDialog(true));
       }
-      console.log('response', response);
       return response === true;
     };
     if (!data?.user?.verified) {

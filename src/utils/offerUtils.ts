@@ -32,7 +32,6 @@ export const usePropertyOffers = () => {
   // Create an efficient lookup map: propertyId -> offerId
   const propertyOfferMap = useMemo(() => {
     if (!offers?.offers) return new Map();
-    console.log('Creating propertyOfferMap from offers:', offers?.offers);
 
     const map = new Map();
     offers?.offers?.forEach((offer) => {

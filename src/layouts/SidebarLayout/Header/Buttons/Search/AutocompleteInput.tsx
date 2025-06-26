@@ -98,7 +98,6 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
             searchTerm,
             true
           ).unwrap();
-          console.log(response);
           const allowedTypes = ['city', 'state', 'neighborhood', 'postal_code'];
           const allowedStates = [
             'FL',

@@ -1,35 +1,35 @@
-import TextField from "@mui/material/TextField";
-import ThemedButtonLg from "@/components/Buttons/ThemedButtonLg";
-import { useEffect, useState } from "react";
-import MessageSentComponent from "./MessageSentComponent";
-import { styled } from "@mui/system";
+import TextField from '@mui/material/TextField';
+import ThemedButtonLg from '@/components/Buttons/ThemedButtonLg';
+import { useEffect, useState } from 'react';
+import MessageSentComponent from './MessageSentComponent';
+import { styled } from '@mui/system';
 
 const StyledTextField = styled(TextField)({
   label: {
-    "& label.Mui-focused": {
-      fontSize: "0.9rem",
-      fontWeight: "bold",
-      color: "#35455d ",
+    '& label.Mui-focused': {
+      fontSize: '0.9rem',
+      fontWeight: 'bold',
+      color: '#35455d '
     },
-    "& .MuiOutlinedInput-root:hover": {
-      "& fieldset": {
-        borderColor: "#C6BEBA",
-      },
+    '& .MuiOutlinedInput-root:hover': {
+      '& fieldset': {
+        borderColor: '#C6BEBA'
+      }
     },
-    "& .MuiOutlinedInput-root.Mui-focused ": {
-      "& fieldset": {
-        borderColor: "#C6BEBA",
-      },
-    },
-  },
+    '& .MuiOutlinedInput-root.Mui-focused ': {
+      '& fieldset': {
+        borderColor: '#C6BEBA'
+      }
+    }
+  }
 });
 
 export default function ContactForm() {
   const [isClient, setIsClient] = useState(false);
   const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
+    name: '',
+    email: '',
+    message: ''
   });
   const [submitted, setSubmitted] = useState(false);
   const [sent, setSent] = useState(false);
@@ -65,7 +65,7 @@ export default function ContactForm() {
     setSubmitted(true);
 
     if (nameValidator() === false && emailValidator() === true) {
-      console.log(formData);
+      // console.log(formData);
       setSent(true);
     }
   };
@@ -76,65 +76,64 @@ export default function ContactForm() {
 
   return (
     <>
-      {isClient &&
-        (
-          <div className="h-full w-full min-h[full]  m-12 bg-white rounded shadow">
-            <div className="flex flex-col m-10">
-              {!sent
-                ? (
-                  <>
-                    <div className="h-[80%]">
-                      <StyledTextField
-                        error={submitted && nameValidator()}
-                        helperText={submitted && nameValidator()
-                          ? "Please enter Name"
-                          : ""}
-                        className="m-2"
-                        size="medium"
-                        fullWidth
-                        required
-                        label="Name"
-                        name="name"
-                        value={formData.name}
-                        onChange={handleChange}
-                      />
-                      <StyledTextField
-                        error={submitted && !emailValidator()}
-                        helperText={submitted && !emailValidator()
-                          ? "Please enter Email"
-                          : ""}
-                        className={`m-2`}
-                        size="medium"
-                        fullWidth
-                        required
-                        label="Email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                      />
-                      <StyledTextField
-                        className={`m-2`}
-                        size="medium"
-                        fullWidth
-                        name="message"
-                        label="Enter your message"
-                        multiline
-                        rows={4}
-                        value={formData.message}
-                        onChange={handleChange}
-                      />
-                    </div>
-                    <div className="flex justify-center h-[20%] mt-2">
-                      <span onClick={handleSubmit}>
-                        <ThemedButtonLg text="Submit" />
-                      </span>
-                    </div>
-                  </>
-                )
-                : <MessageSentComponent />}
-            </div>
+      {isClient && (
+        <div className="h-full w-full min-h[full]  m-12 bg-white rounded shadow">
+          <div className="flex flex-col m-10">
+            {!sent ? (
+              <>
+                <div className="h-[80%]">
+                  <StyledTextField
+                    error={submitted && nameValidator()}
+                    helperText={
+                      submitted && nameValidator() ? 'Please enter Name' : ''
+                    }
+                    className="m-2"
+                    size="medium"
+                    fullWidth
+                    required
+                    label="Name"
+                    name="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                  />
+                  <StyledTextField
+                    error={submitted && !emailValidator()}
+                    helperText={
+                      submitted && !emailValidator() ? 'Please enter Email' : ''
+                    }
+                    className={`m-2`}
+                    size="medium"
+                    fullWidth
+                    required
+                    label="Email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                  />
+                  <StyledTextField
+                    className={`m-2`}
+                    size="medium"
+                    fullWidth
+                    name="message"
+                    label="Enter your message"
+                    multiline
+                    rows={4}
+                    value={formData.message}
+                    onChange={handleChange}
+                  />
+                </div>
+                <div className="flex justify-center h-[20%] mt-2">
+                  <span onClick={handleSubmit}>
+                    <ThemedButtonLg text="Submit" />
+                  </span>
+                </div>
+              </>
+            ) : (
+              <MessageSentComponent />
+            )}
           </div>
-        )}
+        </div>
+      )}
     </>
   );
 }

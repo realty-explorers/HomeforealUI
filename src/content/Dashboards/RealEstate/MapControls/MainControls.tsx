@@ -286,7 +286,6 @@ const MainControls: React.FC<MainControlsProps> = (
   const debounceUpdateArv = useMemo(
     () =>
       debounce((value: number) => {
-        console.log('meow');
         dispatch(setArvMargin(value));
       }, 200),
     []

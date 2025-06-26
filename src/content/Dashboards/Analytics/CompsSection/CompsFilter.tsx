@@ -226,7 +226,7 @@ const CompsFilter = ({
   const handleClose = () => setOpen(false);
 
   const onSubmit = async (data: any) => {
-    console.log(data);
+    // console.log(data);
     const filteredComps: FilteredComp[] = [];
     const soldComps = selectedProperty?.comps.filter(
       (comp) => comp.status === 'sold'
@@ -242,16 +242,9 @@ const CompsFilter = ({
             value[1] < comp[field.fieldName]
           ) {
             add = false;
-            console.log(
-              'no range ',
-              field.fieldName,
-              value,
-              comp[field.fieldName]
-            );
             break;
           }
         } else {
-          console.log('no field ', field.fieldName);
         }
       }
       try {
@@ -262,16 +255,12 @@ const CompsFilter = ({
           const date = new Date(comp['sales_date']);
           const diff = currentDate - date;
           const diffMonths = Math.ceil(diff / (1000 * 60 * 60 * 24 * 30));
-          console.log(diffMonths);
           if (value < diffMonths) {
             add = false;
           }
         } else {
-          console.log('no field ', field.fieldName);
         }
-      } catch (e) {
-        console.log(e);
-      }
+      } catch (e) {}
       if (add) {
         filteredComps.push({ ...comp, index: i });
       }
