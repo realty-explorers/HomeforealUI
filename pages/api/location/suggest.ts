@@ -2,9 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next/'
 import { getLocationSuggestions } from "@/api/location_api";
 import { AxiosError } from 'axios';
 
-export const config = {
-  runtime: 'edge'
-};
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         const searchTerm = req.query['searchTerm'] as string;
