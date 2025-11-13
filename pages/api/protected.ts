@@ -2,6 +2,8 @@ import { getServerSession } from 'next-auth/next';
 import { getToken } from 'next-auth/jwt';
 import { authOptions } from './auth/[...nextauth]';
 
+export const runtime = 'edge';
+
 export default async function myApiRoute(req, res) {
   try {
     const token = await getToken({ req });
