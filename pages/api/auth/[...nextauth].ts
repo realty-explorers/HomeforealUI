@@ -7,7 +7,10 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import PostHogClient from 'src/lib/posthog';
 
 
-export const runtime = 'edge';
+export const config = {
+  runtime: 'edge'
+};
+
 export const authOptions = {
   // Configure one or more authentication providers
 
