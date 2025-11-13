@@ -2,9 +2,6 @@ import type { NextApiRequest, NextApiResponse } from 'next/'
 import { findProperties } from "@/api/deals_api";
 import { AxiosError } from 'axios';
 
-export const config = {
-  runtime: 'edge'
-};
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
