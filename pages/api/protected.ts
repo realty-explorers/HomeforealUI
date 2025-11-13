@@ -2,7 +2,9 @@ import { getServerSession } from 'next-auth/next';
 import { getToken } from 'next-auth/jwt';
 import { authOptions } from './auth/[...nextauth]';
 
-export const runtime = 'edge';
+export const config = {
+  runtime: 'edge'
+};
 
 export default async function myApiRoute(req, res) {
   try {
