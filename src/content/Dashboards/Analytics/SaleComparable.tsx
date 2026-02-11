@@ -21,7 +21,7 @@ import { numberStringUtil, priceFormatter } from '@/utils/converters';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { selectProperties } from '@/store/slices/propertiesSlice';
-import { calculateProvidedBy } from '@reduxjs/toolkit/dist/query/endpointDefinitions';
+import { formatDaysOnMarket } from '@/utils/formatDaysOnMarket';
 
 const calcDays = (date: string) => {
   const date1 = new Date(date);
@@ -58,11 +58,13 @@ const SaleComparable = (props: SaleComparableProps) => {
       }, 0) / selectedComps.length
     : null;
 
-  const compsAverageDOM = selectedComps
+  const avgDOM:number = selectedComps
     ? selectedComps?.reduce((acc, comp) => {
         return acc + calcDays(comp.listDate);
       }, 0) / selectedComps?.length
-    : null;
+		: null; 
+	
+  const compsAverageDOM:string = formatDaysOnMarket(avgDOM);
 
   return (
     <div className="hidden md:block p-4 w-full">
@@ -125,7 +127,7 @@ const SaleComparable = (props: SaleComparableProps) => {
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <Typography className={styles.cellText}>
-                    {compsAverageDOM?.toFixed() || '-'}
+                    {compsAverageDOM ?? '-'}
                   </Typography>
                 </StyledTableCell>
               </TableRow>
