@@ -1,7 +1,5 @@
 import {
-  Button,
   Grid,
-  Paper,
   Table,
   TableBody,
   TableCell,
@@ -10,18 +8,14 @@ import {
   TableRow,
   Typography
 } from '@mui/material';
-import GridField from '@/components/Grid/GridField';
-import ValueCard from '@/components/Cards/ValueCard';
 import styled from '@emotion/styled';
-import analyticsStyles from './Analytics.module.scss';
 import styles from './SaleComparable.module.scss';
-import ThemedButton from '@/components/Buttons/ThemedButton';
 import AnalyzedProperty from '@/models/analyzedProperty';
 import { numberStringUtil, priceFormatter } from '@/utils/converters';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { selectProperties } from '@/store/slices/propertiesSlice';
-import { formatDaysOnMarket } from '@/utils/formatDaysOnMarket';
+import { readableDateDiff } from '@/utils/dateUtils';
 
 const calcDays = (date: string) => {
   const date1 = new Date(date);
@@ -58,13 +52,16 @@ const SaleComparable = (props: SaleComparableProps) => {
       }, 0) / selectedComps.length
     : null;
 
-  const avgDOM:number = selectedComps
+  const avgCompsDaysOnMarket:number = selectedComps
     ? selectedComps?.reduce((acc, comp) => {
         return acc + calcDays(comp.listDate);
       }, 0) / selectedComps?.length
 		: null; 
 	
-  const compsAverageDOM:string = formatDaysOnMarket(avgDOM);
+  const propertyDOM = calcDays(props.property.listDate);
+  const propertyDaysOnMarket:string = readableDateDiff(propertyDOM);
+	
+  const compsAverageDOM:string = readableDateDiff(avgCompsDaysOnMarket);
 
   return (
     <div className="hidden md:block p-4 w-full">
@@ -122,12 +119,12 @@ const SaleComparable = (props: SaleComparableProps) => {
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <Typography className={styles.cellText}>
-                    {props.property.listDate}
+                    {propertyDaysOnMarket}
                   </Typography>
                 </StyledTableCell>
                 <StyledTableCell align="center">
                   <Typography className={styles.cellText}>
-                    {compsAverageDOM ?? '-'}
+                    {compsAverageDOM}
                   </Typography>
                 </StyledTableCell>
               </TableRow>
