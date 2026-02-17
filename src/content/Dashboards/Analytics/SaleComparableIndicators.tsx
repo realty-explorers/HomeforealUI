@@ -22,33 +22,44 @@ import { numberStringUtil, priceFormatter } from '@/utils/converters';
 import clsx from 'clsx';
 import { useSelector } from 'react-redux';
 import { selectProperties } from '@/store/slices/propertiesSlice';
+import { selectExpenses } from '@/store/slices/expensesSlice';
+import {
+  calculateArvPercentage,
+  calculateMarginPercentage
+} from '@/utils/calculationUtils';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   borderBottom: 'none'
 }));
 
-const calculatePercentage = (property: AnalyzedProperty, fieldName: string) => {
-  const propertyValue = property.price;
-  const arvValue = property[fieldName];
-  if (!propertyValue || !arvValue) return 0;
-  const percentage =
-    propertyValue > 0 ? ((arvValue - propertyValue) / arvValue) * 100 : 0;
-  return percentage;
-};
-
 type SaleComparableIndicatorsProps = {
   property: AnalyzedProperty;
 };
 const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
   const { saleCalculatedProperty } = useSelector(selectProperties);
-  const underARVPercentage = calculatePercentage(
-    saleCalculatedProperty,
-    'arv25Price'
+  const { initialInvestment, financingCosts } = useSelector(selectExpenses);
+  const totalExpenses = initialInvestment + financingCosts;
+
+  const underCompsPercentage = calculateArvPercentage(
+    saleCalculatedProperty?.arvPrice,
+    saleCalculatedProperty?.price,
+    totalExpenses
   );
-  const underCompsPercentage = calculatePercentage(
-    saleCalculatedProperty,
-    'arvPrice'
+  const underARVPercentage = calculateArvPercentage(
+    saleCalculatedProperty?.arv25Price,
+    saleCalculatedProperty?.price,
+    totalExpenses
+  );
+  const compsMarginPercentage = calculateMarginPercentage(
+    saleCalculatedProperty?.arvPrice,
+    saleCalculatedProperty?.price,
+    totalExpenses
+  );
+  const arvMarginPercentage = calculateMarginPercentage(
+    saleCalculatedProperty?.arv25Price,
+    saleCalculatedProperty?.price,
+    totalExpenses
   );
 
   return (
@@ -68,7 +79,7 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
             <div className="px-2">●</div>
 
             <Typography className="font-poppins font-bold">
-              Margin: {saleCalculatedProperty.marginPercentage?.toFixed()} %
+              Margin: {compsMarginPercentage.toFixed()} %
             </Typography>
           </div>
 
@@ -90,13 +101,13 @@ const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
             <Typography className="font-poppins font-bold">25th ARV</Typography>
 
             <Typography className="font-poppins font-bold ml-4">
-              {priceFormatter(saleCalculatedProperty?.arvPrice.toFixed())}
+              {priceFormatter(saleCalculatedProperty?.arv25Price.toFixed())}
             </Typography>
 
             <div className="px-2">●</div>
 
             <Typography className="font-poppins font-bold ">
-              Margin: {saleCalculatedProperty.arvPercentage?.toFixed()} %
+              Margin: {arvMarginPercentage.toFixed()} %
             </Typography>
           </div>
 
