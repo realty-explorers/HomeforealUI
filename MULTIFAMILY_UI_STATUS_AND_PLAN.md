@@ -465,6 +465,38 @@ Multifamily drawer, deal card, and tabs components are now available in Storyboo
 
 ---
 
+## Step 19 - Jest + RTL smoke tests (D5)
+
+### Goal
+Add automated smoke coverage for multifamily strategy UI behavior, tab interactions, and save-schema sanity.
+
+### Changes
+- Added Jest setup and config for project-level RTL execution.
+- Added strategy switch smoke tests for `InvestmentStrategy`:
+  - default Fix & Flip rendering
+  - switch to Multifamily state
+  - disabled state for coming-soon strategy buttons
+- Added multifamily tabs smoke tests for `MultifamilyTabsSkeleton`:
+  - criteria tab navigation
+  - Unit Mix add/remove behavior
+  - value persistence across tab switches
+- Added schema-level save sanity tests for `formBuyBoxSchema`:
+  - valid multifamily payload parses successfully
+  - invalid minimal payload fails on required fields
+- Updated Jest `testMatch` to use `*.test.ts(x)` and avoid picking up non-test scratch files.
+
+### Files
+- `jest.config.js`
+- `jest.setup.ts`
+- `src/content/Dashboards/BuyBox/EditBuyBox/Sections/InvestmentStrategy.test.tsx`
+- `src/content/Dashboards/BuyBox/EditBuyBox/Sections/MultifamilyTabsSkeleton.test.tsx`
+- `src/schemas/BuyBoxFormSchema.test.ts`
+
+### Result
+Step D5 is complete with passing local smoke tests (`3 suites / 7 tests`).
+
+---
+
 ## 4) Files Changed Summary
 
 ### Modified
@@ -514,7 +546,7 @@ These trees are now formalized in `formBuyBoxSchema` and `buyboxSchema`, but bac
 No dedicated Zod validation rules yet for multifamily tab values (ranges, requiredness, units, etc.).
 
 ### 6.4 Testing gap
-No Storybook/Jest/RTL coverage yet for new multifamily components and interactions.
+Storybook and Jest/RTL smoke coverage are now in place for core multifamily components. Remaining gap is deeper integration-level testing for full save/reopen API roundtrip.
 
 ---
 
@@ -677,7 +709,9 @@ Ensures fields entered in tabs are not lost and can flow through create/update A
 
 ## 9) Suggested Next Action (after approval)
 
-Proceed with **Step D5 (Jest + RTL smoke tests)**.
+Proceed with **post-D5 hardening**:
+- integration test for multifamily save/reopen API roundtrip
+- cleanup of existing TypeScript issues in `Map.tsx`
 
 ---
 
@@ -696,4 +730,4 @@ Proceed with **Step D5 (Jest + RTL smoke tests)**.
 - [x] API wiring
 - [x] Loading/error states
 - [x] Storybook
-- [ ] Jest/RTL
+- [x] Jest/RTL
