@@ -434,6 +434,37 @@ Multifamily drawer now handles loading, error, stale-cache fallback, and empty-s
 
 ---
 
+## Step 18 - Storybook coverage (D4)
+
+### Goal
+Add Storybook stories for new Multifamily UI components to support isolated visual verification.
+
+### Changes
+- Added Storybook stories for Multifamily analysis drawer:
+  - default open with sample property data
+  - empty selection state
+  - closed state
+- Added Storybook stories for Multifamily deal card:
+  - default
+  - selected
+  - missing metrics fallback
+- Added Storybook stories for Multifamily tabs skeleton:
+  - criteria mode
+  - setup mode
+- Wrapped tabs story with `react-hook-form` `FormProvider` and default buybox form values.
+- Fixed Storybook runtime crash (`"reducer" is a required argument`) by exporting and reusing `rootReducer` from store setup so the test harness mock store can initialize properly.
+
+### Files
+- `src/stories/multifamily/MultifamilyAnalysisDrawer.stories.tsx`
+- `src/stories/multifamily/MultifamilyDealCard.stories.tsx`
+- `src/stories/multifamily/MultifamilyTabsSkeleton.stories.tsx`
+- `src/store/store.ts`
+
+### Result
+Multifamily drawer, deal card, and tabs components are now available in Storybook for focused UI review and regression checks.
+
+---
+
 ## 4) Files Changed Summary
 
 ### Modified
@@ -646,7 +677,7 @@ Ensures fields entered in tabs are not lost and can flow through create/update A
 
 ## 9) Suggested Next Action (after approval)
 
-Proceed with **Step D4 (Storybook coverage)**.
+Proceed with **Step D5 (Jest + RTL smoke tests)**.
 
 ---
 
@@ -664,5 +695,5 @@ Proceed with **Step D4 (Storybook coverage)**.
 - [x] Provenance badge
 - [x] API wiring
 - [x] Loading/error states
-- [ ] Storybook
+- [x] Storybook
 - [ ] Jest/RTL
