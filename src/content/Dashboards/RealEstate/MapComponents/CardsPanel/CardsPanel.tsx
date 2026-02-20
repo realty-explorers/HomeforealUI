@@ -1,26 +1,16 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { IconButton } from '@mui/material';
-import ArrowCircleLeftSharpIcon from '@mui/icons-material/ArrowCircleLeftSharp';
-import ArrowCircleRightSharpIcon from '@mui/icons-material/ArrowCircleRightSharp';
 import PropertyPreview from '@/models/propertyPreview';
 import PropertyCard from './PropertyCard';
+import MultifamilyDealCard from './MultifamilyDealCard';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import clsx from 'clsx';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectFilter } from '@/store/slices/filterSlice';
-import {
-  selectProperties,
-  setRentalCalculatedProperty,
-  setSaleCalculatedProperty,
-  setSelectedProperty,
-  setSelectedPropertyPreview,
-  setSelecting
-} from '@/store/slices/propertiesSlice';
+import { selectProperties } from '@/store/slices/propertiesSlice';
 import useProperty from '@/hooks/useProperty';
-import useHorizontalScroll from '@/hooks/useHorizontalScroll';
-import MobilePanel from './MobilePanel';
 
 type CardsPanelProps = {
   open: boolean;
@@ -33,11 +23,13 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   // const [listRef] = useHookWithRefCallback();
   const [ref, setRef] = useState<Element | undefined>();
 
-  const { filteredProperties, strategyMode } = useSelector(selectFilter);
+  const { filteredProperties, strategyMode, buybox } = useSelector(selectFilter);
+  const isMultifamilyBuybox =
+    buybox?.parameters?.strategy?.strategyType === 'MULTIFAMILY';
+
   const { selectedProperty, selectedPropertyPreview } =
     useSelector(selectProperties);
   const [selectedPropertyIndex, setSelectedIndex] = useState(-1);
-  const dispatch = useDispatch();
   const { selectProperty, deselectProperty } = useProperty();
 
   const scrollLeft = () => {
@@ -58,28 +50,44 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
     });
   };
 
-  const validValue = (value: string | number | undefined) => {
-    if (typeof value === 'number') {
-      return value;
+  const getPropertyPrice = (property: PropertyPreview) => {
+    if (property.price !== undefined) {
+      return property.price;
     }
-    return 0;
+    return property.priceGroup?.min ?? 0;
+  };
+
+  const getStrategyPercentage = (property: PropertyPreview) => {
+    const fieldName = strategyMode === 'ARV' ? 'arv25Price' : 'arvPrice';
+    const strategyValue = Number(property[fieldName]);
+    const propertyPrice = getPropertyPrice(property);
+
+    if (!Number.isFinite(strategyValue) || strategyValue <= 0 || propertyPrice <= 0) {
+      return Number.NEGATIVE_INFINITY;
+    }
+
+    return ((strategyValue - propertyPrice) / strategyValue) * 100;
+  };
+
+  const getCapRate = (property: PropertyPreview) => {
+    const capRate = Number(property.cap_rate);
+    if (Number.isFinite(capRate) && capRate >= 0) {
+      return capRate;
+    }
+    return Number.NEGATIVE_INFINITY;
   };
 
   const sortedProperties =
     filteredProperties &&
     [...filteredProperties].sort((a, b) => {
-      const fieldName = strategyMode === 'ARV' ? 'arv25Price' : 'arvPrice';
+      if (isMultifamilyBuybox) {
+        return getCapRate(b) - getCapRate(a);
+      }
 
-      if (!validValue(a[fieldName]) && validValue(b[fieldName])) return 1;
-      if (validValue(a[fieldName]) && !validValue(b[fieldName])) return -1;
-      // if (a[fieldName] && b.arvPrice) {
-      const arvPercentageA =
-        (a[fieldName] - a.price || a.priceGroup.min) / a[fieldName];
-      const arvPercentageB =
-        (b[fieldName] - b.price || b.priceGroup.min) / b[fieldName];
-      return arvPercentageB - arvPercentageA;
-      // }
-      return 0;
+      const strategyPercentageA = getStrategyPercentage(a);
+      const strategyPercentageB = getStrategyPercentage(b);
+
+      return strategyPercentageB - strategyPercentageA;
     });
 
   const handleSelectProperty = (property?: PropertyPreview) => {
@@ -130,10 +138,14 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   let cardsCache = {};
 
   const Column = ({ index, style }) => {
+    const CardComponent = isMultifamilyBuybox
+      ? MultifamilyDealCard
+      : PropertyCard;
+
     return (
       <div style={{ ...style }} className="px-2 py-2">
         <div className="w-full h-full rounded-xl bg-white">
-          <PropertyCard
+          <CardComponent
             key={index}
             property={sortedProperties[index]}
             selected={

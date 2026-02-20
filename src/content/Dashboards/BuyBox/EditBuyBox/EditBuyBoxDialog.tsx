@@ -72,6 +72,7 @@ import AdjustComparables from './Sections/AdjustComparables';
 import EditBuyboxDialogTitle from './EditBuyboxDialogTitle';
 import { useIsMobile } from '@/hooks/useMobile';
 import { ChevronRight, Loader2, RotateCcw, Save } from 'lucide-react';
+import MultifamilyTabsSkeleton from './Sections/MultifamilyTabsSkeleton';
 
 interface Location {
   type: string;
@@ -79,33 +80,65 @@ interface Location {
   identifier: string;
 }
 
-const steps = [
+const defaultSteps = [
   {
     title: 'General',
-    fields: ['buyboxName', 'description']
+    fields: ['name', 'description']
   },
   {
     title: 'Investment Strategy',
-    fields: ['opp.strategy', 'opp.fixAndFlip', 'opp.buyAndHold']
+    fields: ['strategy.strategyType']
   },
   {
     title: 'Location',
-    fields: ['targetLocation.locations']
+    fields: ['targetLocations']
   },
   {
     title: 'Property Criteria',
-    fields: [
-      'property.listingPrice',
-      'property.beds',
-      'property.baths',
-      'property.sqft',
-      'property.lotSize',
-      'property.yearBuilt'
-    ]
+    fields: ['propertyCriteria']
   },
   {
     title: 'Comparables',
-    fields: ['opp.comparablePreferences']
+    fields: ['weights']
+  }
+];
+
+const multifamilyCriteriaTabs = [
+  'Unit Mix & Bed/Bath',
+  'Rent Roll',
+  'Income (TTM)',
+  'Expenses (TTM)',
+  'Utilities & Reimbursements'
+];
+
+const multifamilySetupTabs = [
+  'Capital Stack',
+  'Loan Assumptions',
+  'Renovation / CapEx',
+  'Exit Scenario',
+  'Risk & Notes'
+];
+
+const multifamilySteps = [
+  {
+    title: 'General',
+    fields: ['name', 'description']
+  },
+  {
+    title: 'Investment Strategy',
+    fields: ['strategy.strategyType']
+  },
+  {
+    title: 'Location',
+    fields: ['targetLocations']
+  },
+  {
+    title: 'Multifamily Criteria',
+    fields: []
+  },
+  {
+    title: 'Multifamily Setup',
+    fields: []
   }
 ];
 
@@ -274,6 +307,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         )
       },
       strategy: {
+        strategyType: buyboxData.strategy.strategyType || 'FIX_AND_FLIP',
         minArv: getMinFieldProperties(
           buyboxData.strategy.minArv,
           defaults.arv.min
@@ -283,6 +317,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           defaults.margin.min
         )
       },
+      multifamilyCriteria: buyboxData.multifamilyCriteria,
+      multifamilySetup: buyboxData.multifamilySetup,
       // similarityCriteria: getAllSimilarityFields(buyboxData),
       targetLocations: buyboxData.targetLocations,
       weights: convertBuyboxWeights(buyboxData.weights)
@@ -336,6 +372,13 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     control,
     trigger
   } = formMethods;
+
+  const selectedStrategyType = watch('strategy.strategyType');
+  const steps = useMemo(
+    () =>
+      selectedStrategyType === 'MULTIFAMILY' ? multifamilySteps : defaultSteps,
+    [selectedStrategyType]
+  );
 
   const { enqueueSnackbar } = useSnackbar();
 
@@ -558,22 +601,44 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
       )}
 
       {activeStep === 3 && (
-        <PropertyCriteria
-          register={register}
-          control={control}
-          watch={watch}
-          setValue={setValue}
-          getValues={getValues}
-        />
+        <>
+          {selectedStrategyType === 'MULTIFAMILY' ? (
+            <MultifamilyTabsSkeleton
+              title="Multifamily Criteria"
+              description="Define operating assumptions for the asset with the first five multifamily tabs."
+              tabs={multifamilyCriteriaTabs}
+              mode="criteria"
+            />
+          ) : (
+            <PropertyCriteria
+              register={register}
+              control={control}
+              watch={watch}
+              setValue={setValue}
+              getValues={getValues}
+            />
+          )}
+        </>
       )}
       {activeStep === 4 && (
-        <AdjustComparables
-        // register={register}
-        // control={control}
-        // watch={watch}
-        // setValue={setValue}
-        // getValues={getValues}
-        />
+        <>
+          {selectedStrategyType === 'MULTIFAMILY' ? (
+            <MultifamilyTabsSkeleton
+              title="Multifamily Setup"
+              description="Complete underwriting setup using the final five multifamily tabs."
+              tabs={multifamilySetupTabs}
+              mode="setup"
+            />
+          ) : (
+            <AdjustComparables
+            // register={register}
+            // control={control}
+            // watch={watch}
+            // setValue={setValue}
+            // getValues={getValues}
+            />
+          )}
+        </>
       )}
     </motion.div>
   );

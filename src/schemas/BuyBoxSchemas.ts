@@ -39,6 +39,13 @@ const locationTypeEnum = z.enum([
   'state'
 ]);
 
+export const buyBoxStrategyTypeEnum = z.enum([
+  'FIX_AND_FLIP',
+  'BUY_AND_HOLD',
+  'MULTIFAMILY'
+]);
+export type BuyBoxStrategyType = z.infer<typeof buyBoxStrategyTypeEnum>;
+
 const propertyCriteriaSchema = z.object({
   propertyTypes: z.array(propertyTypeEnum).optional(),
   minBeds: z
@@ -112,6 +119,7 @@ const defaultPropertyCriteria = {
 };
 
 const strategySchema = z.object({
+  strategyType: buyBoxStrategyTypeEnum.optional(),
   minArv: z.number().min(defaults.arv.min).max(defaults.arv.max).optional(),
   minMargin: z
     .number()
@@ -121,8 +129,174 @@ const strategySchema = z.object({
 });
 
 const defaultStrategy = {
+  strategyType: 'FIX_AND_FLIP' as BuyBoxStrategyType,
   minArv: defaults.arv.min,
   minMargin: defaults.margin.min
+};
+
+const optionalMultifamilyNumber = z.number().optional();
+
+const multifamilyUnitMixSchema = z.object({
+  unitType: z.string().optional(),
+  units: optionalMultifamilyNumber,
+  avgRent: optionalMultifamilyNumber,
+  avgSqft: optionalMultifamilyNumber
+});
+
+const multifamilyCriteriaSchema = z.object({
+  unitMix: z.array(multifamilyUnitMixSchema).default([]),
+  rentRoll: z
+    .object({
+      physicalOccupancyPct: optionalMultifamilyNumber,
+      economicOccupancyPct: optionalMultifamilyNumber,
+      concessionsPct: optionalMultifamilyNumber,
+      otherIncomeMonthly: optionalMultifamilyNumber
+    })
+    .default({}),
+  income: z
+    .object({
+      grossScheduledRentAnnual: optionalMultifamilyNumber,
+      vacancyLossPct: optionalMultifamilyNumber,
+      badDebtPct: optionalMultifamilyNumber,
+      otherIncomeAnnual: optionalMultifamilyNumber
+    })
+    .default({}),
+  expenses: z
+    .object({
+      propertyTaxesAnnual: optionalMultifamilyNumber,
+      insuranceAnnual: optionalMultifamilyNumber,
+      repairsMaintenanceAnnual: optionalMultifamilyNumber,
+      payrollAnnual: optionalMultifamilyNumber,
+      managementFeePct: optionalMultifamilyNumber
+    })
+    .default({}),
+  utilities: z
+    .object({
+      waterSewerAnnual: optionalMultifamilyNumber,
+      trashAnnual: optionalMultifamilyNumber,
+      electricAnnual: optionalMultifamilyNumber,
+      gasAnnual: optionalMultifamilyNumber,
+      reimbursementPct: optionalMultifamilyNumber
+    })
+    .default({})
+});
+
+const multifamilySetupSchema = z.object({
+  capitalStack: z
+    .object({
+      purchasePrice: optionalMultifamilyNumber,
+      closingCostsPct: optionalMultifamilyNumber,
+      equityPct: optionalMultifamilyNumber,
+      preferredReturnPct: optionalMultifamilyNumber
+    })
+    .default({}),
+  loanAssumptions: z
+    .object({
+      interestRatePct: optionalMultifamilyNumber,
+      ltvPct: optionalMultifamilyNumber,
+      amortizationYears: optionalMultifamilyNumber,
+      loanTermYears: optionalMultifamilyNumber,
+      interestOnlyMonths: optionalMultifamilyNumber,
+      minimumDscr: optionalMultifamilyNumber
+    })
+    .default({}),
+  renovationCapex: z
+    .object({
+      interiorBudget: optionalMultifamilyNumber,
+      exteriorBudget: optionalMultifamilyNumber,
+      commonAreaBudget: optionalMultifamilyNumber,
+      contingencyPct: optionalMultifamilyNumber,
+      capexReservePerUnit: optionalMultifamilyNumber,
+      timelineMonths: optionalMultifamilyNumber
+    })
+    .default({}),
+  exitScenario: z
+    .object({
+      holdPeriodYears: optionalMultifamilyNumber,
+      exitCapRatePct: optionalMultifamilyNumber,
+      annualRentGrowthPct: optionalMultifamilyNumber,
+      annualExpenseGrowthPct: optionalMultifamilyNumber,
+      sellingCostsPct: optionalMultifamilyNumber
+    })
+    .default({}),
+  riskAndNotes: z
+    .object({
+      stressVacancyPct: optionalMultifamilyNumber,
+      stressExitCapRatePct: optionalMultifamilyNumber,
+      stressInterestRatePct: optionalMultifamilyNumber,
+      downsideNoiChangePct: optionalMultifamilyNumber,
+      notes: z.string().optional().default('')
+    })
+    .default({})
+});
+
+const defaultMultifamilyCriteria = {
+  unitMix: [],
+  rentRoll: {
+    physicalOccupancyPct: undefined,
+    economicOccupancyPct: undefined,
+    concessionsPct: undefined,
+    otherIncomeMonthly: undefined
+  },
+  income: {
+    grossScheduledRentAnnual: undefined,
+    vacancyLossPct: undefined,
+    badDebtPct: undefined,
+    otherIncomeAnnual: undefined
+  },
+  expenses: {
+    propertyTaxesAnnual: undefined,
+    insuranceAnnual: undefined,
+    repairsMaintenanceAnnual: undefined,
+    payrollAnnual: undefined,
+    managementFeePct: undefined
+  },
+  utilities: {
+    waterSewerAnnual: undefined,
+    trashAnnual: undefined,
+    electricAnnual: undefined,
+    gasAnnual: undefined,
+    reimbursementPct: undefined
+  }
+};
+
+const defaultMultifamilySetup = {
+  capitalStack: {
+    purchasePrice: undefined,
+    closingCostsPct: undefined,
+    equityPct: undefined,
+    preferredReturnPct: undefined
+  },
+  loanAssumptions: {
+    interestRatePct: undefined,
+    ltvPct: undefined,
+    amortizationYears: undefined,
+    loanTermYears: undefined,
+    interestOnlyMonths: undefined,
+    minimumDscr: undefined
+  },
+  renovationCapex: {
+    interiorBudget: undefined,
+    exteriorBudget: undefined,
+    commonAreaBudget: undefined,
+    contingencyPct: undefined,
+    capexReservePerUnit: undefined,
+    timelineMonths: undefined
+  },
+  exitScenario: {
+    holdPeriodYears: undefined,
+    exitCapRatePct: undefined,
+    annualRentGrowthPct: undefined,
+    annualExpenseGrowthPct: undefined,
+    sellingCostsPct: undefined
+  },
+  riskAndNotes: {
+    stressVacancyPct: undefined,
+    stressExitCapRatePct: undefined,
+    stressInterestRatePct: undefined,
+    downsideNoiChangePct: undefined,
+    notes: ''
+  }
 };
 
 const similarityCriteriaSchema = z.object({
@@ -246,6 +420,8 @@ const buyboxSchema = z.object({
   targetLocations: z.array(targetLocationSchema).min(1).max(3),
   propertyCriteria: propertyCriteriaSchema.default(defaultPropertyCriteria),
   strategy: strategySchema.default(defaultStrategy),
+  multifamilyCriteria: multifamilyCriteriaSchema.default(defaultMultifamilyCriteria),
+  multifamilySetup: multifamilySetupSchema.default(defaultMultifamilySetup),
   weights: weightSchema
   // similarityCriteria: z
   //   .array(similarityCriteriaSchema)
@@ -264,6 +440,8 @@ const getDefaultBuyBoxData = () => {
     targetLocations: [],
     propertyCriteria: defaultPropertyCriteria,
     strategy: defaultStrategy,
+    multifamilyCriteria: defaultMultifamilyCriteria,
+    multifamilySetup: defaultMultifamilySetup,
     weights: DEFAULT_ATTRIBUTES.reduce((acc, attr) => {
       acc[attr.id] = attr.defaultWeight;
       return acc;
@@ -274,6 +452,7 @@ const getDefaultBuyBoxData = () => {
 };
 
 type BuyboxSchemaData = z.infer<typeof buyboxSchema>;
+type buyboxSchemaType = z.infer<typeof buyboxSchema>;
 
 export { buyboxSchema, getDefaultBuyBoxData };
-export type { BuyboxSchemaData };
+export type { BuyboxSchemaData, buyboxSchemaType };

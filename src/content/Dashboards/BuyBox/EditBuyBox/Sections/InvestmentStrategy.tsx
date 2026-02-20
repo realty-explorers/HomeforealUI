@@ -1,5 +1,5 @@
-import { buyboxSchemaType } from '@/schemas/BuyBoxSchemas';
-import { Badge, Button, TextField, Typography } from '@mui/material';
+import { BuyBoxStrategyType } from '@/schemas/BuyBoxSchemas';
+import { Badge, Button, Typography } from '@mui/material';
 import clsx from 'clsx';
 import {
   Control,
@@ -10,18 +10,26 @@ import {
   UseFormWatch
 } from 'react-hook-form';
 import styles from '../EditBuyBoxDialog.module.scss';
-import HelpOutlineOutlinedIcon from '@mui/icons-material/HelpOutlineOutlined';
-import { useState } from 'react';
 import FixAndFlip from './InvestmentTypes/FixAndFlip';
 import BuyAndHold from './InvestmentTypes/BuyAndHold';
-import { getValue } from '@mui/system';
 import { BuyBoxFormData } from '@/schemas/BuyBoxFormSchema';
 
 const investmentTypes = [
-  { label: 'Fix and Flip', value: 'fixAndFlip' },
+  {
+    label: 'Fix and Flip',
+    value: 'fixAndFlip',
+    strategyType: 'FIX_AND_FLIP' as BuyBoxStrategyType
+  },
+  {
+    label: 'Multifamily',
+    value: 'multifamily',
+    strategyType: 'MULTIFAMILY' as BuyBoxStrategyType,
+    status: 'New'
+  },
   {
     label: 'Buy and Hold',
     value: 'buyAndHold',
+    strategyType: 'BUY_AND_HOLD' as BuyBoxStrategyType,
     disabled: true,
     status: 'Coming Soon'
   },
@@ -51,18 +59,18 @@ const InvestmentStrategy = ({
   getValues,
   errors
 }: InvestmentStrategyProps) => {
-  const [selectedStrategy, setSelectedStrategy] = useState<string>(
-    // getValues('opp.strategy') TODO: Need to add strategy selection
-    'fixAndFlip'
-  );
-  // const handleSelectStrategy = (strategy: string) => {
-  //   if (selectedStrategy !== '') {
-  //     setValue(`opp.${selectedStrategy}.0`, false, { shouldDirty: true });
-  //   }
-  //   setValue(`opp.${strategy}.0`, true, { shouldDirty: true });
-  //   setValue(`opp.strategy`, strategy, { shouldDirty: true });
-  //   setSelectedStrategy(strategy);
-  // };
+  const selectedStrategy =
+    watch('strategy.strategyType') || ('FIX_AND_FLIP' as BuyBoxStrategyType);
+
+  const handleSelectStrategy = (strategyType?: BuyBoxStrategyType) => {
+    if (!strategyType) return;
+    setValue('strategy.strategyType', strategyType, {
+      shouldDirty: true,
+      shouldTouch: true,
+      shouldValidate: true
+    });
+  };
+
   return (
     <div
       className={clsx([
@@ -87,29 +95,15 @@ const InvestmentStrategy = ({
               horizontal: 'right'
             }}
           >
-            {/* TODO: Need to add strategy selection */}
-            {/* <Button */}
-            {/*   className={clsx([ */}
-            {/*     'text-gray-500 px-12 py-4 w-full', */}
-            {/*     selectedStrategy === type.value */}
-            {/*       ? 'ring ring-secondary' */}
-            {/*       : 'ring-1 ring-gray-500 ' */}
-            {/*   ])} */}
-            {/*   disabled={type.disabled} */}
-            {/*   onClick={() => handleSelectStrategy(type.value)} */}
-            {/* > */}
-            {/*   {type.label} */}
-            {/* </Button> */}
-
             <Button
               className={clsx([
                 'text-gray-500 px-12 py-4 w-full',
-                'fixAndFlip' === type.value
+                selectedStrategy === type.strategyType
                   ? 'ring ring-secondary'
                   : 'ring-1 ring-gray-500 '
               ])}
               disabled={type.disabled}
-              // onClick={() => handleSelectStrategy(type.value)}
+              onClick={() => handleSelectStrategy(type.strategyType)}
             >
               {type.label}
             </Button>
@@ -117,7 +111,7 @@ const InvestmentStrategy = ({
         ))}
       </div>
       <div>
-        {selectedStrategy === 'fixAndFlip' && (
+        {selectedStrategy === 'FIX_AND_FLIP' && (
           <FixAndFlip
             register={register}
             control={control}
@@ -127,7 +121,16 @@ const InvestmentStrategy = ({
           />
         )}
 
-        {selectedStrategy === 'buyAndHold' && (
+        {selectedStrategy === 'MULTIFAMILY' && (
+          <div className="lg:pl-16 w-full">
+            <Typography className={styles.helper_text2}>
+              Multifamily strategy selected. Dedicated multifamily criteria tabs
+              will be added in the next step.
+            </Typography>
+          </div>
+        )}
+
+        {selectedStrategy === 'BUY_AND_HOLD' && (
           <BuyAndHold
             register={register}
             control={control}

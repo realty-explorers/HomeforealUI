@@ -8,7 +8,11 @@ import {
   MinField,
   minSchema
 } from './FormSchemas';
-import { targetLocationSchema, weightSchema } from './BuyBoxSchemas';
+import {
+  buyBoxStrategyTypeEnum,
+  targetLocationSchema,
+  weightSchema
+} from './BuyBoxSchemas';
 import { DEFAULT_ATTRIBUTES, PropertyWeights } from '@/utils/propertyUtils';
 
 const propertyCriteriaFormSchema = z
@@ -73,7 +77,7 @@ const defaultPropertyCriteriaFormSchema = {
 
 const strategyFormSchema = z
   .object({
-    // propertyTypes: listSchema,
+    strategyType: buyBoxStrategyTypeEnum,
     minArv: minSchema,
     minMargin: minSchema
   })
@@ -82,19 +86,199 @@ const strategyFormSchema = z
 
     Object.entries(formData).forEach(([key, value]) => {
       if (minSchema.safeParse(value).success) {
-        if (!value.enabled) {
+        const minValue = value as MinField;
+        if (!minValue.enabled) {
           transformed[key] = undefined;
         } else {
-          transformed[key] = (value as MinField).value;
+          transformed[key] = minValue.value;
         }
+      } else {
+        transformed[key] = value;
       }
     });
     return transformed;
   });
 
 const defaultStrategyFormSchema = {
+  strategyType: 'FIX_AND_FLIP' as const,
   minArv: { enabled: true, value: defaults.arv.min },
   minMargin: { enabled: false, value: defaults.margin.min }
+};
+
+const optionalMultifamilyNumberFormSchema = z.preprocess(
+  (value) => {
+    if (value === '' || value === null || value === undefined) {
+      return undefined;
+    }
+    if (typeof value === 'number' && Number.isNaN(value)) {
+      return undefined;
+    }
+    return value;
+  },
+  z.number().optional()
+);
+
+const multifamilyUnitMixFormSchema = z.object({
+  unitType: z.string().optional(),
+  units: optionalMultifamilyNumberFormSchema,
+  avgRent: optionalMultifamilyNumberFormSchema,
+  avgSqft: optionalMultifamilyNumberFormSchema
+});
+
+const multifamilyCriteriaFormSchema = z.object({
+  unitMix: z.array(multifamilyUnitMixFormSchema).default([]),
+  rentRoll: z
+    .object({
+      physicalOccupancyPct: optionalMultifamilyNumberFormSchema,
+      economicOccupancyPct: optionalMultifamilyNumberFormSchema,
+      concessionsPct: optionalMultifamilyNumberFormSchema,
+      otherIncomeMonthly: optionalMultifamilyNumberFormSchema
+    })
+    .default({}),
+  income: z
+    .object({
+      grossScheduledRentAnnual: optionalMultifamilyNumberFormSchema,
+      vacancyLossPct: optionalMultifamilyNumberFormSchema,
+      badDebtPct: optionalMultifamilyNumberFormSchema,
+      otherIncomeAnnual: optionalMultifamilyNumberFormSchema
+    })
+    .default({}),
+  expenses: z
+    .object({
+      propertyTaxesAnnual: optionalMultifamilyNumberFormSchema,
+      insuranceAnnual: optionalMultifamilyNumberFormSchema,
+      repairsMaintenanceAnnual: optionalMultifamilyNumberFormSchema,
+      payrollAnnual: optionalMultifamilyNumberFormSchema,
+      managementFeePct: optionalMultifamilyNumberFormSchema
+    })
+    .default({}),
+  utilities: z
+    .object({
+      waterSewerAnnual: optionalMultifamilyNumberFormSchema,
+      trashAnnual: optionalMultifamilyNumberFormSchema,
+      electricAnnual: optionalMultifamilyNumberFormSchema,
+      gasAnnual: optionalMultifamilyNumberFormSchema,
+      reimbursementPct: optionalMultifamilyNumberFormSchema
+    })
+    .default({})
+});
+
+const multifamilySetupFormSchema = z.object({
+  capitalStack: z
+    .object({
+      purchasePrice: optionalMultifamilyNumberFormSchema,
+      closingCostsPct: optionalMultifamilyNumberFormSchema,
+      equityPct: optionalMultifamilyNumberFormSchema,
+      preferredReturnPct: optionalMultifamilyNumberFormSchema
+    })
+    .default({}),
+  loanAssumptions: z
+    .object({
+      interestRatePct: optionalMultifamilyNumberFormSchema,
+      ltvPct: optionalMultifamilyNumberFormSchema,
+      amortizationYears: optionalMultifamilyNumberFormSchema,
+      loanTermYears: optionalMultifamilyNumberFormSchema,
+      interestOnlyMonths: optionalMultifamilyNumberFormSchema,
+      minimumDscr: optionalMultifamilyNumberFormSchema
+    })
+    .default({}),
+  renovationCapex: z
+    .object({
+      interiorBudget: optionalMultifamilyNumberFormSchema,
+      exteriorBudget: optionalMultifamilyNumberFormSchema,
+      commonAreaBudget: optionalMultifamilyNumberFormSchema,
+      contingencyPct: optionalMultifamilyNumberFormSchema,
+      capexReservePerUnit: optionalMultifamilyNumberFormSchema,
+      timelineMonths: optionalMultifamilyNumberFormSchema
+    })
+    .default({}),
+  exitScenario: z
+    .object({
+      holdPeriodYears: optionalMultifamilyNumberFormSchema,
+      exitCapRatePct: optionalMultifamilyNumberFormSchema,
+      annualRentGrowthPct: optionalMultifamilyNumberFormSchema,
+      annualExpenseGrowthPct: optionalMultifamilyNumberFormSchema,
+      sellingCostsPct: optionalMultifamilyNumberFormSchema
+    })
+    .default({}),
+  riskAndNotes: z
+    .object({
+      stressVacancyPct: optionalMultifamilyNumberFormSchema,
+      stressExitCapRatePct: optionalMultifamilyNumberFormSchema,
+      stressInterestRatePct: optionalMultifamilyNumberFormSchema,
+      downsideNoiChangePct: optionalMultifamilyNumberFormSchema,
+      notes: z.string().default('')
+    })
+    .default({})
+});
+
+const defaultMultifamilyCriteriaFormSchema = {
+  unitMix: [],
+  rentRoll: {
+    physicalOccupancyPct: undefined,
+    economicOccupancyPct: undefined,
+    concessionsPct: undefined,
+    otherIncomeMonthly: undefined
+  },
+  income: {
+    grossScheduledRentAnnual: undefined,
+    vacancyLossPct: undefined,
+    badDebtPct: undefined,
+    otherIncomeAnnual: undefined
+  },
+  expenses: {
+    propertyTaxesAnnual: undefined,
+    insuranceAnnual: undefined,
+    repairsMaintenanceAnnual: undefined,
+    payrollAnnual: undefined,
+    managementFeePct: undefined
+  },
+  utilities: {
+    waterSewerAnnual: undefined,
+    trashAnnual: undefined,
+    electricAnnual: undefined,
+    gasAnnual: undefined,
+    reimbursementPct: undefined
+  }
+};
+
+const defaultMultifamilySetupFormSchema = {
+  capitalStack: {
+    purchasePrice: undefined,
+    closingCostsPct: undefined,
+    equityPct: undefined,
+    preferredReturnPct: undefined
+  },
+  loanAssumptions: {
+    interestRatePct: undefined,
+    ltvPct: undefined,
+    amortizationYears: undefined,
+    loanTermYears: undefined,
+    interestOnlyMonths: undefined,
+    minimumDscr: undefined
+  },
+  renovationCapex: {
+    interiorBudget: undefined,
+    exteriorBudget: undefined,
+    commonAreaBudget: undefined,
+    contingencyPct: undefined,
+    capexReservePerUnit: undefined,
+    timelineMonths: undefined
+  },
+  exitScenario: {
+    holdPeriodYears: undefined,
+    exitCapRatePct: undefined,
+    annualRentGrowthPct: undefined,
+    annualExpenseGrowthPct: undefined,
+    sellingCostsPct: undefined
+  },
+  riskAndNotes: {
+    stressVacancyPct: undefined,
+    stressExitCapRatePct: undefined,
+    stressInterestRatePct: undefined,
+    downsideNoiChangePct: undefined,
+    notes: ''
+  }
 };
 
 const similarityCriteriaFormSchema = z
@@ -177,6 +361,12 @@ const formBuyBoxSchema = z.object({
     .max(3, 'No more than three locations are allowed'),
   propertyCriteria: propertyCriteriaFormSchema,
   strategy: strategyFormSchema.default(defaultStrategyFormSchema),
+  multifamilyCriteria: multifamilyCriteriaFormSchema.default(
+    defaultMultifamilyCriteriaFormSchema
+  ),
+  multifamilySetup: multifamilySetupFormSchema.default(
+    defaultMultifamilySetupFormSchema
+  ),
   weights: weightSchema.default(
     DEFAULT_ATTRIBUTES.reduce((acc, attr) => {
       acc[attr.id] = attr.defaultWeight;
@@ -202,6 +392,8 @@ const getDefaultBuyBoxFormData = () => {
     targetLocations: [],
     propertyCriteria: defaultPropertyCriteriaFormSchema,
     strategy: defaultStrategyFormSchema,
+    multifamilyCriteria: defaultMultifamilyCriteriaFormSchema,
+    multifamilySetup: defaultMultifamilySetupFormSchema,
     weights: DEFAULT_ATTRIBUTES.reduce((acc, attr) => {
       acc[attr.id] = attr.defaultWeight;
       return acc;

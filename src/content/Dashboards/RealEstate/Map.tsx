@@ -67,6 +67,7 @@ import CompMarkersPopup from './MapComponents/Overlays/CompMarkerPopup';
 import LoadingSpinner from './MapComponents/Overlays/LoadingSpinner';
 import RentalsSource from './MapComponents/Sources/RentalsSource';
 import PropertyLocationBoundsSource from './MapComponents/Sources/PropertyLocationBoundsSource';
+import MultifamilyAnalysisDrawer from './MapComponents/Overlays/MultifamilyAnalysisDrawer';
 import useProperty from '@/hooks/useProperty';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useSnackbar } from 'notistack';
@@ -124,6 +125,9 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const { suggestion } = useSelector(selectLocation);
   const { filteredProperties, strategyMode, buybox } =
     useSelector(selectFilter);
+  const selectedBuyBoxStrategyType =
+    buybox?.parameters?.strategy?.strategyType || 'FIX_AND_FLIP';
+  const isMultifamilyBuybox = selectedBuyBoxStrategyType === 'MULTIFAMILY';
   const {
     selectedPropertyPreview,
     selectedComps,
@@ -451,7 +455,13 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     const coordinates = [];
     if (filteredProperties?.length > 0) {
       for (const property of filteredProperties) {
-        coordinates.push(generatePropertyGeoJson(property, strategyMode));
+        coordinates.push(
+          generatePropertyGeoJson(
+            property,
+            strategyMode,
+            selectedBuyBoxStrategyType
+          )
+        );
       }
       const newData: FeatureCollection<
         Geometry,
@@ -472,7 +482,13 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       }
       setData(null);
     }
-  }, [filteredProperties]);
+  }, [
+    buybox,
+    filteredProperties,
+    selectedBuyBoxStrategyType,
+    strategyMode,
+    suggestion
+  ]);
 
   useEffect(() => {
     mapRef.current?.resize();
@@ -612,6 +628,15 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         <SelectedPropertyMarker
           onClick={handleDeselectProperty}
           selectedProperty={selectedPropertyPreview}
+        />
+
+        <MultifamilyAnalysisDrawer
+          open={Boolean(selectedProperty && isMultifamilyBuybox)}
+          property={selectedProperty}
+          buyboxId={buybox?.id}
+          propertyId={selectedPropertyPreview?.id}
+          masked={selectedPropertyPreview?.masked}
+          onClose={handleDeselectProperty}
         />
 
         <CardsPanel open={Boolean(propertiesState.data)} />

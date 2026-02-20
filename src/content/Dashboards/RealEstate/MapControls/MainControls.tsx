@@ -129,6 +129,7 @@ const MainControls: React.FC<MainControlsProps> = (
   const [area, setArea] = useState([0, 10000]);
   const [beds, setBeds] = useState([0, 9]);
   const [baths, setBaths] = useState([0, 9]);
+  const [strategy, setStrategy] = useState('ARV');
 
   const searchParams = useSearchParams();
 
@@ -136,10 +137,18 @@ const MainControls: React.FC<MainControlsProps> = (
   const selectedBuyBoxId = router.query.buybox_id as string;
   // const selectedBuyBoxId = searchParams.get('buybox_id');
 
+  const getBuyBoxStrategyType = (buyBoxItem?: any) => {
+    return buyBoxItem?.parameters?.strategy?.strategyType || 'FIX_AND_FLIP';
+  };
+
+  const isMultifamilyBuyBox = getBuyBoxStrategyType(buybox) === 'MULTIFAMILY';
+
+  const strategyFilterMode = isMultifamilyBuyBox ? undefined : strategy;
+
   useEffect(() => {
-    filterPropertiesByValue(0, '', strategy);
+    filterPropertiesByValue(0, '', strategyFilterMode);
     // dispatch(setFilteredProperties(propertiesState.data));
-  }, [propertiesQuery.data]);
+  }, [propertiesQuery.data, strategyFilterMode]);
 
   useEffect(() => {
     if (propertiesQuery.error) {
@@ -264,7 +273,7 @@ const MainControls: React.FC<MainControlsProps> = (
     setFunction();
     debounceUpdate(() => {
       updateFunction();
-      filterPropertiesByValue(value, fieldName, strategy);
+      filterPropertiesByValue(value, fieldName, strategyFilterMode);
       // filterProperties(price[0], price[1], comps, arv, area[0], area[1]);
     });
   };
@@ -286,7 +295,6 @@ const MainControls: React.FC<MainControlsProps> = (
     []
   );
 
-  const [strategy, setStrategy] = useState('ARV');
   const handleChange = (
     event: React.MouseEvent<HTMLElement>,
     newStrategy: string
@@ -300,6 +308,9 @@ const MainControls: React.FC<MainControlsProps> = (
   const handleBuyBoxChange = (e) => {
     const value = e.target.value;
     dispatch(setBuybox(value));
+    const selectedStrategyFilterMode =
+      getBuyBoxStrategyType(value) === 'MULTIFAMILY' ? undefined : strategy;
+    filterPropertiesByValue(0, '', selectedStrategyFilterMode);
     router.push({
       pathname: router.pathname,
       query: {
@@ -329,9 +340,12 @@ const MainControls: React.FC<MainControlsProps> = (
               label="BuyBox"
               onChange={handleBuyBoxChange}
             >
-              {buyBoxesState.data?.map((buybox) => (
-                <MenuItem key={buybox.id} value={buybox}>
-                  {buybox.parameters.name}
+              {buyBoxesState.data?.map((buyBoxItem) => (
+                <MenuItem key={buyBoxItem.id} value={buyBoxItem}>
+                  {buyBoxItem.parameters.name}
+                  {getBuyBoxStrategyType(buyBoxItem) === 'MULTIFAMILY'
+                    ? ' • Multifamily'
+                    : ''}
                 </MenuItem>
               ))}
             </Select>
@@ -339,51 +353,58 @@ const MainControls: React.FC<MainControlsProps> = (
         )
       )}
 
-      <div className="flex w-full justify-center items-center mb-4">
-        <ToggleButtonGroup
-          color="primary"
-          id="strategyToggle"
-          value={strategy}
-          exclusive
-          onChange={handleChange}
-          className="text-center"
-        >
-          <ToggleButton
-            value="ARV"
-            className="flex items-center justify-center h-8"
-            sx={{
-              '&.Mui-selected': {
-                backgroundColor: '#22c55e'
-              }
-            }}
+      {!isMultifamilyBuyBox && (
+        <div className="flex w-full justify-center items-center mb-4">
+          <ToggleButtonGroup
+            color="primary"
+            id="strategyToggle"
+            value={strategy}
+            exclusive
+            onChange={handleChange}
+            className="text-center"
           >
-            <Tooltip title="Choose ARV as margin filtering" enterDelay={700}>
-              <Typography className="font-poppins font-semibold">
-                ARV
-              </Typography>
-            </Tooltip>
-          </ToggleButton>
-
-          <ToggleButton
-            value="Comps"
-            className="flex items-center justify-center h-8"
-          >
-            <Tooltip
-              title="Choose Sales Comps as margin filtering"
-              enterDelay={700}
+            <ToggleButton
+              value="ARV"
+              className="flex items-center justify-center h-8"
+              sx={{
+                '&.Mui-selected': {
+                  backgroundColor: '#22c55e'
+                }
+              }}
             >
-              <Typography className="font-poppins font-semibold">
-                Comps
-              </Typography>
-            </Tooltip>
-          </ToggleButton>
-        </ToggleButtonGroup>
-      </div>
+              <Tooltip title="Choose ARV as margin filtering" enterDelay={700}>
+                <Typography className="font-poppins font-semibold">
+                  ARV
+                </Typography>
+              </Tooltip>
+            </ToggleButton>
+
+            <ToggleButton
+              value="Comps"
+              className="flex items-center justify-center h-8"
+            >
+              <Tooltip
+                title="Choose Sales Comps as margin filtering"
+                enterDelay={700}
+              >
+                <Typography className="font-poppins font-semibold">
+                  Comps
+                </Typography>
+              </Tooltip>
+            </ToggleButton>
+          </ToggleButtonGroup>
+        </div>
+      )}
       <div
         id="filters"
         className=" pr-4 pl-2 mb-4 w-full overflow-y-auto overflow-x-hidden"
       >
-        {strategy === 'ARV' ? (
+        {isMultifamilyBuyBox ? (
+          <Typography className="font-poppins text-sm text-gray-700 mb-3">
+            Multifamily BuyBox selected. ARV/Comps margin filtering is disabled
+            for this strategy.
+          </Typography>
+        ) : strategy === 'ARV' ? (
           <SliderField
             fieldName="Min ARV Margin %"
             tooltip="Percentage under estimated market ARV"
