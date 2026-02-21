@@ -85,6 +85,9 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const searchParams = useSearchParams();
   const selectedBuyBoxId = searchParams.get('buybox_id') as string;
   const selectedPropertyId = searchParams.get('property_id') as string;
+  const isVerifiedUser = Boolean(
+    (user?.user as { verified?: boolean } | undefined)?.verified
+  );
 
   const mapRef = useRef<MapRef>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -154,7 +157,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const propertiesState =
     propertiesApiEndpoints.getPropertiesPreviews.useQueryState(
       suggestion && buybox && user?.user
-        ? { suggestion, buybox_id: buybox?.id, masked: !user?.user?.verified }
+        ? { suggestion, buybox_id: buybox?.id, masked: !isVerifiedUser }
         : skipToken
     );
 
@@ -200,8 +203,14 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           return;
         }
 
+        if (feature.geometry.type !== 'Point') {
+          return;
+        }
+
+        const [longitude, latitude] = feature.geometry.coordinates;
+
         mapRef.current?.flyTo({
-          center: feature.geometry.coordinates,
+          center: [longitude, latitude],
           zoom,
           duration: 500,
           pitch: 0
@@ -390,7 +399,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       selectPropertyId(
         selectedBuyBoxId,
         selectedPropertyId,
-        !user.user.verified
+        !isVerifiedUser
       );
     } else {
       dispatch(setSelectedPropertyPreview(null));
@@ -398,7 +407,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       dispatch(locationApi.util.invalidateTags(['Suggestion', 'LocationData']));
       dispatch(setSuggestion(null));
     }
-  }, [router.isReady, user?.user, user?.user?.verified]);
+  }, [isVerifiedUser, router.isReady, user?.user]);
 
   useEffect(() => {
     mapRef?.current?.on('render', handleRender);
@@ -611,7 +620,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         onResize={handleResize}
         onMove={onMove}
         ref={mapRef}
-        maxBounds={US_BOUNDS}
+        maxBounds={US_BOUNDS as [[number, number], [number, number]]}
         initialViewState={INITIAL_VIEW_STATE}
         {...viewState}
       >

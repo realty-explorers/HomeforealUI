@@ -497,6 +497,75 @@ Step D5 is complete with passing local smoke tests (`3 suites / 7 tests`).
 
 ---
 
+## Step 20 - Post-D5 hardening (integration + TS cleanup)
+
+### Goal
+Add integration-style save/reopen confidence for multifamily payloads and resolve Map.tsx TypeScript issues introduced during multifamily wiring.
+
+### Changes
+- Extracted buybox-to-form mapping into a reusable utility:
+  - `mapBuyBoxDataToForm`
+  - `convertBuyboxWeights`
+- Updated `EditBuyBoxDialog` to reuse shared mapping for:
+  - initial edit-state hydration
+  - view-only dialog reset path
+- Added integration-style roundtrip test for multifamily save/reopen flow:
+  - starts from API-shaped buybox payload
+  - maps to form state
+  - validates save payload via `formBuyBoxSchema`
+  - remaps reopened payload and asserts multifamily persistence
+- Fixed `Map.tsx` TypeScript issues by:
+  - safely deriving session `verified` via typed guard variable
+  - narrowing cluster geometry to `Point` before reading coordinates
+  - using typed `maxBounds` tuple cast compatible with `react-map-gl`
+- Fixed GeoJSON type inference in `CoordinatesUtils` by adding explicit `Feature<Point, ...>` return types.
+
+### Files
+- `src/content/Dashboards/BuyBox/EditBuyBox/buyboxFormMappers.ts`
+- `src/content/Dashboards/BuyBox/EditBuyBox/buyboxFormMappers.test.ts`
+- `src/content/Dashboards/BuyBox/EditBuyBox/EditBuyBoxDialog.tsx`
+- `src/content/Dashboards/RealEstate/Map.tsx`
+- `src/content/Dashboards/RealEstate/MapUtils/CoordinatesUtils.tsx`
+
+### Result
+Post-D5 hardening is complete:
+- Multifamily save/reopen roundtrip is now covered at integration-style test level.
+- Map multifamily wiring no longer reports the previously surfaced TypeScript errors in `Map.tsx`.
+
+Validation:
+- `npm test -- --runInBand` → **4 suites / 8 tests passing**
+- `npm run lint` → **no ESLint warnings/errors**
+
+---
+
+## Step 21 - Post-D5 hardening extension (dialog + mutation integration test)
+
+### Goal
+Extend multifamily save/reopen confidence beyond mapper-level by covering `EditBuyBoxDialog` submit + reopen behavior with mocked RTK Query mutation hooks.
+
+### Changes
+- Added `EditBuyBoxDialog.test.tsx` integration-style test that:
+  - renders dialog in edit mode with `MULTIFAMILY` strategy defaults
+  - edits a multifamily-specific setup field (`multifamilySetup.riskAndNotes.notes`)
+  - submits via `useUpdateBuyBoxMutation`
+  - reopens dialog with submitted payload and verifies value rehydration
+- Added focused test mocks for:
+  - mutation hooks from buybox API service
+  - heavy child modules and icon/motion dependencies that are not under test
+  - browser `matchMedia` for stable jsdom behavior
+
+### Files
+- `src/content/Dashboards/BuyBox/EditBuyBox/EditBuyBoxDialog.test.tsx`
+
+### Result
+Dialog-level multifamily save/reopen behavior is now covered in automated integration-style testing, complementing mapper-level roundtrip coverage.
+
+Validation:
+- `npm test -- --runInBand` → **5 suites / 9 tests passing**
+- `npm run lint` → **no ESLint warnings/errors**
+
+---
+
 ## 4) Files Changed Summary
 
 ### Modified
@@ -512,6 +581,9 @@ Step D5 is complete with passing local smoke tests (`3 suites / 7 tests`).
 ### Added
 5. `src/content/Dashboards/BuyBox/EditBuyBox/Sections/MultifamilyTabsSkeleton.tsx`
 6. `src/content/Dashboards/RealEstate/MapComponents/CardsPanel/MultifamilyDealCard.tsx`
+7. `src/content/Dashboards/BuyBox/EditBuyBox/buyboxFormMappers.ts`
+8. `src/content/Dashboards/BuyBox/EditBuyBox/buyboxFormMappers.test.ts`
+9. `src/content/Dashboards/BuyBox/EditBuyBox/EditBuyBoxDialog.test.tsx`
 
 ---
 
@@ -546,7 +618,7 @@ These trees are now formalized in `formBuyBoxSchema` and `buyboxSchema`, but bac
 No dedicated Zod validation rules yet for multifamily tab values (ranges, requiredness, units, etc.).
 
 ### 6.4 Testing gap
-Storybook and Jest/RTL smoke coverage are now in place for core multifamily components. Remaining gap is deeper integration-level testing for full save/reopen API roundtrip.
+Storybook and Jest/RTL smoke coverage are in place, with both mapper-level and dialog-level multifamily save/reopen integration-style tests now implemented. Remaining gap is full end-to-end API/transport verification against real backend environments.
 
 ---
 
@@ -709,9 +781,10 @@ Ensures fields entered in tabs are not lost and can flow through create/update A
 
 ## 9) Suggested Next Action (after approval)
 
-Proceed with **post-D5 hardening**:
-- integration test for multifamily save/reopen API roundtrip
-- cleanup of existing TypeScript issues in `Map.tsx`
+Proceed with **post-D5 validation**:
+- run manual QA for multifamily save/edit/reopen against a real backend response
+- optionally add backend contract assertions (request/response payload snapshots) once real API fixtures are confirmed
+- optionally prioritize broader repository TypeScript debt cleanup (outside multifamily scope)
 
 ---
 
@@ -731,3 +804,5 @@ Proceed with **post-D5 hardening**:
 - [x] Loading/error states
 - [x] Storybook
 - [x] Jest/RTL
+- [x] Post-D5 hardening (roundtrip integration-style test + Map.tsx TS cleanup)
+- [x] Dialog-level save/reopen integration test (`EditBuyBoxDialog` + mocked RTK Query mutation)

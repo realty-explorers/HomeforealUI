@@ -1,6 +1,7 @@
 import PropertyPreview from '@/models/propertyPreview';
 import { currencyFormatter } from '@/utils/converters';
 import { FilteredComp } from '@/models/analyzedProperty';
+import type { Feature, Point } from 'geojson';
 
 const getPropertyPrice = (property: PropertyPreview) => {
   return property.price ?? property.priceGroup?.min ?? 0;
@@ -70,7 +71,7 @@ const generatePropertyGeoJson = (
   property: PropertyPreview,
   strategy: string,
   strategyType = 'FIX_AND_FLIP'
-) => {
+): Feature<Point, { id: string; price: string; sortKey: number }> => {
   if (strategyType === 'MULTIFAMILY') {
     const capRate = getCapRate(property) ?? 0;
     return {
@@ -103,7 +104,9 @@ const generatePropertyGeoJson = (
   };
 };
 
-const generateCompsGeoJson = (comp: FilteredComp) => {
+const generateCompsGeoJson = (
+  comp: FilteredComp
+): Feature<Point, { id: string; index: number; isARVCalculated: boolean }> => {
   return {
     type: 'Feature',
     properties: {

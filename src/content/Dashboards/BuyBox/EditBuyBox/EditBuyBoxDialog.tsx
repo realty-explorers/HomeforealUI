@@ -29,7 +29,7 @@ import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
 import { useEffect, useMemo, useState } from 'react';
-import { Controller, FieldName, FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, Path, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from './EditBuyBoxDialog.module.scss';
 
@@ -73,6 +73,7 @@ import EditBuyboxDialogTitle from './EditBuyboxDialogTitle';
 import { useIsMobile } from '@/hooks/useMobile';
 import { ChevronRight, Loader2, RotateCcw, Save } from 'lucide-react';
 import MultifamilyTabsSkeleton from './Sections/MultifamilyTabsSkeleton';
+import { mapBuyBoxDataToForm } from './buyboxFormMappers';
 
 interface Location {
   type: string;
@@ -250,86 +251,9 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   //   return similarityFields;
   // };
   //
-  const convertBuyboxWeights = (weights: Record<string, number>) => {
-    const newWeights: Record<string, number> = {};
-    for (const [key, value] of Object.entries(weights)) {
-      newWeights[key] = value * 100;
-    }
-    return newWeights;
-  };
-
-  const mapBuyBoxData = (buyboxData: BuyboxSchemaData) => {
-    const buyboxFormData: BuyBoxFormData = {
-      name: buyboxData.name,
-      description: buyboxData.description,
-      propertyCriteria: {
-        propertyTypes: {
-          enabled: Boolean(buyboxData.propertyCriteria.propertyTypes),
-          items:
-            buyboxData.propertyCriteria.propertyTypes ||
-            defaults.propertyTypes.default
-        },
-        beds: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minBeds,
-          buyboxData.propertyCriteria.maxBeds,
-          defaults.bedrooms.min,
-          defaults.bedrooms.max
-        ),
-        baths: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minBaths,
-          buyboxData.propertyCriteria.maxBaths,
-          defaults.bathrooms.min,
-          defaults.bathrooms.max
-        ),
-        area: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minArea,
-          buyboxData.propertyCriteria.maxArea,
-          defaults.area.min,
-          defaults.area.max
-        ),
-        lotArea: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minLotArea,
-          buyboxData.propertyCriteria.maxLotArea,
-          defaults.lotSize.min,
-          defaults.lotSize.max
-        ),
-        yearBuilt: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minYearBuilt,
-          buyboxData.propertyCriteria.maxYearBuilt,
-          defaults.yearBuilt.min,
-          defaults.yearBuilt.max
-        ),
-        price: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minPrice,
-          buyboxData.propertyCriteria.maxPrice,
-          defaults.listingPrice.min,
-          defaults.listingPrice.max
-        )
-      },
-      strategy: {
-        strategyType: buyboxData.strategy.strategyType || 'FIX_AND_FLIP',
-        minArv: getMinFieldProperties(
-          buyboxData.strategy.minArv,
-          defaults.arv.min
-        ),
-        minMargin: getMinFieldProperties(
-          buyboxData.strategy.minMargin,
-          defaults.margin.min
-        )
-      },
-      multifamilyCriteria: buyboxData.multifamilyCriteria,
-      multifamilySetup: buyboxData.multifamilySetup,
-      // similarityCriteria: getAllSimilarityFields(buyboxData),
-      targetLocations: buyboxData.targetLocations,
-      weights: convertBuyboxWeights(buyboxData.weights)
-    };
-
-    return buyboxFormData;
-  };
-
   const mappedBuyBoxData = useMemo(() => {
     if (!props.buybox) return null;
-    return mapBuyBoxData(props.buybox.parameters);
+    return mapBuyBoxDataToForm(props.buybox.parameters);
   }, [props.buybox]);
 
   const defaultFormValues = useMemo(() => {
@@ -396,7 +320,9 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const handleNextStep = async () => {
     // show form values
     const fields = steps[activeStep].fields;
-    const output = await trigger(fields as FieldName[], { shouldFocus: true });
+    const output = await trigger(fields as Path<BuyBoxFormData>[], {
+      shouldFocus: true
+    });
     if (!output) {
       enqueueSnackbar(`Please fill out all required fields`, {
         variant: 'error'
@@ -423,7 +349,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     const viewOnlyBuyBox =
       props.buybox && !EDITOR_ROLES.includes(props.buybox?.userAccess);
     if (viewOnlyBuyBox) {
-      const originalFormValues = mapBuyBoxData(props.buybox?.parameters);
+      const originalFormValues = mapBuyBoxDataToForm(props.buybox?.parameters);
       reset(originalFormValues);
       // reset(props.buybox?.parameters);
     }
