@@ -32,7 +32,7 @@ const StoryFormWrapper = (
 
   return (
     <FormProvider {...methods}>
-      <div className="w-full max-w-[1100px] bg-[#f8f9fb] rounded-lg p-4">
+      <div className="w-full max-w-full overflow-x-hidden bg-[#f8f9fb] p-4">
         <MultifamilyTabsSkeleton {...args} />
       </div>
     </FormProvider>
@@ -43,7 +43,7 @@ const meta: Meta<typeof MultifamilyTabsSkeleton> = {
   title: 'Multifamily/BuyBox/MultifamilyTabsSkeleton',
   component: MultifamilyTabsSkeleton,
   parameters: {
-    layout: 'centered',
+    layout: 'fullscreen',
     testHarness: {
       useRedux: false,
       useSession: false,

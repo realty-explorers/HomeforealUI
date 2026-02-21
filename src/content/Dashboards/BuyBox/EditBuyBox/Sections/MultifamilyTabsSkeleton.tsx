@@ -52,7 +52,7 @@ const MultifamilyTabsSkeleton = ({
           {fields.map((field, index) => (
             <div
               key={field.id}
-              className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_8rem_10rem_10rem_auto]"
+              className="grid w-full grid-cols-1 gap-3 md:grid-cols-[1fr_8rem_10rem_10rem_auto]"
             >
               <TextField
                 label="Unit Type"
@@ -89,6 +89,7 @@ const MultifamilyTabsSkeleton = ({
                 color="error"
                 onClick={() => remove(index)}
                 disabled={fields.length <= 1}
+                className="w-full md:w-auto"
               >
                 Remove
               </Button>
@@ -541,7 +542,7 @@ const MultifamilyTabsSkeleton = ({
   };
 
   return (
-    <div className="grow w-full px-4 pt-8 flex flex-col">
+    <div className="grow flex w-full max-w-full flex-col overflow-x-hidden px-4 pt-8">
       <Typography className={clsx([styles.header, 'mb-2'])}>{title}</Typography>
       <Typography className={clsx([styles.helper_text2, 'mb-6'])}>
         {description}
@@ -552,13 +553,29 @@ const MultifamilyTabsSkeleton = ({
         onChange={(_, value) => setActiveTab(value)}
         variant="scrollable"
         allowScrollButtonsMobile
+        className="max-w-full"
+        sx={{
+          maxWidth: '100%',
+          '& .MuiTabs-scroller': {
+            overflowX: 'auto !important'
+          },
+          '& .MuiTabs-flexContainer': {
+            flexWrap: 'nowrap'
+          }
+        }}
       >
         {tabs.map((tabLabel, index) => (
-          <Tab key={tabLabel} label={`${index + 1}. ${tabLabel}`} />
+          <Tab
+            key={tabLabel}
+            label={`${index + 1}. ${tabLabel}`}
+            sx={{
+              minWidth: 'max-content'
+            }}
+          />
         ))}
       </Tabs>
 
-      <div className="mt-4 rounded-lg border border-dashed border-gray-300 bg-white/70 p-6">
+      <div className="mt-4 max-w-full overflow-x-hidden rounded-lg border border-dashed border-gray-300 bg-white/70 p-4 md:p-6 [&_.MuiFormControl-root]:w-full">
         <Typography className={clsx([styles.subheader, 'mb-2'])}>
           {selectedTab}
         </Typography>
