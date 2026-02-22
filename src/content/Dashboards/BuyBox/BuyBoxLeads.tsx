@@ -54,6 +54,8 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
     pageIndex: props.page,
     pageSize: props.pageSize,
   });
+  const isMultifamilyBuybox =
+    props.buybox?.parameters?.strategy?.strategyType === "MULTIFAMILY";
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -146,16 +148,20 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
         header: "Under ARV",
         size: 150,
       },
-      {
-        accessorKey: "NOI",
-        header: "NOI",
-        size: 150,
-      },
-      {
-        accessorKey: "capRate",
-        header: "Cap Rate",
-        size: 150,
-      },
+      ...(isMultifamilyBuybox
+        ? [
+            {
+              accessorKey: "NOI",
+              header: "NOI",
+              size: 150,
+            },
+            {
+              accessorKey: "capRate",
+              header: "Cap Rate",
+              size: 150,
+            },
+          ]
+        : []),
 
       {
         accessorKey: "sourceId",
@@ -175,7 +181,7 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
         ),
       },
     ],
-    [],
+    [isMultifamilyBuybox, props.buybox.id],
   );
 
   useEffect(() => {
