@@ -324,6 +324,7 @@ const MultifamilyTabsSkeleton = ({
                   size="small"
                   variant={isActive ? 'contained' : 'outlined'}
                   disabled={disabled}
+                  className={isActive ? 'bg-[#9747FF] text-white hover:bg-[#5500c4]' : ''}
                   onClick={() =>
                     setValue(fieldPath, quickValue, {
                       shouldDirty: true,
@@ -982,6 +983,11 @@ const MultifamilyTabsSkeleton = ({
                 key={preset.key}
                 type="button"
                 variant={stressPreset === preset.key ? 'contained' : 'outlined'}
+                className={
+                  stressPreset === preset.key
+                    ? 'bg-[#9747FF] text-white hover:bg-[#5500c4]'
+                    : ''
+                }
                 onClick={() => setStressPreset(preset.key)}
               >
                 {preset.label}
@@ -995,6 +1001,7 @@ const MultifamilyTabsSkeleton = ({
               type="number"
               inputProps={{ min: 0, max: 100, step: 0.1 }}
               InputProps={{ readOnly: !isCustomPreset }}
+              InputLabelProps={{ shrink: true }}
               {...register('multifamilySetup.riskAndNotes.stressVacancyPct', {
                 valueAsNumber: true
               })}
@@ -1005,6 +1012,7 @@ const MultifamilyTabsSkeleton = ({
               type="number"
               inputProps={{ min: 0, max: 100, step: 0.1 }}
               InputProps={{ readOnly: !isCustomPreset }}
+              InputLabelProps={{ shrink: true }}
               {...register('multifamilySetup.riskAndNotes.stressExitCapRatePct', {
                 valueAsNumber: true
               })}
@@ -1015,6 +1023,7 @@ const MultifamilyTabsSkeleton = ({
               type="number"
               inputProps={{ min: 0, max: 100, step: 0.1 }}
               InputProps={{ readOnly: !isCustomPreset }}
+              InputLabelProps={{ shrink: true }}
               {...register('multifamilySetup.riskAndNotes.stressInterestRatePct', {
                 valueAsNumber: true
               })}
@@ -1025,6 +1034,7 @@ const MultifamilyTabsSkeleton = ({
               type="number"
               inputProps={{ min: 0, max: 100, step: 0.1 }}
               InputProps={{ readOnly: !isCustomPreset }}
+              InputLabelProps={{ shrink: true }}
               {...register('multifamilySetup.riskAndNotes.downsideNoiChangePct', {
                 valueAsNumber: true
               })}
@@ -1035,6 +1045,7 @@ const MultifamilyTabsSkeleton = ({
             size="small"
             multiline
             minRows={4}
+            InputLabelProps={{ shrink: true }}
             {...register('multifamilySetup.riskAndNotes.notes')}
           />
         </div>
