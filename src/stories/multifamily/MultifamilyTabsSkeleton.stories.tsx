@@ -8,19 +8,19 @@ import type { ComponentProps } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const criteriaTabs = [
-  'Unit Mix',
-  'Rent Roll',
-  'Income Assumptions',
-  'Expense Assumptions',
-  'Utilities'
+  'Asset Filters',
+  'Unit Mix Preferences',
+  'Deal Quality Gates',
+  'Ranking Weights'
 ];
 
 const setupTabs = [
-  'Capital Stack',
-  'Loan Assumptions',
-  'Renovation & CapEx',
-  'Exit Scenario',
-  'Risk & Notes'
+  'Income Defaults',
+  'Expense Defaults',
+  'Utilities Defaults',
+  'Taxes and Insurance Defaults',
+  'Financing Defaults',
+  'Stress Test Presets'
 ];
 
 const StoryFormWrapper = (
@@ -60,9 +60,9 @@ type Story = StoryObj<typeof meta>;
 
 export const Criteria: Story = {
   args: {
-    title: 'Multifamily Criteria',
+    title: 'Multifamily Discovery',
     description:
-      'Configure underwriting assumptions for unit mix, rent roll, and operating profile.',
+      'Configure discovery filters, quality gates, and ranking preferences for multifamily opportunities.',
     tabs: criteriaTabs,
     mode: 'criteria'
   }
@@ -70,9 +70,9 @@ export const Criteria: Story = {
 
 export const Setup: Story = {
   args: {
-    title: 'Multifamily Setup',
+    title: 'Multifamily Defaults',
     description:
-      'Define capital stack, debt assumptions, and risk scenarios for the investment model.',
+      'Set defaults used only when listing and document data are missing.',
     tabs: setupTabs,
     mode: 'setup'
   }

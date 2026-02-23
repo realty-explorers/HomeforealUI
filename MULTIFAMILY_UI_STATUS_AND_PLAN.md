@@ -1,6 +1,6 @@
 # Multifamily UI Update - Full Progress & Detailed Forward Plan
 
-**Last Updated:** 2026-02-20  
+**Last Updated:** 2026-02-23  
 **Repository:** `HomeforealUI`  
 **Working Branch:** `multyfamily-ui-update` (branched from `dev`)  
 **Development URL:** `http://localhost:3000`
@@ -806,3 +806,289 @@ Proceed with **post-D5 validation**:
 - [x] Jest/RTL
 - [x] Post-D5 hardening (roundtrip integration-style test + Map.tsx TS cleanup)
 - [x] Dialog-level save/reopen integration test (`EditBuyBoxDialog` + mocked RTK Query mutation)
+
+---
+
+## 11) Frontend Rebaseline Plan (Spec Sync - 2026-02-23)
+
+> This section supersedes the prior forward plan for BuyBox Multifamily UX shape.  
+> Focus is **frontend-only** (no backend implementation changes in this phase).
+
+## 11.1 Why this rebaseline is needed
+
+Current BuyBox multifamily UI was implemented as a 10-tab model (`Criteria + Setup`) and includes labels/fields that are now considered Deal-stage concerns.
+
+The updated product direction requires:
+- strict BuyBox information architecture (`discovery`, `defaults`, `ranking`)
+- explicit separation from Deal-stage underwriting (`deal.mf.*`)
+- no TTM terminology in BuyBox UI
+- defaults clearly labeled as "used only when missing"
+
+## 11.2 Frontend scope boundaries (explicit)
+
+### In scope
+- BuyBox wizard step labels, tab labels, tab order, helper text, and validations
+- BuyBox form field paths and UI grouping per the new Multifamily spec
+- UX-only guardrails to prevent Deal-stage inputs from appearing in BuyBox
+- Storybook/Jest updates for the new tab model
+
+### Out of scope
+- Backend persistence logic changes
+- Deal drawer underwriting form expansion
+- Document parsing logic and extraction pipelines
+
+## 11.3 Target IA to enforce in UI
+
+### BuyBox namespaces (editable in BuyBox)
+- `buybox.discovery`
+- `buybox.defaults`
+- `buybox.ranking`
+
+### Deal namespaces (not editable in BuyBox)
+- `deal.mf.listing`
+- `deal.mf.documents`
+- `deal.mf.extractions`
+- `deal.mf.scenarios`
+- `deal.mf.overrides`
+- `deal.mf.results`
+
+## 11.4 Wizard layout target (new)
+
+### Step 4: Multifamily Discovery
+Tabs:
+1. Asset Filters
+2. Unit Mix Preferences
+3. Deal Quality Gates
+4. Ranking Weights
+
+### Step 5: Multifamily Defaults
+Tabs:
+1. Income Defaults
+2. Expense Defaults
+3. Utilities Defaults
+4. Taxes and Insurance Defaults
+5. Financing Defaults
+6. Stress Test Presets
+
+### Critical UX rule
+- No tab/section in BuyBox may contain "TTM" labeling.
+
+## 11.5 Field delivery plan by screen (frontend form + validation)
+
+## Step 4 / Tab 1 - Asset Filters
+
+### Section A: Property type and size
+- `buybox.discovery.asset.asset_type`
+- `buybox.discovery.asset.unit_count_min`
+- `buybox.discovery.asset.unit_count_max`
+- `buybox.discovery.asset.year_built_min`
+- `buybox.discovery.asset.year_built_max`
+- `buybox.discovery.asset.total_rentable_sf_min`
+- `buybox.discovery.asset.total_rentable_sf_max`
+
+Validation UX:
+- min/max pair validation (max >= min)
+- year range 1800..current year
+- non-negative numeric guards
+
+### Section B: Price filters
+- `buybox.discovery.pricing.asking_price_min`
+- `buybox.discovery.pricing.asking_price_max`
+- `buybox.discovery.pricing.price_per_unit_min`
+- `buybox.discovery.pricing.price_per_unit_max`
+
+Validation UX:
+- non-negative values
+- max >= min per pair
+
+### Section C: Occupancy and exclusions
+- `buybox.discovery.occupancy.occupancy_percent_min`
+- `buybox.discovery.occupancy.occupancy_percent_max`
+- `buybox.discovery.asset.exclusions`
+
+Validation UX:
+- percent range 0..100
+- max >= min
+
+## Step 4 / Tab 2 - Unit Mix Preferences
+
+### Section A: Allowed unit types (preferences only)
+- `buybox.discovery.unit_mix.allowed_unit_types[]`
+  - `unit_type_label`
+  - `beds`
+  - `baths`
+
+UX rules:
+- row-based add/remove UI
+- do not collect required property-level counts per type in BuyBox
+
+### Section B: Mix constraints
+- `buybox.discovery.unit_mix.max_studios_percent`
+- `buybox.discovery.unit_mix.min_two_bed_plus_percent`
+
+### Section C: Rent band preferences
+- `buybox.discovery.rent_band.avg_in_place_rent_monthly_range.{min,max}`
+- `buybox.discovery.rent_band.avg_market_rent_monthly_range.{min,max}`
+
+### Section D: Renovation appetite
+- `buybox.discovery.capex.renovation_appetite`
+
+## Step 4 / Tab 3 - Deal Quality Gates
+
+### Section A: Document requirements
+- `buybox.ranking.gates.require_documents.offering_memorandum`
+- `buybox.ranking.gates.require_documents.rent_roll`
+- `buybox.ranking.gates.require_documents.operating_statement_t12`
+
+### Section B: Minimum data requirements
+- `buybox.ranking.gates.require_core_fields`
+- `buybox.ranking.gates.minimum_confidence_level`
+
+## Step 4 / Tab 4 - Ranking Weights
+
+All fields under:
+- `buybox.ranking.weights.discount_to_value`
+- `buybox.ranking.weights.rent_upside`
+- `buybox.ranking.weights.expense_efficiency`
+- `buybox.ranking.weights.document_completeness`
+- `buybox.ranking.weights.risk_penalties`
+
+UX behavior:
+- range guard 0..1
+- show total weight sum
+- include "Auto normalize" button if sum != 1
+
+## Step 5 / Tab 1 - Income Defaults
+
+Fields under `buybox.defaults.income`:
+- `vacancy_percent`
+- `concessions_percent`
+- `bad_debt_percent`
+- `collection_loss_percent`
+- `loss_to_lease_percent`
+- `model_units_count`
+- `other_income_per_unit_monthly`
+
+## Step 5 / Tab 2 - Expense Defaults
+
+Fields under `buybox.defaults.expenses`:
+- `expense_mode`
+- `expense_ratio_percent`
+- `operating_expense_per_unit_annual`
+- `management_fee_percent`
+- `reserve_per_unit_annual`
+
+## Step 5 / Tab 3 - Utilities Defaults
+
+Fields under `buybox.defaults.utilities`:
+- `water_sewer_per_unit_monthly`
+- `electric_per_unit_monthly`
+- `gas_per_unit_monthly`
+- `trash_per_unit_monthly`
+- `reimbursement_percent`
+
+## Step 5 / Tab 4 - Taxes and Insurance Defaults
+
+Fields:
+- `buybox.defaults.taxes.taxes_per_unit_annual`
+- `buybox.defaults.insurance.insurance_per_unit_annual`
+- `buybox.defaults.taxes.post_sale_tax_multiplier`
+- `buybox.defaults.taxes.assume_abatement_flag`
+
+## Step 5 / Tab 5 - Financing Defaults
+
+Fields under `buybox.defaults.financing`:
+- `ltv_percent`
+- `interest_rate_percent`
+- `amortization_years`
+- `interest_only_months`
+- `closing_costs_percent`
+- `minimum_dscr`
+
+## Step 5 / Tab 6 - Stress Test Presets
+
+Fields under `buybox.defaults.stress_test`:
+- `preset`
+- `vacancy_shock_percent`
+- `exit_cap_expansion_percent`
+- `interest_rate_shock_percent`
+- `noi_haircut_percent`
+
+UX behavior:
+- read-only inputs for conservative/base/aggressive
+- editable values only when preset = custom
+
+## 11.6 BuyBox vs Deal-stage guardrails (frontend enforcement)
+
+### Must remain editable in BuyBox
+- `buybox.discovery.*`
+- `buybox.defaults.*`
+- `buybox.ranking.*`
+
+### Must not appear as editable BuyBox fields
+- purchase price for a specific property
+- property-level rent roll rows
+- property-level TTM line items
+- property-level unit-count-by-type facts
+- equity waterfall / preferred return structure for a specific deal
+- scenario line-by-line underwriting assumptions
+
+## 11.7 Frontend component refactor plan (implementation sequence + status)
+
+## Phase F1 - IA and navigation refactor ✅ Complete
+- [x] Update multifamily step titles in `EditBuyBoxDialog` for new Step 4/5 names.
+- [x] Replace current Criteria/Setup tab arrays with new Discovery/Defaults tab arrays.
+- [x] Remove TTM labels from BuyBox UI copy.
+
+## Phase F2 - Multifamily tabs component restructuring ✅ Complete
+- [x] Refactor `MultifamilyTabsSkeleton` render branches to match new tabs.
+- [x] Keep progressive rendering per tab with section cards and helper text.
+- [x] Add "Defaults used only when missing" helper where relevant.
+
+## Phase F3 - Validation and interaction polish (frontend only) ✅ Complete
+- [x] Add percent/range input guards and formatting hints.
+- [x] Add ranking-weights sum indicator and normalize UX.
+- [x] Add stress preset lock/unlock behavior.
+
+## Phase F4 - Regression safety ✅ Complete
+- [x] Update Storybook stories for new tab labels and representative fields.
+- [x] Update RTL tests for new tab names and key interactions.
+- [x] Ensure non-multifamily BuyBox behavior remains unchanged.
+
+## 11.8 Acceptance criteria for this rebaseline
+
+1. In BuyBox Multifamily flow, Step 4 and Step 5 match the new tab architecture exactly.
+2. No TTM wording appears anywhere in BuyBox tabs/sections.
+3. Discovery/defaults/ranking fields map to the new frontend field paths and validations.
+4. Fields marked Deal-stage-only are not exposed in BuyBox editing UI.
+5. Storybook and Jest smoke tests pass for updated Multifamily BuyBox tabs.
+6. Generic/Fix-and-Flip BuyBox screens remain visually and functionally unchanged.
+
+## 11.9 Frontend delivery checkpoints
+
+- [x] Checkpoint 1: Wizard labels + tab arrays updated (no field migration yet)
+- [x] Checkpoint 2: Step 4 tabs complete with validations and ranking UX polish
+- [x] Checkpoint 3: Step 5 tabs complete with defaults helper text and preset behavior
+- [x] Checkpoint 4: Storybook + RTL refreshed for Discovery/Defaults architecture
+
+## 11.10 Verification log (2026-02-23)
+
+### Automated tests
+- `npm test -- MultifamilyTabsSkeleton.test.tsx EditBuyBoxDialog.test.tsx --runInBand` ✅ (2 suites, 6 tests)
+
+### Storybook + Puppeteer visual checks
+- Storybook started on `http://localhost:6006`
+- Captured validation screenshots for updated multifamily tabs:
+  - `mf-tabs-criteria-desktop`
+  - `mf-tabs-criteria-mobile`
+  - `mf-tabs-ranking-desktop`
+  - `mf-tabs-setup-desktop`
+  - `mf-tabs-setup-mobile`
+  - `mf-tabs-stress-conservative-desktop`
+  - `mf-tabs-stress-conservative-mobile`
+
+### Interaction checks validated
+- Ranking Weights tab shows total sum and normalize action when off target.
+- Stress Test Presets apply preset values and lock fields in non-custom mode.
+- Switching back to Custom unlocks stress inputs for manual edits.
+

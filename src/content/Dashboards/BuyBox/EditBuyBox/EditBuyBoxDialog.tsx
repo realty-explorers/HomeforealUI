@@ -104,20 +104,20 @@ const defaultSteps = [
   }
 ];
 
-const multifamilyCriteriaTabs = [
-  'Unit Mix & Bed/Bath',
-  'Rent Roll',
-  'Income (TTM)',
-  'Expenses (TTM)',
-  'Utilities & Reimbursements'
+const multifamilyDiscoveryTabs = [
+  'Asset Filters',
+  'Unit Mix Preferences',
+  'Deal Quality Gates',
+  'Ranking Weights'
 ];
 
-const multifamilySetupTabs = [
-  'Capital Stack',
-  'Loan Assumptions',
-  'Renovation / CapEx',
-  'Exit Scenario',
-  'Risk & Notes'
+const multifamilyDefaultsTabs = [
+  'Income Defaults',
+  'Expense Defaults',
+  'Utilities Defaults',
+  'Taxes and Insurance Defaults',
+  'Financing Defaults',
+  'Stress Test Presets'
 ];
 
 const multifamilySteps = [
@@ -134,11 +134,11 @@ const multifamilySteps = [
     fields: ['targetLocations']
   },
   {
-    title: 'Multifamily Criteria',
+    title: 'Multifamily Discovery',
     fields: []
   },
   {
-    title: 'Multifamily Setup',
+    title: 'Multifamily Defaults',
     fields: []
   }
 ];
@@ -530,9 +530,9 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         <>
           {selectedStrategyType === 'MULTIFAMILY' ? (
             <MultifamilyTabsSkeleton
-              title="Multifamily Criteria"
-              description="Define operating assumptions for the asset with the first five multifamily tabs."
-              tabs={multifamilyCriteriaTabs}
+              title="Multifamily Discovery"
+              description="Configure discovery filters, quality gates, and ranking preferences for multifamily opportunities."
+              tabs={multifamilyDiscoveryTabs}
               mode="criteria"
             />
           ) : (
@@ -550,9 +550,9 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         <>
           {selectedStrategyType === 'MULTIFAMILY' ? (
             <MultifamilyTabsSkeleton
-              title="Multifamily Setup"
-              description="Complete underwriting setup using the final five multifamily tabs."
-              tabs={multifamilySetupTabs}
+              title="Multifamily Defaults"
+              description="Set defaults used only when listing and document data are missing."
+              tabs={multifamilyDefaultsTabs}
               mode="setup"
             />
           ) : (

@@ -124,8 +124,9 @@ const InvestmentStrategy = ({
         {selectedStrategy === 'MULTIFAMILY' && (
           <div className="lg:pl-16 w-full">
             <Typography className={styles.helper_text2}>
-              Multifamily strategy selected. Dedicated multifamily criteria tabs
-              will be added in the next step.
+              Multifamily strategy selected. Continue to Multifamily Discovery and
+              Multifamily Defaults to configure buybox filters and missing-data
+              defaults.
             </Typography>
           </div>
         )}
