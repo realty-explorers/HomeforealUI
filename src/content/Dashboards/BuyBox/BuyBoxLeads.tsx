@@ -49,6 +49,15 @@ type BuyBoxLeadsProps = {
   buybox: BuyBox;
 };
 
+type LeadRow = Lead & {
+  source_id: string;
+  analysis_status: string;
+  listing_price: number;
+  sales_comps_price: string;
+  sales_comps_percentage: string;
+  cap_rate: string;
+};
+
 const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
   const [pagination, setPagination] = useState<MRT_PaginationState>({
     pageIndex: props.page,
@@ -74,7 +83,7 @@ const BuyBoxLeads = (props: BuyBoxLeadsProps) => {
       : skipToken,
   );
 
-  const rows = data?.map((lead: Lead, index) => {
+  const rows = data?.map((lead: LeadRow, index) => {
     return {
       id: index,
       sourceId: lead.source_id,
