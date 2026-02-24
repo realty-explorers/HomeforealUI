@@ -58,7 +58,9 @@ const MarginInfoChips = ({ amount, percent, margin, color, name }) => {
           `bg-${color}-500`
         ])}
       >
-        <Typography className=" font-poppins font-bold ">{margin}%</Typography>
+        <Typography className=" font-poppins font-bold ">
+          <CountUp end={margin} duration={3} decimals={0} />%
+        </Typography>
 
         <Typography className=" font-poppins font-bold text-[0.5rem]">
           Net Margin
@@ -91,7 +93,8 @@ const MarginInfo = (props: MarginInfoProps) => {
         // margin={0}
         percent={calculateArvPercentage(
           saleCalculatedProperty?.arvPrice,
-          saleCalculatedProperty?.price
+          saleCalculatedProperty?.price,
+          totalExpenses
         ).toFixed()}
         margin={calculateMarginPercentage(
           saleCalculatedProperty?.arvPrice,
@@ -113,7 +116,8 @@ const MarginInfo = (props: MarginInfoProps) => {
 
         percent={calculateArvPercentage(
           saleCalculatedProperty?.arv25Price,
-          saleCalculatedProperty?.price
+          saleCalculatedProperty?.price,
+          totalExpenses
         ).toFixed()}
         margin={calculateMarginPercentage(
           saleCalculatedProperty?.arv25Price,
