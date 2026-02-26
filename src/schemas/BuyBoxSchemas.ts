@@ -46,6 +46,50 @@ export const buyBoxStrategyTypeEnum = z.enum([
 ]);
 export type BuyBoxStrategyType = z.infer<typeof buyBoxStrategyTypeEnum>;
 
+const multifamilyAssetTypeEnum = z.enum([
+  'MULTIFAMILY',
+  'GARDEN_STYLE',
+  'MID_RISE',
+  'HIGH_RISE',
+  'MIXED_USE'
+]);
+
+const multifamilyRenovationAppetiteEnum = z.enum(['LIGHT', 'MODERATE', 'HEAVY']);
+
+const multifamilyDealQualityGatePreferenceEnum = z.enum([
+  'OPTIONAL',
+  'PREFERRED',
+  'REQUIRED'
+]);
+
+const multifamilyDealQualityGatePreferenceSchema = z.preprocess(
+  (value) => {
+    if (value === true) {
+      return 'REQUIRED';
+    }
+
+    if (value === false) {
+      return 'OPTIONAL';
+    }
+
+    if (typeof value === 'string') {
+      return value.toUpperCase();
+    }
+
+    return value;
+  },
+  multifamilyDealQualityGatePreferenceEnum.optional()
+);
+
+const multifamilyRankingPresetEnum = z.enum([
+  'BALANCED',
+  'CASH_FLOW',
+  'VALUE_ADD',
+  'LOW_RISK',
+  'DEEP_DISCOUNT',
+  'CUSTOM'
+]);
+
 const propertyCriteriaSchema = z.object({
   propertyTypes: z.array(propertyTypeEnum).optional(),
   minBeds: z
@@ -136,14 +180,75 @@ const defaultStrategy = {
 
 const optionalMultifamilyNumber = z.number().optional();
 
+const multifamilyRankingWeightsSchema = z.preprocess(
+  (value) => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      return value;
+    }
+
+    const rankingWeights = value as Record<string, unknown>;
+
+    return {
+      ...rankingWeights,
+      yield: rankingWeights.yield ?? rankingWeights.expenseEfficiency,
+      upside: rankingWeights.upside ?? rankingWeights.rentUpside,
+      discount: rankingWeights.discount ?? rankingWeights.discountToValue,
+      risk: rankingWeights.risk ?? rankingWeights.riskPenalty,
+      docs: rankingWeights.docs ?? rankingWeights.documentCompleteness
+    };
+  },
+  z
+    .object({
+      yield: optionalMultifamilyNumber,
+      upside: optionalMultifamilyNumber,
+      discount: optionalMultifamilyNumber,
+      risk: optionalMultifamilyNumber,
+      docs: optionalMultifamilyNumber
+    })
+    .default({})
+);
+
 const multifamilyUnitMixSchema = z.object({
   unitType: z.string().optional(),
   units: optionalMultifamilyNumber,
   avgRent: optionalMultifamilyNumber,
-  avgSqft: optionalMultifamilyNumber
+  avgSqft: optionalMultifamilyNumber,
+  targetPct: optionalMultifamilyNumber
 });
 
+const multifamilyDiscoverySchema = z
+  .object({
+    assetTypes: z.array(multifamilyAssetTypeEnum).default([]),
+    minUnits: optionalMultifamilyNumber,
+    maxUnits: optionalMultifamilyNumber,
+    minAskingPrice: optionalMultifamilyNumber,
+    maxAskingPrice: optionalMultifamilyNumber,
+    minPricePerUnit: optionalMultifamilyNumber,
+    maxPricePerUnit: optionalMultifamilyNumber,
+    minYearBuilt: optionalMultifamilyNumber,
+    maxYearBuilt: optionalMultifamilyNumber,
+    minOccupancyPct: optionalMultifamilyNumber,
+    maxOccupancyPct: optionalMultifamilyNumber,
+    unitMixTargets: z
+      .object({
+        enabled: z.boolean().default(false)
+      })
+      .default({ enabled: false }),
+    renovationAppetite: multifamilyRenovationAppetiteEnum.optional(),
+    dealQualityGates: z
+      .object({
+        requireOm: multifamilyDealQualityGatePreferenceSchema,
+        requireRentRoll: multifamilyDealQualityGatePreferenceSchema,
+        requireT12: multifamilyDealQualityGatePreferenceSchema
+      })
+      .default({}),
+    rankingPreset: multifamilyRankingPresetEnum.optional(),
+    rankingWeights: multifamilyRankingWeightsSchema
+  })
+  .default({});
+
 const multifamilyCriteriaSchema = z.object({
+  discovery: multifamilyDiscoverySchema,
   unitMix: z.array(multifamilyUnitMixSchema).default([]),
   rentRoll: z
     .object({
@@ -167,7 +272,9 @@ const multifamilyCriteriaSchema = z.object({
       insuranceAnnual: optionalMultifamilyNumber,
       repairsMaintenanceAnnual: optionalMultifamilyNumber,
       payrollAnnual: optionalMultifamilyNumber,
-      managementFeePct: optionalMultifamilyNumber
+      managementFeePct: optionalMultifamilyNumber,
+      payrollAndMaintenancePerUnitAnnual: optionalMultifamilyNumber,
+      expenseRatioBaselinePct: optionalMultifamilyNumber
     })
     .default({}),
   utilities: z
@@ -176,7 +283,11 @@ const multifamilyCriteriaSchema = z.object({
       trashAnnual: optionalMultifamilyNumber,
       electricAnnual: optionalMultifamilyNumber,
       gasAnnual: optionalMultifamilyNumber,
-      reimbursementPct: optionalMultifamilyNumber
+      reimbursementPct: optionalMultifamilyNumber,
+      waterSewerPerUnitMonthly: optionalMultifamilyNumber,
+      trashPerUnitMonthly: optionalMultifamilyNumber,
+      electricPerUnitMonthly: optionalMultifamilyNumber,
+      gasPerUnitMonthly: optionalMultifamilyNumber
     })
     .default({})
 });
@@ -231,6 +342,36 @@ const multifamilySetupSchema = z.object({
 });
 
 const defaultMultifamilyCriteria = {
+  discovery: {
+    assetTypes: [],
+    minUnits: undefined,
+    maxUnits: undefined,
+    minAskingPrice: undefined,
+    maxAskingPrice: undefined,
+    minPricePerUnit: undefined,
+    maxPricePerUnit: undefined,
+    minYearBuilt: undefined,
+    maxYearBuilt: undefined,
+    minOccupancyPct: undefined,
+    maxOccupancyPct: undefined,
+    unitMixTargets: {
+      enabled: false
+    },
+    renovationAppetite: undefined,
+    dealQualityGates: {
+      requireOm: undefined,
+      requireRentRoll: undefined,
+      requireT12: undefined
+    },
+    rankingPreset: undefined,
+    rankingWeights: {
+      yield: undefined,
+      upside: undefined,
+      discount: undefined,
+      risk: undefined,
+      docs: undefined
+    }
+  },
   unitMix: [],
   rentRoll: {
     physicalOccupancyPct: undefined,
@@ -249,14 +390,20 @@ const defaultMultifamilyCriteria = {
     insuranceAnnual: undefined,
     repairsMaintenanceAnnual: undefined,
     payrollAnnual: undefined,
-    managementFeePct: undefined
+    managementFeePct: undefined,
+    payrollAndMaintenancePerUnitAnnual: undefined,
+    expenseRatioBaselinePct: undefined
   },
   utilities: {
     waterSewerAnnual: undefined,
     trashAnnual: undefined,
     electricAnnual: undefined,
     gasAnnual: undefined,
-    reimbursementPct: undefined
+    reimbursementPct: undefined,
+    waterSewerPerUnitMonthly: undefined,
+    trashPerUnitMonthly: undefined,
+    electricPerUnitMonthly: undefined,
+    gasPerUnitMonthly: undefined
   }
 };
 

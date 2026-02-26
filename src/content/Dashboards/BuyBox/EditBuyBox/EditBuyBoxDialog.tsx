@@ -105,20 +105,12 @@ const defaultSteps = [
 ];
 
 const multifamilyDiscoveryTabs = [
-  'Asset Filters',
-  'Unit Mix Preferences',
-  'Deal Quality Gates',
-  'Ranking Weights'
+  'Discovery',
+  'Strategy',
+  'Quality Gates'
 ];
 
-const multifamilyDefaultsTabs = [
-  'Income Defaults',
-  'Expense Defaults',
-  'Utilities Defaults',
-  'Taxes and Insurance Defaults',
-  'Financing Defaults',
-  'Stress Test Presets'
-];
+const multifamilyDefaultsTabs = ['Defaults', 'Stress Test'];
 
 const multifamilySteps = [
   {

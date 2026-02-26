@@ -31,6 +31,34 @@ describe('formBuyBoxSchema multifamily smoke', () => {
     const data = createValidFormData();
     data.strategy.strategyType = 'MULTIFAMILY';
 
+    data.multifamilyCriteria.discovery = {
+      assetTypes: ['MULTIFAMILY'],
+      minUnits: 10,
+      maxUnits: 150,
+      minAskingPrice: 1000000,
+      maxAskingPrice: 15000000,
+      minPricePerUnit: 50000,
+      maxPricePerUnit: 250000,
+      minYearBuilt: 1970,
+      maxYearBuilt: 2020,
+      minOccupancyPct: 80,
+      maxOccupancyPct: 98,
+      renovationAppetite: 'MODERATE',
+      dealQualityGates: {
+        requireOm: 'REQUIRED',
+        requireRentRoll: 'PREFERRED',
+        requireT12: 'OPTIONAL'
+      },
+      rankingPreset: 'BALANCED',
+      rankingWeights: {
+        yield: 25,
+        upside: 25,
+        discount: 25,
+        risk: 15,
+        docs: 10
+      }
+    };
+
     data.multifamilyCriteria.unitMix = [
       {
         unitType: '2BR / 1BA',

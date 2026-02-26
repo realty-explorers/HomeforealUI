@@ -8,20 +8,12 @@ import type { ComponentProps } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const criteriaTabs = [
-  'Asset Filters',
-  'Unit Mix Preferences',
-  'Deal Quality Gates',
-  'Ranking Weights'
+  'Discovery',
+  'Strategy',
+  'Quality Gates'
 ];
 
-const setupTabs = [
-  'Income Defaults',
-  'Expense Defaults',
-  'Utilities Defaults',
-  'Taxes and Insurance Defaults',
-  'Financing Defaults',
-  'Stress Test Presets'
-];
+const setupTabs = ['Defaults', 'Stress Test'];
 
 const StoryFormWrapper = (
   args: ComponentProps<typeof MultifamilyTabsSkeleton>

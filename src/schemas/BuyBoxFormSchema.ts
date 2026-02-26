@@ -105,6 +105,50 @@ const defaultStrategyFormSchema = {
   minMargin: { enabled: false, value: defaults.margin.min }
 };
 
+const multifamilyAssetTypeEnum = z.enum([
+  'MULTIFAMILY',
+  'GARDEN_STYLE',
+  'MID_RISE',
+  'HIGH_RISE',
+  'MIXED_USE'
+]);
+
+const multifamilyRenovationAppetiteEnum = z.enum(['LIGHT', 'MODERATE', 'HEAVY']);
+
+const multifamilyDealQualityGatePreferenceEnum = z.enum([
+  'OPTIONAL',
+  'PREFERRED',
+  'REQUIRED'
+]);
+
+const multifamilyDealQualityGatePreferenceFormSchema = z.preprocess(
+  (value) => {
+    if (value === true) {
+      return 'REQUIRED';
+    }
+
+    if (value === false) {
+      return 'OPTIONAL';
+    }
+
+    if (typeof value === 'string') {
+      return value.toUpperCase();
+    }
+
+    return value;
+  },
+  multifamilyDealQualityGatePreferenceEnum.optional()
+);
+
+const multifamilyRankingPresetEnum = z.enum([
+  'BALANCED',
+  'CASH_FLOW',
+  'VALUE_ADD',
+  'LOW_RISK',
+  'DEEP_DISCOUNT',
+  'CUSTOM'
+]);
+
 const optionalMultifamilyNumberFormSchema = z.preprocess(
   (value) => {
     if (value === '' || value === null || value === undefined) {
@@ -118,14 +162,75 @@ const optionalMultifamilyNumberFormSchema = z.preprocess(
   z.number().optional()
 );
 
+const multifamilyRankingWeightsFormSchema = z.preprocess(
+  (value) => {
+    if (!value || typeof value !== 'object' || Array.isArray(value)) {
+      return value;
+    }
+
+    const rankingWeights = value as Record<string, unknown>;
+
+    return {
+      ...rankingWeights,
+      yield: rankingWeights.yield ?? rankingWeights.expenseEfficiency,
+      upside: rankingWeights.upside ?? rankingWeights.rentUpside,
+      discount: rankingWeights.discount ?? rankingWeights.discountToValue,
+      risk: rankingWeights.risk ?? rankingWeights.riskPenalty,
+      docs: rankingWeights.docs ?? rankingWeights.documentCompleteness
+    };
+  },
+  z
+    .object({
+      yield: optionalMultifamilyNumberFormSchema,
+      upside: optionalMultifamilyNumberFormSchema,
+      discount: optionalMultifamilyNumberFormSchema,
+      risk: optionalMultifamilyNumberFormSchema,
+      docs: optionalMultifamilyNumberFormSchema
+    })
+    .default({})
+);
+
 const multifamilyUnitMixFormSchema = z.object({
   unitType: z.string().optional(),
   units: optionalMultifamilyNumberFormSchema,
   avgRent: optionalMultifamilyNumberFormSchema,
-  avgSqft: optionalMultifamilyNumberFormSchema
+  avgSqft: optionalMultifamilyNumberFormSchema,
+  targetPct: optionalMultifamilyNumberFormSchema
 });
 
+const multifamilyDiscoveryFormSchema = z
+  .object({
+    assetTypes: z.array(multifamilyAssetTypeEnum).default([]),
+    minUnits: optionalMultifamilyNumberFormSchema,
+    maxUnits: optionalMultifamilyNumberFormSchema,
+    minAskingPrice: optionalMultifamilyNumberFormSchema,
+    maxAskingPrice: optionalMultifamilyNumberFormSchema,
+    minPricePerUnit: optionalMultifamilyNumberFormSchema,
+    maxPricePerUnit: optionalMultifamilyNumberFormSchema,
+    minYearBuilt: optionalMultifamilyNumberFormSchema,
+    maxYearBuilt: optionalMultifamilyNumberFormSchema,
+    minOccupancyPct: optionalMultifamilyNumberFormSchema,
+    maxOccupancyPct: optionalMultifamilyNumberFormSchema,
+    unitMixTargets: z
+      .object({
+        enabled: z.boolean().default(false)
+      })
+      .default({ enabled: false }),
+    renovationAppetite: multifamilyRenovationAppetiteEnum.optional(),
+    dealQualityGates: z
+      .object({
+        requireOm: multifamilyDealQualityGatePreferenceFormSchema,
+        requireRentRoll: multifamilyDealQualityGatePreferenceFormSchema,
+        requireT12: multifamilyDealQualityGatePreferenceFormSchema
+      })
+      .default({}),
+    rankingPreset: multifamilyRankingPresetEnum.optional(),
+    rankingWeights: multifamilyRankingWeightsFormSchema
+  })
+  .default({});
+
 const multifamilyCriteriaFormSchema = z.object({
+  discovery: multifamilyDiscoveryFormSchema,
   unitMix: z.array(multifamilyUnitMixFormSchema).default([]),
   rentRoll: z
     .object({
@@ -149,7 +254,9 @@ const multifamilyCriteriaFormSchema = z.object({
       insuranceAnnual: optionalMultifamilyNumberFormSchema,
       repairsMaintenanceAnnual: optionalMultifamilyNumberFormSchema,
       payrollAnnual: optionalMultifamilyNumberFormSchema,
-      managementFeePct: optionalMultifamilyNumberFormSchema
+      managementFeePct: optionalMultifamilyNumberFormSchema,
+      payrollAndMaintenancePerUnitAnnual: optionalMultifamilyNumberFormSchema,
+      expenseRatioBaselinePct: optionalMultifamilyNumberFormSchema
     })
     .default({}),
   utilities: z
@@ -158,7 +265,11 @@ const multifamilyCriteriaFormSchema = z.object({
       trashAnnual: optionalMultifamilyNumberFormSchema,
       electricAnnual: optionalMultifamilyNumberFormSchema,
       gasAnnual: optionalMultifamilyNumberFormSchema,
-      reimbursementPct: optionalMultifamilyNumberFormSchema
+      reimbursementPct: optionalMultifamilyNumberFormSchema,
+      waterSewerPerUnitMonthly: optionalMultifamilyNumberFormSchema,
+      trashPerUnitMonthly: optionalMultifamilyNumberFormSchema,
+      electricPerUnitMonthly: optionalMultifamilyNumberFormSchema,
+      gasPerUnitMonthly: optionalMultifamilyNumberFormSchema
     })
     .default({})
 });
@@ -213,6 +324,36 @@ const multifamilySetupFormSchema = z.object({
 });
 
 const defaultMultifamilyCriteriaFormSchema = {
+  discovery: {
+    assetTypes: [],
+    minUnits: undefined,
+    maxUnits: undefined,
+    minAskingPrice: undefined,
+    maxAskingPrice: undefined,
+    minPricePerUnit: undefined,
+    maxPricePerUnit: undefined,
+    minYearBuilt: undefined,
+    maxYearBuilt: undefined,
+    minOccupancyPct: undefined,
+    maxOccupancyPct: undefined,
+    unitMixTargets: {
+      enabled: false
+    },
+    renovationAppetite: undefined,
+    dealQualityGates: {
+      requireOm: undefined,
+      requireRentRoll: undefined,
+      requireT12: undefined
+    },
+    rankingPreset: undefined,
+    rankingWeights: {
+      yield: undefined,
+      upside: undefined,
+      discount: undefined,
+      risk: undefined,
+      docs: undefined
+    }
+  },
   unitMix: [],
   rentRoll: {
     physicalOccupancyPct: undefined,
@@ -231,14 +372,20 @@ const defaultMultifamilyCriteriaFormSchema = {
     insuranceAnnual: undefined,
     repairsMaintenanceAnnual: undefined,
     payrollAnnual: undefined,
-    managementFeePct: undefined
+    managementFeePct: undefined,
+    payrollAndMaintenancePerUnitAnnual: undefined,
+    expenseRatioBaselinePct: undefined
   },
   utilities: {
     waterSewerAnnual: undefined,
     trashAnnual: undefined,
     electricAnnual: undefined,
     gasAnnual: undefined,
-    reimbursementPct: undefined
+    reimbursementPct: undefined,
+    waterSewerPerUnitMonthly: undefined,
+    trashPerUnitMonthly: undefined,
+    electricPerUnitMonthly: undefined,
+    gasPerUnitMonthly: undefined
   }
 };
 
@@ -349,41 +496,288 @@ const defaultSimilarityCriteriaFormSchemaFourthRank = {
   weight: 0.3
 };
 
-const formBuyBoxSchema = z.object({
-  name: z
-    .string()
-    .min(3, 'Name must be at least 3 characters long')
-    .default(''),
-  description: z.string().optional(),
-  targetLocations: z
-    .array(targetLocationSchema)
-    .min(1, 'At least one location is required')
-    .max(3, 'No more than three locations are allowed'),
-  propertyCriteria: propertyCriteriaFormSchema,
-  strategy: strategyFormSchema.default(defaultStrategyFormSchema),
-  multifamilyCriteria: multifamilyCriteriaFormSchema.default(
-    defaultMultifamilyCriteriaFormSchema
-  ),
-  multifamilySetup: multifamilySetupFormSchema.default(
-    defaultMultifamilySetupFormSchema
-  ),
-  weights: weightSchema.default(
-    DEFAULT_ATTRIBUTES.reduce((acc, attr) => {
-      acc[attr.id] = attr.defaultWeight;
-      return acc;
-    }, {} as PropertyWeights)
-  )
-  // similarityCriteria: z
-  //   .array(similarityCriteriaFormSchema)
-  //   .transform((criteria) =>
-  //     criteria
-  //       .filter((item) => item.enabled && item.enabled == true)
-  //       .map((item) => {
-  //         const { enabled, ...rest } = item;
-  //         return rest;
-  //       })
-  //   )
-});
+const isFiniteNumberValue = (value: unknown): value is number => {
+  return typeof value === 'number' && Number.isFinite(value);
+};
+
+const formBuyBoxSchema = z
+  .object({
+    name: z
+      .string()
+      .min(3, 'Name must be at least 3 characters long')
+      .default(''),
+    description: z.string().optional(),
+    targetLocations: z
+      .array(targetLocationSchema)
+      .min(1, 'At least one location is required')
+      .max(3, 'No more than three locations are allowed'),
+    propertyCriteria: propertyCriteriaFormSchema,
+    strategy: strategyFormSchema.default(defaultStrategyFormSchema),
+    multifamilyCriteria: multifamilyCriteriaFormSchema.default(
+      defaultMultifamilyCriteriaFormSchema
+    ),
+    multifamilySetup: multifamilySetupFormSchema.default(
+      defaultMultifamilySetupFormSchema
+    ),
+    weights: weightSchema.default(
+      DEFAULT_ATTRIBUTES.reduce((acc, attr) => {
+        acc[attr.id] = attr.defaultWeight;
+        return acc;
+      }, {} as PropertyWeights)
+    )
+    // similarityCriteria: z
+    //   .array(similarityCriteriaFormSchema)
+    //   .transform((criteria) =>
+    //     criteria
+    //       .filter((item) => item.enabled && item.enabled == true)
+    //       .map((item) => {
+    //         const { enabled, ...rest } = item;
+    //         return rest;
+    //       })
+    //   )
+  })
+  .superRefine((formData, ctx) => {
+    if (formData.strategy.strategyType !== 'MULTIFAMILY') {
+      return;
+    }
+
+    const { discovery } = formData.multifamilyCriteria;
+
+    const requireNumberField = (
+      value: unknown,
+      path: string[],
+      fieldLabel: string,
+      min?: number,
+      max?: number
+    ) => {
+      if (!isFiniteNumberValue(value)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path,
+          message: `${fieldLabel} is required`
+        });
+        return;
+      }
+
+      if (typeof min === 'number' && value < min) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path,
+          message: `${fieldLabel} must be at least ${min}`
+        });
+      }
+
+      if (typeof max === 'number' && value > max) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path,
+          message: `${fieldLabel} must be ${max} or less`
+        });
+      }
+    };
+
+    const validateRequiredRange = (
+      minValue: unknown,
+      maxValue: unknown,
+      minPath: string[],
+      maxPath: string[],
+      label: string,
+      minAllowed?: number,
+      maxAllowed?: number
+    ) => {
+      requireNumberField(minValue, minPath, `${label} minimum`, minAllowed, maxAllowed);
+      requireNumberField(maxValue, maxPath, `${label} maximum`, minAllowed, maxAllowed);
+
+      if (
+        isFiniteNumberValue(minValue) &&
+        isFiniteNumberValue(maxValue) &&
+        minValue > maxValue
+      ) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: maxPath,
+          message: `${label} maximum must be greater than or equal to minimum`
+        });
+      }
+    };
+
+    if (!Array.isArray(discovery.assetTypes) || discovery.assetTypes.length === 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['multifamilyCriteria', 'discovery', 'assetTypes'],
+        message: 'At least one asset type is required'
+      });
+    }
+
+    validateRequiredRange(
+      discovery.minUnits,
+      discovery.maxUnits,
+      ['multifamilyCriteria', 'discovery', 'minUnits'],
+      ['multifamilyCriteria', 'discovery', 'maxUnits'],
+      'Unit count',
+      1
+    );
+
+    validateRequiredRange(
+      discovery.minAskingPrice,
+      discovery.maxAskingPrice,
+      ['multifamilyCriteria', 'discovery', 'minAskingPrice'],
+      ['multifamilyCriteria', 'discovery', 'maxAskingPrice'],
+      'Asking price',
+      0
+    );
+
+    validateRequiredRange(
+      discovery.minPricePerUnit,
+      discovery.maxPricePerUnit,
+      ['multifamilyCriteria', 'discovery', 'minPricePerUnit'],
+      ['multifamilyCriteria', 'discovery', 'maxPricePerUnit'],
+      'Price per unit',
+      0
+    );
+
+    validateRequiredRange(
+      discovery.minYearBuilt,
+      discovery.maxYearBuilt,
+      ['multifamilyCriteria', 'discovery', 'minYearBuilt'],
+      ['multifamilyCriteria', 'discovery', 'maxYearBuilt'],
+      'Year built',
+      1800,
+      new Date().getFullYear()
+    );
+
+    validateRequiredRange(
+      discovery.minOccupancyPct,
+      discovery.maxOccupancyPct,
+      ['multifamilyCriteria', 'discovery', 'minOccupancyPct'],
+      ['multifamilyCriteria', 'discovery', 'maxOccupancyPct'],
+      'Occupancy',
+      0,
+      100
+    );
+
+    if (!discovery.renovationAppetite) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['multifamilyCriteria', 'discovery', 'renovationAppetite'],
+        message: 'Renovation appetite is required'
+      });
+    }
+
+    if (!discovery.rankingPreset) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['multifamilyCriteria', 'discovery', 'rankingPreset'],
+        message: 'Ranking preset is required'
+      });
+    }
+
+    const dealQualityGates = discovery.dealQualityGates;
+    const dealQualityGateFields: { key: keyof typeof dealQualityGates; label: string }[] = [
+      { key: 'requireOm', label: 'OM requirement' },
+      { key: 'requireRentRoll', label: 'Rent roll requirement' },
+      { key: 'requireT12', label: 'T12 requirement' }
+    ];
+
+    dealQualityGateFields.forEach((gateField) => {
+      if (!dealQualityGates[gateField.key]) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['multifamilyCriteria', 'discovery', 'dealQualityGates', gateField.key],
+          message: `${gateField.label} must be selected`
+        });
+      }
+    });
+
+    const rankingWeightKeys = [
+      'yield',
+      'upside',
+      'discount',
+      'risk',
+      'docs'
+    ] as const;
+
+    let rankingWeightTotal = 0;
+
+    rankingWeightKeys.forEach((rankingWeightKey) => {
+      const rankingWeightValue = discovery.rankingWeights[rankingWeightKey];
+      if (!isFiniteNumberValue(rankingWeightValue)) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['multifamilyCriteria', 'discovery', 'rankingWeights', rankingWeightKey],
+          message: 'Ranking weight is required'
+        });
+        return;
+      }
+
+      if (rankingWeightValue < 0) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['multifamilyCriteria', 'discovery', 'rankingWeights', rankingWeightKey],
+          message: 'Ranking weight cannot be negative'
+        });
+      }
+
+      rankingWeightTotal += rankingWeightValue;
+    });
+
+    if (rankingWeightTotal <= 0) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['multifamilyCriteria', 'discovery', 'rankingWeights'],
+        message: 'At least one ranking weight must be greater than zero'
+      });
+    }
+
+    if (Math.abs(rankingWeightTotal - 100) > 0.01) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['multifamilyCriteria', 'discovery', 'rankingWeights'],
+        message: 'Ranking weights must sum to 100'
+      });
+    }
+
+    if (discovery.unitMixTargets?.enabled) {
+      if (!formData.multifamilyCriteria.unitMix.length) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['multifamilyCriteria', 'unitMix'],
+          message: 'At least one unit mix target row is required when targeting is enabled'
+        });
+      }
+
+      let targetPctTotal = 0;
+
+      formData.multifamilyCriteria.unitMix.forEach((unitMixRow, index) => {
+        if (!isFiniteNumberValue(unitMixRow.targetPct)) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['multifamilyCriteria', 'unitMix', index, 'targetPct'],
+            message: 'Target % is required when unit mix targeting is enabled'
+          });
+          return;
+        }
+
+        if (unitMixRow.targetPct < 0 || unitMixRow.targetPct > 100) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['multifamilyCriteria', 'unitMix', index, 'targetPct'],
+            message: 'Target % must be between 0 and 100'
+          });
+        }
+
+        targetPctTotal += unitMixRow.targetPct;
+      });
+
+      if (Math.abs(targetPctTotal - 100) > 0.01) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['multifamilyCriteria', 'unitMix'],
+          message: 'Unit mix target % values must sum to 100'
+        });
+      }
+    }
+  });
 
 const getDefaultBuyBoxFormData = () => {
   return {

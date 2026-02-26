@@ -7,20 +7,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const criteriaTabs = [
-  'Asset Filters',
-  'Unit Mix Preferences',
-  'Deal Quality Gates',
-  'Ranking Weights'
+  'Discovery',
+  'Strategy',
+  'Quality Gates'
 ];
 
-const setupTabs = [
-  'Income Defaults',
-  'Expense Defaults',
-  'Utilities Defaults',
-  'Taxes and Insurance Defaults',
-  'Financing Defaults',
-  'Stress Test Presets'
-];
+const setupTabs = ['Defaults', 'Stress Test'];
 
 const CriteriaHarness = () => {
   const methods = useForm<BuyBoxFormData>({
@@ -57,22 +49,20 @@ const SetupHarness = () => {
 };
 
 describe('MultifamilyTabsSkeleton', () => {
-  it('renders discovery tabs and switches to Unit Mix Preferences tab content', async () => {
+  it('renders discovery tabs and switches to quality gates tab content', async () => {
     render(<CriteriaHarness />);
 
     fireEvent.click(
-      screen.getByRole('tab', { name: /2\. unit mix preferences/i })
+      screen.getByRole('tab', { name: /3\. quality gates/i })
     );
 
-    expect(await screen.findByLabelText(/unit type/i)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/set each doc preference as optional, preferred, or required/i)
+    ).toBeInTheDocument();
   });
 
   it('supports unit mix add/remove behavior with minimum one row protection', async () => {
     render(<CriteriaHarness />);
-
-    fireEvent.click(
-      screen.getByRole('tab', { name: /2\. unit mix preferences/i })
-    );
 
     await waitFor(() => {
       expect(screen.getAllByLabelText(/unit type/i)).toHaveLength(1);
@@ -97,61 +87,49 @@ describe('MultifamilyTabsSkeleton', () => {
   it('retains unit mix value when switching tabs', async () => {
     render(<CriteriaHarness />);
 
-    fireEvent.click(
-      screen.getByRole('tab', { name: /2\. unit mix preferences/i })
-    );
-
     const unitTypeInput = (await screen.findByLabelText(/unit type/i)) as HTMLInputElement;
 
     fireEvent.change(unitTypeInput, { target: { value: '2BR / 1BA' } });
-    fireEvent.click(screen.getByRole('tab', { name: /1\. asset filters/i }));
+    fireEvent.click(screen.getByRole('tab', { name: /2\. strategy/i }));
     fireEvent.click(
-      screen.getByRole('tab', { name: /2\. unit mix preferences/i })
+      screen.getByRole('tab', { name: /1\. discovery/i })
     );
 
     expect(screen.getByLabelText(/unit type/i)).toHaveValue('2BR / 1BA');
   });
 
-  it('shows ranking total and auto-normalizes weights to 100', async () => {
+  it('shows ranking preset controls with balanced total by default', async () => {
     render(<CriteriaHarness />);
 
-    fireEvent.click(screen.getByRole('tab', { name: /4\. ranking weights/i }));
+    fireEvent.click(screen.getByRole('tab', { name: /2\. strategy/i }));
 
+    expect(screen.getByRole('button', { name: /balanced/i })).toBeInTheDocument();
     expect(screen.getByTestId('ranking-weight-total')).toHaveTextContent(
-      'Total weight: 415.00 / 100'
+      'Total weight: 100.00 / 100'
     );
-
-    fireEvent.click(screen.getByRole('button', { name: /auto normalize to 100/i }));
-
-    await waitFor(() => {
-      expect(screen.getByTestId('ranking-weight-total')).toHaveTextContent(
-        'Total weight: 100.00 / 100'
-      );
-    });
   });
 
-  it('auto-normalizes while dragging a ranking slider when total exceeds 100', async () => {
+  it('marks ranking preset as custom when advanced weight sliders are edited', async () => {
     render(<CriteriaHarness />);
 
-    fireEvent.click(screen.getByRole('tab', { name: /4\. ranking weights/i }));
+    fireEvent.click(screen.getByRole('tab', { name: /2\. strategy/i }));
+    fireEvent.click(screen.getByRole('button', { name: /show advanced strategy/i }));
 
-    const bedsSlider = await screen.findByRole('slider', {
-      name: /beds relevance weight/i
+    const weightSlider = await screen.findByRole('slider', {
+      name: /discount weight/i
     });
 
-    fireEvent.change(bedsSlider, { target: { value: 80 } });
+    fireEvent.change(weightSlider, { target: { value: 55 } });
 
     await waitFor(() => {
-      expect(screen.getByTestId('ranking-weight-total')).toHaveTextContent(
-        'Total weight: 100.00 / 100'
-      );
+      expect(screen.getByText(/custom/i)).toBeInTheDocument();
     });
   });
 
   it('applies stress presets and locks/unlocks manual editing', async () => {
     render(<SetupHarness />);
 
-    fireEvent.click(screen.getByRole('tab', { name: /6\. stress test presets/i }));
+    fireEvent.click(screen.getByRole('tab', { name: /2\. stress test/i }));
 
     const vacancyInput = (await screen.findByLabelText(
       /stress test vacancy \(%\)/i
@@ -162,7 +140,7 @@ describe('MultifamilyTabsSkeleton', () => {
     fireEvent.click(screen.getByRole('button', { name: /conservative/i }));
 
     await waitFor(() => {
-      expect(vacancyInput).toHaveValue(12);
+      expect(vacancyInput).toHaveValue(5);
       expect(vacancyInput.readOnly).toBe(true);
     });
 
