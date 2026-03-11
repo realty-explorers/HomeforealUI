@@ -79,14 +79,13 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
     props.property.arvPrice,
     props.property.price ?? props.property.priceGroup.min
   );
-  const compsPercentage = calculateArvPercentage(
-    props.property.arvPrice,
+  const arv25Percentage = calculateArvPercentage(
+    props.property.arv25Price,
     props.property.price ?? props.property.priceGroup.min
   );
-  const arvDiscount = `ARV ↓${arvPercentage.toFixed()}%`;
-  const compsDiscount = `Comps ↓${compsPercentage.toFixed()}%`;
+  const arvDiscount = `Comps ↓${arvPercentage.toFixed()}%`;
+  const arv25Discount = `ARV ↓${arv25Percentage.toFixed()}%`;
   const seperator = ' ● ';
-  const discounts = `ARV ↓${arvPercentage.toFixed()}% ● Comps ↓${compsPercentage.toFixed()}%`;
 
   return (
     <div className="flex rounded-xl bg-white w-80 h-40">
@@ -148,7 +147,7 @@ const PropertyMapCard: React.FC<PropertyMapCardProps> = (
           {/* </Typography> */}
 
           <Typography className="ml-2 text-[0.7rem]  font-poppins text-center bg-secondary text-white font-semibold rounded px-1">
-            {compsDiscount}
+            {arv25Discount}
           </Typography>
         </div>
 
