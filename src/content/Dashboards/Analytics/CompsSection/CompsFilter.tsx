@@ -229,9 +229,9 @@ const CompsFilter = ({
     // console.log(data);
     const filteredComps: FilteredComp[] = [];
     const soldComps = selectedProperty?.comps.filter(
-      (comp) => comp.status === 'sold'
+      (comp) => comp.status === 'sold' || comp.status === 'off_market'
     );
-    for (let i = 0; i < soldComps.lengths; i++) {
+    for (let i = 0; i < soldComps.length; i++) {
       const comp = soldComps[i];
       let add = true;
       for (const field of rangeFields) {
@@ -316,7 +316,7 @@ const CompsFilter = ({
 
   useEffect(() => {
     const soldComps = selectedProperty?.comps.filter(
-      (comp) => comp.status === 'sold'
+      (comp) => comp.status === 'sold' || comp.status === 'off_market'
     );
     const limitedRangeFields = findRangeLimits(rangeFields, soldComps);
     setRangeFields(limitedRangeFields);

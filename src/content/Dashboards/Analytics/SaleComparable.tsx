@@ -40,7 +40,7 @@ type SaleComparableProps = {
 const SaleComparable = (props: SaleComparableProps) => {
   const { selectedComps } = useSelector(selectProperties);
   const soldComps = props.property.comps.filter(
-    (comp) => comp.status === 'sold'
+    (comp) => comp.status === 'sold' || comp.status === 'off_market'
   );
   if (soldComps.length === 0) {
     return null;
