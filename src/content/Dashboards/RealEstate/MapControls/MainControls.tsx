@@ -6,7 +6,6 @@ import {
   InputLabel,
   MenuItem,
   OutlinedInput,
-  Select,
   styled,
   Switch,
   ToggleButton,
@@ -14,6 +13,7 @@ import {
   Tooltip,
   Typography
 } from '@mui/material';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 import SliderRangeInput from '../FormFields/SliderRangeInput';
 import SliderRangeInputV2 from '../FormFields/SliderRangeInputv2';
 import SliderInput from '../FormFields/SliderInput';
@@ -59,7 +59,6 @@ import {
 } from '@/store/services/buyboxApiService';
 import { useSnackbar } from 'notistack';
 import { skipToken } from '@reduxjs/toolkit/query';
-import { redirect, useSearchParams } from 'next/navigation';
 import { useRouter } from 'next/router';
 import { signOut, useSession } from 'next-auth/react';
 
@@ -71,6 +70,147 @@ const filterFieldNames = [
   'beds',
   'baths'
 ];
+
+const normalizeStrategyType = (value: unknown) =>
+  `${value ?? ''}`
+    .trim()
+    .toUpperCase()
+    .replace(/[\s-]+/g, '_');
+
+const isMultifamilyStrategyValue = (value: unknown) => {
+  const normalizedValue = normalizeStrategyType(value);
+  if (!normalizedValue) {
+    return false;
+  }
+
+  return (
+    normalizedValue === 'MULTIFAMILY' ||
+    normalizedValue === 'MULTI_FAMILY' ||
+    normalizedValue === 'MULTY_FAMILY' ||
+    (normalizedValue.includes('MULTI') && normalizedValue.includes('FAMILY')) ||
+    (normalizedValue.includes('MULTY') && normalizedValue.includes('FAMILY'))
+  );
+};
+
+const getBuyboxParameters = (buyBoxItem?: { parameters?: Record<string, unknown> }) =>
+  ((buyBoxItem?.parameters || {}) as Record<string, unknown>);
+
+const getCanonicalBuybox = (parameters: Record<string, unknown>) => {
+  return (
+    (parameters.buybox_form as Record<string, unknown>) ||
+    (parameters.buybox as Record<string, unknown>) ||
+    {}
+  );
+};
+
+const toFiniteNumber = (value: unknown) => {
+  if (typeof value === 'number' && Number.isFinite(value)) {
+    return value;
+  }
+
+  if (typeof value === 'string' && value.trim()) {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return parsed;
+    }
+  }
+
+  return undefined;
+};
+
+const getBuyboxPriceRange = (
+  buyBoxItem?: { parameters?: Record<string, unknown> }
+): [number, number] | null => {
+  if (!buyBoxItem) {
+    return null;
+  }
+
+  const parameters = getBuyboxParameters(buyBoxItem);
+  const canonical = getCanonicalBuybox(parameters);
+  const discovery = (canonical.discovery || {}) as Record<string, unknown>;
+  const discoveryPriceRange =
+    (discovery.price_range as Record<string, unknown>) || {};
+  const propertyCriteria =
+    (parameters.propertyCriteria as Record<string, unknown>) || {};
+
+  const minCandidates = [
+    discoveryPriceRange.min_price,
+    discoveryPriceRange.min,
+    propertyCriteria.minPrice,
+    0
+  ];
+  const maxCandidates = [
+    discoveryPriceRange.max_price,
+    discoveryPriceRange.max,
+    propertyCriteria.maxPrice,
+    1000000
+  ];
+
+  const min = minCandidates
+    .map((candidate) => toFiniteNumber(candidate))
+    .find((candidate) => typeof candidate === 'number');
+  const max = maxCandidates
+    .map((candidate) => toFiniteNumber(candidate))
+    .find((candidate) => typeof candidate === 'number');
+
+  if (typeof min !== 'number' || typeof max !== 'number' || max < min) {
+    return null;
+  }
+
+  return [min, max];
+};
+
+const getBuyBoxStrategyType = (
+  buyBoxItem?: { parameters?: Record<string, unknown> }
+) => {
+  const parameters = getBuyboxParameters(buyBoxItem);
+  const canonical = getCanonicalBuybox(parameters);
+  const canonicalStrategy = (canonical.strategy || {}) as Record<string, unknown>;
+  const strategy = (parameters.strategy || {}) as Record<string, unknown>;
+
+  const strategySources = [
+    canonicalStrategy.strategyType,
+    canonicalStrategy.strategy_type,
+    canonicalStrategy.mode,
+    canonicalStrategy.preset,
+    canonicalStrategy.strategy,
+    strategy.strategyType,
+    strategy.strategy_type,
+    parameters.strategyType,
+    strategy.mode,
+    strategy.preset,
+    parameters.strategy
+  ];
+
+  return (
+    strategySources.find((source) => `${source ?? ''}`.trim().length > 0) ||
+    'FIX_AND_FLIP'
+  );
+};
+
+const isMultifamilyBuyBoxValue = (
+  buyBoxItem?: { parameters?: Record<string, unknown> }
+) => {
+  const parameters = getBuyboxParameters(buyBoxItem);
+  const strategySources = [
+    getBuyBoxStrategyType(buyBoxItem),
+    (parameters.strategy as Record<string, unknown> | undefined)?.strategy,
+    parameters.strategy
+  ];
+
+  return (
+    strategySources.some(isMultifamilyStrategyValue) ||
+    isMultifamilyStrategyValue(parameters.name)
+  );
+};
+
+const getBuyboxDisplayName = (buyBoxItem?: {
+  id?: string;
+  parameters?: Record<string, unknown>;
+}) => {
+  const parameters = getBuyboxParameters(buyBoxItem);
+  return `${parameters.name || buyBoxItem?.id || 'Untitled BuyBox'}`;
+};
 
 type MainControlsProps = {};
 const MainControls: React.FC<MainControlsProps> = (
@@ -97,6 +237,9 @@ const MainControls: React.FC<MainControlsProps> = (
   const { data, status } = useSession();
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
+  const isVerifiedUser = Boolean(
+    (data?.user as { verified?: boolean } | undefined)?.verified
+  );
 
   // const selectBuyBoxesResult = buyBoxApiEndpoints.getBuyBoxes.select('');
   const buyBoxesState = buyBoxApiEndpoints.getBuyBoxes.useQueryState('');
@@ -112,7 +255,7 @@ const MainControls: React.FC<MainControlsProps> = (
       ? {
           suggestion,
           buybox_id: buybox.id,
-          masked: !data?.user?.verified
+          masked: !isVerifiedUser
         }
       : skipToken
   );
@@ -131,17 +274,39 @@ const MainControls: React.FC<MainControlsProps> = (
   const [baths, setBaths] = useState([0, 9]);
   const [strategy, setStrategy] = useState('ARV');
 
-  const searchParams = useSearchParams();
-
   const router = useRouter();
-  const selectedBuyBoxId = router.query.buybox_id as string;
-  // const selectedBuyBoxId = searchParams.get('buybox_id');
+  const selectedBuyBoxId = Array.isArray(router.query.buybox_id)
+    ? router.query.buybox_id[0]
+    : router.query.buybox_id;
 
-  const getBuyBoxStrategyType = (buyBoxItem?: any) => {
-    return buyBoxItem?.parameters?.strategy?.strategyType || 'FIX_AND_FLIP';
-  };
+  const isMultifamilyBuyBox = isMultifamilyBuyBoxValue(buybox);
 
-  const isMultifamilyBuyBox = getBuyBoxStrategyType(buybox) === 'MULTIFAMILY';
+  useEffect(() => {
+    if (!selectedBuyBoxId || !buyBoxesState.data?.length) {
+      return;
+    }
+
+    const selectedBuyBox = buyBoxesState.data.find(
+      (buyBoxItem) => buyBoxItem.id === selectedBuyBoxId
+    );
+
+    if (!selectedBuyBox || selectedBuyBox.id === buybox?.id) {
+      return;
+    }
+
+    dispatch(setBuybox(selectedBuyBox));
+  }, [buyBoxesState.data, buybox?.id, dispatch, selectedBuyBoxId]);
+
+  useEffect(() => {
+    const buyboxPriceRange = getBuyboxPriceRange(buybox);
+    if (!buyboxPriceRange) {
+      return;
+    }
+
+    setPrice(buyboxPriceRange);
+    dispatch(setMinPrice(buyboxPriceRange[0]));
+    dispatch(setMaxPrice(buyboxPriceRange[1]));
+  }, [buybox?.id, dispatch]);
 
   const strategyFilterMode = isMultifamilyBuyBox ? undefined : strategy;
 
@@ -185,7 +350,7 @@ const MainControls: React.FC<MainControlsProps> = (
       return true;
     }
     if (strategyFilterFieldNames.includes(fieldName)) {
-      if (typeof propertyValue !== 'number') {
+      if (typeof propertyValue !== 'number' || typeof filterValue !== 'number') {
         return false;
       }
       const propertyPrice = property.price || property.priceGroup.min;
@@ -305,16 +470,24 @@ const MainControls: React.FC<MainControlsProps> = (
       dispatch(setStrategyMode(newStrategy));
     }
   };
-  const handleBuyBoxChange = (e) => {
-    const value = e.target.value;
-    dispatch(setBuybox(value));
+  const handleBuyBoxChange = (e: SelectChangeEvent<string>) => {
+    const nextBuyBoxId = e.target.value;
+    const selectedBuyBox = buyBoxesState.data?.find(
+      (buyBoxItem) => buyBoxItem.id === nextBuyBoxId
+    );
+
+    if (!selectedBuyBox) {
+      return;
+    }
+
+    dispatch(setBuybox(selectedBuyBox));
     const selectedStrategyFilterMode =
-      getBuyBoxStrategyType(value) === 'MULTIFAMILY' ? undefined : strategy;
+      isMultifamilyBuyBoxValue(selectedBuyBox) ? undefined : strategy;
     filterPropertiesByValue(0, '', selectedStrategyFilterMode);
     router.push({
       pathname: router.pathname,
       query: {
-        buybox_id: value.id
+        buybox_id: selectedBuyBox.id
       }
     });
   };
@@ -336,16 +509,14 @@ const MainControls: React.FC<MainControlsProps> = (
           >
             <InputLabel>BuyBox</InputLabel>
             <Select
-              value={buybox || ''}
+              value={buybox?.id || ''}
               label="BuyBox"
               onChange={handleBuyBoxChange}
             >
               {buyBoxesState.data?.map((buyBoxItem) => (
-                <MenuItem key={buyBoxItem.id} value={buyBoxItem}>
-                  {buyBoxItem.parameters.name}
-                  {getBuyBoxStrategyType(buyBoxItem) === 'MULTIFAMILY'
-                    ? ' • Multifamily'
-                    : ''}
+                <MenuItem key={buyBoxItem.id} value={buyBoxItem.id}>
+                  {getBuyboxDisplayName(buyBoxItem)}
+                  {isMultifamilyBuyBoxValue(buyBoxItem) ? ' • Multifamily' : ''}
                 </MenuItem>
               ))}
             </Select>
@@ -424,7 +595,7 @@ const MainControls: React.FC<MainControlsProps> = (
                   () => setArv(value),
                   () => dispatch(setArv25Margin(value)),
                   value,
-                  'arv25Margin'
+                  'arv25Price'
                 )
               }
             />
@@ -448,7 +619,7 @@ const MainControls: React.FC<MainControlsProps> = (
                   () => setComps(value),
                   () => dispatch(setArvMargin(value)),
                   value,
-                  'arvMargin'
+                  'arvPrice'
                 )
               }
             />
@@ -491,6 +662,7 @@ const MainControls: React.FC<MainControlsProps> = (
               step: 1
             }}
             value={baths}
+            format={(value) => `${value}`}
             updateValue={(value) =>
               setValue(
                 () => setBaths(value),
@@ -514,6 +686,7 @@ const MainControls: React.FC<MainControlsProps> = (
               step: 1
             }}
             value={beds}
+            format={(value) => `${value}`}
             updateValue={(value) =>
               setValue(
                 () => setBeds(value),
@@ -541,6 +714,7 @@ const MainControls: React.FC<MainControlsProps> = (
             // minValue={minArea}
             // maxValue={maxArea}
             value={area}
+            format={(value) => `${value}`}
             updateValue={(value) =>
               setValue(
                 () => setArea(value),

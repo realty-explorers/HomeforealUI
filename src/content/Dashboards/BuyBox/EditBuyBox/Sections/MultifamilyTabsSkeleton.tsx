@@ -30,17 +30,26 @@ const defaultUnitMixRow = {
 };
 
 const multifamilyAssetTypeOptions = [
-  { value: 'MULTIFAMILY', label: 'Multifamily' },
-  { value: 'GARDEN_STYLE', label: 'Garden Style' },
-  { value: 'MID_RISE', label: 'Mid Rise' },
-  { value: 'HIGH_RISE', label: 'High Rise' },
-  { value: 'MIXED_USE', label: 'Mixed Use' }
+  { value: 'MULTIFAMILY_GARDEN', label: 'Garden style' },
+  { value: 'MULTIFAMILY_MIDRISE', label: 'Mid rise' },
+  { value: 'MULTIFAMILY_HIGHRISE', label: 'High rise' },
+  { value: 'MULTIFAMILY_SMALL', label: 'Small multifamily' },
+  { value: 'MIXED_USE_RESIDENTIAL', label: 'Mixed use residential' },
+  { value: 'STUDENT_HOUSING', label: 'Student housing' },
+  { value: 'SENIOR_HOUSING', label: 'Senior housing' }
 ] as const;
 
 const multifamilyRenovationAppetiteOptions = [
-  { value: 'LIGHT', label: 'Light' },
-  { value: 'MODERATE', label: 'Moderate' },
-  { value: 'HEAVY', label: 'Heavy' }
+  { value: 'LIGHT', label: 'Turnkey' },
+  { value: 'MODERATE', label: 'Light Value Add' },
+  { value: 'HEAVY', label: 'Heavy Value Add' },
+  { value: 'REPOSITION', label: 'Reposition' }
+] as const;
+
+const multifamilyUtilityBillingTypeOptions = [
+  { value: 'OWNER_PAID', label: 'Owner paid' },
+  { value: 'TENANT_PAID', label: 'Tenant paid' },
+  { value: 'RUBS', label: 'RUBS' }
 ] as const;
 
 const dealQualityGatePreferenceOptions = [
@@ -63,21 +72,88 @@ const rankingWeightFields = [
 type RankingWeightFieldKey = (typeof rankingWeightFields)[number]['key'];
 
 const rankingPresetOptions = [
+  { key: 'CORE', label: 'Core' },
   { key: 'BALANCED', label: 'Balanced' },
   { key: 'CASH_FLOW', label: 'Cash Flow' },
   { key: 'VALUE_ADD', label: 'Value Add' },
-  { key: 'LOW_RISK', label: 'Low Risk' },
+  { key: 'OPPORTUNISTIC', label: 'Opportunistic' },
   { key: 'DEEP_DISCOUNT', label: 'Deep Discount' }
 ] as const;
 
-type RankingPresetKey =
-  | (typeof rankingPresetOptions)[number]['key']
-  | 'CUSTOM';
+type VisibleRankingPresetKey = (typeof rankingPresetOptions)[number]['key'];
+type RankingPresetKey = VisibleRankingPresetKey | 'LOW_RISK' | 'CUSTOM';
+
+const strategyPresetVisualProfile: Record<
+  VisibleRankingPresetKey,
+  {
+    yield: 'low' | 'medium' | 'high';
+    risk: 'low' | 'medium' | 'high';
+    upside: 'low' | 'medium' | 'high';
+    stability: 'low' | 'medium' | 'high';
+  }
+> = {
+  CORE: {
+    yield: 'medium',
+    risk: 'low',
+    upside: 'low',
+    stability: 'high'
+  },
+  BALANCED: {
+    yield: 'medium',
+    risk: 'medium',
+    upside: 'medium',
+    stability: 'medium'
+  },
+  CASH_FLOW: {
+    yield: 'high',
+    risk: 'medium',
+    upside: 'low',
+    stability: 'medium'
+  },
+  VALUE_ADD: {
+    yield: 'medium',
+    risk: 'medium',
+    upside: 'high',
+    stability: 'medium'
+  },
+  OPPORTUNISTIC: {
+    yield: 'low',
+    risk: 'high',
+    upside: 'high',
+    stability: 'low'
+  },
+  DEEP_DISCOUNT: {
+    yield: 'medium',
+    risk: 'medium',
+    upside: 'medium',
+    stability: 'low'
+  }
+};
+
+const strategyLevelWidth: Record<'low' | 'medium' | 'high', string> = {
+  low: '33%',
+  medium: '66%',
+  high: '100%'
+};
+
+type LiveFilterPreviewState = {
+  matchingDeals: number;
+  averageCapRatePct: number;
+  averagePricePerUnit: number;
+  averageRentUpsidePct: number;
+};
 
 const rankingPresetWeights: Record<Exclude<RankingPresetKey, 'CUSTOM'>, Record<
   RankingWeightFieldKey,
   number
 >> = {
+  CORE: {
+    yield: 25,
+    upside: 10,
+    discount: 15,
+    risk: 35,
+    docs: 15
+  },
   BALANCED: {
     yield: 25,
     upside: 25,
@@ -99,6 +175,13 @@ const rankingPresetWeights: Record<Exclude<RankingPresetKey, 'CUSTOM'>, Record<
     risk: 10,
     docs: 10
   },
+  OPPORTUNISTIC: {
+    yield: 15,
+    upside: 40,
+    discount: 20,
+    risk: 15,
+    docs: 10
+  },
   LOW_RISK: {
     yield: 20,
     upside: 10,
@@ -112,6 +195,51 @@ const rankingPresetWeights: Record<Exclude<RankingPresetKey, 'CUSTOM'>, Record<
     discount: 40,
     risk: 15,
     docs: 10
+  }
+};
+
+const rankingPresetExplainability: Record<
+  Exclude<RankingPresetKey, 'CUSTOM'>,
+  {
+    topDrivers: string[];
+    topPenalties: string[];
+    docsSummary: string;
+  }
+> = {
+  CORE: {
+    topDrivers: ['Stable yield', 'Lower risk profile', 'Document quality'],
+    topPenalties: ['High execution risk', 'Missing core docs'],
+    docsSummary: 'Documents carry meaningful weight for deal confidence.'
+  },
+  BALANCED: {
+    topDrivers: ['Yield', 'Upside', 'Discount'],
+    topPenalties: ['Risk exposure', 'Missing documents'],
+    docsSummary: 'Documents influence ranking but do not dominate.'
+  },
+  CASH_FLOW: {
+    topDrivers: ['Yield', 'Discount', 'Risk control'],
+    topPenalties: ['Weak in-place cash flow', 'Missing documents'],
+    docsSummary: 'Documents support confidence in cash flow durability.'
+  },
+  VALUE_ADD: {
+    topDrivers: ['Rent upside', 'Discount to value', 'Price per unit context'],
+    topPenalties: ['High risk', 'Missing documents'],
+    docsSummary: 'Documents remain important for validating upside assumptions.'
+  },
+  OPPORTUNISTIC: {
+    topDrivers: ['Upside', 'Discount', 'Flexible risk tolerance'],
+    topPenalties: ['Execution complexity', 'Missing documents'],
+    docsSummary: 'Document quality still contributes to tie-breaking confidence.'
+  },
+  LOW_RISK: {
+    topDrivers: ['Risk control', 'Document quality', 'Yield stability'],
+    topPenalties: ['High risk signals', 'Missing required docs'],
+    docsSummary: 'Document strength is emphasized to reduce uncertainty.'
+  },
+  DEEP_DISCOUNT: {
+    topDrivers: ['Discount to value', 'Upside', 'Yield'],
+    topPenalties: ['High risk', 'Low documentation quality'],
+    docsSummary: 'Documents help verify discount quality before ranking.'
   }
 };
 
@@ -241,11 +369,15 @@ const MultifamilyTabsSkeleton = ({
   mode
 }: MultifamilyTabsSkeletonProps) => {
   const [activeTab, setActiveTab] = useState(0);
-  const [stressPreset, setStressPreset] = useState<StressPresetKey>('custom');
+  const [stressPreset, setStressPreset] = useState<StressPresetKey>('base');
   const [showAdvancedRanking, setShowAdvancedRanking] = useState(false);
+  const [advancedModeEnabled, setAdvancedModeEnabled] = useState(false);
   const selectedTab = tabs[activeTab] || 'Multifamily Tab';
   const { control, register, setValue, watch } = useFormContext<any>();
-  const initializedUnitMixRef = useRef(false);
+  const stressPresetInitializedRef = useRef(false);
+  const unitMixTargetingEnabled = Boolean(
+    watch('multifamilyCriteria.discovery.unitMixTargets.enabled')
+  );
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -253,33 +385,36 @@ const MultifamilyTabsSkeleton = ({
   });
 
   useEffect(() => {
-    if (mode !== 'criteria' || initializedUnitMixRef.current || fields.length > 0) {
+    if (
+      mode !== 'criteria' ||
+      !advancedModeEnabled ||
+      !unitMixTargetingEnabled ||
+      fields.length > 0
+    ) {
       return;
     }
+
     append(defaultUnitMixRow);
-    initializedUnitMixRef.current = true;
-  }, [append, fields.length, mode]);
+  }, [advancedModeEnabled, append, fields.length, mode, unitMixTargetingEnabled]);
 
   useEffect(() => {
     if (stressPreset === 'custom') {
       return;
     }
 
+    const isInitialStressPreset = !stressPresetInitializedRef.current;
+
     const presetValues = stressPresetValues[stressPreset];
 
-    setValue(
-      'multifamilySetup.riskAndNotes.stressVacancyPct',
-      presetValues.stressVacancyPct,
-      {
-        shouldDirty: true,
-        shouldValidate: true
-      }
-    );
+    setValue('multifamilySetup.riskAndNotes.stressVacancyPct', presetValues.stressVacancyPct, {
+      shouldDirty: !isInitialStressPreset,
+      shouldValidate: true
+    });
     setValue(
       'multifamilySetup.riskAndNotes.stressExitCapRatePct',
       presetValues.stressExitCapRatePct,
       {
-        shouldDirty: true,
+        shouldDirty: !isInitialStressPreset,
         shouldValidate: true
       }
     );
@@ -287,7 +422,7 @@ const MultifamilyTabsSkeleton = ({
       'multifamilySetup.riskAndNotes.stressInterestRatePct',
       presetValues.stressInterestRatePct,
       {
-        shouldDirty: true,
+        shouldDirty: !isInitialStressPreset,
         shouldValidate: true
       }
     );
@@ -295,16 +430,43 @@ const MultifamilyTabsSkeleton = ({
       'multifamilySetup.riskAndNotes.downsideNoiChangePct',
       presetValues.downsideNoiChangePct,
       {
-        shouldDirty: true,
+        shouldDirty: !isInitialStressPreset,
         shouldValidate: true
       }
     );
+
+    if (!stressPresetInitializedRef.current) {
+      stressPresetInitializedRef.current = true;
+    }
   }, [setValue, stressPreset]);
+
+  useEffect(() => {
+    if (advancedModeEnabled) {
+      return;
+    }
+
+    setShowAdvancedRanking(false);
+
+    if (stressPreset === 'custom') {
+      setStressPreset('base');
+    }
+
+    if (mode === 'criteria' && unitMixTargetingEnabled) {
+      setValue('multifamilyCriteria.discovery.unitMixTargets.enabled', false, {
+        shouldDirty: true,
+        shouldValidate: true
+      });
+    }
+  }, [advancedModeEnabled, mode, setValue, stressPreset, unitMixTargetingEnabled]);
 
   const otherIncomeMonthly = watch('multifamilyCriteria.rentRoll.otherIncomeMonthly');
   const unitMixRows = (watch('multifamilyCriteria.unitMix') || []) as {
     units?: unknown;
   }[];
+  const otherIncomeAnnual = asFiniteNumber(
+    watch('multifamilyCriteria.income.otherIncomeAnnual'),
+    0
+  );
 
   useEffect(() => {
     const monthlyIncome = Number(otherIncomeMonthly);
@@ -317,11 +479,17 @@ const MultifamilyTabsSkeleton = ({
       return sum + (Number.isFinite(units) ? Math.max(0, units) : 0);
     }, 0);
 
-    setValue('multifamilyCriteria.income.otherIncomeAnnual', monthlyIncome * totalUnits * 12, {
+    const derivedAnnualIncome = monthlyIncome * totalUnits * 12;
+
+    if (Math.abs(derivedAnnualIncome - otherIncomeAnnual) < 0.01) {
+      return;
+    }
+
+    setValue('multifamilyCriteria.income.otherIncomeAnnual', derivedAnnualIncome, {
       shouldDirty: true,
       shouldValidate: true
     });
-  }, [otherIncomeMonthly, setValue, unitMixRows]);
+  }, [otherIncomeAnnual, otherIncomeMonthly, setValue, unitMixRows]);
 
   const rankingPreset = watch(
     'multifamilyCriteria.discovery.rankingPreset'
@@ -334,9 +502,6 @@ const MultifamilyTabsSkeleton = ({
     return sum + (Number.isFinite(value) ? value : 0);
   }, 0);
   const isWeightTotalBalanced = Math.abs(rankingWeightTotal - 100) < 0.01;
-  const unitMixTargetingEnabled = Boolean(
-    watch('multifamilyCriteria.discovery.unitMixTargets.enabled')
-  );
 
   const unitMixTargetPctTotal = fields.reduce((sum, _, index) => {
     const value = Number(watch(`multifamilyCriteria.unitMix.${index}.targetPct`) ?? 0);
@@ -346,7 +511,7 @@ const MultifamilyTabsSkeleton = ({
 
   const occupancyBandLow = asFiniteNumber(
     watch('multifamilyCriteria.discovery.minOccupancyPct'),
-    85
+    70
   );
   const occupancyBandHigh = asFiniteNumber(
     watch('multifamilyCriteria.discovery.maxOccupancyPct'),
@@ -356,6 +521,39 @@ const MultifamilyTabsSkeleton = ({
     Math.min(occupancyBandLow, occupancyBandHigh),
     Math.max(occupancyBandLow, occupancyBandHigh)
   ];
+
+  const discoveryAssetTypes = (watch('multifamilyCriteria.discovery.assetTypes') || []) as string[];
+  const minUnits = asFiniteNumber(watch('multifamilyCriteria.discovery.minUnits'), 10);
+  const minCapRatePct = asFiniteNumber(watch('multifamilyCriteria.discovery.minCapRatePct'), 4);
+  const maxCapRatePct = asFiniteNumber(watch('multifamilyCriteria.discovery.maxCapRatePct'), 10);
+  const minPricePerUnit = asFiniteNumber(
+    watch('multifamilyCriteria.discovery.minPricePerUnit'),
+    50000
+  );
+  const maxPricePerUnit = asFiniteNumber(
+    watch('multifamilyCriteria.discovery.maxPricePerUnit'),
+    350000
+  );
+  const minRentUpsidePct = asFiniteNumber(
+    watch('multifamilyCriteria.discovery.minRentUpsidePct'),
+    5
+  );
+
+  const liveFilterPreviewReady = mode === 'criteria' && discoveryAssetTypes.length > 0;
+  const liveFilterPreview: LiveFilterPreviewState = {
+    matchingDeals: Math.max(
+      0,
+      Math.round(
+        discoveryAssetTypes.length * 120 -
+          minUnits / 5 -
+          ((minPricePerUnit + maxPricePerUnit) / 2) / 6000 +
+          Math.max(0, 20 - (minCapRatePct + maxCapRatePct) / 2)
+      )
+    ),
+    averageCapRatePct: (minCapRatePct + maxCapRatePct) / 2,
+    averagePricePerUnit: (minPricePerUnit + maxPricePerUnit) / 2,
+    averageRentUpsidePct: minRentUpsidePct
+  };
 
   const setOccupancyBand = (economicPct: number, physicalPct: number) => {
     const normalizedEconomicPct = Math.max(0, Math.min(100, economicPct));
@@ -476,6 +674,27 @@ const MultifamilyTabsSkeleton = ({
             />
           )}
         />
+        <TextField
+          className="mt-2"
+          label={`${label} value`}
+          size="small"
+          type="number"
+          disabled={disabled}
+          inputProps={{ min, max, step }}
+          value={currentValue}
+          onChange={(event) => {
+            const nextValue = Number(event.target.value);
+            if (!Number.isFinite(nextValue)) {
+              return;
+            }
+
+            const normalizedValue = Math.max(min, Math.min(max, nextValue));
+            setValue(fieldPath, normalizedValue, {
+              shouldDirty: true,
+              shouldValidate: true
+            });
+          }}
+        />
       </div>
     );
   };
@@ -491,7 +710,8 @@ const MultifamilyTabsSkeleton = ({
     minInputLabel,
     maxInputLabel,
     showNumericInputs = true,
-    quickRanges
+    quickRanges,
+    quickRangeBehavior = 'set-both'
   }: {
     label: string;
     minFieldPath: string;
@@ -504,6 +724,7 @@ const MultifamilyTabsSkeleton = ({
     maxInputLabel: string;
     showNumericInputs?: boolean;
     quickRanges?: { label: string; minValue: number; maxValue: number }[];
+    quickRangeBehavior?: 'set-both' | 'threshold-min';
   }) => {
     const rawMinValue = asFiniteNumber(watch(minFieldPath), min);
     const rawMaxValue = asFiniteNumber(watch(maxFieldPath), max);
@@ -544,8 +765,10 @@ const MultifamilyTabsSkeleton = ({
           <div className="mb-2 flex flex-wrap gap-2">
             {quickRanges.map((quickRange) => {
               const isActive =
-                Math.abs(rangeValue[0] - quickRange.minValue) < step / 2 + 0.0001 &&
-                Math.abs(rangeValue[1] - quickRange.maxValue) < step / 2 + 0.0001;
+                quickRangeBehavior === 'threshold-min'
+                  ? Math.abs(rangeValue[0] - quickRange.minValue) < step / 2 + 0.0001
+                  : Math.abs(rangeValue[0] - quickRange.minValue) < step / 2 + 0.0001 &&
+                    Math.abs(rangeValue[1] - quickRange.maxValue) < step / 2 + 0.0001;
 
               return (
                 <Button
@@ -554,7 +777,16 @@ const MultifamilyTabsSkeleton = ({
                   size="small"
                   variant={isActive ? 'contained' : 'outlined'}
                   className={isActive ? 'bg-[#9747FF] text-white hover:bg-[#5500c4]' : ''}
-                  onClick={() => updateRange(quickRange.minValue, quickRange.maxValue)}
+                  onClick={() => {
+                    if (quickRangeBehavior === 'threshold-min') {
+                      const nextMax =
+                        rangeValue[1] < quickRange.minValue ? max : Math.max(rangeValue[1], quickRange.minValue);
+                      updateRange(quickRange.minValue, nextMax);
+                      return;
+                    }
+
+                    updateRange(quickRange.minValue, quickRange.maxValue);
+                  }}
                 >
                   {quickRange.label}
                 </Button>
@@ -764,10 +996,10 @@ const MultifamilyTabsSkeleton = ({
       return (
         <div className="flex flex-col gap-y-3">
           <Typography className={clsx([styles.subheader, 'mb-1'])}>
-            Discovery filters
+            BuyBox filters
           </Typography>
           <Typography className={styles.helper_text2}>
-            Define hard constraints for the target multifamily opportunity set.
+            Set the deal profile you want us to search for.
           </Typography>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <Controller
@@ -804,9 +1036,9 @@ const MultifamilyTabsSkeleton = ({
                   renderInput={(params) => (
                     <TextField
                       {...params}
-                      label="Asset Types *"
+                      label="Asset Type *"
                       size="small"
-                      placeholder="Select one or more asset types"
+                      placeholder="Select one or more property types"
                     />
                   )}
                   className="md:col-span-2"
@@ -815,22 +1047,30 @@ const MultifamilyTabsSkeleton = ({
             />
 
             {renderRangeField({
-              label: 'Unit Count Range *',
+              label: 'Units *',
               minFieldPath: 'multifamilyCriteria.discovery.minUnits',
               maxFieldPath: 'multifamilyCriteria.discovery.maxUnits',
-              min: 1,
-              max: 500,
+              min: 2,
+              max: 2000,
               step: 1,
               minInputLabel: 'Minimum Units',
-              maxInputLabel: 'Maximum Units'
+              maxInputLabel: 'Maximum Units',
+              quickRanges: [
+                { label: '10+', minValue: 10, maxValue: 2000 },
+                { label: '25+', minValue: 25, maxValue: 2000 },
+                { label: '50+', minValue: 50, maxValue: 2000 },
+                { label: '100+', minValue: 100, maxValue: 2000 },
+                { label: '200+', minValue: 200, maxValue: 2000 }
+              ],
+              quickRangeBehavior: 'threshold-min'
             })}
 
             {renderRangeField({
-              label: 'Asking Price Range ($) *',
+              label: 'Total purchase price ($) *',
               minFieldPath: 'multifamilyCriteria.discovery.minAskingPrice',
               maxFieldPath: 'multifamilyCriteria.discovery.maxAskingPrice',
               min: 0,
-              max: 50000000,
+              max: 200000000,
               step: 50000,
               minInputLabel: 'Minimum Asking Price ($)',
               maxInputLabel: 'Maximum Asking Price ($)',
@@ -842,18 +1082,20 @@ const MultifamilyTabsSkeleton = ({
             })}
 
             {renderRangeField({
-              label: 'Price Per Unit Range ($) *',
+              label: 'Price per unit ($) *',
               minFieldPath: 'multifamilyCriteria.discovery.minPricePerUnit',
               maxFieldPath: 'multifamilyCriteria.discovery.maxPricePerUnit',
               min: 0,
-              max: 1000000,
+              max: 2000000,
               step: 5000,
               minInputLabel: 'Minimum Price / Unit ($)',
               maxInputLabel: 'Maximum Price / Unit ($)',
               quickRanges: [
-                { label: '$50k-$150k', minValue: 50000, maxValue: 150000 },
-                { label: '$150k-$300k', minValue: 150000, maxValue: 300000 },
-                { label: '$300k-$500k', minValue: 300000, maxValue: 500000 }
+                { label: 'Under $75k', minValue: 0, maxValue: 75000 },
+                { label: '$75k-$125k', minValue: 75000, maxValue: 125000 },
+                { label: '$125k-$200k', minValue: 125000, maxValue: 200000 },
+                { label: '$200k-$350k', minValue: 200000, maxValue: 350000 },
+                { label: '$350k+', minValue: 350000, maxValue: 2000000 }
               ]
             })}
 
@@ -875,7 +1117,7 @@ const MultifamilyTabsSkeleton = ({
             })}
 
             {renderSegmentedSelectionField({
-              label: 'Renovation Appetite *',
+              label: 'Value add level *',
               fieldPath: 'multifamilyCriteria.discovery.renovationAppetite',
               options: multifamilyRenovationAppetiteOptions as unknown as {
                 value: string;
@@ -886,19 +1128,43 @@ const MultifamilyTabsSkeleton = ({
             <div className="rounded-lg border border-gray-200 bg-white p-3 md:col-span-2">
               <div className="mb-2 flex items-center justify-between gap-3">
                 <Typography className="text-sm font-medium text-gray-700">
-                  Occupancy target band (Min to Max)
+                  Current occupancy range
                 </Typography>
                 <Typography className="text-sm font-semibold text-sky-700">
-                  {occupancyBand[0].toFixed(1)}% - {occupancyBand[1].toFixed(1)}%
+                  {occupancyBand[0].toFixed(0)}% - {occupancyBand[1].toFixed(0)}%
                 </Typography>
               </div>
               <Typography className={clsx([styles.helper_text2, 'mb-2'])}>
-                Drag both handles to quickly set occupancy bounds.
+                This reflects current occupancy, not target occupancy.
               </Typography>
+              <div className="mb-2 flex flex-wrap gap-2">
+                {(
+                  [
+                    { label: 'Stabilized', min: 85, max: 95 },
+                    { label: 'Value add', min: 70, max: 90 },
+                    { label: 'Distressed', min: 40, max: 75 }
+                  ] as { label: string; min: number; max: number }[]
+                ).map((preset) => {
+                  const isActive = occupancyBand[0] === preset.min && occupancyBand[1] === preset.max;
+
+                  return (
+                    <Button
+                      key={`occupancy-${preset.label}`}
+                      type="button"
+                      size="small"
+                      variant={isActive ? 'contained' : 'outlined'}
+                      className={isActive ? 'bg-[#9747FF] text-white hover:bg-[#5500c4]' : ''}
+                      onClick={() => setOccupancyBand(preset.min, preset.max)}
+                    >
+                      {preset.label}
+                    </Button>
+                  );
+                })}
+              </div>
               <Slider
                 min={0}
                 max={100}
-                step={0.5}
+                step={1}
                 disableSwap
                 value={occupancyBand}
                 getAriaLabel={(index) =>
@@ -906,7 +1172,7 @@ const MultifamilyTabsSkeleton = ({
                     ? 'Minimum occupancy bound'
                     : 'Maximum occupancy bound'
                 }
-                getAriaValueText={(value) => `${Number(value).toFixed(1)}%`}
+                getAriaValueText={(value) => `${Number(value).toFixed(0)}%`}
                 onChange={(_, value) => {
                   if (!Array.isArray(value)) {
                     return;
@@ -914,167 +1180,339 @@ const MultifamilyTabsSkeleton = ({
                   setOccupancyBand(value[0], value[1]);
                 }}
                 valueLabelDisplay="auto"
-                valueLabelFormat={(value) => `${Number(value).toFixed(1)}%`}
+                valueLabelFormat={(value) => `${Number(value).toFixed(0)}%`}
               />
             </div>
+
+            {renderRangeField({
+              label: 'Cap rate range',
+              minFieldPath: 'multifamilyCriteria.discovery.minCapRatePct',
+              maxFieldPath: 'multifamilyCriteria.discovery.maxCapRatePct',
+              min: 0,
+              max: 20,
+              step: 0.1,
+              minInputLabel: 'Minimum Cap Rate (%)',
+              maxInputLabel: 'Maximum Cap Rate (%)',
+              suffix: '%'
+            })}
+
+            {renderSliderField({
+              label: 'Minimum rent upside',
+              fieldPath: 'multifamilyCriteria.discovery.minRentUpsidePct',
+              min: 0,
+              max: 50,
+              step: 0.5,
+              quickValues: [0, 5, 10, 15]
+            })}
+
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <TextField
+                label="Minimum NOI per unit"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, max: 50000, step: 50 }}
+                {...register('multifamilyCriteria.discovery.minNoiPerUnit', {
+                  valueAsNumber: true
+                })}
+              />
+            </div>
+
+            {renderRangeField({
+              label: 'Expense ratio range',
+              minFieldPath: 'multifamilyCriteria.discovery.minExpenseRatioPct',
+              maxFieldPath: 'multifamilyCriteria.discovery.maxExpenseRatioPct',
+              min: 0,
+              max: 90,
+              step: 0.5,
+              minInputLabel: 'Minimum Expense Ratio (%)',
+              maxInputLabel: 'Maximum Expense Ratio (%)',
+              suffix: '%'
+            })}
           </div>
 
           <div className="rounded-lg border border-gray-200 bg-white p-3">
-            <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
-              <Typography className="text-sm font-medium text-gray-700">
-                Unit Mix Targeting
-              </Typography>
-              {unitMixTargetingEnabled && (
-                <Typography
-                  data-testid="unit-mix-target-total"
-                  className={clsx([
-                    'text-sm font-semibold',
-                    isUnitMixTargetTotalBalanced ? 'text-emerald-700' : 'text-amber-700'
-                  ])}
-                >
-                  Total target: {unitMixTargetPctTotal.toFixed(2)}%
-                </Typography>
-              )}
-            </div>
-            <Typography className={clsx([styles.helper_text2, 'mb-2'])}>
-              Enable to enforce target_pct allocation by unit type. When enabled,
-              all target percentages must sum to 100.
+            <Typography className={clsx([styles.subheader, 'mb-2'])}>
+              Live filter impact
             </Typography>
-            <div className="mb-3 flex flex-wrap gap-2">
-              {(
-                [
-                  { key: false, label: 'Disabled' },
-                  { key: true, label: 'Enabled' }
-                ] as { key: boolean; label: string }[]
-              ).map((option) => {
-                const isActive = unitMixTargetingEnabled === option.key;
+            {!liveFilterPreviewReady ? (
+              <Typography className={styles.helper_text2}>
+                Enter location and core filters to preview matching deals.
+              </Typography>
+            ) : (
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-4">
+                <div className="rounded border border-gray-200 p-2">
+                  <Typography className="text-xs font-medium uppercase text-gray-500">
+                    Matching deals
+                  </Typography>
+                  <Typography className="text-lg font-semibold text-gray-800">
+                    {liveFilterPreview.matchingDeals.toLocaleString()}
+                  </Typography>
+                </div>
+                <div className="rounded border border-gray-200 p-2">
+                  <Typography className="text-xs font-medium uppercase text-gray-500">
+                    Average cap rate
+                  </Typography>
+                  <Typography className="text-lg font-semibold text-gray-800">
+                    {liveFilterPreview.averageCapRatePct.toFixed(2)}%
+                  </Typography>
+                </div>
+                <div className="rounded border border-gray-200 p-2">
+                  <Typography className="text-xs font-medium uppercase text-gray-500">
+                    Average price per unit
+                  </Typography>
+                  <Typography className="text-lg font-semibold text-gray-800">
+                    ${Math.round(liveFilterPreview.averagePricePerUnit).toLocaleString()}
+                  </Typography>
+                </div>
+                <div className="rounded border border-gray-200 p-2">
+                  <Typography className="text-xs font-medium uppercase text-gray-500">
+                    Average rent upside
+                  </Typography>
+                  <Typography className="text-lg font-semibold text-gray-800">
+                    {liveFilterPreview.averageRentUpsidePct.toFixed(1)}%
+                  </Typography>
+                </div>
+              </div>
+            )}
+          </div>
 
-                return (
-                  <Button
-                    key={`unit-mix-target-${option.label}`}
-                    type="button"
-                    size="small"
-                    variant={isActive ? 'contained' : 'outlined'}
-                    className={isActive ? 'bg-[#9747FF] text-white hover:bg-[#5500c4]' : ''}
-                    onClick={() =>
-                      setValue(
-                        'multifamilyCriteria.discovery.unitMixTargets.enabled',
-                        option.key,
-                        {
-                          shouldDirty: true,
-                          shouldValidate: true
+          {advancedModeEnabled ? (
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <div className="mb-2 flex flex-wrap items-center justify-between gap-3">
+                <Typography className="text-sm font-medium text-gray-700">
+                  Unit Mix Targeting
+                </Typography>
+                <Chip label="Advanced" size="small" variant="outlined" />
+                {unitMixTargetingEnabled && (
+                  <Typography
+                    data-testid="unit-mix-target-total"
+                    className={clsx([
+                      'text-sm font-semibold',
+                      isUnitMixTargetTotalBalanced ? 'text-emerald-700' : 'text-amber-700'
+                    ])}
+                  >
+                    Total target: {unitMixTargetPctTotal.toFixed(2)}%
+                  </Typography>
+                )}
+              </div>
+              <Typography className={clsx([styles.helper_text2, 'mb-2'])}>
+                Enable to enforce target allocation by unit type. When enabled, all
+                target percentages must sum to 100.
+              </Typography>
+              <div className="mb-3 flex flex-wrap gap-2">
+                {(
+                  [
+                    { key: false, label: 'Disabled' },
+                    { key: true, label: 'Enabled' }
+                  ] as { key: boolean; label: string }[]
+                ).map((option) => {
+                  const isActive = unitMixTargetingEnabled === option.key;
+
+                  return (
+                    <Button
+                      key={`unit-mix-target-${option.label}`}
+                      type="button"
+                      size="small"
+                      variant={isActive ? 'contained' : 'outlined'}
+                      className={isActive ? 'bg-[#9747FF] text-white hover:bg-[#5500c4]' : ''}
+                      onClick={() => {
+                        setValue(
+                          'multifamilyCriteria.discovery.unitMixTargets.enabled',
+                          option.key,
+                          {
+                            shouldDirty: true,
+                            shouldValidate: true
+                          }
+                        );
+
+                        if (option.key && fields.length === 0) {
+                          append(defaultUnitMixRow);
                         }
-                      )
-                    }
-                  >
-                    {option.label}
-                  </Button>
-                );
-              })}
-            </div>
+                      }}
+                    >
+                      {option.label}
+                    </Button>
+                  );
+                })}
+              </div>
 
-            <div className="flex flex-col gap-y-3">
-              {fields.map((field, index) => (
-                <div
-                  key={field.id}
-                  className="grid w-full grid-cols-1 gap-3 md:grid-cols-[1fr_7rem_9rem_8rem_9rem_auto]"
-                >
-                  <TextField
-                    label="Unit Type"
-                    size="small"
-                    {...register(`multifamilyCriteria.unitMix.${index}.unitType`)}
-                  />
-                  <TextField
-                    label="Units"
-                    size="small"
-                    type="number"
-                    {...register(`multifamilyCriteria.unitMix.${index}.units`, {
-                      valueAsNumber: true
-                    })}
-                  />
-                  <TextField
-                    label="Avg Rent ($)"
-                    size="small"
-                    type="number"
-                    {...register(`multifamilyCriteria.unitMix.${index}.avgRent`, {
-                      valueAsNumber: true
-                    })}
-                  />
-                  <TextField
-                    label="Avg Sqft"
-                    size="small"
-                    type="number"
-                    {...register(`multifamilyCriteria.unitMix.${index}.avgSqft`, {
-                      valueAsNumber: true
-                    })}
-                  />
-                  <TextField
-                    label="Target %"
-                    size="small"
-                    type="number"
-                    disabled={!unitMixTargetingEnabled}
-                    inputProps={{ min: 0, max: 100, step: 0.1 }}
-                    {...register(`multifamilyCriteria.unitMix.${index}.targetPct`, {
-                      valueAsNumber: true
-                    })}
-                  />
+              <div className="flex flex-col gap-y-3">
+                {fields.map((field, index) => (
+                  <div
+                    key={field.id}
+                    className="grid w-full grid-cols-1 gap-3 md:grid-cols-[1fr_7rem_9rem_8rem_9rem_auto]"
+                  >
+                    <TextField
+                      label="Unit Type"
+                      size="small"
+                      {...register(`multifamilyCriteria.unitMix.${index}.unitType`)}
+                    />
+                    <TextField
+                      label="Units"
+                      size="small"
+                      type="number"
+                      {...register(`multifamilyCriteria.unitMix.${index}.units`, {
+                        valueAsNumber: true
+                      })}
+                    />
+                    <TextField
+                      label="Avg Rent ($)"
+                      size="small"
+                      type="number"
+                      {...register(`multifamilyCriteria.unitMix.${index}.avgRent`, {
+                        valueAsNumber: true
+                      })}
+                    />
+                    <TextField
+                      label="Avg Sqft"
+                      size="small"
+                      type="number"
+                      {...register(`multifamilyCriteria.unitMix.${index}.avgSqft`, {
+                        valueAsNumber: true
+                      })}
+                    />
+                    <TextField
+                      label="Target %"
+                      size="small"
+                      type="number"
+                      disabled={!unitMixTargetingEnabled}
+                      inputProps={{ min: 0, max: 100, step: 0.1 }}
+                      {...register(`multifamilyCriteria.unitMix.${index}.targetPct`, {
+                        valueAsNumber: true
+                      })}
+                    />
+                    <Button
+                      type="button"
+                      variant="outlined"
+                      color="error"
+                      onClick={() => remove(index)}
+                      disabled={fields.length <= 1}
+                      className="w-full md:w-auto"
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                ))}
+                <div>
                   <Button
                     type="button"
-                    variant="outlined"
-                    color="error"
-                    onClick={() => remove(index)}
-                    disabled={fields.length <= 1}
-                    className="w-full md:w-auto"
+                    variant="contained"
+                    onClick={() => append(defaultUnitMixRow)}
                   >
-                    Remove
+                    Add Unit Type
                   </Button>
                 </div>
-              ))}
-              <div>
-                <Button
-                  type="button"
-                  variant="contained"
-                  onClick={() => append(defaultUnitMixRow)}
-                >
-                  Add Unit Type
-                </Button>
               </div>
             </div>
-          </div>
+          ) : (
+            <Typography className={styles.helper_text2}>
+              Unit mix targeting is available in Advanced mode.
+            </Typography>
+          )}
         </div>
       );
     }
 
     if (activeTab === 1) {
+      const explainabilityPreset: Exclude<RankingPresetKey, 'CUSTOM'> =
+        rankingPreset && rankingPreset !== 'CUSTOM' ? rankingPreset : 'BALANCED';
+      const explainability = rankingPresetExplainability[explainabilityPreset];
+
       return (
         <div className="flex flex-col gap-y-3">
           <Typography className={clsx([styles.subheader, 'mb-1'])}>
             Strategy preset
           </Typography>
           <Typography className={styles.helper_text2}>
-            Select a strategy preset. Raw scoring weights remain hidden unless you
-            open Advanced Strategy.
+            Choose what kind of deals should rise to the top.
           </Typography>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
             {rankingPresetOptions.map((preset) => {
               const isActive = rankingPreset === preset.key;
+              const profile = strategyPresetVisualProfile[preset.key];
 
               return (
                 <Button
                   key={preset.key}
                   type="button"
-                  size="small"
                   variant={isActive ? 'contained' : 'outlined'}
-                  className={isActive ? 'bg-[#9747FF] text-white hover:bg-[#5500c4]' : ''}
+                  className={clsx([
+                    'h-auto w-full flex-col items-start rounded-lg px-3 py-3 text-left normal-case',
+                    isActive ? 'bg-[#9747FF] text-white hover:bg-[#5500c4]' : 'text-gray-700'
+                  ])}
                   onClick={() => applyRankingPreset(preset.key)}
                 >
-                  {preset.label}
+                  <span className="mb-2 text-sm font-semibold">{preset.label}</span>
+                  {(
+                    [
+                      { key: 'yield', label: 'Yield' },
+                      { key: 'risk', label: 'Risk' },
+                      { key: 'upside', label: 'Upside' },
+                      { key: 'stability', label: 'Stability' }
+                    ] as {
+                      key: keyof typeof profile;
+                      label: string;
+                    }[]
+                  ).map((metric) => (
+                    <span
+                      key={`${preset.key}-${metric.key}`}
+                      className="mb-1 flex w-full items-center gap-2 text-xs"
+                    >
+                      <span className="w-[52px] shrink-0 text-left">{metric.label}</span>
+                      <span
+                        className={clsx([
+                          'h-1.5 rounded-full',
+                          isActive ? 'bg-white/90' : 'bg-[#9747FF]'
+                        ])}
+                        style={{ width: strategyLevelWidth[profile[metric.key]] }}
+                      />
+                    </span>
+                  ))}
                 </Button>
               );
             })}
             {rankingPreset === 'CUSTOM' && (
               <Chip label="Custom" color="primary" size="small" />
             )}
+            {rankingPreset === 'LOW_RISK' && (
+              <Chip label="Low Risk (legacy preset)" size="small" variant="outlined" />
+            )}
+          </div>
+
+          <div className="rounded-lg border border-gray-200 bg-white p-3">
+            <Typography className={clsx([styles.subheader, 'mb-1'])}>
+              How deals will be prioritized
+            </Typography>
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
+              <div>
+                <Typography className="text-sm font-semibold text-gray-700">
+                  Top drivers
+                </Typography>
+                <ul className="ml-5 mt-1 list-disc text-sm text-gray-600">
+                  {explainability.topDrivers.map((driver) => (
+                    <li key={`${explainabilityPreset}-driver-${driver}`}>{driver}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <Typography className="text-sm font-semibold text-gray-700">
+                  Top penalties
+                </Typography>
+                <ul className="ml-5 mt-1 list-disc text-sm text-gray-600">
+                  {explainability.topPenalties.map((penalty) => (
+                    <li key={`${explainabilityPreset}-penalty-${penalty}`}>{penalty}</li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <Typography className="text-sm font-semibold text-gray-700">
+                  Document importance
+                </Typography>
+                <Typography className="mt-1 text-sm text-gray-600">
+                  {explainability.docsSummary}
+                </Typography>
+              </div>
+            </div>
           </div>
 
           <Typography
@@ -1086,95 +1524,137 @@ const MultifamilyTabsSkeleton = ({
           >
             Total weight: {rankingWeightTotal.toFixed(2)} / 100
           </Typography>
-          <Button
-            type="button"
-            variant="outlined"
-            className="w-fit"
-            onClick={() => setShowAdvancedRanking((previous) => !previous)}
-          >
-            {showAdvancedRanking ? 'Hide Advanced Strategy' : 'Show Advanced Strategy'}
-          </Button>
 
-          <Collapse in={showAdvancedRanking}>
-            <div className="mt-3 flex flex-col gap-y-3">
-              {!isWeightTotalBalanced && (
-                <Button
-                  type="button"
-                  variant="outlined"
-                  className="w-fit"
-                  onClick={handleNormalizeWeights}
-                >
-                  Auto normalize to 100
-                </Button>
-              )}
-              <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-                {rankingWeightFields.map((field) => (
-                  <div
-                    key={field.key}
-                    className="rounded-lg border border-gray-200 bg-white p-3"
-                  >
-                    <div className="mb-2 flex items-center justify-between gap-3">
-                      <Typography className="text-sm font-medium text-gray-700">
-                        {field.label}
-                      </Typography>
-                      <Typography className="text-sm font-semibold text-sky-700">
-                        {asFiniteNumber(
-                          watch(`multifamilyCriteria.discovery.rankingWeights.${field.key}`),
-                          0
-                        ).toFixed(1)}%
-                      </Typography>
-                    </div>
-                    <Controller
-                      name={`multifamilyCriteria.discovery.rankingWeights.${field.key}` as any}
-                      control={control}
-                      render={({ field: controllerField }) => (
-                        <Slider
-                          aria-label={field.label}
-                          min={0}
-                          max={100}
-                          step={0.1}
-                          value={asFiniteNumber(controllerField.value, 0)}
-                          onChange={(_, value) => {
-                            if (Array.isArray(value)) {
-                              return;
-                            }
+          {advancedModeEnabled ? (
+            <>
+              <Button
+                type="button"
+                variant="outlined"
+                className="w-fit"
+                onClick={() => setShowAdvancedRanking((previous) => !previous)}
+              >
+                {showAdvancedRanking ? 'Hide Advanced Strategy' : 'Show Advanced Strategy'}
+              </Button>
 
-                            const sanitizedValue = sanitizeWeightValue(value);
-                            const currentWeights = (watch(
-                              'multifamilyCriteria.discovery.rankingWeights'
-                            ) || {}) as Partial<Record<RankingWeightFieldKey, unknown>>;
-                            const nextWeights = {
-                              ...currentWeights,
-                              [field.key]: sanitizedValue
-                            };
-                            const nextTotal = rankingWeightFields.reduce(
-                              (sum, rankingField) =>
-                                sum + sanitizeWeightValue(nextWeights[rankingField.key]),
-                              0
-                            );
-
-                            setValue('multifamilyCriteria.discovery.rankingPreset', 'CUSTOM', {
-                              shouldDirty: true,
-                              shouldValidate: true
-                            });
-
-                            if (nextTotal > 100) {
-                              applyNormalizedRankingWeights(nextWeights);
-                              return;
-                            }
-
-                            controllerField.onChange(sanitizedValue);
-                          }}
-                          valueLabelDisplay="auto"
-                          valueLabelFormat={(value) => `${Number(value).toFixed(1)}%`}
-                        />
-                      )}
-                    />
+              <Collapse in={showAdvancedRanking}>
+                <div className="mt-3 flex flex-col gap-y-3">
+                  <div className="flex flex-wrap gap-2">
+                    {!isWeightTotalBalanced && (
+                      <Button
+                        type="button"
+                        variant="outlined"
+                        className="w-fit"
+                        onClick={handleNormalizeWeights}
+                      >
+                        Auto normalize to 100
+                      </Button>
+                    )}
+                    <Button
+                      type="button"
+                      variant="outlined"
+                      className="w-fit"
+                      onClick={() =>
+                        applyRankingPreset(
+                          rankingPreset && rankingPreset !== 'CUSTOM'
+                            ? rankingPreset
+                            : 'BALANCED'
+                        )
+                      }
+                    >
+                      Reset to preset
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outlined"
+                      className="w-fit"
+                      onClick={() => {
+                        setValue('multifamilyCriteria.discovery.rankingPreset', 'CUSTOM', {
+                          shouldDirty: true,
+                          shouldValidate: true
+                        });
+                        handleNormalizeWeights();
+                      }}
+                    >
+                      Save custom
+                    </Button>
                   </div>
-                ))}
-              </div>
+                  <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+                    {rankingWeightFields.map((field) => (
+                      <div
+                        key={field.key}
+                        className="rounded-lg border border-gray-200 bg-white p-3"
+                      >
+                        <div className="mb-2 flex items-center justify-between gap-3">
+                          <Typography className="text-sm font-medium text-gray-700">
+                            {field.label}
+                          </Typography>
+                          <Typography className="text-sm font-semibold text-sky-700">
+                            {asFiniteNumber(
+                              watch(`multifamilyCriteria.discovery.rankingWeights.${field.key}`),
+                              0
+                            ).toFixed(1)}%
+                          </Typography>
+                        </div>
+                        <Controller
+                          name={`multifamilyCriteria.discovery.rankingWeights.${field.key}` as any}
+                          control={control}
+                          render={({ field: controllerField }) => (
+                            <Slider
+                              aria-label={field.label}
+                              min={0}
+                              max={100}
+                              step={0.1}
+                              value={asFiniteNumber(controllerField.value, 0)}
+                              onChange={(_, value) => {
+                                if (Array.isArray(value)) {
+                                  return;
+                                }
+
+                                const sanitizedValue = sanitizeWeightValue(value);
+                                const currentWeights = (watch(
+                                  'multifamilyCriteria.discovery.rankingWeights'
+                                ) || {}) as Partial<Record<RankingWeightFieldKey, unknown>>;
+                                const nextWeights = {
+                                  ...currentWeights,
+                                  [field.key]: sanitizedValue
+                                };
+                                const nextTotal = rankingWeightFields.reduce(
+                                  (sum, rankingField) =>
+                                    sum + sanitizeWeightValue(nextWeights[rankingField.key]),
+                                  0
+                                );
+
+                                setValue('multifamilyCriteria.discovery.rankingPreset', 'CUSTOM', {
+                                  shouldDirty: true,
+                                  shouldValidate: true
+                                });
+
+                                if (nextTotal <= 0) {
+                                  controllerField.onChange(sanitizedValue);
+                                  return;
+                                }
+
+                                applyNormalizedRankingWeights(nextWeights);
+                              }}
+                              valueLabelDisplay="auto"
+                              valueLabelFormat={(value) => `${Number(value).toFixed(1)}%`}
+                            />
+                          )}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </Collapse>
+            </>
+          ) : (
+            <div className="flex items-center gap-2">
+              <Chip label="Advanced" size="small" variant="outlined" />
+              <Typography className={styles.helper_text2}>
+                Enable Advanced mode to edit raw scoring weights.
+              </Typography>
             </div>
-          </Collapse>
+          )}
         </div>
       );
     }
@@ -1186,21 +1666,42 @@ const MultifamilyTabsSkeleton = ({
             Deal quality gates
           </Typography>
           <Typography className={styles.helper_text2}>
-            Set each doc preference as Optional, Preferred, or Required.
-            Required excludes deals missing the doc. Preferred boosts document score.
+            Optional shows all deals. Preferred boosts deals that include the
+            document. Required hides deals missing the document.
           </Typography>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             {renderDealGateField({
-              label: 'Require OM (Offering Memorandum)',
+              label: 'Offering memorandum',
               fieldPath: 'multifamilyCriteria.discovery.dealQualityGates.requireOm'
             })}
             {renderDealGateField({
-              label: 'Require Rent Roll',
+              label: 'Rent roll',
               fieldPath: 'multifamilyCriteria.discovery.dealQualityGates.requireRentRoll'
             })}
             {renderDealGateField({
-              label: 'Require T12',
+              label: 'T12 operating statement',
               fieldPath: 'multifamilyCriteria.discovery.dealQualityGates.requireT12'
+            })}
+            {renderDealGateField({
+              label: 'Floorplans',
+              fieldPath: 'multifamilyCriteria.discovery.dealQualityGates.requireFloorplans'
+            })}
+            {renderDealGateField({
+              label: 'Unit mix summary',
+              fieldPath: 'multifamilyCriteria.discovery.dealQualityGates.requireUnitMixSummary'
+            })}
+            {renderDealGateField({
+              label: 'CapEx history',
+              fieldPath: 'multifamilyCriteria.discovery.dealQualityGates.requireCapexHistory'
+            })}
+            {renderDealGateField({
+              label: 'Survey',
+              fieldPath: 'multifamilyCriteria.discovery.dealQualityGates.requireSurvey'
+            })}
+            {renderDealGateField({
+              label: 'Phase 1 environmental',
+              fieldPath:
+                'multifamilyCriteria.discovery.dealQualityGates.requirePhase1Environmental'
             })}
           </div>
         </div>
@@ -1219,7 +1720,8 @@ const MultifamilyTabsSkeleton = ({
       return (
         <div className="flex flex-col gap-y-6">
           <Typography className={styles.helper_text2}>
-            Defaults are used only when listing and documents do not provide a value.
+            These values are used only when listings and documents do not provide
+            them.
           </Typography>
 
           <div className="rounded-lg border border-gray-200 bg-white p-3">
@@ -1249,16 +1751,8 @@ const MultifamilyTabsSkeleton = ({
               ))}
             </div>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
-              <TextField
-                label="Gross Scheduled Rent (Annual)"
-                size="small"
-                type="number"
-                {...register('multifamilyCriteria.income.grossScheduledRentAnnual', {
-                  valueAsNumber: true
-                })}
-              />
               {renderSliderField({
-                label: 'Vacancy Loss',
+                label: 'Vacancy percent',
                 fieldPath: 'multifamilyCriteria.income.vacancyLossPct',
                 min: 0,
                 max: 30,
@@ -1266,15 +1760,33 @@ const MultifamilyTabsSkeleton = ({
                 quickValues: [3, 5, 8, 12]
               })}
               {renderSliderField({
-                label: 'Concessions',
+                label: 'Concessions percent',
                 fieldPath: 'multifamilyCriteria.rentRoll.concessionsPct',
                 min: 0,
                 max: 20,
-                step: 0.5,
+                step: 0.25,
                 quickValues: [0, 2, 4, 6]
               })}
+              {advancedModeEnabled &&
+                renderSliderField({
+                  label: 'Bad debt percent',
+                  fieldPath: 'multifamilyCriteria.income.badDebtPct',
+                  min: 0,
+                  max: 15,
+                  step: 0.25,
+                  quickValues: [0, 1, 2, 3]
+                })}
+              {advancedModeEnabled &&
+                renderSliderField({
+                  label: 'Loss to lease percent',
+                  fieldPath: 'multifamilyCriteria.income.lossToLeasePct',
+                  min: 0,
+                  max: 25,
+                  step: 0.25,
+                  quickValues: [0, 2, 4, 6]
+                })}
               <TextField
-                label="Other Income / Unit / Month"
+                label="Other income per unit per month"
                 size="small"
                 type="number"
                 {...register('multifamilyCriteria.rentRoll.otherIncomeMonthly', {
@@ -1300,15 +1812,15 @@ const MultifamilyTabsSkeleton = ({
             </Typography>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {renderSliderField({
-                label: 'Management Fee',
+                label: 'Management fee percent',
                 fieldPath: 'multifamilyCriteria.expenses.managementFeePct',
                 min: 0,
-                max: 20,
-                step: 0.5,
+                max: 12,
+                step: 0.25,
                 quickValues: [2, 3, 5, 7]
               })}
               <TextField
-                label="Reserve / Unit / Year"
+                label="Reserves per unit per year"
                 size="small"
                 type="number"
                 {...register('multifamilySetup.renovationCapex.capexReservePerUnit', {
@@ -1316,7 +1828,7 @@ const MultifamilyTabsSkeleton = ({
                 })}
               />
               <TextField
-                label="Payroll & Maintenance / Unit / Year"
+                label="Payroll and maintenance per unit per year"
                 size="small"
                 type="number"
                 {...register('multifamilyCriteria.expenses.payrollAndMaintenancePerUnitAnnual', {
@@ -1324,10 +1836,10 @@ const MultifamilyTabsSkeleton = ({
                 })}
               />
               {renderSliderField({
-                label: 'Expense Ratio Baseline',
+                label: 'Expense ratio baseline percent',
                 fieldPath: 'multifamilyCriteria.expenses.expenseRatioBaselinePct',
                 min: 0,
-                max: 100,
+                max: 80,
                 step: 0.5,
                 quickValues: [35, 45, 55, 65]
               })}
@@ -1339,6 +1851,14 @@ const MultifamilyTabsSkeleton = ({
               Utilities Defaults
             </Typography>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+              {renderSegmentedSelectionField({
+                label: 'Utility billing type',
+                fieldPath: 'multifamilyCriteria.utilities.utilityBillingType',
+                options: multifamilyUtilityBillingTypeOptions as unknown as {
+                  value: string;
+                  label: string;
+                }[]
+              })}
               <TextField
                 label="Water/Sewer / Unit / Month"
                 size="small"
@@ -1379,11 +1899,11 @@ const MultifamilyTabsSkeleton = ({
               Taxes and Insurance Defaults
             </Typography>
             <Typography className={clsx([styles.helper_text2, 'mb-2'])}>
-              Taxes and insurance are market based proxies and are locked unless
-              verified by documents.
+              This value is a market proxy and will be replaced by document data
+              when available.
             </Typography>
             <Chip
-              label="Source: market/county proxy"
+              label="Market proxy"
               size="small"
               variant="outlined"
               className="mb-3 w-fit"
@@ -1416,15 +1936,15 @@ const MultifamilyTabsSkeleton = ({
             </Typography>
             <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
               {renderSliderField({
-                label: 'Interest Rate',
+                label: 'Interest rate percent',
                 fieldPath: 'multifamilySetup.loanAssumptions.interestRatePct',
                 min: 0,
                 max: 20,
-                step: 0.1,
+                step: 0.125,
                 quickValues: [4, 5.5, 7, 9]
               })}
               {renderSliderField({
-                label: 'Loan-to-Value',
+                label: 'Loan to value percent',
                 fieldPath: 'multifamilySetup.loanAssumptions.ltvPct',
                 min: 0,
                 max: 90,
@@ -1458,19 +1978,27 @@ const MultifamilyTabsSkeleton = ({
               {renderSliderField({
                 label: 'Minimum DSCR',
                 fieldPath: 'multifamilySetup.loanAssumptions.minimumDscr',
-                min: 0.8,
-                max: 2.5,
+                min: 0.5,
+                max: 3,
                 step: 0.05,
                 suffix: '',
                 quickValues: [1, 1.2, 1.35, 1.5]
               })}
               {renderSliderField({
-                label: 'Closing Costs',
+                label: 'Closing costs percent',
                 fieldPath: 'multifamilySetup.capitalStack.closingCostsPct',
                 min: 0,
-                max: 15,
-                step: 0.1,
+                max: 10,
+                step: 0.25,
                 quickValues: [1, 2, 3, 5]
+              })}
+              {renderSliderField({
+                label: 'Exit cap rate',
+                fieldPath: 'multifamilySetup.exitScenario.exitCapRatePct',
+                min: 0,
+                max: 20,
+                step: 0.1,
+                quickValues: [4, 5, 6, 7]
               })}
             </div>
           </div>
@@ -1479,12 +2007,13 @@ const MultifamilyTabsSkeleton = ({
     }
 
     if (activeTab === 1) {
-      const isCustomPreset = stressPreset === 'custom';
+      const canEditStressValues = advancedModeEnabled && stressPreset === 'custom';
 
       return (
         <div className="flex flex-col gap-y-3">
           <Typography className={styles.helper_text2}>
-            Choose a stress preset. Select Custom to unlock manual edits.
+            Use presets for downside analysis. Advanced mode lets you fine tune the
+            shocks.
           </Typography>
           <div className="flex flex-wrap gap-2">
             {(
@@ -1504,6 +2033,7 @@ const MultifamilyTabsSkeleton = ({
                     ? 'bg-[#9747FF] text-white hover:bg-[#5500c4]'
                     : ''
                 }
+                disabled={preset.key === 'custom' && !advancedModeEnabled}
                 onClick={() => setStressPreset(preset.key)}
               >
                 {preset.label}
@@ -1512,44 +2042,44 @@ const MultifamilyTabsSkeleton = ({
           </div>
           <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
             <TextField
-              label="Stress Test Vacancy (%)"
+              label="Vacancy shock percent"
               size="small"
               type="number"
-              inputProps={{ min: 0, max: 100, step: 0.1 }}
-              InputProps={{ readOnly: !isCustomPreset }}
+              inputProps={{ min: 0, max: 30, step: 0.25 }}
+              InputProps={{ readOnly: !canEditStressValues }}
               InputLabelProps={{ shrink: true }}
               {...register('multifamilySetup.riskAndNotes.stressVacancyPct', {
                 valueAsNumber: true
               })}
             />
             <TextField
-              label="Stress Test Exit Cap (%)"
+              label="Exit cap expansion percent"
               size="small"
               type="number"
-              inputProps={{ min: 0, max: 100, step: 0.1 }}
-              InputProps={{ readOnly: !isCustomPreset }}
+              inputProps={{ min: 0, max: 5, step: 0.05 }}
+              InputProps={{ readOnly: !canEditStressValues }}
               InputLabelProps={{ shrink: true }}
               {...register('multifamilySetup.riskAndNotes.stressExitCapRatePct', {
                 valueAsNumber: true
               })}
             />
             <TextField
-              label="Stress Test Interest Rate (%)"
+              label="Interest rate shock percent"
               size="small"
               type="number"
-              inputProps={{ min: 0, max: 100, step: 0.1 }}
-              InputProps={{ readOnly: !isCustomPreset }}
+              inputProps={{ min: 0, max: 10, step: 0.125 }}
+              InputProps={{ readOnly: !canEditStressValues }}
               InputLabelProps={{ shrink: true }}
               {...register('multifamilySetup.riskAndNotes.stressInterestRatePct', {
                 valueAsNumber: true
               })}
             />
             <TextField
-              label="Downside NOI Change (%)"
+              label="NOI reduction percent"
               size="small"
               type="number"
-              inputProps={{ min: 0, max: 100, step: 0.1 }}
-              InputProps={{ readOnly: !isCustomPreset }}
+              inputProps={{ min: 0, max: 50, step: 0.5 }}
+              InputProps={{ readOnly: !canEditStressValues }}
               InputLabelProps={{ shrink: true }}
               {...register('multifamilySetup.riskAndNotes.downsideNoiChangePct', {
                 valueAsNumber: true
@@ -1582,9 +2112,48 @@ const MultifamilyTabsSkeleton = ({
         {description}
       </Typography>
 
+      <div className="mb-4 rounded-lg border border-gray-200 bg-white p-3">
+        <div className="mb-2 flex items-center justify-between gap-3">
+          <Typography className="text-sm font-medium text-gray-700">Visibility mode</Typography>
+          <Chip
+            label={advancedModeEnabled ? 'Advanced' : 'Standard'}
+            size="small"
+            variant="outlined"
+          />
+        </div>
+        <Typography className={clsx([styles.helper_text2, 'mb-2'])}>
+          Standard mode shows essential fields. Advanced mode reveals specialized
+          assumptions and custom scoring controls.
+        </Typography>
+        <div className="flex flex-wrap gap-2">
+          {(
+            [
+              { key: false, label: 'Standard mode' },
+              { key: true, label: 'Advanced mode' }
+            ] as { key: boolean; label: string }[]
+          ).map((option) => (
+            <Button
+              key={`visibility-mode-${option.label}`}
+              type="button"
+              size="small"
+              variant={advancedModeEnabled === option.key ? 'contained' : 'outlined'}
+              className={
+                advancedModeEnabled === option.key
+                  ? 'bg-[#9747FF] text-white hover:bg-[#5500c4]'
+                  : ''
+              }
+              onClick={() => setAdvancedModeEnabled(option.key)}
+            >
+              {option.label}
+            </Button>
+          ))}
+        </div>
+      </div>
+
       {mode === 'setup' && (
         <Typography className={clsx([styles.helper_text2, 'mb-4'])}>
-          Defaults are used only when listing and documents do not provide a value.
+          These values are used only when listings and documents do not provide
+          them.
         </Typography>
       )}
 

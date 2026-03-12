@@ -7,12 +7,12 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const criteriaTabs = [
-  'Discovery',
+  'BuyBox Filters',
   'Strategy',
   'Quality Gates'
 ];
 
-const setupTabs = ['Defaults', 'Stress Test'];
+const setupTabs = ['Underwriting Assumptions', 'Stress Testing'];
 
 const CriteriaHarness = () => {
   const methods = useForm<BuyBoxFormData>({
@@ -22,7 +22,7 @@ const CriteriaHarness = () => {
   return (
     <FormProvider {...methods}>
       <MultifamilyTabsSkeleton
-        title="Multifamily Discovery"
+        title="BuyBox Filters"
         description="Discovery test"
         tabs={criteriaTabs}
         mode="criteria"
@@ -39,7 +39,7 @@ const SetupHarness = () => {
   return (
     <FormProvider {...methods}>
       <MultifamilyTabsSkeleton
-        title="Multifamily Defaults"
+        title="Underwriting Assumptions"
         description="Defaults test"
         tabs={setupTabs}
         mode="setup"
@@ -57,42 +57,48 @@ describe('MultifamilyTabsSkeleton', () => {
     );
 
     expect(
-      await screen.findByText(/set each doc preference as optional, preferred, or required/i)
+      await screen.findByText(
+        /optional shows all deals\. preferred boosts deals that include the document\. required hides deals missing the document\./i
+      )
     ).toBeInTheDocument();
   });
 
   it('supports unit mix add/remove behavior with minimum one row protection', async () => {
     render(<CriteriaHarness />);
 
-    await waitFor(() => {
-      expect(screen.getAllByLabelText(/unit type/i)).toHaveLength(1);
-    });
+    fireEvent.click(screen.getByRole('button', { name: /advanced mode/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^enabled$/i }));
 
     const addButton = screen.getByRole('button', { name: /add unit type/i });
     fireEvent.click(addButton);
+    fireEvent.click(addButton);
 
     await waitFor(() => {
-      expect(screen.getAllByLabelText(/unit type/i)).toHaveLength(2);
+      expect(screen.queryAllByLabelText(/unit type/i).length).toBeGreaterThanOrEqual(2);
     });
 
-    fireEvent.click(screen.getAllByRole('button', { name: /remove/i })[0]);
+    let removeButtons = screen.getAllByRole('button', { name: /remove/i });
 
-    await waitFor(() => {
-      expect(screen.getAllByLabelText(/unit type/i)).toHaveLength(1);
-    });
+    while (removeButtons.length > 1) {
+      fireEvent.click(removeButtons[0]);
+      removeButtons = screen.getAllByRole('button', { name: /remove/i });
+    }
 
-    expect(screen.getByRole('button', { name: /remove/i })).toBeDisabled();
+    expect(removeButtons[0]).toBeDisabled();
   });
 
   it('retains unit mix value when switching tabs', async () => {
     render(<CriteriaHarness />);
+
+    fireEvent.click(screen.getByRole('button', { name: /advanced mode/i }));
+    fireEvent.click(screen.getByRole('button', { name: /^enabled$/i }));
 
     const unitTypeInput = (await screen.findByLabelText(/unit type/i)) as HTMLInputElement;
 
     fireEvent.change(unitTypeInput, { target: { value: '2BR / 1BA' } });
     fireEvent.click(screen.getByRole('tab', { name: /2\. strategy/i }));
     fireEvent.click(
-      screen.getByRole('tab', { name: /1\. discovery/i })
+      screen.getByRole('tab', { name: /1\. buybox filters/i })
     );
 
     expect(screen.getByLabelText(/unit type/i)).toHaveValue('2BR / 1BA');
@@ -113,6 +119,7 @@ describe('MultifamilyTabsSkeleton', () => {
     render(<CriteriaHarness />);
 
     fireEvent.click(screen.getByRole('tab', { name: /2\. strategy/i }));
+    fireEvent.click(screen.getByRole('button', { name: /advanced mode/i }));
     fireEvent.click(screen.getByRole('button', { name: /show advanced strategy/i }));
 
     const weightSlider = await screen.findByRole('slider', {
@@ -122,20 +129,20 @@ describe('MultifamilyTabsSkeleton', () => {
     fireEvent.change(weightSlider, { target: { value: 55 } });
 
     await waitFor(() => {
-      expect(screen.getByText(/custom/i)).toBeInTheDocument();
+      expect(screen.getByText(/^custom$/i)).toBeInTheDocument();
     });
   });
 
   it('applies stress presets and locks/unlocks manual editing', async () => {
     render(<SetupHarness />);
 
-    fireEvent.click(screen.getByRole('tab', { name: /2\. stress test/i }));
+    fireEvent.click(screen.getByRole('tab', { name: /2\. stress testing/i }));
 
     const vacancyInput = (await screen.findByLabelText(
-      /stress test vacancy \(%\)/i
+      /^vacancy shock percent$/i
     )) as HTMLInputElement;
 
-    expect(vacancyInput.readOnly).toBe(false);
+    expect(vacancyInput.readOnly).toBe(true);
 
     fireEvent.click(screen.getByRole('button', { name: /conservative/i }));
 
@@ -144,6 +151,9 @@ describe('MultifamilyTabsSkeleton', () => {
       expect(vacancyInput.readOnly).toBe(true);
     });
 
+    expect(screen.getByRole('button', { name: /^custom$/i })).toBeDisabled();
+
+    fireEvent.click(screen.getByRole('button', { name: /advanced mode/i }));
     fireEvent.click(screen.getByRole('button', { name: /^custom$/i }));
 
     await waitFor(() => {

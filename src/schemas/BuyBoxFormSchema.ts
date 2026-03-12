@@ -110,10 +110,86 @@ const multifamilyAssetTypeEnum = z.enum([
   'GARDEN_STYLE',
   'MID_RISE',
   'HIGH_RISE',
-  'MIXED_USE'
+  'MIXED_USE',
+  'MULTIFAMILY_GARDEN',
+  'MULTIFAMILY_MIDRISE',
+  'MULTIFAMILY_HIGHRISE',
+  'MULTIFAMILY_SMALL',
+  'MIXED_USE_RESIDENTIAL',
+  'STUDENT_HOUSING',
+  'SENIOR_HOUSING'
 ]);
 
-const multifamilyRenovationAppetiteEnum = z.enum(['LIGHT', 'MODERATE', 'HEAVY']);
+const legacyMultifamilyAssetTypeMap: Record<
+  string,
+  z.infer<typeof multifamilyAssetTypeEnum>
+> = {
+  MULTIFAMILY: 'MULTIFAMILY_GARDEN',
+  GARDEN_STYLE: 'MULTIFAMILY_GARDEN',
+  MID_RISE: 'MULTIFAMILY_MIDRISE',
+  HIGH_RISE: 'MULTIFAMILY_HIGHRISE',
+  MIXED_USE: 'MIXED_USE_RESIDENTIAL'
+};
+
+const multifamilyRenovationAppetiteEnum = z.enum([
+  'LIGHT',
+  'MODERATE',
+  'HEAVY',
+  'REPOSITION'
+]);
+
+const multifamilyUtilityBillingTypeEnum = z.enum([
+  'OWNER_PAID',
+  'TENANT_PAID',
+  'RUBS'
+]);
+
+const multifamilyAssetTypesFormSchema = z.preprocess(
+  (value) => {
+    if (!Array.isArray(value)) {
+      return value;
+    }
+
+    return value.map((entry) => {
+      if (typeof entry !== 'string') {
+        return entry;
+      }
+
+      const normalizedEntry = entry.toUpperCase();
+      return legacyMultifamilyAssetTypeMap[normalizedEntry] ?? normalizedEntry;
+    });
+  },
+  z.array(multifamilyAssetTypeEnum).default([])
+);
+
+const multifamilyRenovationAppetiteFormSchema = z.preprocess(
+  (value) => {
+    if (typeof value !== 'string') {
+      return value;
+    }
+
+    const normalizedValue = value.toUpperCase();
+    const mappedValue: Record<string, z.infer<typeof multifamilyRenovationAppetiteEnum>> = {
+      TURNKEY: 'LIGHT',
+      LIGHT_VALUE_ADD: 'MODERATE',
+      HEAVY_VALUE_ADD: 'HEAVY'
+    };
+
+    return mappedValue[normalizedValue] ?? normalizedValue;
+  },
+  multifamilyRenovationAppetiteEnum.optional()
+);
+
+const multifamilyUtilityBillingTypeFormSchema = z.preprocess(
+  (value) => {
+    if (typeof value !== 'string') {
+      return value;
+    }
+
+    return value.toUpperCase();
+  },
+  multifamilyUtilityBillingTypeEnum.optional()
+);
 
 const multifamilyDealQualityGatePreferenceEnum = z.enum([
   'OPTIONAL',
@@ -141,9 +217,11 @@ const multifamilyDealQualityGatePreferenceFormSchema = z.preprocess(
 );
 
 const multifamilyRankingPresetEnum = z.enum([
+  'CORE',
   'BALANCED',
   'CASH_FLOW',
   'VALUE_ADD',
+  'OPPORTUNISTIC',
   'LOW_RISK',
   'DEEP_DISCOUNT',
   'CUSTOM'
@@ -200,7 +278,7 @@ const multifamilyUnitMixFormSchema = z.object({
 
 const multifamilyDiscoveryFormSchema = z
   .object({
-    assetTypes: z.array(multifamilyAssetTypeEnum).default([]),
+    assetTypes: multifamilyAssetTypesFormSchema,
     minUnits: optionalMultifamilyNumberFormSchema,
     maxUnits: optionalMultifamilyNumberFormSchema,
     minAskingPrice: optionalMultifamilyNumberFormSchema,
@@ -211,17 +289,28 @@ const multifamilyDiscoveryFormSchema = z
     maxYearBuilt: optionalMultifamilyNumberFormSchema,
     minOccupancyPct: optionalMultifamilyNumberFormSchema,
     maxOccupancyPct: optionalMultifamilyNumberFormSchema,
+    minCapRatePct: optionalMultifamilyNumberFormSchema,
+    maxCapRatePct: optionalMultifamilyNumberFormSchema,
+    minRentUpsidePct: optionalMultifamilyNumberFormSchema,
+    minNoiPerUnit: optionalMultifamilyNumberFormSchema,
+    minExpenseRatioPct: optionalMultifamilyNumberFormSchema,
+    maxExpenseRatioPct: optionalMultifamilyNumberFormSchema,
     unitMixTargets: z
       .object({
         enabled: z.boolean().default(false)
       })
       .default({ enabled: false }),
-    renovationAppetite: multifamilyRenovationAppetiteEnum.optional(),
+    renovationAppetite: multifamilyRenovationAppetiteFormSchema,
     dealQualityGates: z
       .object({
         requireOm: multifamilyDealQualityGatePreferenceFormSchema,
         requireRentRoll: multifamilyDealQualityGatePreferenceFormSchema,
-        requireT12: multifamilyDealQualityGatePreferenceFormSchema
+        requireT12: multifamilyDealQualityGatePreferenceFormSchema,
+        requireFloorplans: multifamilyDealQualityGatePreferenceFormSchema,
+        requireUnitMixSummary: multifamilyDealQualityGatePreferenceFormSchema,
+        requireCapexHistory: multifamilyDealQualityGatePreferenceFormSchema,
+        requireSurvey: multifamilyDealQualityGatePreferenceFormSchema,
+        requirePhase1Environmental: multifamilyDealQualityGatePreferenceFormSchema
       })
       .default({}),
     rankingPreset: multifamilyRankingPresetEnum.optional(),
@@ -245,6 +334,7 @@ const multifamilyCriteriaFormSchema = z.object({
       grossScheduledRentAnnual: optionalMultifamilyNumberFormSchema,
       vacancyLossPct: optionalMultifamilyNumberFormSchema,
       badDebtPct: optionalMultifamilyNumberFormSchema,
+      lossToLeasePct: optionalMultifamilyNumberFormSchema,
       otherIncomeAnnual: optionalMultifamilyNumberFormSchema
     })
     .default({}),
@@ -261,6 +351,7 @@ const multifamilyCriteriaFormSchema = z.object({
     .default({}),
   utilities: z
     .object({
+      utilityBillingType: multifamilyUtilityBillingTypeFormSchema,
       waterSewerAnnual: optionalMultifamilyNumberFormSchema,
       trashAnnual: optionalMultifamilyNumberFormSchema,
       electricAnnual: optionalMultifamilyNumberFormSchema,
@@ -323,35 +414,46 @@ const multifamilySetupFormSchema = z.object({
     .default({})
 });
 
-const defaultMultifamilyCriteriaFormSchema = {
+const defaultMultifamilyCriteriaFormSchema: z.infer<typeof multifamilyCriteriaFormSchema> = {
   discovery: {
-    assetTypes: [],
-    minUnits: undefined,
-    maxUnits: undefined,
-    minAskingPrice: undefined,
-    maxAskingPrice: undefined,
-    minPricePerUnit: undefined,
-    maxPricePerUnit: undefined,
-    minYearBuilt: undefined,
-    maxYearBuilt: undefined,
-    minOccupancyPct: undefined,
-    maxOccupancyPct: undefined,
+    assetTypes: ['MULTIFAMILY_GARDEN'],
+    minUnits: 10,
+    maxUnits: 200,
+    minAskingPrice: 0,
+    maxAskingPrice: 20000000,
+    minPricePerUnit: 50000,
+    maxPricePerUnit: 350000,
+    minYearBuilt: 1960,
+    maxYearBuilt: new Date().getFullYear(),
+    minOccupancyPct: 70,
+    maxOccupancyPct: 95,
+    minCapRatePct: 4,
+    maxCapRatePct: 10,
+    minRentUpsidePct: 5,
+    minNoiPerUnit: 0,
+    minExpenseRatioPct: 30,
+    maxExpenseRatioPct: 65,
     unitMixTargets: {
       enabled: false
     },
-    renovationAppetite: undefined,
+    renovationAppetite: 'MODERATE',
     dealQualityGates: {
-      requireOm: undefined,
-      requireRentRoll: undefined,
-      requireT12: undefined
+      requireOm: 'OPTIONAL',
+      requireRentRoll: 'OPTIONAL',
+      requireT12: 'OPTIONAL',
+      requireFloorplans: 'OPTIONAL',
+      requireUnitMixSummary: 'OPTIONAL',
+      requireCapexHistory: 'OPTIONAL',
+      requireSurvey: 'OPTIONAL',
+      requirePhase1Environmental: 'OPTIONAL'
     },
-    rankingPreset: undefined,
+    rankingPreset: 'BALANCED',
     rankingWeights: {
-      yield: undefined,
-      upside: undefined,
-      discount: undefined,
-      risk: undefined,
-      docs: undefined
+      yield: 25,
+      upside: 25,
+      discount: 25,
+      risk: 15,
+      docs: 10
     }
   },
   unitMix: [],
@@ -365,6 +467,7 @@ const defaultMultifamilyCriteriaFormSchema = {
     grossScheduledRentAnnual: undefined,
     vacancyLossPct: undefined,
     badDebtPct: undefined,
+    lossToLeasePct: undefined,
     otherIncomeAnnual: undefined
   },
   expenses: {
@@ -377,6 +480,7 @@ const defaultMultifamilyCriteriaFormSchema = {
     expenseRatioBaselinePct: undefined
   },
   utilities: {
+    utilityBillingType: 'OWNER_PAID',
     waterSewerAnnual: undefined,
     trashAnnual: undefined,
     electricAnnual: undefined,
@@ -389,7 +493,7 @@ const defaultMultifamilyCriteriaFormSchema = {
   }
 };
 
-const defaultMultifamilySetupFormSchema = {
+const defaultMultifamilySetupFormSchema: z.infer<typeof multifamilySetupFormSchema> = {
   capitalStack: {
     purchasePrice: undefined,
     closingCostsPct: undefined,
@@ -615,7 +719,7 @@ const formBuyBoxSchema = z
       ['multifamilyCriteria', 'discovery', 'minUnits'],
       ['multifamilyCriteria', 'discovery', 'maxUnits'],
       'Unit count',
-      1
+      2
     );
 
     validateRequiredRange(
@@ -656,6 +760,56 @@ const formBuyBoxSchema = z
       100
     );
 
+    if (
+      isFiniteNumberValue(discovery.minCapRatePct) ||
+      isFiniteNumberValue(discovery.maxCapRatePct)
+    ) {
+      validateRequiredRange(
+        discovery.minCapRatePct,
+        discovery.maxCapRatePct,
+        ['multifamilyCriteria', 'discovery', 'minCapRatePct'],
+        ['multifamilyCriteria', 'discovery', 'maxCapRatePct'],
+        'Cap rate',
+        0,
+        20
+      );
+    }
+
+    if (isFiniteNumberValue(discovery.minRentUpsidePct)) {
+      requireNumberField(
+        discovery.minRentUpsidePct,
+        ['multifamilyCriteria', 'discovery', 'minRentUpsidePct'],
+        'Minimum rent upside',
+        0,
+        50
+      );
+    }
+
+    if (isFiniteNumberValue(discovery.minNoiPerUnit)) {
+      requireNumberField(
+        discovery.minNoiPerUnit,
+        ['multifamilyCriteria', 'discovery', 'minNoiPerUnit'],
+        'Minimum NOI per unit',
+        0,
+        50000
+      );
+    }
+
+    if (
+      isFiniteNumberValue(discovery.minExpenseRatioPct) ||
+      isFiniteNumberValue(discovery.maxExpenseRatioPct)
+    ) {
+      validateRequiredRange(
+        discovery.minExpenseRatioPct,
+        discovery.maxExpenseRatioPct,
+        ['multifamilyCriteria', 'discovery', 'minExpenseRatioPct'],
+        ['multifamilyCriteria', 'discovery', 'maxExpenseRatioPct'],
+        'Expense ratio',
+        0,
+        90
+      );
+    }
+
     if (!discovery.renovationAppetite) {
       ctx.addIssue({
         code: z.ZodIssueCode.custom,
@@ -676,7 +830,15 @@ const formBuyBoxSchema = z
     const dealQualityGateFields: { key: keyof typeof dealQualityGates; label: string }[] = [
       { key: 'requireOm', label: 'OM requirement' },
       { key: 'requireRentRoll', label: 'Rent roll requirement' },
-      { key: 'requireT12', label: 'T12 requirement' }
+      { key: 'requireT12', label: 'T12 requirement' },
+      { key: 'requireFloorplans', label: 'Floorplans requirement' },
+      { key: 'requireUnitMixSummary', label: 'Unit mix summary requirement' },
+      { key: 'requireCapexHistory', label: 'CapEx history requirement' },
+      { key: 'requireSurvey', label: 'Survey requirement' },
+      {
+        key: 'requirePhase1Environmental',
+        label: 'Phase 1 environmental requirement'
+      }
     ];
 
     dealQualityGateFields.forEach((gateField) => {

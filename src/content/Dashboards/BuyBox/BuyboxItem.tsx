@@ -75,7 +75,11 @@ const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
   }
 }));
 
-const EDITOR_ROLES = ['owner', 'editor', 'maintainer'];
+const EDITOR_ROLES = ['owner', 'editor', 'maintainer', 'edit'];
+
+const getBuyboxName = (buybox?: BuyBox) => {
+  return buybox?.parameters?.name || buybox?.id || 'Untitled BuyBox';
+};
 
 type BuyboxItemProps = {
   buybox: BuyBox;
@@ -185,6 +189,11 @@ const BuyboxItem = (props: BuyboxItemProps) => {
   };
 
   const allowedToEdit = EDITOR_ROLES.includes(props.buybox.userAccess);
+  const sessionRoles = (session?.user as { roles?: string[] | string } | undefined)
+    ?.roles;
+  const isAdmin = Array.isArray(sessionRoles)
+    ? sessionRoles.includes('admin')
+    : sessionRoles === 'admin';
 
   const handleClick = () => {
     if (expanded) {
@@ -221,7 +230,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
           <div className="flex justify-between w-full">
             <div className="flex items-center ">
               <Typography className="flex items-center text-ellipsis overflow-hidden">
-                {props.buybox.parameters.name}
+                {getBuyboxName(props.buybox)}
               </Typography>
               {/* {!running && props.buybox?.execute_date && ( */}
               {/*   <div className="flex gap-x-4"> */}
@@ -291,7 +300,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
               {}
 
               {allowedToEdit &&
-                session?.user?.roles?.includes('admin') &&
+                isAdmin &&
                 (running ? (
                   <></>
                 ) : (
@@ -342,7 +351,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
       </StyledAccordion>
       <ConfirmDialog
         title="Delete BuyBox"
-        description={`Are you sure you want to delete "${props.buybox?.name}"?`}
+        description={`Are you sure you want to delete "${getBuyboxName(props.buybox)}"?`}
         open={dialogOpen}
         setOpen={setDialogOpen}
         onConfirm={handleDelete}

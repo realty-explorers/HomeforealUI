@@ -32,6 +32,7 @@ describe('formBuyBoxSchema multifamily smoke', () => {
     data.strategy.strategyType = 'MULTIFAMILY';
 
     data.multifamilyCriteria.discovery = {
+      ...data.multifamilyCriteria.discovery,
       assetTypes: ['MULTIFAMILY'],
       minUnits: 10,
       maxUnits: 150,
@@ -47,7 +48,12 @@ describe('formBuyBoxSchema multifamily smoke', () => {
       dealQualityGates: {
         requireOm: 'REQUIRED',
         requireRentRoll: 'PREFERRED',
-        requireT12: 'OPTIONAL'
+        requireT12: 'OPTIONAL',
+        requireFloorplans: 'OPTIONAL',
+        requireUnitMixSummary: 'OPTIONAL',
+        requireCapexHistory: 'OPTIONAL',
+        requireSurvey: 'OPTIONAL',
+        requirePhase1Environmental: 'OPTIONAL'
       },
       rankingPreset: 'BALANCED',
       rankingWeights: {

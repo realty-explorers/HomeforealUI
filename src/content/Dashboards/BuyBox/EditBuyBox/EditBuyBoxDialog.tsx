@@ -105,12 +105,12 @@ const defaultSteps = [
 ];
 
 const multifamilyDiscoveryTabs = [
-  'Discovery',
+  'BuyBox Filters',
   'Strategy',
   'Quality Gates'
 ];
 
-const multifamilyDefaultsTabs = ['Defaults', 'Stress Test'];
+const multifamilyDefaultsTabs = ['Underwriting Assumptions', 'Stress Testing'];
 
 const multifamilySteps = [
   {
@@ -126,11 +126,11 @@ const multifamilySteps = [
     fields: ['targetLocations']
   },
   {
-    title: 'Multifamily Discovery',
+    title: 'BuyBox Filters',
     fields: []
   },
   {
-    title: 'Multifamily Defaults',
+    title: 'Underwriting Assumptions',
     fields: []
   }
 ];
@@ -522,8 +522,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         <>
           {selectedStrategyType === 'MULTIFAMILY' ? (
             <MultifamilyTabsSkeleton
-              title="Multifamily Discovery"
-              description="Configure discovery filters, quality gates, and ranking preferences for multifamily opportunities."
+              title="BuyBox Filters"
+              description="Set the deal profile you want us to search for."
               tabs={multifamilyDiscoveryTabs}
               mode="criteria"
             />
@@ -542,8 +542,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         <>
           {selectedStrategyType === 'MULTIFAMILY' ? (
             <MultifamilyTabsSkeleton
-              title="Multifamily Defaults"
-              description="Set defaults used only when listing and document data are missing."
+              title="Underwriting Assumptions"
+              description="These values are used only when listings and documents do not provide them."
               tabs={multifamilyDefaultsTabs}
               mode="setup"
             />

@@ -31,6 +31,7 @@ describe('buyboxFormMappers', () => {
       multifamilyCriteria: {
         ...defaultBuyBoxData.multifamilyCriteria,
         discovery: {
+          ...defaultBuyBoxData.multifamilyCriteria.discovery,
           assetTypes: ['MULTIFAMILY'],
           minUnits: 10,
           maxUnits: 150,
@@ -46,7 +47,12 @@ describe('buyboxFormMappers', () => {
           dealQualityGates: {
             requireOm: 'REQUIRED',
             requireRentRoll: 'PREFERRED',
-            requireT12: 'OPTIONAL'
+            requireT12: 'OPTIONAL',
+            requireFloorplans: 'OPTIONAL',
+            requireUnitMixSummary: 'OPTIONAL',
+            requireCapexHistory: 'OPTIONAL',
+            requireSurvey: 'OPTIONAL',
+            requirePhase1Environmental: 'OPTIONAL'
           },
           rankingPreset: 'BALANCED',
           rankingWeights: {

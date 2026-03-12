@@ -51,10 +51,86 @@ const multifamilyAssetTypeEnum = z.enum([
   'GARDEN_STYLE',
   'MID_RISE',
   'HIGH_RISE',
-  'MIXED_USE'
+  'MIXED_USE',
+  'MULTIFAMILY_GARDEN',
+  'MULTIFAMILY_MIDRISE',
+  'MULTIFAMILY_HIGHRISE',
+  'MULTIFAMILY_SMALL',
+  'MIXED_USE_RESIDENTIAL',
+  'STUDENT_HOUSING',
+  'SENIOR_HOUSING'
 ]);
 
-const multifamilyRenovationAppetiteEnum = z.enum(['LIGHT', 'MODERATE', 'HEAVY']);
+const legacyMultifamilyAssetTypeMap: Record<
+  string,
+  z.infer<typeof multifamilyAssetTypeEnum>
+> = {
+  MULTIFAMILY: 'MULTIFAMILY_GARDEN',
+  GARDEN_STYLE: 'MULTIFAMILY_GARDEN',
+  MID_RISE: 'MULTIFAMILY_MIDRISE',
+  HIGH_RISE: 'MULTIFAMILY_HIGHRISE',
+  MIXED_USE: 'MIXED_USE_RESIDENTIAL'
+};
+
+const multifamilyRenovationAppetiteEnum = z.enum([
+  'LIGHT',
+  'MODERATE',
+  'HEAVY',
+  'REPOSITION'
+]);
+
+const multifamilyUtilityBillingTypeEnum = z.enum([
+  'OWNER_PAID',
+  'TENANT_PAID',
+  'RUBS'
+]);
+
+const multifamilyAssetTypesSchema = z.preprocess(
+  (value) => {
+    if (!Array.isArray(value)) {
+      return value;
+    }
+
+    return value.map((entry) => {
+      if (typeof entry !== 'string') {
+        return entry;
+      }
+
+      const normalizedEntry = entry.toUpperCase();
+      return legacyMultifamilyAssetTypeMap[normalizedEntry] ?? normalizedEntry;
+    });
+  },
+  z.array(multifamilyAssetTypeEnum).default([])
+);
+
+const multifamilyRenovationAppetiteSchema = z.preprocess(
+  (value) => {
+    if (typeof value !== 'string') {
+      return value;
+    }
+
+    const normalizedValue = value.toUpperCase();
+    const mappedValue: Record<string, z.infer<typeof multifamilyRenovationAppetiteEnum>> = {
+      TURNKEY: 'LIGHT',
+      LIGHT_VALUE_ADD: 'MODERATE',
+      HEAVY_VALUE_ADD: 'HEAVY'
+    };
+
+    return mappedValue[normalizedValue] ?? normalizedValue;
+  },
+  multifamilyRenovationAppetiteEnum.optional()
+);
+
+const multifamilyUtilityBillingTypeSchema = z.preprocess(
+  (value) => {
+    if (typeof value !== 'string') {
+      return value;
+    }
+
+    return value.toUpperCase();
+  },
+  multifamilyUtilityBillingTypeEnum.optional()
+);
 
 const multifamilyDealQualityGatePreferenceEnum = z.enum([
   'OPTIONAL',
@@ -82,9 +158,11 @@ const multifamilyDealQualityGatePreferenceSchema = z.preprocess(
 );
 
 const multifamilyRankingPresetEnum = z.enum([
+  'CORE',
   'BALANCED',
   'CASH_FLOW',
   'VALUE_ADD',
+  'OPPORTUNISTIC',
   'LOW_RISK',
   'DEEP_DISCOUNT',
   'CUSTOM'
@@ -218,7 +296,7 @@ const multifamilyUnitMixSchema = z.object({
 
 const multifamilyDiscoverySchema = z
   .object({
-    assetTypes: z.array(multifamilyAssetTypeEnum).default([]),
+    assetTypes: multifamilyAssetTypesSchema,
     minUnits: optionalMultifamilyNumber,
     maxUnits: optionalMultifamilyNumber,
     minAskingPrice: optionalMultifamilyNumber,
@@ -229,17 +307,28 @@ const multifamilyDiscoverySchema = z
     maxYearBuilt: optionalMultifamilyNumber,
     minOccupancyPct: optionalMultifamilyNumber,
     maxOccupancyPct: optionalMultifamilyNumber,
+    minCapRatePct: optionalMultifamilyNumber,
+    maxCapRatePct: optionalMultifamilyNumber,
+    minRentUpsidePct: optionalMultifamilyNumber,
+    minNoiPerUnit: optionalMultifamilyNumber,
+    minExpenseRatioPct: optionalMultifamilyNumber,
+    maxExpenseRatioPct: optionalMultifamilyNumber,
     unitMixTargets: z
       .object({
         enabled: z.boolean().default(false)
       })
       .default({ enabled: false }),
-    renovationAppetite: multifamilyRenovationAppetiteEnum.optional(),
+    renovationAppetite: multifamilyRenovationAppetiteSchema,
     dealQualityGates: z
       .object({
         requireOm: multifamilyDealQualityGatePreferenceSchema,
         requireRentRoll: multifamilyDealQualityGatePreferenceSchema,
-        requireT12: multifamilyDealQualityGatePreferenceSchema
+        requireT12: multifamilyDealQualityGatePreferenceSchema,
+        requireFloorplans: multifamilyDealQualityGatePreferenceSchema,
+        requireUnitMixSummary: multifamilyDealQualityGatePreferenceSchema,
+        requireCapexHistory: multifamilyDealQualityGatePreferenceSchema,
+        requireSurvey: multifamilyDealQualityGatePreferenceSchema,
+        requirePhase1Environmental: multifamilyDealQualityGatePreferenceSchema
       })
       .default({}),
     rankingPreset: multifamilyRankingPresetEnum.optional(),
@@ -263,6 +352,7 @@ const multifamilyCriteriaSchema = z.object({
       grossScheduledRentAnnual: optionalMultifamilyNumber,
       vacancyLossPct: optionalMultifamilyNumber,
       badDebtPct: optionalMultifamilyNumber,
+      lossToLeasePct: optionalMultifamilyNumber,
       otherIncomeAnnual: optionalMultifamilyNumber
     })
     .default({}),
@@ -279,6 +369,7 @@ const multifamilyCriteriaSchema = z.object({
     .default({}),
   utilities: z
     .object({
+      utilityBillingType: multifamilyUtilityBillingTypeSchema,
       waterSewerAnnual: optionalMultifamilyNumber,
       trashAnnual: optionalMultifamilyNumber,
       electricAnnual: optionalMultifamilyNumber,
@@ -341,35 +432,46 @@ const multifamilySetupSchema = z.object({
     .default({})
 });
 
-const defaultMultifamilyCriteria = {
+const defaultMultifamilyCriteria: z.infer<typeof multifamilyCriteriaSchema> = {
   discovery: {
-    assetTypes: [],
-    minUnits: undefined,
-    maxUnits: undefined,
-    minAskingPrice: undefined,
-    maxAskingPrice: undefined,
-    minPricePerUnit: undefined,
-    maxPricePerUnit: undefined,
-    minYearBuilt: undefined,
-    maxYearBuilt: undefined,
-    minOccupancyPct: undefined,
-    maxOccupancyPct: undefined,
+    assetTypes: ['MULTIFAMILY_GARDEN'],
+    minUnits: 10,
+    maxUnits: 200,
+    minAskingPrice: 0,
+    maxAskingPrice: 20000000,
+    minPricePerUnit: 50000,
+    maxPricePerUnit: 350000,
+    minYearBuilt: 1960,
+    maxYearBuilt: new Date().getFullYear(),
+    minOccupancyPct: 70,
+    maxOccupancyPct: 95,
+    minCapRatePct: 4,
+    maxCapRatePct: 10,
+    minRentUpsidePct: 5,
+    minNoiPerUnit: 0,
+    minExpenseRatioPct: 30,
+    maxExpenseRatioPct: 65,
     unitMixTargets: {
       enabled: false
     },
-    renovationAppetite: undefined,
+    renovationAppetite: 'MODERATE',
     dealQualityGates: {
-      requireOm: undefined,
-      requireRentRoll: undefined,
-      requireT12: undefined
+      requireOm: 'OPTIONAL',
+      requireRentRoll: 'OPTIONAL',
+      requireT12: 'OPTIONAL',
+      requireFloorplans: 'OPTIONAL',
+      requireUnitMixSummary: 'OPTIONAL',
+      requireCapexHistory: 'OPTIONAL',
+      requireSurvey: 'OPTIONAL',
+      requirePhase1Environmental: 'OPTIONAL'
     },
-    rankingPreset: undefined,
+    rankingPreset: 'BALANCED',
     rankingWeights: {
-      yield: undefined,
-      upside: undefined,
-      discount: undefined,
-      risk: undefined,
-      docs: undefined
+      yield: 25,
+      upside: 25,
+      discount: 25,
+      risk: 15,
+      docs: 10
     }
   },
   unitMix: [],
@@ -383,6 +485,7 @@ const defaultMultifamilyCriteria = {
     grossScheduledRentAnnual: undefined,
     vacancyLossPct: undefined,
     badDebtPct: undefined,
+    lossToLeasePct: undefined,
     otherIncomeAnnual: undefined
   },
   expenses: {
@@ -395,6 +498,7 @@ const defaultMultifamilyCriteria = {
     expenseRatioBaselinePct: undefined
   },
   utilities: {
+    utilityBillingType: 'OWNER_PAID',
     waterSewerAnnual: undefined,
     trashAnnual: undefined,
     electricAnnual: undefined,
@@ -407,7 +511,7 @@ const defaultMultifamilyCriteria = {
   }
 };
 
-const defaultMultifamilySetup = {
+const defaultMultifamilySetup: z.infer<typeof multifamilySetupSchema> = {
   capitalStack: {
     purchasePrice: undefined,
     closingCostsPct: undefined,
@@ -438,10 +542,10 @@ const defaultMultifamilySetup = {
     sellingCostsPct: undefined
   },
   riskAndNotes: {
-    stressVacancyPct: undefined,
-    stressExitCapRatePct: undefined,
-    stressInterestRatePct: undefined,
-    downsideNoiChangePct: undefined,
+    stressVacancyPct: 2,
+    stressExitCapRatePct: 0.25,
+    stressInterestRatePct: 0.5,
+    downsideNoiChangePct: 5,
     notes: ''
   }
 };

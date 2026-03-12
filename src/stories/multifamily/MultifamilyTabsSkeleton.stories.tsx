@@ -8,12 +8,12 @@ import type { ComponentProps } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const criteriaTabs = [
-  'Discovery',
+  'BuyBox Filters',
   'Strategy',
   'Quality Gates'
 ];
 
-const setupTabs = ['Defaults', 'Stress Test'];
+const setupTabs = ['Underwriting Assumptions', 'Stress Testing'];
 
 const StoryFormWrapper = (
   args: ComponentProps<typeof MultifamilyTabsSkeleton>
@@ -52,9 +52,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Criteria: Story = {
   args: {
-    title: 'Multifamily Discovery',
-    description:
-      'Configure discovery filters, quality gates, and ranking preferences for multifamily opportunities.',
+    title: 'BuyBox Filters',
+    description: 'Set the deal profile you want us to search for.',
     tabs: criteriaTabs,
     mode: 'criteria'
   }
@@ -62,9 +61,9 @@ export const Criteria: Story = {
 
 export const Setup: Story = {
   args: {
-    title: 'Multifamily Defaults',
+    title: 'Underwriting Assumptions',
     description:
-      'Set defaults used only when listing and document data are missing.',
+      'These values are used only when listings and documents do not provide them.',
     tabs: setupTabs,
     mode: 'setup'
   }
