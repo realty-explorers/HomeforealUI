@@ -168,6 +168,25 @@ const multifamilyRankingPresetEnum = z.enum([
   'CUSTOM'
 ]);
 
+const multifamilyMinimumProjectedOutcomeTypeEnum = z.enum([
+  'yield',
+  'cash_yield',
+  'rent_upside',
+  'irr',
+  'value_gap'
+]);
+
+const multifamilyMinimumProjectedOutcomeTypeSchema = z.preprocess(
+  (value) => {
+    if (typeof value === 'string') {
+      return value.toLowerCase();
+    }
+
+    return value;
+  },
+  multifamilyMinimumProjectedOutcomeTypeEnum.optional()
+);
+
 const propertyCriteriaSchema = z.object({
   propertyTypes: z.array(propertyTypeEnum).optional(),
   minBeds: z
@@ -323,14 +342,11 @@ const multifamilyDiscoverySchema = z
       .object({
         requireOm: multifamilyDealQualityGatePreferenceSchema,
         requireRentRoll: multifamilyDealQualityGatePreferenceSchema,
-        requireT12: multifamilyDealQualityGatePreferenceSchema,
-        requireFloorplans: multifamilyDealQualityGatePreferenceSchema,
-        requireUnitMixSummary: multifamilyDealQualityGatePreferenceSchema,
-        requireCapexHistory: multifamilyDealQualityGatePreferenceSchema,
-        requireSurvey: multifamilyDealQualityGatePreferenceSchema,
-        requirePhase1Environmental: multifamilyDealQualityGatePreferenceSchema
+        requireT12: multifamilyDealQualityGatePreferenceSchema
       })
       .default({}),
+    minimumProjectedOutcomeType: multifamilyMinimumProjectedOutcomeTypeSchema.default('yield'),
+    minimumProjectedOutcomeValue: optionalMultifamilyNumber.default(6),
     rankingPreset: multifamilyRankingPresetEnum.optional(),
     rankingWeights: multifamilyRankingWeightsSchema
   })
@@ -383,55 +399,6 @@ const multifamilyCriteriaSchema = z.object({
     .default({})
 });
 
-const multifamilySetupSchema = z.object({
-  capitalStack: z
-    .object({
-      purchasePrice: optionalMultifamilyNumber,
-      closingCostsPct: optionalMultifamilyNumber,
-      equityPct: optionalMultifamilyNumber,
-      preferredReturnPct: optionalMultifamilyNumber
-    })
-    .default({}),
-  loanAssumptions: z
-    .object({
-      interestRatePct: optionalMultifamilyNumber,
-      ltvPct: optionalMultifamilyNumber,
-      amortizationYears: optionalMultifamilyNumber,
-      loanTermYears: optionalMultifamilyNumber,
-      interestOnlyMonths: optionalMultifamilyNumber,
-      minimumDscr: optionalMultifamilyNumber
-    })
-    .default({}),
-  renovationCapex: z
-    .object({
-      interiorBudget: optionalMultifamilyNumber,
-      exteriorBudget: optionalMultifamilyNumber,
-      commonAreaBudget: optionalMultifamilyNumber,
-      contingencyPct: optionalMultifamilyNumber,
-      capexReservePerUnit: optionalMultifamilyNumber,
-      timelineMonths: optionalMultifamilyNumber
-    })
-    .default({}),
-  exitScenario: z
-    .object({
-      holdPeriodYears: optionalMultifamilyNumber,
-      exitCapRatePct: optionalMultifamilyNumber,
-      annualRentGrowthPct: optionalMultifamilyNumber,
-      annualExpenseGrowthPct: optionalMultifamilyNumber,
-      sellingCostsPct: optionalMultifamilyNumber
-    })
-    .default({}),
-  riskAndNotes: z
-    .object({
-      stressVacancyPct: optionalMultifamilyNumber,
-      stressExitCapRatePct: optionalMultifamilyNumber,
-      stressInterestRatePct: optionalMultifamilyNumber,
-      downsideNoiChangePct: optionalMultifamilyNumber,
-      notes: z.string().optional().default('')
-    })
-    .default({})
-});
-
 const defaultMultifamilyCriteria: z.infer<typeof multifamilyCriteriaSchema> = {
   discovery: {
     assetTypes: ['MULTIFAMILY_GARDEN'],
@@ -458,13 +425,10 @@ const defaultMultifamilyCriteria: z.infer<typeof multifamilyCriteriaSchema> = {
     dealQualityGates: {
       requireOm: 'OPTIONAL',
       requireRentRoll: 'OPTIONAL',
-      requireT12: 'OPTIONAL',
-      requireFloorplans: 'OPTIONAL',
-      requireUnitMixSummary: 'OPTIONAL',
-      requireCapexHistory: 'OPTIONAL',
-      requireSurvey: 'OPTIONAL',
-      requirePhase1Environmental: 'OPTIONAL'
+      requireT12: 'OPTIONAL'
     },
+    minimumProjectedOutcomeType: 'yield',
+    minimumProjectedOutcomeValue: 6,
     rankingPreset: 'BALANCED',
     rankingWeights: {
       yield: 25,
@@ -508,45 +472,6 @@ const defaultMultifamilyCriteria: z.infer<typeof multifamilyCriteriaSchema> = {
     trashPerUnitMonthly: undefined,
     electricPerUnitMonthly: undefined,
     gasPerUnitMonthly: undefined
-  }
-};
-
-const defaultMultifamilySetup: z.infer<typeof multifamilySetupSchema> = {
-  capitalStack: {
-    purchasePrice: undefined,
-    closingCostsPct: undefined,
-    equityPct: undefined,
-    preferredReturnPct: undefined
-  },
-  loanAssumptions: {
-    interestRatePct: undefined,
-    ltvPct: undefined,
-    amortizationYears: undefined,
-    loanTermYears: undefined,
-    interestOnlyMonths: undefined,
-    minimumDscr: undefined
-  },
-  renovationCapex: {
-    interiorBudget: undefined,
-    exteriorBudget: undefined,
-    commonAreaBudget: undefined,
-    contingencyPct: undefined,
-    capexReservePerUnit: undefined,
-    timelineMonths: undefined
-  },
-  exitScenario: {
-    holdPeriodYears: undefined,
-    exitCapRatePct: undefined,
-    annualRentGrowthPct: undefined,
-    annualExpenseGrowthPct: undefined,
-    sellingCostsPct: undefined
-  },
-  riskAndNotes: {
-    stressVacancyPct: 2,
-    stressExitCapRatePct: 0.25,
-    stressInterestRatePct: 0.5,
-    downsideNoiChangePct: 5,
-    notes: ''
   }
 };
 
@@ -672,7 +597,6 @@ const buyboxSchema = z.object({
   propertyCriteria: propertyCriteriaSchema.default(defaultPropertyCriteria),
   strategy: strategySchema.default(defaultStrategy),
   multifamilyCriteria: multifamilyCriteriaSchema.default(defaultMultifamilyCriteria),
-  multifamilySetup: multifamilySetupSchema.default(defaultMultifamilySetup),
   weights: weightSchema
   // similarityCriteria: z
   //   .array(similarityCriteriaSchema)
@@ -692,7 +616,6 @@ const getDefaultBuyBoxData = () => {
     propertyCriteria: defaultPropertyCriteria,
     strategy: defaultStrategy,
     multifamilyCriteria: defaultMultifamilyCriteria,
-    multifamilySetup: defaultMultifamilySetup,
     weights: DEFAULT_ATTRIBUTES.reduce((acc, attr) => {
       acc[attr.id] = attr.defaultWeight;
       return acc;

@@ -7,12 +7,10 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const criteriaTabs = [
-  'BuyBox Filters',
+  'Deal Filters',
   'Strategy',
   'Quality Gates'
 ];
-
-const setupTabs = ['Underwriting Assumptions', 'Stress Testing'];
 
 const CriteriaHarness = () => {
   const methods = useForm<BuyBoxFormData>({
@@ -22,27 +20,9 @@ const CriteriaHarness = () => {
   return (
     <FormProvider {...methods}>
       <MultifamilyTabsSkeleton
-        title="BuyBox Filters"
+        title="Deal Filters"
         description="Discovery test"
         tabs={criteriaTabs}
-        mode="criteria"
-      />
-    </FormProvider>
-  );
-};
-
-const SetupHarness = () => {
-  const methods = useForm<BuyBoxFormData>({
-    defaultValues: getDefaultBuyBoxFormData()
-  });
-
-  return (
-    <FormProvider {...methods}>
-      <MultifamilyTabsSkeleton
-        title="Underwriting Assumptions"
-        description="Defaults test"
-        tabs={setupTabs}
-        mode="setup"
       />
     </FormProvider>
   );
@@ -63,45 +43,45 @@ describe('MultifamilyTabsSkeleton', () => {
     ).toBeInTheDocument();
   });
 
-  it('supports unit mix add/remove behavior with minimum one row protection', async () => {
+  it('renders live preview metrics for deal filters', async () => {
     render(<CriteriaHarness />);
 
-    fireEvent.click(screen.getByRole('button', { name: /advanced mode/i }));
-    fireEvent.click(screen.getByRole('button', { name: /^enabled$/i }));
-
-    const addButton = screen.getByRole('button', { name: /add unit type/i });
-    fireEvent.click(addButton);
-    fireEvent.click(addButton);
-
-    await waitFor(() => {
-      expect(screen.queryAllByLabelText(/unit type/i).length).toBeGreaterThanOrEqual(2);
-    });
-
-    let removeButtons = screen.getAllByRole('button', { name: /remove/i });
-
-    while (removeButtons.length > 1) {
-      fireEvent.click(removeButtons[0]);
-      removeButtons = screen.getAllByRole('button', { name: /remove/i });
-    }
-
-    expect(removeButtons[0]).toBeDisabled();
+    expect(await screen.findByText(/live preview/i)).toBeInTheDocument();
+    expect(screen.getByText(/average projected irr/i)).toBeInTheDocument();
+    expect(screen.getByText(/updated at/i)).toBeInTheDocument();
   });
 
-  it('retains unit mix value when switching tabs', async () => {
+  it('retains filter values when switching tabs', async () => {
     render(<CriteriaHarness />);
 
-    fireEvent.click(screen.getByRole('button', { name: /advanced mode/i }));
-    fireEvent.click(screen.getByRole('button', { name: /^enabled$/i }));
+    const minNoiInput = (await screen.findByLabelText(
+      /minimum noi per unit/i
+    )) as HTMLInputElement;
 
-    const unitTypeInput = (await screen.findByLabelText(/unit type/i)) as HTMLInputElement;
-
-    fireEvent.change(unitTypeInput, { target: { value: '2BR / 1BA' } });
+    fireEvent.change(minNoiInput, { target: { value: 1200 } });
     fireEvent.click(screen.getByRole('tab', { name: /2\. strategy/i }));
     fireEvent.click(
-      screen.getByRole('tab', { name: /1\. buybox filters/i })
+      screen.getByRole('tab', { name: /1\. deal filters/i })
     );
 
-    expect(screen.getByLabelText(/unit type/i)).toHaveValue('2BR / 1BA');
+    expect(screen.getByLabelText(/minimum noi per unit/i)).toHaveValue(1200);
+  });
+
+  it('does not render unit mix targeting controls', async () => {
+    render(<CriteriaHarness />);
+
+    expect(screen.queryByRole('button', { name: /^enabled$/i })).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /add unit type/i })).not.toBeInTheDocument();
+  });
+
+  it('does not render visibility mode selector and keeps strategy controls available', async () => {
+    render(<CriteriaHarness />);
+
+    fireEvent.click(screen.getByRole('tab', { name: /2\. strategy/i }));
+
+    expect(screen.queryByText(/visibility mode/i)).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /advanced mode/i })).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: /show advanced strategy/i })).toBeInTheDocument();
   });
 
   it('shows ranking preset controls with balanced total by default', async () => {
@@ -115,11 +95,24 @@ describe('MultifamilyTabsSkeleton', () => {
     );
   });
 
+  it('updates minimum projected outcome control when strategy preset changes', async () => {
+    render(<CriteriaHarness />);
+
+    fireEvent.click(screen.getByRole('tab', { name: /2\. strategy/i }));
+
+    expect(await screen.findByLabelText(/minimum yield value/i)).toHaveValue(6);
+
+    fireEvent.click(screen.getByRole('button', { name: /opportunistic/i }));
+    expect(await screen.findByLabelText(/minimum irr value/i)).toHaveValue(14);
+
+    fireEvent.click(screen.getByRole('button', { name: /cash flow/i }));
+    expect(await screen.findByLabelText(/minimum cash yield value/i)).toHaveValue(7);
+  });
+
   it('marks ranking preset as custom when advanced weight sliders are edited', async () => {
     render(<CriteriaHarness />);
 
     fireEvent.click(screen.getByRole('tab', { name: /2\. strategy/i }));
-    fireEvent.click(screen.getByRole('button', { name: /advanced mode/i }));
     fireEvent.click(screen.getByRole('button', { name: /show advanced strategy/i }));
 
     const weightSlider = await screen.findByRole('slider', {
@@ -133,31 +126,4 @@ describe('MultifamilyTabsSkeleton', () => {
     });
   });
 
-  it('applies stress presets and locks/unlocks manual editing', async () => {
-    render(<SetupHarness />);
-
-    fireEvent.click(screen.getByRole('tab', { name: /2\. stress testing/i }));
-
-    const vacancyInput = (await screen.findByLabelText(
-      /^vacancy shock percent$/i
-    )) as HTMLInputElement;
-
-    expect(vacancyInput.readOnly).toBe(true);
-
-    fireEvent.click(screen.getByRole('button', { name: /conservative/i }));
-
-    await waitFor(() => {
-      expect(vacancyInput).toHaveValue(5);
-      expect(vacancyInput.readOnly).toBe(true);
-    });
-
-    expect(screen.getByRole('button', { name: /^custom$/i })).toBeDisabled();
-
-    fireEvent.click(screen.getByRole('button', { name: /advanced mode/i }));
-    fireEvent.click(screen.getByRole('button', { name: /^custom$/i }));
-
-    await waitFor(() => {
-      expect(vacancyInput.readOnly).toBe(false);
-    });
-  });
 });

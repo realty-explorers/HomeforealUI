@@ -113,18 +113,27 @@ jest.mock('./EditBuyboxDialogTitle', () => {
 jest.mock('./Sections/MultifamilyTabsSkeleton', () => {
   const { useFormContext } = require('react-hook-form');
 
-  return function MultifamilyTabsSkeletonMock({ mode }: { mode: 'criteria' | 'setup' }) {
+  return function MultifamilyTabsSkeletonMock({
+    tabs
+  }: {
+    tabs?: string[];
+  }) {
     const { register } = useFormContext();
 
-    if (mode === 'setup') {
+    const primaryTab = tabs?.[0]?.toLowerCase() || '';
+    if (primaryTab.includes('quality gates')) {
       return (
         <div>
-          <label htmlFor="multifamily-notes-input">Notes</label>
-          <input
-            id="multifamily-notes-input"
-            aria-label="Notes"
-            {...register('multifamilySetup.riskAndNotes.notes')}
-          />
+          <label htmlFor="quality-gate-require-om">Offering Memorandum Gate</label>
+          <select
+            id="quality-gate-require-om"
+            aria-label="Offering Memorandum Gate"
+            {...register('multifamilyCriteria.discovery.dealQualityGates.requireOm')}
+          >
+            <option value="OPTIONAL">Optional</option>
+            <option value="PREFERRED">Preferred</option>
+            <option value="REQUIRED">Required</option>
+          </select>
         </div>
       );
     }
@@ -197,9 +206,7 @@ const buildMultifamilyParameters = (notes: string): BuyboxSchemaData => {
       ]
     },
     multifamilySetup: {
-      ...defaultData.multifamilySetup,
       riskAndNotes: {
-        ...defaultData.multifamilySetup.riskAndNotes,
         notes
       }
     }
@@ -217,6 +224,7 @@ const buildBuyBox = (parameters: BuyboxSchemaData): BuyBox => ({
 describe('EditBuyBoxDialog', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    window.localStorage.clear();
 
     Object.defineProperty(window, 'matchMedia', {
       writable: true,
@@ -247,7 +255,105 @@ describe('EditBuyBoxDialog', () => {
     mockUseDeleteBuyBoxMutation.mockReturnValue([mockDeleteBuyBox, {}]);
   });
 
-  it('submits multifamily updates and rehydrates saved values when reopened', async () => {
+  it('saves multifamily progress as draft and rehydrates draft values when reopened', async () => {
+    const user = userEvent.setup();
+    const setShowEditBuybox = jest.fn();
+    const initialBuybox = buildBuyBox(
+      buildMultifamilyParameters('Draft persistence test note')
+    );
+
+    const { rerender } = render(
+      <EditBuyBoxDialog
+        buybox={initialBuybox}
+        showEditBuybox
+        setShowEditBuybox={setShowEditBuybox}
+      />
+    );
+
+    for (let step = 0; step < 4; step += 1) {
+      await user.click(screen.getByRole('button', { name: /^next$/i }));
+    }
+
+    await user.selectOptions(
+      await screen.findByLabelText(/^offering memorandum gate$/i),
+      'OPTIONAL'
+    );
+
+    await user.click(screen.getByRole('button', { name: /save draft/i }));
+
+    await waitFor(() => {
+      expect(mockEnqueueSnackbar).toHaveBeenCalledWith('Draft Saved', {
+        variant: 'success'
+      });
+    });
+
+    const storedDraft = window.localStorage.getItem('buybox_form_draft:buybox-1');
+    expect(storedDraft).not.toBeNull();
+
+    const parsedDraft = JSON.parse(storedDraft as string);
+    expect(
+      parsedDraft.multifamilyCriteria.discovery.dealQualityGates.requireOm
+    ).toBe('OPTIONAL');
+
+    rerender(
+      <EditBuyBoxDialog
+        buybox={initialBuybox}
+        showEditBuybox={false}
+        setShowEditBuybox={setShowEditBuybox}
+      />
+    );
+
+    rerender(
+      <EditBuyBoxDialog
+        buybox={initialBuybox}
+        showEditBuybox
+        setShowEditBuybox={setShowEditBuybox}
+      />
+    );
+
+    for (let step = 0; step < 4; step += 1) {
+      await user.click(screen.getByRole('button', { name: /^next$/i }));
+    }
+
+    expect(await screen.findByLabelText(/^offering memorandum gate$/i)).toHaveValue(
+      'OPTIONAL'
+    );
+  });
+
+  it('resets only current step fields instead of resetting the full form flow', async () => {
+    const user = userEvent.setup();
+    const setShowEditBuybox = jest.fn();
+    const initialBuybox = buildBuyBox(
+      buildMultifamilyParameters('Step reset behavior test note')
+    );
+
+    render(
+      <EditBuyBoxDialog
+        buybox={initialBuybox}
+        showEditBuybox
+        setShowEditBuybox={setShowEditBuybox}
+      />
+    );
+
+    for (let step = 0; step < 4; step += 1) {
+      await user.click(screen.getByRole('button', { name: /^next$/i }));
+    }
+
+    const offeringMemorandumGate = await screen.findByLabelText(
+      /^offering memorandum gate$/i
+    );
+
+    await user.selectOptions(offeringMemorandumGate, 'OPTIONAL');
+    expect(offeringMemorandumGate).toHaveValue('OPTIONAL');
+
+    await user.click(screen.getByRole('button', { name: /^reset$/i }));
+
+    expect(await screen.findByLabelText(/^offering memorandum gate$/i)).toHaveValue(
+      'REQUIRED'
+    );
+  });
+
+  it('submits multifamily quality gate updates and rehydrates saved values when reopened', async () => {
     const user = userEvent.setup();
     const setShowEditBuybox = jest.fn();
     const initialBuybox = buildBuyBox(
@@ -266,10 +372,10 @@ describe('EditBuyBoxDialog', () => {
       await user.click(screen.getByRole('button', { name: /^next$/i }));
     }
 
-    const notesInput = (await screen.findByLabelText(/^notes$/i)) as HTMLInputElement;
-
-    await user.clear(notesInput);
-    await user.type(notesInput, 'Updated multifamily roundtrip note');
+    await user.selectOptions(
+      await screen.findByLabelText(/^offering memorandum gate$/i),
+      'OPTIONAL'
+    );
 
     await user.click(screen.getByRole('button', { name: /save & finish/i }));
 
@@ -281,9 +387,13 @@ describe('EditBuyBoxDialog', () => {
 
     expect(submittedUpdateArgs.id).toBe('buybox-1');
     expect(submittedUpdateArgs.parameters.strategy.strategyType).toBe('MULTIFAMILY');
-    expect(submittedUpdateArgs.parameters.multifamilySetup.riskAndNotes.notes).toBe(
-      'Updated multifamily roundtrip note'
-    );
+    expect(
+      submittedUpdateArgs.parameters.multifamilyCriteria.discovery.dealQualityGates
+        .requireOm
+    ).toBe('OPTIONAL');
+    expect(
+      (submittedUpdateArgs.parameters as Record<string, unknown>).multifamilySetup
+    ).toBeUndefined();
     expect(mockEnqueueSnackbar).toHaveBeenCalledWith('BuyBox Saved', {
       variant: 'success'
     });
@@ -305,8 +415,8 @@ describe('EditBuyBoxDialog', () => {
       await user.click(screen.getByRole('button', { name: /^next$/i }));
     }
 
-    expect(await screen.findByLabelText(/^notes$/i)).toHaveValue(
-      'Updated multifamily roundtrip note'
+    expect(await screen.findByLabelText(/^offering memorandum gate$/i)).toHaveValue(
+      'OPTIONAL'
     );
   });
 });

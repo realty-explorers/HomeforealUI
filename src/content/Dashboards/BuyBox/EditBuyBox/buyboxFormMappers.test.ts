@@ -47,12 +47,7 @@ describe('buyboxFormMappers', () => {
           dealQualityGates: {
             requireOm: 'REQUIRED',
             requireRentRoll: 'PREFERRED',
-            requireT12: 'OPTIONAL',
-            requireFloorplans: 'OPTIONAL',
-            requireUnitMixSummary: 'OPTIONAL',
-            requireCapexHistory: 'OPTIONAL',
-            requireSurvey: 'OPTIONAL',
-            requirePhase1Environmental: 'OPTIONAL'
+            requireT12: 'OPTIONAL'
           },
           rankingPreset: 'BALANCED',
           rankingWeights: {
@@ -78,13 +73,10 @@ describe('buyboxFormMappers', () => {
         }
       },
       multifamilySetup: {
-        ...defaultBuyBoxData.multifamilySetup,
         capitalStack: {
-          ...defaultBuyBoxData.multifamilySetup.capitalStack,
           purchasePrice: 2100000
         },
         riskAndNotes: {
-          ...defaultBuyBoxData.multifamilySetup.riskAndNotes,
           notes: 'Roundtrip notes are preserved'
         }
       }
@@ -106,9 +98,8 @@ describe('buyboxFormMappers', () => {
     expect(formValuesAfterReopen.multifamilyCriteria.unitMix[0].unitType).toBe(
       '2BR / 1BA'
     );
-    expect(
-      formValuesAfterReopen.multifamilySetup.riskAndNotes.notes
-    ).toBe('Roundtrip notes are preserved');
+    expect((formValuesBeforeSave as Record<string, unknown>).multifamilySetup).toBeUndefined();
+    expect((formValuesAfterReopen as Record<string, unknown>).multifamilySetup).toBeUndefined();
 
     const firstWeightKey = Object.keys(formValuesBeforeSave.weights)[0];
     expect(formValuesAfterReopen.weights[firstWeightKey]).toBe(

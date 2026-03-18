@@ -8,12 +8,10 @@ import type { ComponentProps } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 
 const criteriaTabs = [
-  'BuyBox Filters',
+  'Deal Filters',
   'Strategy',
   'Quality Gates'
 ];
-
-const setupTabs = ['Underwriting Assumptions', 'Stress Testing'];
 
 const StoryFormWrapper = (
   args: ComponentProps<typeof MultifamilyTabsSkeleton>
@@ -52,19 +50,8 @@ type Story = StoryObj<typeof meta>;
 
 export const Criteria: Story = {
   args: {
-    title: 'BuyBox Filters',
+    title: 'Deal Filters',
     description: 'Set the deal profile you want us to search for.',
-    tabs: criteriaTabs,
-    mode: 'criteria'
-  }
-};
-
-export const Setup: Story = {
-  args: {
-    title: 'Underwriting Assumptions',
-    description:
-      'These values are used only when listings and documents do not provide them.',
-    tabs: setupTabs,
-    mode: 'setup'
+    tabs: criteriaTabs
   }
 };

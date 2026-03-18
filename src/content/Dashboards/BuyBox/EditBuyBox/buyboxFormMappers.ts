@@ -88,7 +88,6 @@ export const mapBuyBoxDataToForm = (
       )
     },
     multifamilyCriteria: buyboxData.multifamilyCriteria,
-    multifamilySetup: buyboxData.multifamilySetup,
     targetLocations: buyboxData.targetLocations,
     weights: convertBuyboxWeights(buyboxData.weights)
   };

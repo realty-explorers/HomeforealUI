@@ -227,6 +227,25 @@ const multifamilyRankingPresetEnum = z.enum([
   'CUSTOM'
 ]);
 
+const multifamilyMinimumProjectedOutcomeTypeEnum = z.enum([
+  'yield',
+  'cash_yield',
+  'rent_upside',
+  'irr',
+  'value_gap'
+]);
+
+const multifamilyMinimumProjectedOutcomeTypeFormSchema = z.preprocess(
+  (value) => {
+    if (typeof value === 'string') {
+      return value.toLowerCase();
+    }
+
+    return value;
+  },
+  multifamilyMinimumProjectedOutcomeTypeEnum.optional()
+);
+
 const optionalMultifamilyNumberFormSchema = z.preprocess(
   (value) => {
     if (value === '' || value === null || value === undefined) {
@@ -305,14 +324,12 @@ const multifamilyDiscoveryFormSchema = z
       .object({
         requireOm: multifamilyDealQualityGatePreferenceFormSchema,
         requireRentRoll: multifamilyDealQualityGatePreferenceFormSchema,
-        requireT12: multifamilyDealQualityGatePreferenceFormSchema,
-        requireFloorplans: multifamilyDealQualityGatePreferenceFormSchema,
-        requireUnitMixSummary: multifamilyDealQualityGatePreferenceFormSchema,
-        requireCapexHistory: multifamilyDealQualityGatePreferenceFormSchema,
-        requireSurvey: multifamilyDealQualityGatePreferenceFormSchema,
-        requirePhase1Environmental: multifamilyDealQualityGatePreferenceFormSchema
+        requireT12: multifamilyDealQualityGatePreferenceFormSchema
       })
       .default({}),
+    minimumProjectedOutcomeType:
+      multifamilyMinimumProjectedOutcomeTypeFormSchema.default('yield'),
+    minimumProjectedOutcomeValue: optionalMultifamilyNumberFormSchema.default(6),
     rankingPreset: multifamilyRankingPresetEnum.optional(),
     rankingWeights: multifamilyRankingWeightsFormSchema
   })
@@ -365,55 +382,6 @@ const multifamilyCriteriaFormSchema = z.object({
     .default({})
 });
 
-const multifamilySetupFormSchema = z.object({
-  capitalStack: z
-    .object({
-      purchasePrice: optionalMultifamilyNumberFormSchema,
-      closingCostsPct: optionalMultifamilyNumberFormSchema,
-      equityPct: optionalMultifamilyNumberFormSchema,
-      preferredReturnPct: optionalMultifamilyNumberFormSchema
-    })
-    .default({}),
-  loanAssumptions: z
-    .object({
-      interestRatePct: optionalMultifamilyNumberFormSchema,
-      ltvPct: optionalMultifamilyNumberFormSchema,
-      amortizationYears: optionalMultifamilyNumberFormSchema,
-      loanTermYears: optionalMultifamilyNumberFormSchema,
-      interestOnlyMonths: optionalMultifamilyNumberFormSchema,
-      minimumDscr: optionalMultifamilyNumberFormSchema
-    })
-    .default({}),
-  renovationCapex: z
-    .object({
-      interiorBudget: optionalMultifamilyNumberFormSchema,
-      exteriorBudget: optionalMultifamilyNumberFormSchema,
-      commonAreaBudget: optionalMultifamilyNumberFormSchema,
-      contingencyPct: optionalMultifamilyNumberFormSchema,
-      capexReservePerUnit: optionalMultifamilyNumberFormSchema,
-      timelineMonths: optionalMultifamilyNumberFormSchema
-    })
-    .default({}),
-  exitScenario: z
-    .object({
-      holdPeriodYears: optionalMultifamilyNumberFormSchema,
-      exitCapRatePct: optionalMultifamilyNumberFormSchema,
-      annualRentGrowthPct: optionalMultifamilyNumberFormSchema,
-      annualExpenseGrowthPct: optionalMultifamilyNumberFormSchema,
-      sellingCostsPct: optionalMultifamilyNumberFormSchema
-    })
-    .default({}),
-  riskAndNotes: z
-    .object({
-      stressVacancyPct: optionalMultifamilyNumberFormSchema,
-      stressExitCapRatePct: optionalMultifamilyNumberFormSchema,
-      stressInterestRatePct: optionalMultifamilyNumberFormSchema,
-      downsideNoiChangePct: optionalMultifamilyNumberFormSchema,
-      notes: z.string().default('')
-    })
-    .default({})
-});
-
 const defaultMultifamilyCriteriaFormSchema: z.infer<typeof multifamilyCriteriaFormSchema> = {
   discovery: {
     assetTypes: ['MULTIFAMILY_GARDEN'],
@@ -440,13 +408,10 @@ const defaultMultifamilyCriteriaFormSchema: z.infer<typeof multifamilyCriteriaFo
     dealQualityGates: {
       requireOm: 'OPTIONAL',
       requireRentRoll: 'OPTIONAL',
-      requireT12: 'OPTIONAL',
-      requireFloorplans: 'OPTIONAL',
-      requireUnitMixSummary: 'OPTIONAL',
-      requireCapexHistory: 'OPTIONAL',
-      requireSurvey: 'OPTIONAL',
-      requirePhase1Environmental: 'OPTIONAL'
+      requireT12: 'OPTIONAL'
     },
+    minimumProjectedOutcomeType: 'yield',
+    minimumProjectedOutcomeValue: 6,
     rankingPreset: 'BALANCED',
     rankingWeights: {
       yield: 25,
@@ -490,45 +455,6 @@ const defaultMultifamilyCriteriaFormSchema: z.infer<typeof multifamilyCriteriaFo
     trashPerUnitMonthly: undefined,
     electricPerUnitMonthly: undefined,
     gasPerUnitMonthly: undefined
-  }
-};
-
-const defaultMultifamilySetupFormSchema: z.infer<typeof multifamilySetupFormSchema> = {
-  capitalStack: {
-    purchasePrice: undefined,
-    closingCostsPct: undefined,
-    equityPct: undefined,
-    preferredReturnPct: undefined
-  },
-  loanAssumptions: {
-    interestRatePct: undefined,
-    ltvPct: undefined,
-    amortizationYears: undefined,
-    loanTermYears: undefined,
-    interestOnlyMonths: undefined,
-    minimumDscr: undefined
-  },
-  renovationCapex: {
-    interiorBudget: undefined,
-    exteriorBudget: undefined,
-    commonAreaBudget: undefined,
-    contingencyPct: undefined,
-    capexReservePerUnit: undefined,
-    timelineMonths: undefined
-  },
-  exitScenario: {
-    holdPeriodYears: undefined,
-    exitCapRatePct: undefined,
-    annualRentGrowthPct: undefined,
-    annualExpenseGrowthPct: undefined,
-    sellingCostsPct: undefined
-  },
-  riskAndNotes: {
-    stressVacancyPct: undefined,
-    stressExitCapRatePct: undefined,
-    stressInterestRatePct: undefined,
-    downsideNoiChangePct: undefined,
-    notes: ''
   }
 };
 
@@ -619,9 +545,6 @@ const formBuyBoxSchema = z
     strategy: strategyFormSchema.default(defaultStrategyFormSchema),
     multifamilyCriteria: multifamilyCriteriaFormSchema.default(
       defaultMultifamilyCriteriaFormSchema
-    ),
-    multifamilySetup: multifamilySetupFormSchema.default(
-      defaultMultifamilySetupFormSchema
     ),
     weights: weightSchema.default(
       DEFAULT_ATTRIBUTES.reduce((acc, attr) => {
@@ -826,19 +749,48 @@ const formBuyBoxSchema = z
       });
     }
 
+    if (!discovery.minimumProjectedOutcomeType) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['multifamilyCriteria', 'discovery', 'minimumProjectedOutcomeType'],
+        message: 'Minimum projected outcome type is required'
+      });
+    }
+
+    const minimumProjectedOutcomeRanges = {
+      yield: { min: 0, max: 15 },
+      cash_yield: { min: 0, max: 15 },
+      rent_upside: { min: 0, max: 50 },
+      irr: { min: 0, max: 40 },
+      value_gap: { min: 0, max: 40 }
+    } as const;
+
+    const minimumProjectedOutcomeRange =
+      discovery.minimumProjectedOutcomeType
+        ? minimumProjectedOutcomeRanges[discovery.minimumProjectedOutcomeType]
+        : undefined;
+
+    if (!isFiniteNumberValue(discovery.minimumProjectedOutcomeValue)) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['multifamilyCriteria', 'discovery', 'minimumProjectedOutcomeValue'],
+        message: 'Minimum projected outcome value is required'
+      });
+    } else if (minimumProjectedOutcomeRange) {
+      requireNumberField(
+        discovery.minimumProjectedOutcomeValue,
+        ['multifamilyCriteria', 'discovery', 'minimumProjectedOutcomeValue'],
+        'Minimum projected outcome value',
+        minimumProjectedOutcomeRange.min,
+        minimumProjectedOutcomeRange.max
+      );
+    }
+
     const dealQualityGates = discovery.dealQualityGates;
     const dealQualityGateFields: { key: keyof typeof dealQualityGates; label: string }[] = [
       { key: 'requireOm', label: 'OM requirement' },
       { key: 'requireRentRoll', label: 'Rent roll requirement' },
-      { key: 'requireT12', label: 'T12 requirement' },
-      { key: 'requireFloorplans', label: 'Floorplans requirement' },
-      { key: 'requireUnitMixSummary', label: 'Unit mix summary requirement' },
-      { key: 'requireCapexHistory', label: 'CapEx history requirement' },
-      { key: 'requireSurvey', label: 'Survey requirement' },
-      {
-        key: 'requirePhase1Environmental',
-        label: 'Phase 1 environmental requirement'
-      }
+      { key: 'requireT12', label: 'T12 requirement' }
     ];
 
     dealQualityGateFields.forEach((gateField) => {
@@ -949,7 +901,6 @@ const getDefaultBuyBoxFormData = () => {
     propertyCriteria: defaultPropertyCriteriaFormSchema,
     strategy: defaultStrategyFormSchema,
     multifamilyCriteria: defaultMultifamilyCriteriaFormSchema,
-    multifamilySetup: defaultMultifamilySetupFormSchema,
     weights: DEFAULT_ATTRIBUTES.reduce((acc, attr) => {
       acc[attr.id] = attr.defaultWeight;
       return acc;

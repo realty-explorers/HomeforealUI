@@ -485,7 +485,7 @@ const MultifamilyAnalysisDrawer = ({
                 2. Attach supporting docs in the Documents tab.
               </Typography>
               <Typography className="font-poppins text-sm text-gray-700">
-                3. Capture underwriting comments for investment committee review.
+                3. Capture analyst comments for investment committee review.
               </Typography>
             </SectionCard>
           </Box>

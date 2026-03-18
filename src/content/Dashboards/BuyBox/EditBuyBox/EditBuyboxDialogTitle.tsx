@@ -8,40 +8,21 @@ import {
 import HighlightOffOutlinedIcon from '@mui/icons-material/HighlightOffOutlined';
 import styles from './EditBuyBoxDialog.module.scss';
 import clsx from 'clsx';
-import { useMemo } from 'react';
 
 type EditBuyboxDialogTitleProps = {
   steps: { title: string }[];
   activeStep: number;
   setActiveStep: (step: number) => void;
   handleClose: () => void;
-  errors?: any;
+  getStepError?: (step: number) => boolean;
 };
 const EditBuyboxDialogTitle = ({
   steps,
   activeStep,
   setActiveStep,
   handleClose,
-  errors
+  getStepError
 }: EditBuyboxDialogTitleProps) => {
-  const getStepsErrors = useMemo(() => {
-    return (step: number) => {
-      switch (step) {
-        case 0:
-          return errors?.name || errors?.description;
-        case 1:
-          return errors?.strategy;
-        case 2:
-          return errors?.targetLocations;
-        case 3:
-          return errors?.propertyCriteria;
-        case 4:
-          return errors?.weights;
-        default:
-          return undefined;
-      }
-    };
-  }, [errors]);
   return (
     <div className="w-full flex justify-center items-center shadow max-h-min">
       <IconButton
@@ -64,7 +45,7 @@ const EditBuyboxDialogTitle = ({
           <Step key={index} className="">
             <StepLabel
               className={clsx([styles.font_poppins, 'cursor-pointer'])}
-              error={Boolean(getStepsErrors(index))}
+              error={Boolean(getStepError?.(index))}
               onClick={() => setActiveStep(index)}
             >
               {step.title}

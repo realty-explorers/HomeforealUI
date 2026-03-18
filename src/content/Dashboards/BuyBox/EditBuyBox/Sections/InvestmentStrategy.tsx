@@ -12,6 +12,7 @@ import {
 import styles from '../EditBuyBoxDialog.module.scss';
 import FixAndFlip from './InvestmentTypes/FixAndFlip';
 import BuyAndHold from './InvestmentTypes/BuyAndHold';
+import MultifamilyTabsSkeleton from './MultifamilyTabsSkeleton';
 import { BuyBoxFormData } from '@/schemas/BuyBoxFormSchema';
 
 const investmentTypes = [
@@ -84,7 +85,7 @@ const InvestmentStrategy = ({
           {errors?.strategy?.message?.toString()}
         </span>
       </Typography>
-      <div className="flex md:flex-col gap-y-4 gap-x-8 flex-wrap justify-center">
+      <div className="flex md:flex-col gap-y-4 gap-x-8 flex-wrap justify-center md:justify-start self-start">
         {investmentTypes.map((type, index) => (
           <Badge
             key={index}
@@ -122,13 +123,11 @@ const InvestmentStrategy = ({
         )}
 
         {selectedStrategy === 'MULTIFAMILY' && (
-          <div className="lg:pl-16 w-full">
-            <Typography className={styles.helper_text2}>
-              Multifamily strategy selected. Continue to Multifamily Discovery and
-              Multifamily Defaults to configure buybox filters and missing-data
-              defaults.
-            </Typography>
-          </div>
+          <MultifamilyTabsSkeleton
+            title="Strategy"
+            description="Choose what kind of deals should rise to the top."
+            tabs={['Strategy']}
+          />
         )}
 
         {selectedStrategy === 'BUY_AND_HOLD' && (

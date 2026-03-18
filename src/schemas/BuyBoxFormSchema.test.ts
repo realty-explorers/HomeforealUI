@@ -48,12 +48,7 @@ describe('formBuyBoxSchema multifamily smoke', () => {
       dealQualityGates: {
         requireOm: 'REQUIRED',
         requireRentRoll: 'PREFERRED',
-        requireT12: 'OPTIONAL',
-        requireFloorplans: 'OPTIONAL',
-        requireUnitMixSummary: 'OPTIONAL',
-        requireCapexHistory: 'OPTIONAL',
-        requireSurvey: 'OPTIONAL',
-        requirePhase1Environmental: 'OPTIONAL'
+        requireT12: 'OPTIONAL'
       },
       rankingPreset: 'BALANCED',
       rankingWeights: {
@@ -73,7 +68,6 @@ describe('formBuyBoxSchema multifamily smoke', () => {
         avgSqft: 870
       }
     ];
-    data.multifamilySetup.riskAndNotes.notes = 'Underwriting smoke test note';
 
     const result = formBuyBoxSchema.safeParse(data);
 
@@ -81,9 +75,7 @@ describe('formBuyBoxSchema multifamily smoke', () => {
     if (result.success) {
       expect(result.data.strategy.strategyType).toBe('MULTIFAMILY');
       expect(result.data.multifamilyCriteria.unitMix).toHaveLength(1);
-      expect(result.data.multifamilySetup.riskAndNotes.notes).toBe(
-        'Underwriting smoke test note'
-      );
+      expect(result.data.multifamilyCriteria.discovery.rankingPreset).toBe('BALANCED');
     }
   });
 

@@ -4,7 +4,7 @@ import {
   getDefaultBuyBoxFormData
 } from '@/schemas/BuyBoxFormSchema';
 import { render, screen } from '@testing-library/react';
-import { useForm } from 'react-hook-form';
+import { FormProvider, useForm } from 'react-hook-form';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('./InvestmentTypes/FixAndFlip', () => {
@@ -25,14 +25,16 @@ const InvestmentStrategyHarness = () => {
   });
 
   return (
-    <InvestmentStrategy
-      register={methods.register}
-      control={methods.control}
-      watch={methods.watch}
-      setValue={methods.setValue}
-      getValues={methods.getValues}
-      errors={methods.formState.errors}
-    />
+    <FormProvider {...methods}>
+      <InvestmentStrategy
+        register={methods.register}
+        control={methods.control}
+        watch={methods.watch}
+        setValue={methods.setValue}
+        getValues={methods.getValues}
+        errors={methods.formState.errors}
+      />
+    </FormProvider>
   );
 };
 
@@ -47,7 +49,7 @@ describe('InvestmentStrategy', () => {
     await user.click(screen.getByRole('button', { name: /multifamily/i }));
 
     expect(
-      screen.getByText(/multifamily strategy selected/i)
+      screen.getByText(/choose what kind of deals should rise to the top\./i)
     ).toBeInTheDocument();
     expect(screen.queryByTestId('fix-and-flip-panel')).not.toBeInTheDocument();
   });

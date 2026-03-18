@@ -104,13 +104,62 @@ const defaultSteps = [
   }
 ];
 
-const multifamilyDiscoveryTabs = [
-  'BuyBox Filters',
-  'Strategy',
-  'Quality Gates'
+const multifamilyDiscoveryTabs = ['Deal Filters'];
+
+const multifamilyDefaultsTabs = ['Quality Gates'];
+
+const multifamilyStrategyStepFields: Path<BuyBoxFormData>[] = [
+  'strategy.strategyType',
+  'multifamilyCriteria.discovery.rankingPreset',
+  'multifamilyCriteria.discovery.minimumProjectedOutcomeType',
+  'multifamilyCriteria.discovery.minimumProjectedOutcomeValue'
 ];
 
-const multifamilyDefaultsTabs = ['Underwriting Assumptions', 'Stress Testing'];
+const multifamilyDealFiltersStepFields: Path<BuyBoxFormData>[] = [
+  'multifamilyCriteria.discovery.assetTypes',
+  'multifamilyCriteria.discovery.minUnits',
+  'multifamilyCriteria.discovery.maxUnits',
+  'multifamilyCriteria.discovery.minAskingPrice',
+  'multifamilyCriteria.discovery.maxAskingPrice',
+  'multifamilyCriteria.discovery.minPricePerUnit',
+  'multifamilyCriteria.discovery.maxPricePerUnit',
+  'multifamilyCriteria.discovery.minYearBuilt',
+  'multifamilyCriteria.discovery.maxYearBuilt',
+  'multifamilyCriteria.discovery.minOccupancyPct',
+  'multifamilyCriteria.discovery.maxOccupancyPct'
+];
+
+const multifamilyQualityGatesStepFields: Path<BuyBoxFormData>[] = [
+  'multifamilyCriteria.discovery.dealQualityGates.requireOm',
+  'multifamilyCriteria.discovery.dealQualityGates.requireRentRoll',
+  'multifamilyCriteria.discovery.dealQualityGates.requireT12'
+];
+
+const BUYBOX_DRAFT_STORAGE_PREFIX = 'buybox_form_draft';
+
+const getBuyBoxDraftStorageKey = (buyboxId?: string) =>
+  `${BUYBOX_DRAFT_STORAGE_PREFIX}:${buyboxId ?? 'new'}`;
+
+const getStoredBuyBoxDraft = (storageKey: string): Partial<BuyBoxFormData> | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const storedDraft = window.localStorage.getItem(storageKey);
+  if (!storedDraft) {
+    return null;
+  }
+
+  try {
+    const parsedDraft = JSON.parse(storedDraft);
+    return parsedDraft && typeof parsedDraft === 'object'
+      ? (parsedDraft as Partial<BuyBoxFormData>)
+      : null;
+  } catch {
+    window.localStorage.removeItem(storageKey);
+    return null;
+  }
+};
 
 const multifamilySteps = [
   {
@@ -118,20 +167,20 @@ const multifamilySteps = [
     fields: ['name', 'description']
   },
   {
-    title: 'Investment Strategy',
-    fields: ['strategy.strategyType']
+    title: 'Strategy',
+    fields: multifamilyStrategyStepFields
   },
   {
     title: 'Location',
     fields: ['targetLocations']
   },
   {
-    title: 'BuyBox Filters',
-    fields: []
+    title: 'Deal Filters',
+    fields: multifamilyDealFiltersStepFields
   },
   {
-    title: 'Underwriting Assumptions',
-    fields: []
+    title: 'Quality Gates',
+    fields: multifamilyQualityGatesStepFields
   }
 ];
 
@@ -255,6 +304,20 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     return getDefaultBuyBoxFormData();
   }, [props.buybox, mappedBuyBoxData]);
 
+  const draftStorageKey = useMemo(
+    () => getBuyBoxDraftStorageKey(props.buybox?.id),
+    [props.buybox?.id]
+  );
+
+  const defaultFormValuesWithDraft = useMemo(() => {
+    const draftValues = getStoredBuyBoxDraft(draftStorageKey);
+    if (!draftValues) {
+      return defaultFormValues;
+    }
+
+    return _.merge({}, defaultFormValues, draftValues) as BuyBoxFormData;
+  }, [defaultFormValues, draftStorageKey]);
+
   // const getDefaultFormValues = () => {
   //   if (props.buybox) {
   //     const mappedBuyBoxData = mapBuyBoxData(props.buybox.parameters);
@@ -273,14 +336,14 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const formMethods = useForm<BuyBoxFormData>({
     // defaultValues: { emailActive: true, email: "meow@meow.com", name: "" },
     resolver: zodResolver(formBuyBoxSchema),
-    defaultValues: defaultFormValues
+    defaultValues: defaultFormValuesWithDraft
     // defaultValues: getDefaultData(),
   });
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isDirty },
+    formState: { errors, isSubmitting, isDirty, defaultValues: formDefaultValues },
     reset,
     setValue,
     getValues,
@@ -296,7 +359,62 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     [selectedStrategyType]
   );
 
+  const canEditBuyBox = !props.buybox || props.buybox.userAccess !== 'viewer';
+
   const { enqueueSnackbar } = useSnackbar();
+
+  const clearStoredDraft = () => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    window.localStorage.removeItem(draftStorageKey);
+  };
+
+  const handleSaveDraft = () => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const currentValues = getValues();
+
+    try {
+      window.localStorage.setItem(draftStorageKey, JSON.stringify(currentValues));
+      reset(currentValues);
+      enqueueSnackbar('Draft Saved', {
+        variant: 'success'
+      });
+    } catch {
+      enqueueSnackbar('Failed to save draft', {
+        variant: 'error'
+      });
+    }
+  };
+
+  const handleResetCurrentStep = () => {
+    const stepFields = steps[activeStep].fields as Path<BuyBoxFormData>[];
+
+    if (!stepFields.length) {
+      return;
+    }
+
+    const valuesBeforeReset = getValues();
+    const valuesAfterReset = _.cloneDeep(valuesBeforeReset);
+    const stepDefaults =
+      (formDefaultValues as BuyBoxFormData | undefined) ?? defaultFormValuesWithDraft;
+
+    stepFields.forEach((fieldPath) => {
+      _.set(
+        valuesAfterReset,
+        fieldPath as string,
+        _.cloneDeep(_.get(stepDefaults, fieldPath as string))
+      );
+    });
+
+    reset(valuesAfterReset, {
+      keepDefaultValues: true
+    });
+  };
 
   const handleSubmitForm = async () => {
     const completeOutput = await trigger();
@@ -349,19 +467,17 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   };
 
   const onSubmit = async (data: any) => {
-    console.log(`meow: ${JSON.stringify(getValues(), null, 2)}`);
     try {
       if (props.buybox) {
-        console.log(`updating buybox: ${JSON.stringify(data)}`);
         await updateBuyBox({ id: props.buybox.id, parameters: data }).unwrap();
+        clearStoredDraft();
         enqueueSnackbar(`BuyBox Saved`, {
           variant: 'success'
         });
       } else {
-        const result = await createBuyBox(data).unwrap();
-        console.log(result);
+        await createBuyBox(data).unwrap();
 
-        const patchCollection = dispatch(
+        dispatch(
           buyBoxApi.util.updateQueryData(
             'getBuyBoxes',
             '',
@@ -375,6 +491,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
             }
           )
         );
+        clearStoredDraft();
         enqueueSnackbar(`BuyBox Created`, {
           variant: 'success'
         });
@@ -417,14 +534,18 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const [locations, setLocations] = useState([]);
 
   useEffect(() => {
-    handleResetBuyBox();
-  }, [props.buybox]);
+    if (!props.showEditBuybox) {
+      return;
+    }
 
-  const handleResetBuyBox = () => {
-    // const defaultData = getDefaultFormValues();
-    reset(defaultFormValues);
+    const draftValues = getStoredBuyBoxDraft(draftStorageKey);
+    const nextFormValues = draftValues
+      ? (_.merge({}, defaultFormValues, draftValues) as BuyBoxFormData)
+      : defaultFormValues;
+
+    reset(nextFormValues);
     setActiveStep(0);
-  };
+  }, [props.showEditBuybox, defaultFormValues, draftStorageKey, reset]);
 
   // const handleLocationsChanged = (event: any, value: any) => {
   //   setValue("targetLocation.locations", value);
@@ -455,28 +576,19 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   //       return undefined;
   //   }
   // };
-  const getStepsErrors = useMemo(() => {
+  const getStepHasErrors = useMemo(() => {
     return (step: number) => {
-      switch (step) {
-        case 0:
-          return errors?.name || errors?.description;
-        case 1:
-          return errors?.strategy;
-        case 2:
-          return errors?.targetLocations;
-        case 3:
-          console.log(getValues('propertyCriteria'));
-          console.log(JSON.stringify(errors));
-          return errors?.propertyCriteria;
-        case 4:
-          console.log(getValues('weights'));
-          console.log(JSON.stringify(errors));
-          return errors?.weights;
-        default:
-          return undefined;
+      const stepFields = steps[step]?.fields as Path<BuyBoxFormData>[] | undefined;
+
+      if (!stepFields || stepFields.length === 0) {
+        return false;
       }
+
+      return stepFields.some((fieldPath) =>
+        Boolean(_.get(errors, fieldPath as string))
+      );
     };
-  }, [errors]);
+  }, [errors, steps]);
 
   const StepSections = (
     <motion.div
@@ -522,10 +634,9 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         <>
           {selectedStrategyType === 'MULTIFAMILY' ? (
             <MultifamilyTabsSkeleton
-              title="BuyBox Filters"
+              title="Deal Filters"
               description="Set the deal profile you want us to search for."
               tabs={multifamilyDiscoveryTabs}
-              mode="criteria"
             />
           ) : (
             <PropertyCriteria
@@ -542,10 +653,9 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         <>
           {selectedStrategyType === 'MULTIFAMILY' ? (
             <MultifamilyTabsSkeleton
-              title="Underwriting Assumptions"
-              description="These values are used only when listings and documents do not provide them."
+              title="Quality Gates"
+              description="Optional shows all deals. Preferred boosts deals that include the document. Required hides deals missing the document."
               tabs={multifamilyDefaultsTabs}
-              mode="setup"
             />
           ) : (
             <AdjustComparables
@@ -577,19 +687,29 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         )}
       </div>
       <div className="flex flex-wrap gap-x-2">
-        {isDirty && (
+        <ShadButton
+          type="button"
+          disabled={!isDirty}
+          onClick={handleResetCurrentStep}
+          className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
+        >
+          <RotateCcw className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+          <span className="hidden md:flex text-base">Reset</span>
+        </ShadButton>
+
+        {canEditBuyBox && (
           <ShadButton
-            type="button"
-            onClick={handleResetBuyBox}
             className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
+            type="button"
+            disabled={!isDirty}
+            onClick={handleSaveDraft}
           >
-            <RotateCcw className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
-            <span className="hidden md:flex text-base">Reset</span>
+            <Save className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+            <Typography className="hidden md:flex">Save Draft</Typography>
           </ShadButton>
         )}
 
-        {((props.buybox && props.buybox.userAccess !== 'viewer') ||
-          !props.buybox) && (
+        {canEditBuyBox && (
           <ShadButton
             className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
             type="button"
@@ -600,9 +720,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
             ) : (
               <Save className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
             )}
-            <Typography className="hidden md:flex">
-              {isDirty ? 'Save & Finish' : 'Finish'}
-            </Typography>
+            <Typography className="hidden md:flex">Save &amp; Finish</Typography>
           </ShadButton>
         )}
 
@@ -654,7 +772,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           steps={steps}
           activeStep={activeStep}
           setActiveStep={setActiveStep}
-          errors={errors}
+          getStepError={getStepHasErrors}
           handleClose={handleClose}
         />
 
