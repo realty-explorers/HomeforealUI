@@ -25,6 +25,14 @@ type MultifamilyAnalysisDrawerProps = {
   propertyId?: string;
   masked?: boolean;
   onClose: () => void;
+  strategy?: {
+    strategyType?: string;
+    preset?: string;
+    primaryKpi?: {
+      type?: string;
+      minValue?: number;
+    };
+  };
 };
 
 const multifamilyTabs = [
@@ -105,13 +113,51 @@ const toPercentLabel = (value: unknown, digits = 2): string => {
   return `${numericValue.toFixed(digits)}%`;
 };
 
+const getKpiLabel = (kpiType?: string): string => {
+  if (!kpiType) return 'Cap Rate';
+  const labels: Record<string, string> = {
+    yield: 'Yield',
+    cash_yield: 'Cash Yield',
+    rent_upside: 'Rent Upside',
+    irr: 'Projected IRR',
+    value_gap: 'Discount to Value'
+  };
+  return labels[kpiType] || kpiType;
+};
+
+const getKpiValue = (
+  property: AnalyzedProperty | undefined,
+  kpiType?: string
+): string => {
+  if (!property || !kpiType) {
+    return toPercentLabel(property?.capRate);
+  }
+
+  switch (kpiType) {
+    case 'yield':
+    case 'cash_yield':
+      return toPercentLabel(property?.capRate);
+    case 'rent_upside':
+      return toPercentLabel((property as unknown as Record<string, unknown>).rentUpside);
+    case 'irr':
+      return toPercentLabel((property as unknown as Record<string, unknown>).projectedIrr);
+    case 'value_gap':
+      return toPercentLabel(
+        (property as unknown as Record<string, unknown>).discountToStabilized
+      );
+    default:
+      return toPercentLabel(property?.capRate);
+  }
+};
+
 const MultifamilyAnalysisDrawer = ({
   open,
   property: fallbackProperty,
   buyboxId,
   propertyId,
   masked = false,
-  onClose
+  onClose,
+  strategy
 }: MultifamilyAnalysisDrawerProps) => {
   const propertyState = propertiesApiEndpoints.getProperty.useQueryState(
     open && buyboxId && propertyId
@@ -216,6 +262,13 @@ const MultifamilyAnalysisDrawer = ({
         return (
           <Box className="space-y-3">
             <SectionCard title="Property Snapshot">
+              {strategy?.primaryKpi?.type && (
+                <MetricRow
+                  label={getKpiLabel(strategy.primaryKpi.type)}
+                  value={getKpiValue(property, strategy.primaryKpi.type)}
+                  provenance="calculated"
+                />
+              )}
               <MetricRow
                 label="Price"
                 value={toCurrencyLabel(property?.price)}

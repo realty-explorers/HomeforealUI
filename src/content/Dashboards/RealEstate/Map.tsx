@@ -646,6 +646,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           propertyId={selectedPropertyPreview?.id}
           masked={selectedPropertyPreview?.masked}
           onClose={handleDeselectProperty}
+          strategy={buybox?.parameters?.strategy}
         />
 
         <CardsPanel open={Boolean(propertiesState.data)} />

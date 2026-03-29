@@ -47,7 +47,7 @@ describe('MultifamilyTabsSkeleton', () => {
     render(<CriteriaHarness />);
 
     expect(await screen.findByText(/live preview/i)).toBeInTheDocument();
-    expect(screen.getByText(/average projected irr/i)).toBeInTheDocument();
+    expect(screen.getByText(/average yield/i)).toBeInTheDocument();
     expect(screen.getByText(/updated at/i)).toBeInTheDocument();
   });
 

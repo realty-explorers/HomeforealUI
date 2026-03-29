@@ -259,6 +259,8 @@ const defaultPropertyCriteria = {
   maxPrice: defaults.listingPrice.max
 };
 
+const optionalMultifamilyNumber = z.number().optional();
+
 const strategySchema = z.object({
   strategyType: buyBoxStrategyTypeEnum.optional(),
   minArv: z.number().min(defaults.arv.min).max(defaults.arv.max).optional(),
@@ -266,16 +268,36 @@ const strategySchema = z.object({
     .number()
     .min(defaults.margin.min)
     .max(defaults.margin.max)
-    .optional()
+    .optional(),
+  preset: multifamilyRankingPresetEnum.optional(),
+  primaryKpi: z
+    .object({
+      type: multifamilyMinimumProjectedOutcomeTypeSchema.optional(),
+      mode: z.enum(['minimum', 'range']).optional(),
+      minValue: optionalMultifamilyNumber,
+      maxValue: optionalMultifamilyNumber,
+      hardGateEnabled: z.boolean().optional()
+    })
+    .optional(),
+  stressPreset: z.enum(['conservative', 'base', 'aggressive', 'custom']).optional()
 });
 
 const defaultStrategy = {
   strategyType: 'FIX_AND_FLIP' as BuyBoxStrategyType,
   minArv: defaults.arv.min,
-  minMargin: defaults.margin.min
+  minMargin: defaults.margin.min,
+  preset: undefined as typeof multifamilyRankingPresetEnum._type | undefined,
+  primaryKpi: undefined as
+    | {
+        type?: typeof multifamilyMinimumProjectedOutcomeTypeSchema._type;
+        mode?: 'minimum' | 'range';
+        minValue?: number;
+        maxValue?: number;
+        hardGateEnabled?: boolean;
+      }
+    | undefined,
+  stressPreset: undefined as 'conservative' | 'base' | 'aggressive' | 'custom' | undefined
 };
-
-const optionalMultifamilyNumber = z.number().optional();
 
 const multifamilyRankingWeightsSchema = z.preprocess(
   (value) => {

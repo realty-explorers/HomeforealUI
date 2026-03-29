@@ -420,7 +420,10 @@ const MultifamilyTabsSkeleton = ({
   const normalizedMode = (mode || '').trim().toLowerCase();
   const isStrategySection =
     normalizedMode === 'strategy' || title.trim().toLowerCase() === 'strategy';
-  const showSectionIntro = !isStrategySection;
+  const isUnderwritingSection = normalizedMode === 'underwriting';
+  const isStressSection = normalizedMode === 'stress';
+  const isReviewSection = normalizedMode === 'review';
+  const showSectionIntro = !isStrategySection && !isUnderwritingSection && !isStressSection && !isReviewSection;
   const showSingleStrategyLayout = isStrategySection && tabs.length === 1;
   const { control, register, setValue, watch } = useFormContext<any>();
 
@@ -456,15 +459,12 @@ const MultifamilyTabsSkeleton = ({
     });
   }, [otherIncomeAnnual, otherIncomeMonthly, setValue, unitMixRows]);
 
-  const rankingPreset = watch(
-    'multifamilyCriteria.discovery.rankingPreset'
-  ) as RankingPresetKey | undefined;
+  const rankingPreset = watch('strategy.preset') as RankingPresetKey | undefined;
   const watchedMinimumProjectedOutcomeType = watch(
-    'multifamilyCriteria.discovery.minimumProjectedOutcomeType'
+    'strategy.primaryKpi.type'
   ) as MinimumProjectedOutcomeType | undefined;
-  const minimumProjectedOutcomeValueRaw = watch(
-    'multifamilyCriteria.discovery.minimumProjectedOutcomeValue'
-  );
+  const minimumProjectedOutcomeValueRaw = watch('strategy.primaryKpi.minValue');
+  const watchedKpiMode = watch('strategy.primaryKpi.mode') as 'minimum' | 'range' | undefined;
 
   const presetMinimumProjectedOutcomeType =
     rankingPreset && rankingPreset !== 'CUSTOM'
@@ -491,7 +491,7 @@ const MultifamilyTabsSkeleton = ({
         : Math.max(nextConfig.min, Math.min(nextConfig.max, currentValue));
 
     if (watchedMinimumProjectedOutcomeType !== nextType) {
-      setValue('multifamilyCriteria.discovery.minimumProjectedOutcomeType', nextType, {
+      setValue('strategy.primaryKpi.type', nextType, {
         shouldDirty: false,
         shouldValidate: true
       });
@@ -501,14 +501,10 @@ const MultifamilyTabsSkeleton = ({
       !Number.isFinite(currentValue) ||
       Math.abs(normalizedValue - currentValue) > 0.0001
     ) {
-      setValue(
-        'multifamilyCriteria.discovery.minimumProjectedOutcomeValue',
-        normalizedValue,
-        {
-          shouldDirty: false,
-          shouldValidate: true
-        }
-      );
+      setValue('strategy.primaryKpi.minValue', normalizedValue, {
+        shouldDirty: false,
+        shouldValidate: true
+      });
     }
   }, [
     minimumProjectedOutcomeType,
@@ -591,7 +587,7 @@ const MultifamilyTabsSkeleton = ({
   };
 
   const applyRankingPreset = (preset: Exclude<RankingPresetKey, 'CUSTOM'>) => {
-    setValue('multifamilyCriteria.discovery.rankingPreset', preset, {
+    setValue('strategy.preset', preset, {
       shouldDirty: true,
       shouldValidate: true
     });
@@ -967,7 +963,7 @@ const MultifamilyTabsSkeleton = ({
       {}) as Partial<
       Record<RankingWeightFieldKey, unknown>
     >;
-    setValue('multifamilyCriteria.discovery.rankingPreset', 'CUSTOM', {
+    setValue('strategy.preset', 'CUSTOM', {
       shouldDirty: true,
       shouldValidate: true
     });
@@ -986,14 +982,14 @@ const MultifamilyTabsSkeleton = ({
     );
 
     if (hasConfiguredWeight) {
-      setValue('multifamilyCriteria.discovery.rankingPreset', 'CUSTOM', {
+      setValue('strategy.preset', 'CUSTOM', {
         shouldDirty: false,
         shouldValidate: false
       });
       return;
     }
 
-    setValue('multifamilyCriteria.discovery.rankingPreset', 'BALANCED', {
+    setValue('strategy.preset', 'BALANCED', {
       shouldDirty: false,
       shouldValidate: false
     });
@@ -1002,6 +998,284 @@ const MultifamilyTabsSkeleton = ({
       shouldValidate: false
     });
   }, [rankingPreset, setValue, watch]);
+
+  const renderUnderwritingTabContent = () => {
+    const normalizedTabLabel = `${tabs[activeTab] || ''}`.toLowerCase();
+    const isIncomeTab = normalizedTabLabel.includes('income');
+    const isExpensesTab = normalizedTabLabel.includes('expense');
+    const isUtilitiesTab = normalizedTabLabel.includes('util');
+
+    if (isIncomeTab) {
+      return (
+        <div className="flex flex-col gap-y-3">
+          <Typography className={clsx([styles.subheader, 'mb-1'])}>
+            Income Assumptions
+          </Typography>
+          <Typography className={styles.helper_text2}>
+            Configure rent roll and income assumptions for underwriting.
+          </Typography>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {renderSliderField({
+              label: 'Physical Occupancy %',
+              fieldPath: 'multifamilyCriteria.rentRoll.physicalOccupancyPct',
+              min: 0,
+              max: 100,
+              step: 1,
+              suffix: '%',
+              quickValues: [85, 90, 95]
+            })}
+            {renderSliderField({
+              label: 'Economic Occupancy %',
+              fieldPath: 'multifamilyCriteria.rentRoll.economicOccupancyPct',
+              min: 0,
+              max: 100,
+              step: 1,
+              suffix: '%',
+              quickValues: [80, 85, 90, 95]
+            })}
+            {renderSliderField({
+              label: 'Concessions %',
+              fieldPath: 'multifamilyCriteria.rentRoll.concessionsPct',
+              min: 0,
+              max: 20,
+              step: 0.5,
+              suffix: '%',
+              quickValues: [0, 2, 5]
+            })}
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <TextField
+                label="Other Income per Unit (Monthly)"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, max: 1000, step: 10 }}
+                {...register('multifamilyCriteria.rentRoll.otherIncomeMonthly', {
+                  valueAsNumber: true
+                })}
+              />
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-3 md:col-span-2">
+              <TextField
+                label="Gross Scheduled Rent (Annual)"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, step: 1000 }}
+                {...register('multifamilyCriteria.income.grossScheduledRentAnnual', {
+                  valueAsNumber: true
+                })}
+                fullWidth
+              />
+            </div>
+            {renderSliderField({
+              label: 'Vacancy Loss %',
+              fieldPath: 'multifamilyCriteria.income.vacancyLossPct',
+              min: 0,
+              max: 20,
+              step: 0.5,
+              suffix: '%',
+              quickValues: [5, 8, 10]
+            })}
+            {renderSliderField({
+              label: 'Bad Debt %',
+              fieldPath: 'multifamilyCriteria.income.badDebtPct',
+              min: 0,
+              max: 10,
+              step: 0.5,
+              suffix: '%',
+              quickValues: [1, 2, 3]
+            })}
+            {renderSliderField({
+              label: 'Loss to Lease %',
+              fieldPath: 'multifamilyCriteria.income.lossToLeasePct',
+              min: 0,
+              max: 20,
+              step: 0.5,
+              suffix: '%',
+              quickValues: [0, 5, 10]
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    if (isExpensesTab) {
+      return (
+        <div className="flex flex-col gap-y-3">
+          <Typography className={clsx([styles.subheader, 'mb-1'])}>
+            Expense Assumptions
+          </Typography>
+          <Typography className={styles.helper_text2}>
+            Configure operating expense assumptions for underwriting.
+          </Typography>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <TextField
+                label="Property Taxes (Annual)"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, step: 1000 }}
+                {...register('multifamilyCriteria.expenses.propertyTaxesAnnual', {
+                  valueAsNumber: true
+                })}
+                fullWidth
+              />
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <TextField
+                label="Insurance (Annual)"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, step: 500 }}
+                {...register('multifamilyCriteria.expenses.insuranceAnnual', {
+                  valueAsNumber: true
+                })}
+                fullWidth
+              />
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <TextField
+                label="Repairs & Maintenance (Annual)"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, step: 1000 }}
+                {...register('multifamilyCriteria.expenses.repairsMaintenanceAnnual', {
+                  valueAsNumber: true
+                })}
+                fullWidth
+              />
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <TextField
+                label="Payroll (Annual)"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, step: 1000 }}
+                {...register('multifamilyCriteria.expenses.payrollAnnual', {
+                  valueAsNumber: true
+                })}
+                fullWidth
+              />
+            </div>
+            {renderSliderField({
+              label: 'Management Fee %',
+              fieldPath: 'multifamilyCriteria.expenses.managementFeePct',
+              min: 0,
+              max: 10,
+              step: 0.25,
+              suffix: '%',
+              quickValues: [2, 3, 4]
+            })}
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <TextField
+                label="Payroll & Maintenance per Unit (Annual)"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, step: 100 }}
+                {...register('multifamilyCriteria.expenses.payrollAndMaintenancePerUnitAnnual', {
+                  valueAsNumber: true
+                })}
+                fullWidth
+              />
+            </div>
+            {renderSliderField({
+              label: 'Expense Ratio Baseline %',
+              fieldPath: 'multifamilyCriteria.expenses.expenseRatioBaselinePct',
+              min: 20,
+              max: 70,
+              step: 1,
+              suffix: '%',
+              quickValues: [35, 45, 55]
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    if (isUtilitiesTab) {
+      return (
+        <div className="flex flex-col gap-y-3">
+          <Typography className={clsx([styles.subheader, 'mb-1'])}>
+            Utility Assumptions
+          </Typography>
+          <Typography className={styles.helper_text2}>
+            Configure utility billing and expense assumptions.
+          </Typography>
+          <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+            {renderSegmentedSelectionField({
+              label: 'Utility Billing Type',
+              fieldPath: 'multifamilyCriteria.utilities.utilityBillingType',
+              options: multifamilyUtilityBillingTypeOptions as unknown as {
+                value: string;
+                label: string;
+              }[]
+            })}
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <TextField
+                label="Water & Sewer (Annual)"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, step: 1000 }}
+                {...register('multifamilyCriteria.utilities.waterSewerAnnual', {
+                  valueAsNumber: true
+                })}
+                fullWidth
+              />
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <TextField
+                label="Trash (Annual)"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, step: 500 }}
+                {...register('multifamilyCriteria.utilities.trashAnnual', {
+                  valueAsNumber: true
+                })}
+                fullWidth
+              />
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <TextField
+                label="Electric (Annual)"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, step: 1000 }}
+                {...register('multifamilyCriteria.utilities.electricAnnual', {
+                  valueAsNumber: true
+                })}
+                fullWidth
+              />
+            </div>
+            <div className="rounded-lg border border-gray-200 bg-white p-3">
+              <TextField
+                label="Gas (Annual)"
+                size="small"
+                type="number"
+                inputProps={{ min: 0, step: 500 }}
+                {...register('multifamilyCriteria.utilities.gasAnnual', {
+                  valueAsNumber: true
+                })}
+                fullWidth
+              />
+            </div>
+            {renderSliderField({
+              label: 'Utility Reimbursement %',
+              fieldPath: 'multifamilyCriteria.utilities.reimbursementPct',
+              min: 0,
+              max: 100,
+              step: 5,
+              suffix: '%',
+              quickValues: [0, 50, 100]
+            })}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <Typography className={styles.helper_text2}>
+        Select a tab to configure underwriting assumptions.
+      </Typography>
+    );
+  };
 
   const renderCriteriaTabContent = () => {
     const normalizedCriteriaTabLabel = `${tabs[activeTab] || ''}`.toLowerCase();
@@ -1275,7 +1549,7 @@ const MultifamilyTabsSkeleton = ({
                 </div>
                 <div className="rounded border border-gray-200 p-2">
                   <Typography className="text-xs font-medium uppercase text-gray-500">
-                    Average projected irr
+                    Average {minimumProjectedOutcomeConfig.label.replace('Minimum ', '')}
                   </Typography>
                   <Typography className="text-lg font-semibold text-gray-800">
                     {liveFilterPreview.averageProjectedIrrPct.toFixed(2)}%
@@ -1371,9 +1645,6 @@ const MultifamilyTabsSkeleton = ({
             {rankingPreset === 'CUSTOM' && (
               <Chip label="Custom" color="primary" size="small" />
             )}
-            {rankingPreset === 'LOW_RISK' && (
-              <Chip label="Low Risk (legacy preset)" size="small" variant="outlined" />
-            )}
           </div>
 
           <div className="rounded-lg border border-gray-200 bg-white p-3">
@@ -1414,7 +1685,7 @@ const MultifamilyTabsSkeleton = ({
 
           {renderSliderField({
             label: minimumProjectedOutcomeConfig.label,
-            fieldPath: 'multifamilyCriteria.discovery.minimumProjectedOutcomeValue',
+            fieldPath: 'strategy.primaryKpi.minValue',
             min: minimumProjectedOutcomeConfig.min,
             max: minimumProjectedOutcomeConfig.max,
             step: minimumProjectedOutcomeConfig.step,
@@ -1474,7 +1745,7 @@ const MultifamilyTabsSkeleton = ({
                     variant="outlined"
                     className="w-fit"
                     onClick={() => {
-                      setValue('multifamilyCriteria.discovery.rankingPreset', 'CUSTOM', {
+                      setValue('strategy.preset', 'CUSTOM', {
                         shouldDirty: true,
                         shouldValidate: true
                       });
@@ -1530,7 +1801,7 @@ const MultifamilyTabsSkeleton = ({
                                 0
                               );
 
-                              setValue('multifamilyCriteria.discovery.rankingPreset', 'CUSTOM', {
+                              setValue('strategy.preset', 'CUSTOM', {
                                 shouldDirty: true,
                                 shouldValidate: true
                               });
@@ -1592,6 +1863,130 @@ const MultifamilyTabsSkeleton = ({
     );
   };
 
+  const renderStressTabContent = () => {
+    return (
+      <div className="flex flex-col gap-y-3">
+        <Typography className={clsx([styles.subheader, 'mb-1'])}>
+          Stress Testing
+        </Typography>
+        <Typography className={styles.helper_text2}>
+          Test your strategy against adverse market conditions.
+        </Typography>
+        <div className="grid grid-cols-1 gap-3 md:grid-cols-2">
+          {renderSliderField({
+            label: 'Vacancy Increase %',
+            fieldPath: 'multifamilyCriteria.stressTest.vacancyIncreasePct',
+            min: 0,
+            max: 30,
+            step: 1,
+            suffix: '%',
+            quickValues: [5, 10, 15]
+          })}
+          {renderSliderField({
+            label: 'Expense Increase %',
+            fieldPath: 'multifamilyCriteria.stressTest.expenseIncreasePct',
+            min: 0,
+            max: 30,
+            step: 1,
+            suffix: '%',
+            quickValues: [5, 10, 15]
+          })}
+          {renderSliderField({
+            label: 'Rent Decrease %',
+            fieldPath: 'multifamilyCriteria.stressTest.rentDecreasePct',
+            min: 0,
+            max: 30,
+            step: 1,
+            suffix: '%',
+            quickValues: [5, 10, 15]
+          })}
+          {renderSliderField({
+            label: 'Exit Cap Increase %',
+            fieldPath: 'multifamilyCriteria.stressTest.exitCapIncreasePct',
+            min: 0,
+            max: 5,
+            step: 0.25,
+            suffix: '%',
+            quickValues: [0.5, 1, 2]
+          })}
+          <div className="rounded-lg border border-gray-200 bg-white p-3">
+            <TextField
+              label="Construction Delay (Months)"
+              size="small"
+              type="number"
+              inputProps={{ min: 0, max: 24, step: 1 }}
+              {...register('multifamilyCriteria.stressTest.constructionDelayMonths', {
+                valueAsNumber: true
+              })}
+              fullWidth
+            />
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderReviewTabContent = () => {
+    const formValues = watch();
+    const buyBoxName = formValues.name || 'Unnamed BuyBox';
+    const strategyType = formValues.strategy?.strategyType || 'MULTIFAMILY';
+    const preset = formValues.strategy?.preset || 'BALANCED';
+
+    return (
+      <div className="flex flex-col gap-y-3">
+        <Typography className={clsx([styles.subheader, 'mb-1'])}>
+          Review & Save
+        </Typography>
+        <Typography className={styles.helper_text2}>
+          Review your BuyBox configuration before saving.
+        </Typography>
+
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
+          <Typography className="mb-2 text-lg font-semibold">BuyBox Name</Typography>
+          <TextField
+            {...register('name')}
+            fullWidth
+            size="small"
+            label="Name"
+            helperText="Edit the name before saving"
+          />
+        </div>
+
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
+          <Typography className="mb-2 text-lg font-semibold">Strategy Summary</Typography>
+          <div className="grid grid-cols-2 gap-2 text-sm">
+            <div className="text-gray-600">Strategy Type:</div>
+            <div className="font-medium">{strategyType}</div>
+            <div className="text-gray-600">Strategy Preset:</div>
+            <div className="font-medium">{preset}</div>
+            <div className="text-gray-600">Primary KPI:</div>
+            <div className="font-medium">{formValues.strategy?.primaryKpi?.type || 'yield'}</div>
+          </div>
+        </div>
+
+        <div className="rounded-lg border border-gray-200 bg-white p-4">
+          <Typography className="mb-2 text-lg font-semibold">Configuration Complete</Typography>
+          <Typography className="text-sm text-gray-600">
+            All {tabs.length} steps have been configured. Click Save & Finish to create your BuyBox.
+          </Typography>
+        </div>
+      </div>
+    );
+  };
+
+  const getTabContent = () => {
+    if (isUnderwritingSection) {
+      return renderUnderwritingTabContent();
+    }
+    if (isStressSection) {
+      return renderStressTabContent();
+    }
+    if (isReviewSection) {
+      return renderReviewTabContent();
+    }
+    return renderCriteriaTabContent();
+  };
+
   return (
     <div
       className={clsx([
@@ -1646,7 +2041,7 @@ const MultifamilyTabsSkeleton = ({
         <Typography className={clsx([styles.subheader, 'mb-2'])}>
           {selectedTab}
         </Typography>
-        {renderCriteriaTabContent()}
+        {getTabContent()}
       </div>
     </div>
   );

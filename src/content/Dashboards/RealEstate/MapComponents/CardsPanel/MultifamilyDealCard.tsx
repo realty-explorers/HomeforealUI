@@ -22,6 +22,14 @@ type MultifamilyDealCardProps = {
   setOpenMoreDetails: (open: boolean) => void;
   selected: boolean;
   className?: string;
+  strategy?: {
+    strategyType?: string;
+    preset?: string;
+    primaryKpi?: {
+      type?: string;
+      minValue?: number;
+    };
+  };
 };
 
 const getPrice = (property: PropertyPreview) => {
@@ -72,6 +80,50 @@ const getCapRate = (property: PropertyPreview) => {
     return capRate;
   }
   return undefined;
+};
+
+const getKpiBadgeDisplay = (
+  property: PropertyPreview,
+  strategy?: MultifamilyDealCardProps['strategy']
+) => {
+  if (!strategy?.primaryKpi?.type) {
+    const capRate = getCapRate(property);
+    return capRate !== undefined ? `${capRate.toFixed(1)}% Cap` : 'Cap N/A';
+  }
+
+  const kpiType = strategy.primaryKpi.type;
+  const kpiLabels: Record<string, string> = {
+    yield: 'Yield',
+    cash_yield: 'Cash Yield',
+    rent_upside: 'Upside',
+    irr: 'IRR',
+    value_gap: 'Discount'
+  };
+  const label = kpiLabels[kpiType] || kpiType;
+
+  // Try to get property value for this KPI type
+  let value: number | undefined;
+  switch (kpiType) {
+    case 'yield':
+      value = getCapRate(property);
+      break;
+    case 'rent_upside':
+      value = Number((property as unknown as Record<string, unknown>).rentUpside);
+      break;
+    case 'irr':
+      value = Number((property as unknown as Record<string, unknown>).projectedIrr);
+      break;
+    case 'value_gap':
+      value = Number((property as unknown as Record<string, unknown>).discountToStabilized);
+      break;
+    default:
+      value = undefined;
+  }
+
+  if (value !== undefined && Number.isFinite(value)) {
+    return `${label} ${value.toFixed(1)}%`;
+  }
+  return label;
 };
 
 const MultifamilyDealCard: React.FC<MultifamilyDealCardProps> = (
@@ -125,7 +177,7 @@ const MultifamilyDealCard: React.FC<MultifamilyDealCardProps> = (
 
       <div className="absolute top-1 right-1 z-[1] rounded-lg bg-black/70 px-2 py-0.5">
         <Typography className="font-poppins font-semibold text-white text-xs">
-          {capRate !== undefined ? `${capRate.toFixed(1)}% Cap` : 'Cap N/A'}
+          {getKpiBadgeDisplay(props.property, props.strategy)}
         </Typography>
       </div>
 

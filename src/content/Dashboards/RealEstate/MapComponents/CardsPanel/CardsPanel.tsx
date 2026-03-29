@@ -33,7 +33,8 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   const { selectProperty, deselectProperty } = useProperty();
 
   const scrollLeft = () => {
-    const element = document.querySelector('#list-container > div > div');
+    const element = document.querySelector('#list-container > div > div') as HTMLElement | null;
+    if (!element) return;
     const width = element.scrollLeft - element.offsetWidth;
     element.scrollTo({
       left: width,
@@ -42,7 +43,8 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   };
   //
   const scrollRight = () => {
-    const element = document.querySelector('#list-container > div > div');
+    const element = document.querySelector('#list-container > div > div') as HTMLElement | null;
+    if (!element) return;
     const width = element.scrollLeft + element.offsetWidth;
     element.scrollTo({
       left: width,
@@ -154,6 +156,7 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
             selectProperty={(property) => handleSelectProperty(property)}
             deselectProperty={() => handleDeselectProperty()}
             setOpenMoreDetails={() => {}}
+            strategy={isMultifamilyBuybox ? buybox?.parameters?.strategy : undefined}
           />
         </div>
       </div>

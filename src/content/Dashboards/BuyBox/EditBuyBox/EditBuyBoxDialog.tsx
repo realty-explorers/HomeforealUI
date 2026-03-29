@@ -87,7 +87,7 @@ const defaultSteps = [
     fields: ['name', 'description']
   },
   {
-    title: 'Investment Strategy',
+    title: 'Strategy',
     fields: ['strategy.strategyType']
   },
   {
@@ -95,7 +95,7 @@ const defaultSteps = [
     fields: ['targetLocations']
   },
   {
-    title: 'Property Criteria',
+    title: 'Deal Filters',
     fields: ['propertyCriteria']
   },
   {
@@ -104,7 +104,7 @@ const defaultSteps = [
   }
 ];
 
-const multifamilyDiscoveryTabs = ['Deal Filters'];
+const multifamilyDiscoveryTabs = ['BuyBox Filters'];
 
 const multifamilyDefaultsTabs = ['Quality Gates'];
 
@@ -135,7 +135,42 @@ const multifamilyQualityGatesStepFields: Path<BuyBoxFormData>[] = [
   'multifamilyCriteria.discovery.dealQualityGates.requireT12'
 ];
 
-const BUYBOX_DRAFT_STORAGE_PREFIX = 'buybox_form_draft';
+const multifamilyUnderwritingStepFields: Path<BuyBoxFormData>[] = [
+  'multifamilyCriteria.unitMix',
+  'multifamilyCriteria.rentRoll.physicalOccupancyPct',
+  'multifamilyCriteria.rentRoll.economicOccupancyPct',
+  'multifamilyCriteria.rentRoll.concessionsPct',
+  'multifamilyCriteria.rentRoll.otherIncomeMonthly',
+  'multifamilyCriteria.income.grossScheduledRentAnnual',
+  'multifamilyCriteria.income.vacancyLossPct',
+  'multifamilyCriteria.income.badDebtPct',
+  'multifamilyCriteria.income.lossToLeasePct',
+  'multifamilyCriteria.income.otherIncomeAnnual',
+  'multifamilyCriteria.expenses.propertyTaxesAnnual',
+  'multifamilyCriteria.expenses.insuranceAnnual',
+  'multifamilyCriteria.expenses.repairsMaintenanceAnnual',
+  'multifamilyCriteria.expenses.payrollAnnual',
+  'multifamilyCriteria.expenses.managementFeePct',
+  'multifamilyCriteria.expenses.payrollAndMaintenancePerUnitAnnual',
+  'multifamilyCriteria.expenses.expenseRatioBaselinePct',
+  'multifamilyCriteria.utilities.utilityBillingType',
+  'multifamilyCriteria.utilities.waterSewerAnnual',
+  'multifamilyCriteria.utilities.trashAnnual',
+  'multifamilyCriteria.utilities.electricAnnual',
+  'multifamilyCriteria.utilities.gasAnnual',
+  'multifamilyCriteria.utilities.reimbursementPct'
+];
+
+const multifamilyStressTestStepFields: Path<BuyBoxFormData>[] = [
+  'strategy.stressPreset',
+  'multifamilyCriteria.stressTest.vacancyIncreasePct',
+  'multifamilyCriteria.stressTest.expenseIncreasePct',
+  'multifamilyCriteria.stressTest.rentDecreasePct',
+  'multifamilyCriteria.stressTest.exitCapIncreasePct',
+  'multifamilyCriteria.stressTest.constructionDelayMonths'
+];
+
+const multifamilyReviewStepFields: Path<BuyBoxFormData>[] = ['name', 'description'];
 
 const getBuyBoxDraftStorageKey = (buyboxId?: string) =>
   `${BUYBOX_DRAFT_STORAGE_PREFIX}:${buyboxId ?? 'new'}`;
@@ -175,16 +210,30 @@ const multifamilySteps = [
     fields: ['targetLocations']
   },
   {
-    title: 'Deal Filters',
+    title: 'BuyBox Filters',
     fields: multifamilyDealFiltersStepFields
   },
   {
     title: 'Quality Gates',
     fields: multifamilyQualityGatesStepFields
+  },
+  {
+    title: 'Underwriting',
+    fields: multifamilyUnderwritingStepFields
+  },
+  {
+    title: 'Stress Test',
+    fields: multifamilyStressTestStepFields
+  },
+  {
+    title: 'Review',
+    fields: multifamilyReviewStepFields
   }
 ];
 
 const EDITOR_ROLES = ['edit', 'maitainer', 'owner'];
+
+const BUYBOX_DRAFT_STORAGE_PREFIX = 'buybox_form_draft';
 
 type editBuyBoxDialogProps = {
   buybox?: BuyBox;
@@ -634,7 +683,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         <>
           {selectedStrategyType === 'MULTIFAMILY' ? (
             <MultifamilyTabsSkeleton
-              title="Deal Filters"
+              title="BuyBox Filters"
               description="Set the deal profile you want us to search for."
               tabs={multifamilyDiscoveryTabs}
             />
@@ -667,6 +716,30 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
             />
           )}
         </>
+      )}
+      {activeStep === 5 && (
+        <MultifamilyTabsSkeleton
+          title="Underwriting Assumptions"
+          description="Configure income, expenses, and utility assumptions for underwriting."
+          tabs={['Income', 'Expenses', 'Utilities']}
+          mode="underwriting"
+        />
+      )}
+      {activeStep === 6 && (
+        <MultifamilyTabsSkeleton
+          title="Stress Testing"
+          description="Test your strategy against adverse market conditions."
+          tabs={['Stress Test']}
+          mode="stress"
+        />
+      )}
+      {activeStep === 7 && (
+        <MultifamilyTabsSkeleton
+          title="Review & Save"
+          description="Review your BuyBox configuration before saving."
+          tabs={['Summary']}
+          mode="review"
+        />
       )}
     </motion.div>
   );

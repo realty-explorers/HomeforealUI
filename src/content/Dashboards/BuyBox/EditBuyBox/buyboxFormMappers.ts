@@ -85,7 +85,16 @@ export const mapBuyBoxDataToForm = (
       minMargin: getMinFieldProperties(
         buyboxData.strategy.minMargin,
         defaults.margin.min
-      )
+      ),
+      preset: buyboxData.strategy.preset,
+      primaryKpi: buyboxData.strategy.primaryKpi || {
+        type: undefined,
+        mode: 'minimum',
+        minValue: undefined,
+        maxValue: undefined,
+        hardGateEnabled: false
+      },
+      stressPreset: buyboxData.strategy.stressPreset
     },
     multifamilyCriteria: buyboxData.multifamilyCriteria,
     targetLocations: buyboxData.targetLocations,

@@ -79,7 +79,31 @@ const strategyFormSchema = z
   .object({
     strategyType: buyBoxStrategyTypeEnum,
     minArv: minSchema,
-    minMargin: minSchema
+    minMargin: minSchema,
+    // New fields per BuyBox UI spec v1.0
+    preset: z.enum([
+      'CORE',
+      'BALANCED',
+      'CASH_FLOW',
+      'VALUE_ADD',
+      'OPPORTUNISTIC',
+      'DEEP_DISCOUNT'
+    ]).optional(),
+    primaryKpi: z
+      .object({
+        type: z.enum([
+          'yield',
+          'cash_yield',
+          'rent_upside',
+          'irr',
+          'value_gap'
+        ]).optional(),
+        mode: z.enum(['minimum', 'range']).default('minimum'),
+        minValue: z.number().optional(),
+        maxValue: z.number().optional(),
+        hardGateEnabled: z.boolean().default(false)
+      })
+      .default({})
   })
   .transform((formData) => {
     const transformed: Record<string, any> = {};
@@ -102,7 +126,16 @@ const strategyFormSchema = z
 const defaultStrategyFormSchema = {
   strategyType: 'FIX_AND_FLIP' as const,
   minArv: { enabled: true, value: defaults.arv.min },
-  minMargin: { enabled: false, value: defaults.margin.min }
+  minMargin: { enabled: false, value: defaults.margin.min },
+  // New fields per BuyBox UI spec v1.0
+  preset: undefined as 'CORE' | 'BALANCED' | 'CASH_FLOW' | 'VALUE_ADD' | 'OPPORTUNISTIC' | 'DEEP_DISCOUNT' | undefined,
+  primaryKpi: {
+    type: undefined as 'yield' | 'cash_yield' | 'rent_upside' | 'irr' | 'value_gap' | undefined,
+    mode: 'minimum' as const,
+    minValue: undefined as number | undefined,
+    maxValue: undefined as number | undefined,
+    hardGateEnabled: false as const
+  }
 };
 
 const multifamilyAssetTypeEnum = z.enum([
@@ -335,6 +368,16 @@ const multifamilyDiscoveryFormSchema = z
   })
   .default({});
 
+const multifamilyStressTestFormSchema = z
+  .object({
+    vacancyIncreasePct: optionalMultifamilyNumberFormSchema,
+    expenseIncreasePct: optionalMultifamilyNumberFormSchema,
+    rentDecreasePct: optionalMultifamilyNumberFormSchema,
+    exitCapIncreasePct: optionalMultifamilyNumberFormSchema,
+    constructionDelayMonths: optionalMultifamilyNumberFormSchema
+  })
+  .default({});
+
 const multifamilyCriteriaFormSchema = z.object({
   discovery: multifamilyDiscoveryFormSchema,
   unitMix: z.array(multifamilyUnitMixFormSchema).default([]),
@@ -379,7 +422,8 @@ const multifamilyCriteriaFormSchema = z.object({
       electricPerUnitMonthly: optionalMultifamilyNumberFormSchema,
       gasPerUnitMonthly: optionalMultifamilyNumberFormSchema
     })
-    .default({})
+    .default({}),
+  stressTest: multifamilyStressTestFormSchema
 });
 
 const defaultMultifamilyCriteriaFormSchema: z.infer<typeof multifamilyCriteriaFormSchema> = {
@@ -455,6 +499,13 @@ const defaultMultifamilyCriteriaFormSchema: z.infer<typeof multifamilyCriteriaFo
     trashPerUnitMonthly: undefined,
     electricPerUnitMonthly: undefined,
     gasPerUnitMonthly: undefined
+  },
+  stressTest: {
+    vacancyIncreasePct: undefined,
+    expenseIncreasePct: undefined,
+    rentDecreasePct: undefined,
+    exitCapIncreasePct: undefined,
+    constructionDelayMonths: undefined
   }
 };
 
