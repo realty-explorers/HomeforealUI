@@ -14,23 +14,25 @@ import { buyboxAnalysisApi } from './services/buyboxAnalysisApi';
 import { userApi } from './services/userApi';
 import { offerApi } from './services/offersApi';
 
+export const rootReducer = {
+  location: locationReducer,
+  filter: filterReducer,
+  properties: propertiesReducer,
+  auth: authReducer,
+  buyBoxes: buyBoxesReducer,
+  map: mapReducer,
+  expenses: expensesReducer,
+  [locationApi.reducerPath]: locationApi.reducer,
+  [propertiesApi.reducerPath]: propertiesApi.reducer,
+  [buyBoxApi.reducerPath]: buyBoxApi.reducer,
+  [analysisApi.reducerPath]: analysisApi.reducer,
+  [buyboxAnalysisApi.reducerPath]: buyboxAnalysisApi.reducer,
+  [userApi.reducerPath]: userApi.reducer,
+  [offerApi.reducerPath]: offerApi.reducer
+};
+
 export const store = configureStore({
-  reducer: {
-    location: locationReducer,
-    filter: filterReducer,
-    properties: propertiesReducer,
-    auth: authReducer,
-    buyBoxes: buyBoxesReducer,
-    map: mapReducer,
-    expenses: expensesReducer,
-    [locationApi.reducerPath]: locationApi.reducer,
-    [propertiesApi.reducerPath]: propertiesApi.reducer,
-    [buyBoxApi.reducerPath]: buyBoxApi.reducer,
-    [analysisApi.reducerPath]: analysisApi.reducer,
-    [buyboxAnalysisApi.reducerPath]: buyboxAnalysisApi.reducer,
-    [userApi.reducerPath]: userApi.reducer,
-    [offerApi.reducerPath]: offerApi.reducer
-  },
+  reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware()
       .concat(locationApi.middleware)
