@@ -92,11 +92,13 @@ const baseQuery = fetchBaseQuery({
 	baseUrl,
 	prepareHeaders: async (headers, { getState }) => {
 		let token = (getState() as RootState).auth.token;
+		const session = (getState() as RootState).auth.session;
 
 		if (!token) {
 			try {
 				const request = await fetch('/api/protected');
-				token = (await request.json()).accessToken;
+				const data = await request.json();
+				token = data.accessToken;
 			} catch (e) {
 				console.log(e);
 			}
@@ -106,6 +108,11 @@ const baseQuery = fetchBaseQuery({
 		if (token) {
 			headers.set('authorization', `Bearer ${token}`);
 		}
+
+		// Add organization_id header for backend services that need it
+		// Try to get from session first, fallback to a default for development
+		const orgId = session?.user?.organizationId || session?.user?.org_id || 'default-org';
+		headers.set('X-Organization-Id', orgId);
 
 		return headers;
 	}

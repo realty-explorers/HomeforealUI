@@ -27,7 +27,7 @@ import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
 import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
 // import { useUser } from "@auth0/nextjs-auth0/client";
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAuth, setToken } from '@/store/slices/authSlice';
+import { selectAuth, setToken, setSession } from '@/store/slices/authSlice';
 import { signOut, useSession } from 'next-auth/react';
 import VerificationAlertBadge from './VerificationAlertBadge';
 
@@ -107,6 +107,7 @@ function HeaderUserbox() {
       //     //TODO: move this to a requireAuth wrapper, and check state of authSlice to see if you need to login
       //     //      and refetch and accessToken
       dispatch(setToken(data.user.accessToken));
+      dispatch(setSession(data));
     }
     //   } else if (3 == 1) {
     //     // if (data.error === 'ERR_EXPIRED_ACCESS_TOKEN') {
