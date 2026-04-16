@@ -415,12 +415,12 @@ export const buyBoxApi = createApi({
 			invalidatesTags: ['BuyBox']
 		}),
 		deleteBuyBox: builder.mutation({
-			query: (id) => ({
-				url: `/v1/buybox/${id}`,
+			query: ({ id, isMultifamily }) => ({
+				url: isMultifamily ? `/v1/mf/buyboxes/${id}` : `/v1/buybox/${id}`,
 				method: 'DELETE'
 			}),
-			transformResponse: (response: any) => response
-			// invalidatesTags: (result, error, arg) => [{ type: "BuyBox", id: arg.id }],
+			transformResponse: (response: any) => response,
+			invalidatesTags: ['BuyBox']
 		}),
 		validateBuyBox: builder.mutation({
 			query: (id) => ({
