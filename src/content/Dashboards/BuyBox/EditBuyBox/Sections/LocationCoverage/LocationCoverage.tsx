@@ -35,6 +35,17 @@ const LocationCoverage = ({
   const [locations, setLocations] = useState<LocationSuggestion[]>(
     getValues('targetLocations') as LocationSuggestion[]
   );
+
+  // Watch targetLocations for changes
+  const targetLocations = watch('targetLocations');
+
+  // Sync local state with form values when they change (e.g., when loading existing buybox)
+  useEffect(() => {
+    if (targetLocations && targetLocations.length > 0) {
+      setLocations(targetLocations as LocationSuggestion[]);
+    }
+  }, [targetLocations]);
+
   const handleSetLocations = (value: any) => {
     setValue('targetLocations', value, { shouldDirty: true });
     setLocations(value);
