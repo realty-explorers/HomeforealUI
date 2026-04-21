@@ -67,6 +67,7 @@ import CompMarkersPopup from './MapComponents/Overlays/CompMarkerPopup';
 import LoadingSpinner from './MapComponents/Overlays/LoadingSpinner';
 import RentalsSource from './MapComponents/Sources/RentalsSource';
 import PropertyLocationBoundsSource from './MapComponents/Sources/PropertyLocationBoundsSource';
+import MultifamilyAnalysisDrawer from './MapComponents/Overlays/MultifamilyAnalysisDrawer';
 import useProperty from '@/hooks/useProperty';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useSnackbar } from 'notistack';
@@ -84,6 +85,9 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const searchParams = useSearchParams();
   const selectedBuyBoxId = searchParams.get('buybox_id') as string;
   const selectedPropertyId = searchParams.get('property_id') as string;
+  const isVerifiedUser = Boolean(
+    (user?.user as { verified?: boolean } | undefined)?.verified
+  );
 
   const mapRef = useRef<MapRef>(null);
   const { enqueueSnackbar } = useSnackbar();
@@ -124,6 +128,9 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const { suggestion } = useSelector(selectLocation);
   const { filteredProperties, strategyMode, buybox } =
     useSelector(selectFilter);
+  const selectedBuyBoxStrategyType =
+    buybox?.parameters?.strategy?.strategyType || 'FIX_AND_FLIP';
+  const isMultifamilyBuybox = selectedBuyBoxStrategyType === 'MULTIFAMILY';
   const {
     selectedPropertyPreview,
     selectedComps,
@@ -150,7 +157,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const propertiesState =
     propertiesApiEndpoints.getPropertiesPreviews.useQueryState(
       suggestion && buybox && user?.user
-        ? { suggestion, buybox_id: buybox?.id, masked: !user?.user?.verified }
+        ? { suggestion, buybox_id: buybox?.id, masked: !isVerifiedUser }
         : skipToken
     );
 
@@ -196,8 +203,14 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           return;
         }
 
+        if (feature.geometry.type !== 'Point') {
+          return;
+        }
+
+        const [longitude, latitude] = feature.geometry.coordinates;
+
         mapRef.current?.flyTo({
-          center: feature.geometry.coordinates,
+          center: [longitude, latitude],
           zoom,
           duration: 500,
           pitch: 0
@@ -386,7 +399,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       selectPropertyId(
         selectedBuyBoxId,
         selectedPropertyId,
-        !user.user.verified
+        !isVerifiedUser
       );
     } else {
       dispatch(setSelectedPropertyPreview(null));
@@ -394,7 +407,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       dispatch(locationApi.util.invalidateTags(['Suggestion', 'LocationData']));
       dispatch(setSuggestion(null));
     }
-  }, [router.isReady, user?.user, user?.user?.verified]);
+  }, [isVerifiedUser, router.isReady, user?.user]);
 
   useEffect(() => {
     mapRef?.current?.on('render', handleRender);
@@ -451,7 +464,13 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     const coordinates = [];
     if (filteredProperties?.length > 0) {
       for (const property of filteredProperties) {
-        coordinates.push(generatePropertyGeoJson(property, strategyMode));
+        coordinates.push(
+          generatePropertyGeoJson(
+            property,
+            strategyMode,
+            selectedBuyBoxStrategyType
+          )
+        );
       }
       const newData: FeatureCollection<
         Geometry,
@@ -472,7 +491,13 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       }
       setData(null);
     }
-  }, [filteredProperties]);
+  }, [
+    buybox,
+    filteredProperties,
+    selectedBuyBoxStrategyType,
+    strategyMode,
+    suggestion
+  ]);
 
   useEffect(() => {
     mapRef.current?.resize();
@@ -595,7 +620,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         onResize={handleResize}
         onMove={onMove}
         ref={mapRef}
-        maxBounds={US_BOUNDS}
+        maxBounds={US_BOUNDS as [[number, number], [number, number]]}
         initialViewState={INITIAL_VIEW_STATE}
         {...viewState}
       >
@@ -612,6 +637,16 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         <SelectedPropertyMarker
           onClick={handleDeselectProperty}
           selectedProperty={selectedPropertyPreview}
+        />
+
+        <MultifamilyAnalysisDrawer
+          open={Boolean(selectedProperty && isMultifamilyBuybox)}
+          property={selectedProperty}
+          buyboxId={buybox?.id}
+          propertyId={selectedPropertyPreview?.id}
+          masked={selectedPropertyPreview?.masked}
+          onClose={handleDeselectProperty}
+          strategy={buybox?.parameters?.strategy}
         />
 
         <CardsPanel open={Boolean(propertiesState.data)} />

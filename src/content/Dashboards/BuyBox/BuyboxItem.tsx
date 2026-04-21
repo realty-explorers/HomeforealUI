@@ -38,9 +38,9 @@ import { useAnalyzeBuyBoxMutation } from '@/store/services/buyboxAnalysisApi';
 import { useDispatch } from 'react-redux';
 import { analysisApi } from '@/store/services/analysisApi';
 import { timeSince } from '@/utils/dateUtils';
-import Chip from '@/components/Chip';
+import Chip from '@mui/material/Chip';
 import BuyBoxStatistics from './BuyBoxStatistics';
-import { Trash2, Settings, BookOpenText, CirclePlayIcon } from 'lucide-react';
+import { Trash2, Settings, BookOpenText, CirclePlayIcon, TrendingUp } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 
 const StyledAccordion = styled((props: AccordionProps) => (
@@ -75,7 +75,53 @@ const StyledAccordionSummary = styled((props: AccordionSummaryProps) => (
   }
 }));
 
-const EDITOR_ROLES = ['owner', 'editor', 'maintainer'];
+const EDITOR_ROLES = ['owner', 'editor', 'maintainer', 'edit'];
+
+const getBuyboxName = (buybox?: BuyBox) => {
+  return buybox?.parameters?.name || buybox?.id || 'Untitled BuyBox';
+};
+
+const getStrategyPresetDisplay = (buybox?: BuyBox) => {
+  const preset = buybox?.parameters?.strategy?.preset;
+  const strategyType = buybox?.parameters?.strategy?.strategyType;
+
+  if (strategyType === 'MULTIFAMILY' && preset) {
+    const presetLabels: Record<string, string> = {
+      CORE: 'Core',
+      BALANCED: 'Balanced',
+      CASH_FLOW: 'Cash Flow',
+      VALUE_ADD: 'Value Add',
+      OPPORTUNISTIC: 'Opportunistic',
+      DEEP_DISCOUNT: 'Deep Discount',
+      LOW_RISK: 'Low Risk',
+      CUSTOM: 'Custom'
+    };
+    return presetLabels[preset] || preset;
+  }
+  return null;
+};
+
+const getPrimaryKpiDisplay = (buybox?: BuyBox) => {
+  const strategy = buybox?.parameters?.strategy;
+  const primaryKpi = strategy?.primaryKpi;
+
+  if (strategy?.strategyType === 'MULTIFAMILY' && primaryKpi?.type) {
+    const kpiLabels: Record<string, string> = {
+      yield: 'Yield',
+      cash_yield: 'Cash Yield',
+      rent_upside: 'Upside',
+      irr: 'IRR',
+      value_gap: 'Discount'
+    };
+    const label = kpiLabels[primaryKpi.type] || primaryKpi.type;
+    const value = primaryKpi.minValue;
+    if (value !== undefined && value !== null) {
+      return `${label} ${value}%`;
+    }
+    return label;
+  }
+  return null;
+};
 
 type BuyboxItemProps = {
   buybox: BuyBox;
@@ -104,7 +150,8 @@ const BuyboxItem = (props: BuyboxItemProps) => {
 
   const handleDelete = async () => {
     try {
-      await deleteBuyBox(props.buybox.id).unwrap();
+      const isMultifamily = props.buybox.parameters?.strategy?.strategyType === 'MULTIFAMILY';
+      await deleteBuyBox({ id: props.buybox.id, isMultifamily }).unwrap();
 
       const patchCollection = dispatch(
         buyBoxApi.util.updateQueryData(
@@ -185,6 +232,11 @@ const BuyboxItem = (props: BuyboxItemProps) => {
   };
 
   const allowedToEdit = EDITOR_ROLES.includes(props.buybox.userAccess);
+  const sessionRoles = (session?.user as { roles?: string[] | string } | undefined)
+    ?.roles;
+  const isAdmin = Array.isArray(sessionRoles)
+    ? sessionRoles.includes('admin')
+    : sessionRoles === 'admin';
 
   const handleClick = () => {
     if (expanded) {
@@ -207,6 +259,10 @@ const BuyboxItem = (props: BuyboxItemProps) => {
     setValue(newValue);
   };
 
+  const strategyPreset = getStrategyPresetDisplay(props.buybox);
+  const primaryKpi = getPrimaryKpiDisplay(props.buybox);
+  const isMultifamily = props.buybox?.parameters?.strategy?.strategyType === 'MULTIFAMILY';
+
   return (
     <>
       <StyledAccordion
@@ -219,17 +275,32 @@ const BuyboxItem = (props: BuyboxItemProps) => {
           className="flex-row-reverse"
         >
           <div className="flex justify-between w-full">
-            <div className="flex items-center ">
-              <Typography className="flex items-center text-ellipsis overflow-hidden">
-                {props.buybox.parameters.name}
+            <div className="flex items-center gap-2">
+              <Typography className="flex items-center text-ellipsis overflow-hidden font-semibold">
+                {getBuyboxName(props.buybox)}
               </Typography>
-              {/* {!running && props.buybox?.execute_date && ( */}
-              {/*   <div className="flex gap-x-4"> */}
-              {/*     <div className="flex items-center gap-x-4"> */}
-              {/*       <Typography className="text-gray-500"> */}
-              {/*         updated {timeSince(props?.buybox?.execute_date)} */}
-              {/*       </Typography> */}
-              {/*     </div> */}
+              {isMultifamily && (
+                <Chip
+                  label="Multifamily"
+                  sx={{ bgcolor: 'rgba(168, 85, 247, 0.1)', color: 'rgb(126, 34, 206)', fontSize: '0.75rem' }}
+                  size="small"
+                />
+              )}
+              {strategyPreset && (
+                <Chip
+                  label={strategyPreset}
+                  sx={{ bgcolor: 'rgba(59, 130, 246, 0.1)', color: 'rgb(29, 78, 216)', fontSize: '0.75rem' }}
+                  size="small"
+                />
+              )}
+              {primaryKpi && (
+                <Chip
+                  icon={<TrendingUp className="h-3 w-3" />}
+                  label={primaryKpi}
+                  sx={{ bgcolor: 'rgba(16, 185, 129, 0.1)', color: 'rgb(4, 120, 87)', fontSize: '0.75rem' }}
+                  size="small"
+                />
+              )}
               {/*   </div> */}
               {/* )} */}
             </div>
@@ -291,7 +362,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
               {}
 
               {allowedToEdit &&
-                session?.user?.roles?.includes('admin') &&
+                isAdmin &&
                 (running ? (
                   <></>
                 ) : (
@@ -342,7 +413,7 @@ const BuyboxItem = (props: BuyboxItemProps) => {
       </StyledAccordion>
       <ConfirmDialog
         title="Delete BuyBox"
-        description={`Are you sure you want to delete "${props.buybox?.name}"?`}
+        description={`Are you sure you want to delete "${getBuyboxName(props.buybox)}"?`}
         open={dialogOpen}
         setOpen={setDialogOpen}
         onConfirm={handleDelete}
