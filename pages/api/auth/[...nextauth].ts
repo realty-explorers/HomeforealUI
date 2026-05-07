@@ -137,7 +137,8 @@ export const authOptions = {
           accessToken: token.accessToken,
           idToken: token.idToken,
           verified: token.verified,
-          newUser: token.newUser
+          newUser: token.newUser,
+          organizationId: token.organizationId || 'default-org'
         },
         error: token.error
       };

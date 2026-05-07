@@ -25,7 +25,8 @@ const investmentTypes = [
     label: 'Multifamily',
     value: 'multifamily',
     strategyType: 'MULTIFAMILY' as BuyBoxStrategyType,
-    status: 'New'
+    disabled: true,
+    status: 'Coming soon'
   },
   {
     label: 'Buy and Hold',
