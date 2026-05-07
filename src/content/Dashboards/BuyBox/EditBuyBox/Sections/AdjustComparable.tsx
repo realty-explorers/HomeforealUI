@@ -53,7 +53,6 @@ const AdjustComparable = ({
               register={register}
               control={control}
               watch={watch}
-              getValues={getValues}
             />
           </div>
         </div>

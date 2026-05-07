@@ -29,7 +29,7 @@ import ArrowBackIosOutlinedIcon from '@mui/icons-material/ArrowBackIosOutlined';
 import ArrowForwardIosOutlinedIcon from '@mui/icons-material/ArrowForwardIosOutlined';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
 import { useEffect, useMemo, useState } from 'react';
-import { Controller, FieldName, FormProvider, useForm } from 'react-hook-form';
+import { Controller, FormProvider, Path, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import styles from './EditBuyBoxDialog.module.scss';
 
@@ -72,6 +72,8 @@ import AdjustComparables from './Sections/AdjustComparables';
 import EditBuyboxDialogTitle from './EditBuyboxDialogTitle';
 import { useIsMobile } from '@/hooks/useMobile';
 import { ChevronRight, Loader2, RotateCcw, Save } from 'lucide-react';
+import MultifamilyTabsSkeleton from './Sections/MultifamilyTabsSkeleton';
+import { mapBuyBoxDataToForm } from './buyboxFormMappers';
 
 interface Location {
   type: string;
@@ -79,37 +81,159 @@ interface Location {
   identifier: string;
 }
 
-const steps = [
+const defaultSteps = [
   {
     title: 'General',
-    fields: ['buyboxName', 'description']
+    fields: ['name', 'description']
   },
   {
-    title: 'Investment Strategy',
-    fields: ['opp.strategy', 'opp.fixAndFlip', 'opp.buyAndHold']
+    title: 'Strategy',
+    fields: ['strategy.strategyType']
   },
   {
     title: 'Location',
-    fields: ['targetLocation.locations']
+    fields: ['targetLocations']
   },
   {
-    title: 'Property Criteria',
-    fields: [
-      'property.listingPrice',
-      'property.beds',
-      'property.baths',
-      'property.sqft',
-      'property.lotSize',
-      'property.yearBuilt'
-    ]
+    title: 'Deal Filters',
+    fields: ['propertyCriteria']
   },
   {
     title: 'Comparables',
-    fields: ['opp.comparablePreferences']
+    fields: ['weights']
+  }
+];
+
+const multifamilyDiscoveryTabs = ['BuyBox Filters'];
+
+const multifamilyDefaultsTabs = ['Quality Gates'];
+
+const multifamilyStrategyStepFields: Path<BuyBoxFormData>[] = [
+  'strategy.strategyType',
+  'multifamilyCriteria.discovery.rankingPreset',
+  'multifamilyCriteria.discovery.minimumProjectedOutcomeType',
+  'multifamilyCriteria.discovery.minimumProjectedOutcomeValue'
+];
+
+const multifamilyDealFiltersStepFields: Path<BuyBoxFormData>[] = [
+  'multifamilyCriteria.discovery.assetTypes',
+  'multifamilyCriteria.discovery.minUnits',
+  'multifamilyCriteria.discovery.maxUnits',
+  'multifamilyCriteria.discovery.minAskingPrice',
+  'multifamilyCriteria.discovery.maxAskingPrice',
+  'multifamilyCriteria.discovery.minPricePerUnit',
+  'multifamilyCriteria.discovery.maxPricePerUnit',
+  'multifamilyCriteria.discovery.minYearBuilt',
+  'multifamilyCriteria.discovery.maxYearBuilt',
+  'multifamilyCriteria.discovery.minOccupancyPct',
+  'multifamilyCriteria.discovery.maxOccupancyPct'
+];
+
+const multifamilyQualityGatesStepFields: Path<BuyBoxFormData>[] = [
+  'multifamilyCriteria.discovery.dealQualityGates.requireOm',
+  'multifamilyCriteria.discovery.dealQualityGates.requireRentRoll',
+  'multifamilyCriteria.discovery.dealQualityGates.requireT12'
+];
+
+const multifamilyUnderwritingStepFields: Path<BuyBoxFormData>[] = [
+  'multifamilyCriteria.unitMix',
+  'multifamilyCriteria.rentRoll.physicalOccupancyPct',
+  'multifamilyCriteria.rentRoll.economicOccupancyPct',
+  'multifamilyCriteria.rentRoll.concessionsPct',
+  'multifamilyCriteria.rentRoll.otherIncomeMonthly',
+  'multifamilyCriteria.income.grossScheduledRentAnnual',
+  'multifamilyCriteria.income.vacancyLossPct',
+  'multifamilyCriteria.income.badDebtPct',
+  'multifamilyCriteria.income.lossToLeasePct',
+  'multifamilyCriteria.income.otherIncomeAnnual',
+  'multifamilyCriteria.expenses.propertyTaxesAnnual',
+  'multifamilyCriteria.expenses.insuranceAnnual',
+  'multifamilyCriteria.expenses.repairsMaintenanceAnnual',
+  'multifamilyCriteria.expenses.payrollAnnual',
+  'multifamilyCriteria.expenses.managementFeePct',
+  'multifamilyCriteria.expenses.payrollAndMaintenancePerUnitAnnual',
+  'multifamilyCriteria.expenses.expenseRatioBaselinePct',
+  'multifamilyCriteria.utilities.utilityBillingType',
+  'multifamilyCriteria.utilities.waterSewerAnnual',
+  'multifamilyCriteria.utilities.trashAnnual',
+  'multifamilyCriteria.utilities.electricAnnual',
+  'multifamilyCriteria.utilities.gasAnnual',
+  'multifamilyCriteria.utilities.reimbursementPct'
+];
+
+const multifamilyStressTestStepFields: Path<BuyBoxFormData>[] = [
+  'strategy.stressPreset',
+  'multifamilyCriteria.stressTest.vacancyIncreasePct',
+  'multifamilyCriteria.stressTest.expenseIncreasePct',
+  'multifamilyCriteria.stressTest.rentDecreasePct',
+  'multifamilyCriteria.stressTest.exitCapIncreasePct',
+  'multifamilyCriteria.stressTest.constructionDelayMonths'
+];
+
+const multifamilyReviewStepFields: Path<BuyBoxFormData>[] = ['name', 'description'];
+
+const getBuyBoxDraftStorageKey = (buyboxId?: string) =>
+  `${BUYBOX_DRAFT_STORAGE_PREFIX}:${buyboxId ?? 'new'}`;
+
+const getStoredBuyBoxDraft = (storageKey: string): Partial<BuyBoxFormData> | null => {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  const storedDraft = window.localStorage.getItem(storageKey);
+  if (!storedDraft) {
+    return null;
+  }
+
+  try {
+    const parsedDraft = JSON.parse(storedDraft);
+    return parsedDraft && typeof parsedDraft === 'object'
+      ? (parsedDraft as Partial<BuyBoxFormData>)
+      : null;
+  } catch {
+    window.localStorage.removeItem(storageKey);
+    return null;
+  }
+};
+
+const multifamilySteps = [
+  {
+    title: 'General',
+    fields: ['name', 'description']
+  },
+  {
+    title: 'Strategy',
+    fields: multifamilyStrategyStepFields
+  },
+  {
+    title: 'Location',
+    fields: ['targetLocations']
+  },
+  {
+    title: 'BuyBox Filters',
+    fields: multifamilyDealFiltersStepFields
+  },
+  {
+    title: 'Quality Gates',
+    fields: multifamilyQualityGatesStepFields
+  },
+  {
+    title: 'Underwriting',
+    fields: multifamilyUnderwritingStepFields
+  },
+  {
+    title: 'Stress Test',
+    fields: multifamilyStressTestStepFields
+  },
+  {
+    title: 'Review',
+    fields: multifamilyReviewStepFields
   }
 ];
 
 const EDITOR_ROLES = ['edit', 'maitainer', 'owner'];
+
+const BUYBOX_DRAFT_STORAGE_PREFIX = 'buybox_form_draft';
 
 type editBuyBoxDialogProps = {
   buybox?: BuyBox;
@@ -217,83 +341,9 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   //   return similarityFields;
   // };
   //
-  const convertBuyboxWeights = (weights: Record<string, number>) => {
-    const newWeights: Record<string, number> = {};
-    for (const [key, value] of Object.entries(weights)) {
-      newWeights[key] = value * 100;
-    }
-    return newWeights;
-  };
-
-  const mapBuyBoxData = (buyboxData: BuyboxSchemaData) => {
-    const buyboxFormData: BuyBoxFormData = {
-      name: buyboxData.name,
-      description: buyboxData.description,
-      propertyCriteria: {
-        propertyTypes: {
-          enabled: Boolean(buyboxData.propertyCriteria.propertyTypes),
-          items:
-            buyboxData.propertyCriteria.propertyTypes ||
-            defaults.propertyTypes.default
-        },
-        beds: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minBeds,
-          buyboxData.propertyCriteria.maxBeds,
-          defaults.bedrooms.min,
-          defaults.bedrooms.max
-        ),
-        baths: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minBaths,
-          buyboxData.propertyCriteria.maxBaths,
-          defaults.bathrooms.min,
-          defaults.bathrooms.max
-        ),
-        area: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minArea,
-          buyboxData.propertyCriteria.maxArea,
-          defaults.area.min,
-          defaults.area.max
-        ),
-        lotArea: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minLotArea,
-          buyboxData.propertyCriteria.maxLotArea,
-          defaults.lotSize.min,
-          defaults.lotSize.max
-        ),
-        yearBuilt: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minYearBuilt,
-          buyboxData.propertyCriteria.maxYearBuilt,
-          defaults.yearBuilt.min,
-          defaults.yearBuilt.max
-        ),
-        price: getRangeFieldProperties(
-          buyboxData.propertyCriteria.minPrice,
-          buyboxData.propertyCriteria.maxPrice,
-          defaults.listingPrice.min,
-          defaults.listingPrice.max
-        )
-      },
-      strategy: {
-        minArv: getMinFieldProperties(
-          buyboxData.strategy.minArv,
-          defaults.arv.min
-        ),
-        minMargin: getMinFieldProperties(
-          buyboxData.strategy.minMargin,
-          defaults.margin.min
-        )
-      },
-      // similarityCriteria: getAllSimilarityFields(buyboxData),
-      targetLocations: buyboxData.targetLocations,
-      weights: convertBuyboxWeights(buyboxData.weights)
-    };
-
-    return buyboxFormData;
-  };
-
   const mappedBuyBoxData = useMemo(() => {
     if (!props.buybox) return null;
-    return mapBuyBoxData(props.buybox.parameters);
+    return mapBuyBoxDataToForm(props.buybox.parameters);
   }, [props.buybox]);
 
   const defaultFormValues = useMemo(() => {
@@ -302,6 +352,20 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     }
     return getDefaultBuyBoxFormData();
   }, [props.buybox, mappedBuyBoxData]);
+
+  const draftStorageKey = useMemo(
+    () => getBuyBoxDraftStorageKey(props.buybox?.id),
+    [props.buybox?.id]
+  );
+
+  const defaultFormValuesWithDraft = useMemo(() => {
+    const draftValues = getStoredBuyBoxDraft(draftStorageKey);
+    if (!draftValues) {
+      return defaultFormValues;
+    }
+
+    return _.merge({}, defaultFormValues, draftValues) as BuyBoxFormData;
+  }, [defaultFormValues, draftStorageKey]);
 
   // const getDefaultFormValues = () => {
   //   if (props.buybox) {
@@ -321,14 +385,14 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const formMethods = useForm<BuyBoxFormData>({
     // defaultValues: { emailActive: true, email: "meow@meow.com", name: "" },
     resolver: zodResolver(formBuyBoxSchema),
-    defaultValues: defaultFormValues
+    defaultValues: defaultFormValuesWithDraft
     // defaultValues: getDefaultData(),
   });
 
   const {
     register,
     handleSubmit,
-    formState: { errors, isSubmitting, isDirty },
+    formState: { errors, isSubmitting, isDirty, defaultValues: formDefaultValues },
     reset,
     setValue,
     getValues,
@@ -337,7 +401,69 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     trigger
   } = formMethods;
 
+  const selectedStrategyType = watch('strategy.strategyType');
+  const steps = useMemo(
+    () =>
+      selectedStrategyType === 'MULTIFAMILY' ? multifamilySteps : defaultSteps,
+    [selectedStrategyType]
+  );
+
+  const canEditBuyBox = !props.buybox || props.buybox.userAccess !== 'viewer';
+
   const { enqueueSnackbar } = useSnackbar();
+
+  const clearStoredDraft = () => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    window.localStorage.removeItem(draftStorageKey);
+  };
+
+  const handleSaveDraft = () => {
+    if (typeof window === 'undefined') {
+      return;
+    }
+
+    const currentValues = getValues();
+
+    try {
+      window.localStorage.setItem(draftStorageKey, JSON.stringify(currentValues));
+      reset(currentValues);
+      enqueueSnackbar('Draft Saved', {
+        variant: 'success'
+      });
+    } catch {
+      enqueueSnackbar('Failed to save draft', {
+        variant: 'error'
+      });
+    }
+  };
+
+  const handleResetCurrentStep = () => {
+    const stepFields = steps[activeStep].fields as Path<BuyBoxFormData>[];
+
+    if (!stepFields.length) {
+      return;
+    }
+
+    const valuesBeforeReset = getValues();
+    const valuesAfterReset = _.cloneDeep(valuesBeforeReset);
+    const stepDefaults =
+      (formDefaultValues as BuyBoxFormData | undefined) ?? defaultFormValuesWithDraft;
+
+    stepFields.forEach((fieldPath) => {
+      _.set(
+        valuesAfterReset,
+        fieldPath as string,
+        _.cloneDeep(_.get(stepDefaults, fieldPath as string))
+      );
+    });
+
+    reset(valuesAfterReset, {
+      keepDefaultValues: true
+    });
+  };
 
   const handleSubmitForm = async () => {
     const completeOutput = await trigger();
@@ -353,7 +479,9 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const handleNextStep = async () => {
     // show form values
     const fields = steps[activeStep].fields;
-    const output = await trigger(fields as FieldName[], { shouldFocus: true });
+    const output = await trigger(fields as Path<BuyBoxFormData>[], {
+      shouldFocus: true
+    });
     if (!output) {
       enqueueSnackbar(`Please fill out all required fields`, {
         variant: 'error'
@@ -380,7 +508,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
     const viewOnlyBuyBox =
       props.buybox && !EDITOR_ROLES.includes(props.buybox?.userAccess);
     if (viewOnlyBuyBox) {
-      const originalFormValues = mapBuyBoxData(props.buybox?.parameters);
+      const originalFormValues = mapBuyBoxDataToForm(props.buybox?.parameters);
       reset(originalFormValues);
       // reset(props.buybox?.parameters);
     }
@@ -388,19 +516,17 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   };
 
   const onSubmit = async (data: any) => {
-    console.log(`meow: ${JSON.stringify(getValues(), null, 2)}`);
     try {
       if (props.buybox) {
-        console.log(`updating buybox: ${JSON.stringify(data)}`);
         await updateBuyBox({ id: props.buybox.id, parameters: data }).unwrap();
+        clearStoredDraft();
         enqueueSnackbar(`BuyBox Saved`, {
           variant: 'success'
         });
       } else {
-        const result = await createBuyBox(data).unwrap();
-        console.log(result);
+        await createBuyBox(data).unwrap();
 
-        const patchCollection = dispatch(
+        dispatch(
           buyBoxApi.util.updateQueryData(
             'getBuyBoxes',
             '',
@@ -414,6 +540,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
             }
           )
         );
+        clearStoredDraft();
         enqueueSnackbar(`BuyBox Created`, {
           variant: 'success'
         });
@@ -456,14 +583,18 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const [locations, setLocations] = useState([]);
 
   useEffect(() => {
-    handleResetBuyBox();
-  }, [props.buybox]);
+    if (!props.showEditBuybox) {
+      return;
+    }
 
-  const handleResetBuyBox = () => {
-    // const defaultData = getDefaultFormValues();
-    reset(defaultFormValues);
+    const draftValues = getStoredBuyBoxDraft(draftStorageKey);
+    const nextFormValues = draftValues
+      ? (_.merge({}, defaultFormValues, draftValues) as BuyBoxFormData)
+      : defaultFormValues;
+
+    reset(nextFormValues);
     setActiveStep(0);
-  };
+  }, [props.showEditBuybox, defaultFormValues, draftStorageKey, reset]);
 
   // const handleLocationsChanged = (event: any, value: any) => {
   //   setValue("targetLocation.locations", value);
@@ -494,28 +625,19 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   //       return undefined;
   //   }
   // };
-  const getStepsErrors = useMemo(() => {
+  const getStepHasErrors = useMemo(() => {
     return (step: number) => {
-      switch (step) {
-        case 0:
-          return errors?.name || errors?.description;
-        case 1:
-          return errors?.strategy;
-        case 2:
-          return errors?.targetLocations;
-        case 3:
-          console.log(getValues('propertyCriteria'));
-          console.log(JSON.stringify(errors));
-          return errors?.propertyCriteria;
-        case 4:
-          console.log(getValues('weights'));
-          console.log(JSON.stringify(errors));
-          return errors?.weights;
-        default:
-          return undefined;
+      const stepFields = steps[step]?.fields as Path<BuyBoxFormData>[] | undefined;
+
+      if (!stepFields || stepFields.length === 0) {
+        return false;
       }
+
+      return stepFields.some((fieldPath) =>
+        Boolean(_.get(errors, fieldPath as string))
+      );
     };
-  }, [errors]);
+  }, [errors, steps]);
 
   const StepSections = (
     <motion.div
@@ -558,21 +680,65 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
       )}
 
       {activeStep === 3 && (
-        <PropertyCriteria
-          register={register}
-          control={control}
-          watch={watch}
-          setValue={setValue}
-          getValues={getValues}
-        />
+        <>
+          {selectedStrategyType === 'MULTIFAMILY' ? (
+            <MultifamilyTabsSkeleton
+              title="BuyBox Filters"
+              description="Set the deal profile you want us to search for."
+              tabs={multifamilyDiscoveryTabs}
+            />
+          ) : (
+            <PropertyCriteria
+              register={register}
+              control={control}
+              watch={watch}
+              setValue={setValue}
+              getValues={getValues}
+            />
+          )}
+        </>
       )}
       {activeStep === 4 && (
-        <AdjustComparables
-        // register={register}
-        // control={control}
-        // watch={watch}
-        // setValue={setValue}
-        // getValues={getValues}
+        <>
+          {selectedStrategyType === 'MULTIFAMILY' ? (
+            <MultifamilyTabsSkeleton
+              title="Quality Gates"
+              description="Optional shows all deals. Preferred boosts deals that include the document. Required hides deals missing the document."
+              tabs={multifamilyDefaultsTabs}
+            />
+          ) : (
+            <AdjustComparables
+            // register={register}
+            // control={control}
+            // watch={watch}
+            // setValue={setValue}
+            // getValues={getValues}
+            />
+          )}
+        </>
+      )}
+      {activeStep === 5 && (
+        <MultifamilyTabsSkeleton
+          title="Underwriting Assumptions"
+          description="Configure income, expenses, and utility assumptions for underwriting."
+          tabs={['Income', 'Expenses', 'Utilities']}
+          mode="underwriting"
+        />
+      )}
+      {activeStep === 6 && (
+        <MultifamilyTabsSkeleton
+          title="Stress Testing"
+          description="Test your strategy against adverse market conditions."
+          tabs={['Stress Test']}
+          mode="stress"
+        />
+      )}
+      {activeStep === 7 && (
+        <MultifamilyTabsSkeleton
+          title="Review & Save"
+          description="Review your BuyBox configuration before saving."
+          tabs={['Summary']}
+          mode="review"
         />
       )}
     </motion.div>
@@ -594,19 +760,29 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
         )}
       </div>
       <div className="flex flex-wrap gap-x-2">
-        {isDirty && (
+        <ShadButton
+          type="button"
+          disabled={!isDirty}
+          onClick={handleResetCurrentStep}
+          className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
+        >
+          <RotateCcw className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+          <span className="hidden md:flex text-base">Reset</span>
+        </ShadButton>
+
+        {canEditBuyBox && (
           <ShadButton
-            type="button"
-            onClick={handleResetBuyBox}
             className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
+            type="button"
+            disabled={!isDirty}
+            onClick={handleSaveDraft}
           >
-            <RotateCcw className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
-            <span className="hidden md:flex text-base">Reset</span>
+            <Save className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
+            <Typography className="hidden md:flex">Save Draft</Typography>
           </ShadButton>
         )}
 
-        {((props.buybox && props.buybox.userAccess !== 'viewer') ||
-          !props.buybox) && (
+        {canEditBuyBox && (
           <ShadButton
             className="bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-md shadow-violet-300/30 hover:shadow-lg hover:shadow-violet-400/40 transition-all duration-300 group"
             type="button"
@@ -617,9 +793,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
             ) : (
               <Save className="h-5 w-5 group-hover:scale-110 transition-transform duration-300" />
             )}
-            <Typography className="hidden md:flex">
-              {isDirty ? 'Save & Finish' : 'Finish'}
-            </Typography>
+            <Typography className="hidden md:flex">Save &amp; Finish</Typography>
           </ShadButton>
         )}
 
@@ -671,7 +845,7 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           steps={steps}
           activeStep={activeStep}
           setActiveStep={setActiveStep}
-          errors={errors}
+          getStepError={getStepHasErrors}
           handleClose={handleClose}
         />
 

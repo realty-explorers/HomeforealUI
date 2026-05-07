@@ -5,6 +5,19 @@ import { getToken } from 'next-auth/jwt';
 // First, handle the referral parameter without the withAuth wrapper
 export async function middleware(req: NextRequestWithAuth) {
   const url = req.nextUrl;
+  const referral = url.searchParams.get('referral');
+  const isLocalAppHost =
+    url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+  const isAppRootRequest =
+    (url.hostname === 'app.realtyexplorers.com' || isLocalAppHost) &&
+    url.pathname === '/';
+
+  if (isAppRootRequest && !referral) {
+    const signInUrl = new URL('/auth/signin', req.url);
+    signInUrl.searchParams.set('callbackUrl', '/dashboards/real-estate');
+    return NextResponse.redirect(signInUrl);
+  }
+
   const token = await getToken({
     req,
     secret: process.env.NEXTAUTH_SECRET
@@ -14,7 +27,6 @@ export async function middleware(req: NextRequestWithAuth) {
     return NextResponse.next();
   }
 
-  const referral = url.searchParams.get('referral');
   if (referral) {
     console.log('Referral detected:', referral);
     const token = url.searchParams.get('token');
@@ -67,6 +79,6 @@ export const config = {
     // '/auth/:path*',
     '/managements/:path*',
     // Add any other routes that might have the referral parameter
-    '/((?!api|_next/static|_next/image|favicon.ico|).*)'
+    '/((?!api|_next/static|_next/image|favicon.ico).*)'
   ]
 };
