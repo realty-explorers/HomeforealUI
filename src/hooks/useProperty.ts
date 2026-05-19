@@ -28,7 +28,7 @@ export const useProperty = () => {
 
   const resetSelectedComps = async (property: AnalyzedProperty) => {
     const newSalesComps: FilteredComp[] = property.comps
-      .filter((comp) => comp.status === 'sold')
+      .filter((comp) => comp.status === 'sold' || comp.status === 'off_market')
       .map((comp, index) => {
         return { ...comp, index };
       });

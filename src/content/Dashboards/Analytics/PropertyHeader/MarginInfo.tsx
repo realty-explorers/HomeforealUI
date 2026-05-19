@@ -77,7 +77,7 @@ const MarginInfo = (props: MarginInfoProps) => {
   const { initialInvestment, financingCosts } = useSelector(selectExpenses);
   const totalExpenses = initialInvestment + financingCosts;
   const soldComps = saleCalculatedProperty.comps?.filter(
-    (comp) => comp.status === 'sold'
+    (comp) => comp.status === 'sold' || comp.status === 'off_market'
   );
   if (!soldComps || soldComps?.length === 0) {
     return null;

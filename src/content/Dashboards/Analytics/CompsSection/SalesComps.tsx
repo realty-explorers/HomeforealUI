@@ -31,7 +31,7 @@ const SalesComps = (props: SalesCompsProps) => {
   const { selectedProperty, selectedComps } = useSelector(selectProperties);
   const [calculateComps, compsResult] = useCalculateCompsMutation();
   const soldComps = selectedProperty.comps.filter(
-    (comp) => comp.status === 'sold'
+    (comp) => comp.status === 'sold' || comp.status === 'off_market'
   );
 
   //TODO: handle this
