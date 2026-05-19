@@ -77,7 +77,7 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
   const { currentStep, setCurrentStep, nextStep, prevStep, goToStep } =
     useWizardNavigation();
   // const { selectedTemplateId, selectTemplate } = useTemplateSelection(methods);
-  const { selectTemplate } = useTemplateSelectionContext();
+  const { selectTemplate, templates } = useTemplateSelectionContext();
 
   const { data: session, status } = useSession();
 
@@ -89,13 +89,21 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
     },
     financialDetails: {
       purchasePrice: selectedProperty?.price || 0
+    },
+    closingDetails: {
+      closingDate: new Date(new Date().setMonth(new Date().getMonth() + 1))
+        .toISOString()
+        .split('T')[0],
+      closingDeadline: 30
     }
   };
 
   const componentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    selectTemplate('custom', { ...userFormData });
+    selectTemplate(templates.length > 0 ? templates[0]._id : null, {
+      ...userFormData
+    });
     setCurrentStep(0);
   }, [session?.user, selectedProperty]);
 
@@ -172,7 +180,6 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
 
   const onSubmit = async (data: OfferFormData) => {
     try {
-      console.log('Form submitted:', data);
       const userId = session.user.id;
       const propertyId = selectedProperty.propertyId;
       const response = await createOffer({

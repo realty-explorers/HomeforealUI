@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useFormContext } from 'react-hook-form';
 import {
@@ -15,11 +15,21 @@ import {
 } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
-import { Building2, Home, MapPin, Plus } from 'lucide-react';
+import { Building2, Home, MapPin, Plus, Trash2 } from 'lucide-react';
 import { OfferFormData } from '@/schemas/OfferDataSchemas';
 import { useSession } from 'next-auth/react';
 import { selectProperties } from '@/store/slices/propertiesSlice';
 import { useAppSelector } from '@/store/hooks';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle
+} from '@/components/ui/alert-dialog';
 
 const TemplateCard = ({
   id,
@@ -27,14 +37,16 @@ const TemplateCard = ({
   description,
   type,
   isSelected,
-  onSelect
+  onSelect,
+  onDelete
 }: {
-  id: string;
+  id: string | null;
   name: string;
   description: string;
   type: TemplateType;
   isSelected: boolean;
   onSelect: () => void;
+  onDelete?: (id: string) => void;
 }) => {
   // Icon selection based on template type
   const getIcon = () => {
@@ -70,12 +82,27 @@ const TemplateCard = ({
               <CardTitle className="text-lg">{name}</CardTitle>
               <CardDescription>{description}</CardDescription>
             </div>
-            <div
-              className={`p-2 rounded-full ${
-                isSelected ? 'bg-brand-main text-white' : 'bg-gray-100'
-              }`}
-            >
-              {getIcon()}
+            <div className="flex items-center gap-2">
+              {id !== null && id && onDelete && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="text-red-500 hover:text-red-700 hover:bg-red-100"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onDelete(id);
+                  }}
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+              <div
+                className={`p-2 rounded-full ${
+                  isSelected ? 'bg-brand-main text-white' : 'bg-gray-100'
+                }`}
+              >
+                {getIcon()}
+              </div>
             </div>
           </div>
         </CardHeader>
@@ -101,12 +128,36 @@ const TemplateSelection: React.FC = () => {
       email: session?.user?.email || ''
     },
     financialDetails: {
-      purchasePrice: selectedPropertyPreview?.price || 0
+      purchasePrice: selectedPropertyPreview?.price || 0,
+      financingType: 'Cash'
     }
   };
   const methods = useFormContext<OfferFormData>();
-  const { templates, selectedTemplateId, selectTemplate } =
+  const { templates, selectedTemplateId, selectTemplate, deleteTemplate } =
     useTemplateSelectionContext();
+
+  // Delete template functionality
+  const [templateToDelete, setTemplateToDelete] = useState<string | null>(null);
+  const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
+
+  const handleDeleteTemplate = (templateId: string) => {
+    setTemplateToDelete(templateId);
+    setIsDeleteDialogOpen(true);
+  };
+
+  const confirmDeleteTemplate = async () => {
+    if (templateToDelete) {
+      try {
+        const result = await deleteTemplate(templateToDelete);
+        // Error handling is now done within the context using notistack
+      } catch (error) {
+        // Additional error handling if needed
+      } finally {
+        setIsDeleteDialogOpen(false);
+        setTemplateToDelete(null);
+      }
+    }
+  };
 
   return (
     <motion.div
@@ -125,27 +176,53 @@ const TemplateSelection: React.FC = () => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
           {templates.map((template) => (
             <TemplateCard
-              key={template.id}
-              id={template.id}
+              key={template._id}
+              id={template._id}
               name={template.name}
               description={template.description}
               type={template.type}
-              isSelected={selectedTemplateId === template.id}
-              onSelect={() => selectTemplate(template.id, userFormData)}
+              isSelected={selectedTemplateId === template._id}
+              onSelect={() => selectTemplate(template._id, userFormData)}
+              onDelete={handleDeleteTemplate}
             />
           ))}
 
           {/* Custom template option */}
           <TemplateCard
-            id="custom"
+            id={null}
             name="Custom Offer"
             description="Start from scratch with a blank template"
             type="custom"
-            isSelected={selectedTemplateId === 'custom'}
-            onSelect={() => selectTemplate('custom', userFormData)}
+            isSelected={selectedTemplateId === null}
+            onSelect={() => selectTemplate(null, userFormData)}
           />
         </div>
       </ScrollArea>
+
+      {/* Delete confirmation dialog */}
+      <AlertDialog
+        open={isDeleteDialogOpen}
+        onOpenChange={setIsDeleteDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Template</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete this template? This action cannot
+              be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={confirmDeleteTemplate}
+              className="bg-red-600 hover:bg-red-700"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </motion.div>
   );
 };

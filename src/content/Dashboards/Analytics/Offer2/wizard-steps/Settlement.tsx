@@ -111,22 +111,21 @@ const Settlement: React.FC = () => {
                       </Label>
                     </div>
                     <div className="flex gap-x-4">
-                      <p className="text-sm text-muted-foreground">Fixed</p>
+                      <p className="text-sm text-muted-foreground">
+                        Percentage
+                      </p>
                       <Switch
                         id="sellerPaysSettlementExpenses"
                         checked={field.value}
                         onCheckedChange={field.onChange}
                       />
-
-                      <p className="text-sm text-muted-foreground">
-                        Percentage
-                      </p>
+                      <p className="text-sm text-muted-foreground">Fixed</p>
                     </div>
                   </div>
                 )}
               />
 
-              {watch('settlementExpenses.sellerPaysFixedAmount') && (
+              {!watch('settlementExpenses.sellerPaysFixedAmount') && (
                 <Controller
                   name="settlementExpenses.sellerCostsPercentage"
                   control={control}
@@ -152,7 +151,7 @@ const Settlement: React.FC = () => {
                 />
               )}
 
-              {!watch('settlementExpenses.sellerPaysFixedAmount') && (
+              {watch('settlementExpenses.sellerPaysFixedAmount') && (
                 <Controller
                   name="settlementExpenses.sellerCostsFixed"
                   control={control}
@@ -212,7 +211,7 @@ const Settlement: React.FC = () => {
           </FormField>
 
           <div className="space-y-4">
-            {watch('closingDetails.closeByDate') ? (
+            {watch('closingDetails.closeByDate') && (
               <Controller
                 name="closingDetails.closingDate"
                 control={control}
@@ -252,23 +251,24 @@ const Settlement: React.FC = () => {
                   </FormField>
                 )}
               />
-            ) : (
+            )}
+            {!watch('closingDetails.closeByDate') && (
               <Controller
                 name="closingDetails.closingDeadline"
                 control={control}
                 render={({ field }) => (
                   <FormField
-                    id="closingDate"
-                    label="Closing Date"
+                    id="closingDeadline"
+                    label="Closing Deadline (Days)"
                     error={errors.closingDetails?.closingDeadline?.message}
                   >
                     <Input
                       id="terminationPeriodDays"
                       type="number"
                       placeholder="Enter number of days from contract execution"
-                      value={field.value || ''}
+                      value={field.value}
                       onChange={(e) =>
-                        field.onChange(parseInt(e.target.value) || 0)
+                        field.onChange(parseInt(e.target.value) || 1)
                       }
                       className={
                         errors?.closingDetails?.closingDeadline
