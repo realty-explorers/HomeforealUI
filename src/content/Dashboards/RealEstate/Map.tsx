@@ -300,17 +300,13 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   };
 
   const centerMap = () => {
-    if (mapRef && locationState.data?.center) {
+    if (mapRef && suggestion?.latitude != null && suggestion?.longitude != null) {
       mapRef.current?.flyTo({
-        center: [
-          locationState.data.center.longitude,
-          locationState.data.center.latitude
-        ],
+        center: [suggestion.longitude, suggestion.latitude],
         zoom: 11,
         pitch: 0,
         duration: 2000
       });
-      // mapRef.current?.fitBounds(locationState.data.bounds);
     }
   };
 
@@ -433,7 +429,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       };
       setBoundsData(newData);
     }
-  }, [locationState.data]);
+  }, [locationState.data, suggestion]);
 
   useEffect(() => {
     if (selectedPropertyLocation?.bounds && selectedPropertyLocation?.type) {
