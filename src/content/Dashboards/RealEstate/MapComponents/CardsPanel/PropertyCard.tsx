@@ -21,7 +21,7 @@ import styles from '../styles.module.scss';
 import Image from '@/components/Photos/Image';
 import clsx from 'clsx';
 import { selectFilter } from '@/store/slices/filterSlice';
-import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import { ArrowDown } from 'lucide-react';
 import { calculateArvPercentage } from '@/utils/calculationUtils';
 
 const defaultImage =
@@ -213,7 +213,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
               strategyMode === 'ARV' ? 'bg-arv' : 'bg-secondary'
             ])}
           >
-            <ArrowCircleDownIcon className="text-white text-[1rem]" />
+            <ArrowDown className="text-white size-4" />
             <Typography className="font-poppins font-semibold text-white">
               {getStrategyValue(0)}%
             </Typography>
