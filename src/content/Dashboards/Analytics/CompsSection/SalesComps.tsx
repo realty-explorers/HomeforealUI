@@ -59,6 +59,7 @@ const SalesComps = (props: SalesCompsProps) => {
       comps={soldComps}
       selectedComps={selectedComps}
       setSelectedComps={setNewSelectedComps}
+      subject={selectedProperty}
       propertyCard={
         <PropertyCard
           property={selectedProperty}

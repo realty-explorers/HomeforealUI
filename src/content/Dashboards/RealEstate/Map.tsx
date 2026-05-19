@@ -65,6 +65,7 @@ import {
 import { CircularProgress } from '@mui/material';
 import CompMarkersPopup from './MapComponents/Overlays/CompMarkerPopup';
 import LoadingSpinner from './MapComponents/Overlays/LoadingSpinner';
+import WelcomeLoader from './MapComponents/Overlays/WelcomeLoader';
 import RentalsSource from './MapComponents/Sources/RentalsSource';
 import PropertyLocationBoundsSource from './MapComponents/Sources/PropertyLocationBoundsSource';
 import MultifamilyAnalysisDrawer from './MapComponents/Overlays/MultifamilyAnalysisDrawer';
@@ -123,6 +124,23 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const [propertyBoundsData, setPropertyBoundsData] = useState<Geometry>();
   const [hoveredProperty, setHoveredProperty] = useState<any>();
   const [hoveredComp, setHoveredComp] = useState<any>();
+  const compHoverClearTimer = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
+
+  const cancelCompHoverClear = () => {
+    if (compHoverClearTimer.current) {
+      clearTimeout(compHoverClearTimer.current);
+      compHoverClearTimer.current = null;
+    }
+  };
+  const scheduleCompHoverClear = () => {
+    cancelCompHoverClear();
+    compHoverClearTimer.current = setTimeout(() => {
+      setHoveredComp(null);
+      compHoverClearTimer.current = null;
+    }, 150);
+  };
 
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
@@ -137,7 +155,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     selectedRentalComps,
     selectedProperty,
     selectedPropertyLocation,
-    selecting
+    selecting,
+    mapFlyTarget
   } = useSelector(selectProperties);
 
   const { selectProperty, deselectProperty, selectPropertyId, propertyState } =
@@ -267,6 +286,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     const hoveredProperty = selectedComps?.find(
       (property) => property.index === feature.properties.index - 1
     );
+    cancelCompHoverClear();
     setHoveredComp(hoveredProperty);
 
     // const angle = Math.atan2(
@@ -285,7 +305,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       features?: mapboxgl.MapboxGeoJSONFeature[];
     } & mapboxgl.EventData
   ) => {
-    setHoveredComp(null);
+    scheduleCompHoverClear();
   };
 
   const handleMouseEnterRentals = (
@@ -297,6 +317,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     const hoveredProperty = selectedRentalComps?.find(
       (property) => property.index === feature.properties.index - 1
     );
+    cancelCompHoverClear();
     setHoveredComp(hoveredProperty);
   };
 
@@ -305,7 +326,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       features?: mapboxgl.MapboxGeoJSONFeature[];
     } & mapboxgl.EventData
   ) => {
-    setHoveredComp(null);
+    scheduleCompHoverClear();
   };
 
   const handleRender = () => {
@@ -457,6 +478,16 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   }, [selectedPropertyLocation]);
 
   useEffect(() => {
+    if (!mapFlyTarget || !mapRef.current) return;
+    mapRef.current.flyTo({
+      center: mapFlyTarget.coordinates,
+      zoom: mapFlyTarget.zoom ?? 16,
+      duration: 1200,
+      essential: true
+    });
+  }, [mapFlyTarget]);
+
+  useEffect(() => {
     const coordinates = [];
     if (filteredProperties?.length > 0) {
       for (const property of filteredProperties) {
@@ -479,7 +510,17 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
       };
       setData(newData);
     } else {
-      if (buybox && suggestion) {
+      const apiReturnedNothing = propertiesState.data?.length === 0;
+      const allFilteredOut =
+        (propertiesState.data?.length ?? 0) > 0 &&
+        filteredProperties?.length === 0;
+      if (
+        buybox &&
+        suggestion &&
+        propertiesState.isSuccess &&
+        !propertiesState.isFetching &&
+        (apiReturnedNothing || allFilteredOut)
+      ) {
         enqueueSnackbar('No results found', {
           variant: 'default',
           preventDuplicate: true
@@ -492,7 +533,10 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     filteredProperties,
     selectedBuyBoxStrategyType,
     strategyMode,
-    suggestion
+    suggestion,
+    propertiesState.isFetching,
+    propertiesState.isSuccess,
+    propertiesState.data
   ]);
 
   useEffect(() => {
@@ -595,8 +639,14 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   return (
     <>
-      {(loading || propertyState.isFetching) && (
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2  z-50 flex items-center justify-center">
+      <WelcomeLoader
+        authReady={status === 'authenticated'}
+        workspaceReady={buyBoxesState.isSuccess}
+        mapReady={!loading}
+        name={(user?.user as { name?: string } | undefined)?.name}
+      />
+      {propertyState.isFetching && !loading && (
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 flex items-center justify-center">
           <CircularProgress />
         </div>
       )}
@@ -665,7 +715,15 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           data={rentalsData}
         />
         <MarkerPopup property={hoveredProperty} />
-        <CompMarkersPopup comp={hoveredComp} />
+        <CompMarkersPopup
+          comp={hoveredComp}
+          onCardEnter={cancelCompHoverClear}
+          onCardLeave={scheduleCompHoverClear}
+          onClose={() => {
+            cancelCompHoverClear();
+            setHoveredComp(null);
+          }}
+        />
       </MapBox>
     </>
   );

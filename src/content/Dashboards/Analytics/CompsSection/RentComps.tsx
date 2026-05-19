@@ -63,6 +63,7 @@ const RentComps = () => {
       comps={rentComps}
       selectedComps={selectedRentalComps}
       setSelectedComps={setNewSelectedComps}
+      subject={selectedProperty}
       propertyCard={
         <PropertyCardRental
           property={selectedProperty}

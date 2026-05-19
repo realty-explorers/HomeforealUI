@@ -8,6 +8,12 @@ import PropertyPreview from "@/models/propertyPreview";
 import LocationData from "@/models/location_data";
 
 // Type for our state
+export interface MapFlyTarget {
+  coordinates: [number, number]; // [longitude, latitude]
+  zoom?: number;
+  ts: number; // ensures consumers can react even if coordinates repeat
+}
+
 export interface PropertiesState {
   selectedProperty?: AnalyzedProperty;
   selectedPropertyLocation?: LocationData;
@@ -17,6 +23,7 @@ export interface PropertiesState {
   selectedComps: FilteredComp[];
   selectedRentalComps: FilteredComp[];
   selecting: boolean;
+  mapFlyTarget?: MapFlyTarget;
 }
 
 // Initial state
@@ -29,6 +36,7 @@ const initialState: PropertiesState = {
   selectedComps: [],
   selectedRentalComps: [],
   selecting: false,
+  mapFlyTarget: undefined,
 };
 
 // Actual Slice
@@ -65,6 +73,17 @@ export const propertiesSlice = createSlice({
     setSelecting(state, action: PayloadAction<boolean>) {
       state.selecting = action.payload;
     },
+    setMapFlyTarget(
+      state,
+      action: PayloadAction<
+        | { coordinates: [number, number]; zoom?: number }
+        | undefined
+      >,
+    ) {
+      state.mapFlyTarget = action.payload
+        ? { ...action.payload, ts: Date.now() }
+        : undefined;
+    },
   },
 });
 
@@ -78,6 +97,7 @@ export const {
   setSelectedRentalComps,
   setSelectedPropertyPreview,
   setSelecting,
+  setMapFlyTarget,
 } = propertiesSlice.actions;
 export const selectProperties: (state: AppState) => PropertiesState = (
   state: AppState,

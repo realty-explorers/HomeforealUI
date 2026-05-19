@@ -1,37 +1,37 @@
+import { MapPin } from 'lucide-react';
 import AnalyzedProperty from '@/models/analyzedProperty';
-import { priceFormatter, priceGroupFormatter } from '@/utils/converters';
-import { Chip, Grid, Typography } from '@mui/material';
-import styles from './PropertyHeaderStyles.module.scss';
+import { priceGroupFormatter } from '@/utils/converters';
 
 type PropertyMainInfoProps = {
   property: AnalyzedProperty;
 };
-const PropertyMainInfo = (props: PropertyMainInfoProps) => {
+
+const PropertyMainInfo = ({ property }: PropertyMainInfoProps) => {
+  if (!property) return null;
+  const loc = property.location;
+  const cityLine = loc
+    ? [loc.city, loc.state, loc.zipCode].filter(Boolean).join(', ')
+    : '';
+
   return (
-    <>
-      <Grid container rowGap={1}>
-        <Grid container item xs={12}>
-          {/* <Typography */}
-          {/*   className={styles.infoHeader} */}
-          {/*   sx={{ marginRight: "2rem" }} */}
-          {/* > */}
-          {/*   Listing Price */}
-          {/* </Typography> */}
-          <Typography className={styles.infoHeader}>
-            {priceGroupFormatter(
-              props.property.price,
-              props.property.priceGroup
+    <div className="flex flex-col gap-2">
+      <div className="font-poppins font-bold text-3xl text-slate-900 leading-tight tracking-tight">
+        {priceGroupFormatter(property.price, property.priceGroup)}
+      </div>
+      {loc?.address && (
+        <div className="flex items-start gap-1.5 text-slate-600">
+          <MapPin className="size-4 mt-0.5 shrink-0 text-slate-400" />
+          <div className="font-poppins">
+            <div className="text-sm font-medium text-slate-800">
+              {loc.address}
+            </div>
+            {cityLine && (
+              <div className="text-xs text-slate-500">{cityLine}</div>
             )}
-            {/* {priceFormatter(props.property.price)} */}
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography className={styles.infoDescription}>
-            {`${props.property.location.address}, ${props.property.location.city}, ${props.property.location.state} ${props.property.location.zipCode}`}
-          </Typography>
-        </Grid>
-      </Grid>
-    </>
+          </div>
+        </div>
+      )}
+    </div>
   );
 };
 

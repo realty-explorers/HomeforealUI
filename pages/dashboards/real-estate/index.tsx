@@ -243,7 +243,10 @@ const DashboardRealEstate = (props: any) => {
               'w-full md:w-1/2 overflow-y-auto absolute h-full bg-off-white z-[1]'
             ])}
           >
-            {selectedPropertyState.isFetching || selecting ? (
+            {selectedPropertyState.isFetching ||
+            selecting ||
+            !selectedProperty ||
+            selectedProperty.id !== selectedPropertyPreview?.id ? (
               <SkeletonSection />
             ) : (
               <div

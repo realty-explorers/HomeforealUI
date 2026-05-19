@@ -1,153 +1,293 @@
-import {
-  distanceFormatter,
-  percentFormatter,
-  priceFormatter
-} from '@/utils/converters';
-import { Typography } from '@mui/material';
 import { useState } from 'react';
-import { CompData } from '@/models/analyzedProperty';
+import {
+  MapPin,
+  Tag,
+  Ruler,
+  Gauge,
+  Sparkles,
+  Loader2
+} from 'lucide-react';
+import { Card } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger
+} from '@/components/ui/popover';
+import { priceFormatter } from '@/utils/converters';
 import Image from '@/components/Photos/Image';
-import WcIcon from '@mui/icons-material/Wc';
-import BedOutlinedIcon from '@mui/icons-material/BedOutlined';
-import SquareFootIcon from '@mui/icons-material/SquareFoot';
-import PinDropOutlinedIcon from '@mui/icons-material/PinDropOutlined';
-import StraightenIcon from '@mui/icons-material/Straighten';
-import LocalOfferOutlinedIcon from '@mui/icons-material/LocalOfferOutlined';
-import TodayIcon from '@mui/icons-material/Today';
-import AssessmentOutlinedIcon from '@mui/icons-material/AssessmentOutlined';
-import SettingsEthernetIcon from '@mui/icons-material/SettingsEthernet';
-import clsx from 'clsx';
+import { CompData } from '@/models/analyzedProperty';
 import { readableDateDiff } from '@/utils/dateUtils';
-
-const defaultImage =
-  'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=';
+import { cn } from '@/lib/utils';
 
 type CompsMapCardProps = {
   property: CompData;
 };
-const CompsMapCard: React.FC<CompsMapCardProps> = (
-  props: CompsMapCardProps
-) => {
-  const [cardImage, setCardImage] = useState(props.property.photos.primary);
 
-  const showDistance = () => {
-    try {
-      // return distanceFormatter(props.property.distance);
-      return distanceFormatter(1);
-    } catch (e) {
-      console.log(e);
-      return 0;
+const DEFAULT_IMAGE =
+  '/static/images/placeholders/covers/house_placeholder.jpg';
+
+const getColorClass = (color?: string) => {
+  switch (color) {
+    case 'red':
+      return 'text-red-500';
+    case 'orange':
+      return 'text-orange-500';
+    case 'yellow':
+      return 'text-yellow-500';
+    case 'green':
+      return 'text-green-500';
+    default:
+      return 'text-gray-500';
+  }
+};
+
+type Finding = {
+  label: string;
+  impact: 'positive' | 'neutral' | 'negative';
+  note: string;
+};
+type Analysis = { summary: string; findings: Finding[] };
+
+const mockAnalyze = async (property: CompData): Promise<Analysis> => {
+  // TODO: replace with real call to internal AI analysis service
+  await new Promise((r) => setTimeout(r, 1200));
+
+  const score = Math.round(property.similarityScore * 100);
+  const tier = property.similarityColor;
+  const tierLabel =
+    tier === 'green'
+      ? 'strong'
+      : tier === 'yellow'
+      ? 'moderate'
+      : tier === 'orange'
+      ? 'fair'
+      : tier === 'red'
+      ? 'weak'
+      : 'partial';
+
+  const findings: Finding[] = [];
+
+  if (typeof property.distance === 'number') {
+    if (property.distance < 0.5) {
+      findings.push({
+        label: 'Proximity',
+        impact: 'positive',
+        note: `Only ${property.distance.toFixed(2)} mi from subject — strong locational match.`
+      });
+    } else if (property.distance < 1) {
+      findings.push({
+        label: 'Proximity',
+        impact: 'neutral',
+        note: `${property.distance.toFixed(2)} mi away — within typical comp radius.`
+      });
+    } else {
+      findings.push({
+        label: 'Proximity',
+        impact: 'negative',
+        note: `${property.distance.toFixed(2)} mi from subject — may reflect a different micro-market.`
+      });
+    }
+  }
+
+  if (property.beds && property.baths) {
+    findings.push({
+      label: 'Layout',
+      impact: 'positive',
+      note: `${property.beds} bd / ${property.baths} ba aligns with the target buyer profile.`
+    });
+  }
+
+  if (property.area && property.area > 0) {
+    findings.push({
+      label: 'Living area',
+      impact: 'neutral',
+      note: `${property.area.toLocaleString()} sqft — used as the primary $/sqft anchor.`
+    });
+  }
+
+  if (property.yearBuilt) {
+    const yr = parseInt(String(property.yearBuilt).slice(0, 4), 10);
+    if (!Number.isNaN(yr)) {
+      if (yr < 1950) {
+        findings.push({
+          label: 'Vintage',
+          impact: 'negative',
+          note: `Built ${yr} — older vintage may warrant a value adjustment.`
+        });
+      } else {
+        findings.push({
+          label: 'Vintage',
+          impact: 'positive',
+          note: `Built ${yr} — within the typical comp age range.`
+        });
+      }
+    }
+  }
+
+  if (property.isArv25) {
+    findings.push({
+      label: 'ARV tier',
+      impact: 'positive',
+      note: 'Comp falls in the top 25th percentile by sale price.'
+    });
+  }
+
+  return {
+    summary: `Model produced a ${tierLabel} similarity match at ${score}%. Proximity, layout, and $/sqft were weighted most heavily.`,
+    findings
+  };
+};
+
+const impactClasses = (impact: Finding['impact']) => {
+  if (impact === 'positive')
+    return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+  if (impact === 'negative')
+    return 'bg-rose-100 text-rose-700 border-rose-200';
+  return 'bg-slate-100 text-slate-700 border-slate-200';
+};
+
+const CompsMapCard: React.FC<CompsMapCardProps> = ({ property }) => {
+  const [cardImage, setCardImage] = useState(
+    property?.photos?.primary || DEFAULT_IMAGE
+  );
+  const [analyzing, setAnalyzing] = useState(false);
+  const [analysis, setAnalysis] = useState<Analysis | null>(null);
+  const [open, setOpen] = useState(false);
+
+  const handleOpenChange = async (next: boolean) => {
+    setOpen(next);
+    if (next && !analysis && !analyzing) {
+      setAnalyzing(true);
+      try {
+        const result = await mockAnalyze(property);
+        setAnalysis(result);
+      } finally {
+        setAnalyzing(false);
+      }
     }
   };
 
-  const getColorClass = (color?: string) => {
-    switch (color) {
-      case 'red':
-        return 'text-red-500';
-      case 'orange':
-        return 'text-orange-500';
-      case 'yellow':
-        return 'text-yellow-500';
-      case 'green':
-        return 'text-green-500';
-      default:
-        return 'text-gray-500';
-    }
-  };
-
-  const stats = `${props.property?.beds} Beds ● ${props.property?.baths} Baths ● ${props.property?.area} Sqft`;
-
-  const locationStats = `${props.property.distance.toFixed(
-    2
-  )} Miles ● ${readableDateDiff(props.property.listDate)}`;
+  const stats = `${property?.beds} Beds ● ${property?.baths} Baths ● ${property?.area} Sqft`;
+  const locationStats = `${property.distance.toFixed(2)} Miles ● ${readableDateDiff(property.listDate)}`;
 
   return (
-    <div className="flex rounded-xl bg-white w-80 h-40">
-      <div className="w-1/3 h-full relative">
-        {/* <Image */}
-        {/*   src={cardImage} */}
-        {/*   alt={props.property.address} */}
-        {/*   onError={() => */}
-        {/*     setCardImage( */}
-        {/*       "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=", */}
-        {/*     )} */}
-        {/*   fill */}
-        {/*   className="object-cover object-center w-full h-full rounded-l-xl" */}
-        {/* /> */}
+    <Card className="relative flex w-80 min-h-40 overflow-hidden rounded-xl bg-white shadow">
+      <div className="w-1/3 relative shrink-0">
         <Image
           src={cardImage}
-          defaultSrc={defaultImage}
-          alt={props.property?.location.address}
-          className="object-cover object-center w-full h-full rounded-l-xl"
+          alt={property?.location.address}
+          defaultSrc={DEFAULT_IMAGE}
+          className="object-cover object-center w-full h-full"
         />
-
-        {/* <img */}
-        {/*   src={cardImage} */}
-        {/*   className="w-full h-full rounded-l-xl object-cover object-center" */}
-        {/* /> */}
       </div>
-      <div className="flex flex-col  w-2/3 px-4 gap-y-0">
-        {/* import HotelIcon from '@mui/icons-material/Hotel'; */}
-        {/* import BathtubIcon from '@mui/icons-material/Bathtub'; */}
-        {/* import SquareFootIcon from '@mui/icons-material/SquareFoot'; */}
-        <div className="flex w-full items-center justify-between mt-2">
-          <Typography className="font-poppins font-semibold text-xs">
-            {stats}
-          </Typography>
-        </div>
-        <div className="flex items-center mt-2 w-full ">
-          <PinDropOutlinedIcon fontSize="small" />
-          <div className="flex flex-col w-full truncate">
-            <Typography className="text-xs ml-2 font-poppins ">
-              {props.property?.location.address}
-            </Typography>
-            <Typography className="text-xs ml-2 font-poppins"></Typography>
-          </div>
+      <div className="flex flex-col w-2/3 min-w-0 px-4 py-2 gap-y-2">
+        <p className="font-poppins font-semibold text-xs whitespace-nowrap truncate">
+          {stats}
+        </p>
+
+        <div className="flex items-center gap-x-2 min-w-0">
+          <MapPin className="size-4 shrink-0" />
+          <p className="text-xs font-poppins truncate">
+            {property?.location.address}
+          </p>
         </div>
 
-        <div className="flex items-center mt-2 w-full gap-x-2 ">
-          <div className="flex items-center">
-            {/* <StraightenIcon fontSize="small" /> */}
-            <SettingsEthernetIcon fontSize="small" />
-            <Typography className="text-xs ml-1 font-poppins text-center">
-              {locationStats}
-            </Typography>
-          </div>
-
-          {/* <div className="flex items-center"> */}
-          {/*   <TodayIcon fontSize="small" /> */}
-          {/*   <Typography className="text-xs ml-1 font-poppins text-center"> */}
-          {/*     3 Days Old */}
-          {/*   </Typography> */}
-          {/* </div> */}
+        <div className="flex items-center gap-x-2">
+          <Ruler className="size-4 shrink-0" />
+          <p className="text-xs font-poppins whitespace-nowrap">
+            {locationStats}
+          </p>
         </div>
 
-        <div className="flex items-center mt-2 w-full">
-          <LocalOfferOutlinedIcon fontSize="small" />
-          <Typography className="text-xs ml-2 font-poppins text-center">
-            {priceFormatter(props.property?.price)}
-          </Typography>
+        <div className="flex items-center gap-x-2">
+          <Tag className="size-4 shrink-0" />
+          <p className="text-xs font-poppins whitespace-nowrap">
+            {priceFormatter(property?.price)}
+          </p>
         </div>
 
-        <div className="flex items-center mt-2 w-full">
-          <AssessmentOutlinedIcon fontSize="small" />
-
-          <Typography
-            className={clsx([
-              'font-poppins ml-2 font-bold',
-              getColorClass(props.property.similarityColor)
-            ])}
+        <div className="flex items-center gap-x-2 flex-wrap">
+          <Gauge
+            className={cn(
+              'size-4 shrink-0',
+              getColorClass(property.similarityColor)
+            )}
+          />
+          <p
+            className={cn(
+              'text-xs font-poppins font-bold whitespace-nowrap',
+              getColorClass(property.similarityColor)
+            )}
           >
-            {Math.round(props.property.similarityScore * 100)}% Similarity
-          </Typography>
+            {Math.round(property.similarityScore * 100)}% Similarity
+          </p>
+          {property.isArv25 && (
+            <Badge className="bg-arv text-white border-transparent font-poppins text-[0.6rem] px-1.5 py-0 whitespace-nowrap hover:bg-arv">
+              25th ARV
+            </Badge>
+          )}
         </div>
-        {props.property.isArv25 && (
-          <div className="absolute bottom-1 right-1 bg-arv text-white font-poppins text-[0.7rem] px-2 rounded-lg font-semibold">
-            25th ARV
-          </div>
-        )}
+
+        <Popover open={open} onOpenChange={handleOpenChange}>
+          <PopoverTrigger asChild>
+            <button
+              type="button"
+              className="group relative self-start inline-flex items-center gap-1 overflow-hidden rounded-md bg-gradient-to-r from-violet-600 via-fuchsia-500 to-pink-500 px-2 py-0.5 font-poppins text-[0.65rem] font-semibold text-white shadow-[0_2px_8px_rgba(217,70,239,0.35)] transition-transform hover:scale-[1.03] active:scale-[0.98] focus:outline-none border-0"
+            >
+              {analyzing ? (
+                <Loader2 className="size-3 animate-spin" />
+              ) : (
+                <Sparkles className="size-3" />
+              )}
+              <span className="relative z-10">AI Analysis</span>
+              <span className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/30 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-full" />
+            </button>
+          </PopoverTrigger>
+          <PopoverContent
+            side="right"
+            align="start"
+            className="w-72 p-3 space-y-2"
+            onOpenAutoFocus={(e) => e.preventDefault()}
+          >
+            <div className="flex items-center gap-1 text-[0.65rem] uppercase tracking-wider font-semibold text-slate-500">
+              <Sparkles className="size-3 text-fuchsia-500" />
+              AI analysis
+            </div>
+            {analyzing || !analysis ? (
+              <div className="flex items-center gap-2 py-2 text-xs text-slate-500 font-poppins">
+                <Loader2 className="size-3.5 animate-spin" />
+                Analyzing comp…
+              </div>
+            ) : (
+              <>
+                <p className="text-xs font-poppins text-slate-700 leading-snug">
+                  {analysis.summary}
+                </p>
+                <ul className="space-y-1.5">
+                  {analysis.findings.map((f, i) => (
+                    <li key={i} className="flex items-start gap-1.5">
+                      <Badge
+                        variant="outline"
+                        className={cn(
+                          'text-[0.6rem] font-poppins px-1 py-0 shrink-0',
+                          impactClasses(f.impact)
+                        )}
+                      >
+                        {f.label}
+                      </Badge>
+                      <span className="text-[0.7rem] font-poppins text-slate-700 leading-snug">
+                        {f.note}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+          </PopoverContent>
+        </Popover>
       </div>
-    </div>
+    </Card>
   );
 };
 
