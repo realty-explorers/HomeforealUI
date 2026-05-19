@@ -109,7 +109,8 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
             'NJ',
             'IN',
             'TN',
-            'MO'
+            'MO',
+            'NY'
           ];
           const relevantResultOptions = response.filter(
             (option) =>
