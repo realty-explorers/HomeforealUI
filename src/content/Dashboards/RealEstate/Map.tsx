@@ -717,6 +717,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         <MarkerPopup property={hoveredProperty} />
         <CompMarkersPopup
           comp={hoveredComp}
+          subject={selectedProperty}
           onCardEnter={cancelCompHoverClear}
           onCardLeave={scheduleCompHoverClear}
           onClose={() => {

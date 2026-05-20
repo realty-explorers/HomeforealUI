@@ -1,16 +1,18 @@
-import { CompData } from '@/models/analyzedProperty';
+import AnalyzedProperty, { CompData } from '@/models/analyzedProperty';
 import { Popup } from 'react-map-gl';
 import { X } from 'lucide-react';
 import CompsMapCard from './CompsMapCard';
 
 type CompMarkersPopupProps = {
   comp?: CompData;
+  subject?: AnalyzedProperty;
   onCardEnter?: () => void;
   onCardLeave?: () => void;
   onClose?: () => void;
 };
 const CompMarkersPopup = ({
   comp,
+  subject,
   onCardEnter,
   onCardLeave,
   onClose
@@ -40,7 +42,7 @@ const CompMarkersPopup = ({
           >
             <X className="size-3" />
           </button>
-          <CompsMapCard property={comp} />
+          <CompsMapCard property={comp} subject={subject} />
         </div>
       </Popup>
     )

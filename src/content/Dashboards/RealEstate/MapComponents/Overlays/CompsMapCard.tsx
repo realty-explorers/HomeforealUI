@@ -16,12 +16,14 @@ import {
 } from '@/components/ui/popover';
 import { priceFormatter } from '@/utils/converters';
 import Image from '@/components/Photos/Image';
-import { CompData } from '@/models/analyzedProperty';
+import AnalyzedProperty, { CompData } from '@/models/analyzedProperty';
 import { readableDateDiff } from '@/utils/dateUtils';
 import { cn } from '@/lib/utils';
+import { analyzeComp, type Analysis, type Finding } from '@/utils/compsAnalysis';
 
 type CompsMapCardProps = {
   property: CompData;
+  subject?: AnalyzedProperty;
 };
 
 const DEFAULT_IMAGE =
@@ -42,101 +44,20 @@ const getColorClass = (color?: string) => {
   }
 };
 
-type Finding = {
-  label: string;
-  impact: 'positive' | 'neutral' | 'negative';
-  note: string;
-};
-type Analysis = { summary: string; findings: Finding[] };
-
-const mockAnalyze = async (property: CompData): Promise<Analysis> => {
-  // TODO: replace with real call to internal AI analysis service
+const runAnalysis = async (
+  subject: AnalyzedProperty | undefined,
+  comp: CompData
+): Promise<Analysis> => {
+  // Simulate latency so the "analyzing" state is visible. Replace with a
+  // real API call here when the AI service is wired up.
   await new Promise((r) => setTimeout(r, 1200));
-
-  const score = Math.round(property.similarityScore * 100);
-  const tier = property.similarityColor;
-  const tierLabel =
-    tier === 'green'
-      ? 'strong'
-      : tier === 'yellow'
-      ? 'moderate'
-      : tier === 'orange'
-      ? 'fair'
-      : tier === 'red'
-      ? 'weak'
-      : 'partial';
-
-  const findings: Finding[] = [];
-
-  if (typeof property.distance === 'number') {
-    if (property.distance < 0.5) {
-      findings.push({
-        label: 'Proximity',
-        impact: 'positive',
-        note: `Only ${property.distance.toFixed(2)} mi from subject — strong locational match.`
-      });
-    } else if (property.distance < 1) {
-      findings.push({
-        label: 'Proximity',
-        impact: 'neutral',
-        note: `${property.distance.toFixed(2)} mi away — within typical comp radius.`
-      });
-    } else {
-      findings.push({
-        label: 'Proximity',
-        impact: 'negative',
-        note: `${property.distance.toFixed(2)} mi from subject — may reflect a different micro-market.`
-      });
-    }
+  if (!subject) {
+    return {
+      summary: 'Subject property not available — showing similarity score only.',
+      findings: []
+    };
   }
-
-  if (property.beds && property.baths) {
-    findings.push({
-      label: 'Layout',
-      impact: 'positive',
-      note: `${property.beds} bd / ${property.baths} ba aligns with the target buyer profile.`
-    });
-  }
-
-  if (property.area && property.area > 0) {
-    findings.push({
-      label: 'Living area',
-      impact: 'neutral',
-      note: `${property.area.toLocaleString()} sqft — used as the primary $/sqft anchor.`
-    });
-  }
-
-  if (property.yearBuilt) {
-    const yr = parseInt(String(property.yearBuilt).slice(0, 4), 10);
-    if (!Number.isNaN(yr)) {
-      if (yr < 1950) {
-        findings.push({
-          label: 'Vintage',
-          impact: 'negative',
-          note: `Built ${yr} — older vintage may warrant a value adjustment.`
-        });
-      } else {
-        findings.push({
-          label: 'Vintage',
-          impact: 'positive',
-          note: `Built ${yr} — within the typical comp age range.`
-        });
-      }
-    }
-  }
-
-  if (property.isArv25) {
-    findings.push({
-      label: 'ARV tier',
-      impact: 'positive',
-      note: 'Comp falls in the top 25th percentile by sale price.'
-    });
-  }
-
-  return {
-    summary: `Model produced a ${tierLabel} similarity match at ${score}%. Proximity, layout, and $/sqft were weighted most heavily.`,
-    findings
-  };
+  return analyzeComp(subject, comp);
 };
 
 const impactClasses = (impact: Finding['impact']) => {
@@ -147,7 +68,7 @@ const impactClasses = (impact: Finding['impact']) => {
   return 'bg-slate-100 text-slate-700 border-slate-200';
 };
 
-const CompsMapCard: React.FC<CompsMapCardProps> = ({ property }) => {
+const CompsMapCard: React.FC<CompsMapCardProps> = ({ property, subject }) => {
   const [cardImage, setCardImage] = useState(
     property?.photos?.primary || DEFAULT_IMAGE
   );
@@ -169,7 +90,7 @@ const CompsMapCard: React.FC<CompsMapCardProps> = ({ property }) => {
     if (next && !analysis && !analyzing) {
       setAnalyzing(true);
       try {
-        const result = await mockAnalyze(property);
+        const result = await runAnalysis(subject, property);
         setAnalysis(result);
       } finally {
         setAnalyzing(false);
@@ -256,7 +177,7 @@ const CompsMapCard: React.FC<CompsMapCardProps> = ({ property }) => {
           <PopoverContent
             side="right"
             align="start"
-            className="w-72 p-3 space-y-2"
+            className="w-72 p-3 max-h-[60vh] overflow-y-auto space-y-2 [scrollbar-width:thin] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-slate-300 [&::-webkit-scrollbar-thumb]:rounded-full"
             onOpenAutoFocus={(e) => e.preventDefault()}
           >
             <div className="flex items-center gap-1 text-[0.65rem] uppercase tracking-wider font-semibold text-slate-500">
@@ -275,11 +196,14 @@ const CompsMapCard: React.FC<CompsMapCardProps> = ({ property }) => {
                 </p>
                 <ul className="space-y-1.5">
                   {analysis.findings.map((f, i) => (
-                    <li key={i} className="flex items-start gap-1.5">
+                    <li
+                      key={i}
+                      className="grid grid-cols-[5.25rem_1fr] gap-2 items-start"
+                    >
                       <Badge
                         variant="outline"
                         className={cn(
-                          'text-[0.6rem] font-poppins px-1 py-0 shrink-0',
+                          'text-[0.6rem] font-poppins px-1 py-0 w-full justify-center',
                           impactClasses(f.impact)
                         )}
                       >
