@@ -227,17 +227,27 @@ const DashboardRealEstate = (props: any) => {
       />
       {openMoreDetails && (
         <>
-          <IconButton
-            className="absolute top-1/2 left-full md:left-1/2 -translate-y-full -translate-x-full md:-translate-x-1/2 bg-white w-1 h-10 shadow z-[2] animate-fadeDelayed opacity-100 "
+          <button
+            type="button"
             onClick={handleHidePanel}
+            aria-label="Collapse details panel"
+            className={clsx([
+              'absolute top-1/2 left-full md:left-1/2 -translate-y-1/2 -translate-x-full md:-translate-x-1/2 z-[2]',
+              'flex items-center justify-center w-4 h-10 rounded-full',
+              'bg-white/70 backdrop-blur-sm border border-slate-200/60 shadow-md',
+              'text-slate-600 hover:bg-white hover:text-slate-900 transition-colors',
+              'outline-none focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-300',
+              'animate-fadeDelayed opacity-100'
+            ])}
           >
             <ExpandMoreIcon
               className={clsx([
-                'transition-all ',
+                'transition-transform',
                 openMoreDetails ? 'rotate-90' : '-rotate-90'
               ])}
+              style={{ fontSize: '1rem' }}
             />
-          </IconButton>
+          </button>
 
           {analysisReady && (
             <MakeOfferButton onClick={() => setShowOfferDialog(true)} />
