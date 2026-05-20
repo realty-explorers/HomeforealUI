@@ -104,7 +104,11 @@ export const propertiesApi = createApi({
         } catch (e) {
           console.log(e);
         }
-      }
+      },
+      // Property previews change moderately; cache for a few minutes so
+      // toggling buyboxes or navigating away and back doesn't refetch
+      // the marker layer.
+      keepUnusedDataFor: 300
     }),
     getProperties: builder.query({
       query: ({ type, state, city, zipCode, neighborhood }) => {

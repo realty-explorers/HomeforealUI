@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
 import z from 'zod';
 import { useSelector } from 'react-redux';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { SlidersHorizontal } from 'lucide-react';
 
 import { defaults } from '@/schemas/defaults';
@@ -147,6 +147,39 @@ const compsFiltersSchema = z.object({
 
 type CompsFilterSchemaType = z.infer<typeof compsFiltersSchema>;
 
+// Pure: returns a new rangeFields array whose min/max are derived from
+// the provided comps. Skips fields with no usable values. Does not
+// mutate the input array.
+const computeRangeLimits = (
+  rangeFields: FormRangeField[],
+  comps: CompData[] | undefined
+): FormRangeField[] => {
+  if (!comps || comps.length === 0) return rangeFields;
+  return rangeFields.map((rf) => {
+    const values: number[] = [];
+    for (const comp of comps) {
+      const raw = comp?.[rf.fieldName];
+      const num = typeof raw === 'number' ? raw : Number(raw);
+      if (Number.isFinite(num)) values.push(num);
+    }
+    if (values.length === 0) return rf;
+    let min = Math.min(...values);
+    let max = Math.max(...values);
+    if (min === max) max = min + (rf.step || 1);
+    return { ...rf, min, max };
+  });
+};
+
+const getSchemaDefaults = <Schema extends z.AnyZodObject>(schema: Schema) =>
+  Object.fromEntries(
+    Object.entries(schema.shape).map(([key, value]) => {
+      if (value instanceof z.ZodDefault) {
+        return [key, value._def.defaultValue()];
+      }
+      return [key, undefined];
+    })
+  );
+
 type CompsFilterProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
@@ -179,17 +212,6 @@ const CompsFilter = ({
   const [rangeFields, setRangeFields] =
     useState<FormRangeField[]>(defaultRangeFields);
 
-  function getDefaults<Schema extends z.AnyZodObject>(schema: Schema) {
-    return Object.fromEntries(
-      Object.entries(schema.shape).map(([key, value]) => {
-        if (value instanceof z.ZodDefault) {
-          return [key, value._def.defaultValue()];
-        }
-        return [key, undefined];
-      })
-    );
-  }
-
   const {
     handleSubmit,
     formState: { errors, isSubmitting },
@@ -197,7 +219,7 @@ const CompsFilter = ({
     setValue,
     control
   } = useForm<Record<string, any>>({
-    defaultValues: getDefaults(compsFiltersSchema)
+    defaultValues: getSchemaDefaults(compsFiltersSchema)
   });
 
   const handleClose = () => setOpen(false);
@@ -253,36 +275,25 @@ const CompsFilter = ({
     handleClose();
   };
 
-  const findRangeLimits = (
-    rangeFields: FormRangeField[],
-    comps: CompData[]
-  ) => {
-    if (!comps || comps.length === 0) return rangeFields;
-    for (const rangeField of rangeFields) {
-      const values: number[] = [];
-      for (const comp of comps) {
-        const raw = comp?.[rangeField.fieldName];
-        const num = typeof raw === 'number' ? raw : Number(raw);
-        if (Number.isFinite(num)) values.push(num);
-      }
-      if (values.length === 0) continue;
-      rangeField.min = Math.min(...values);
-      rangeField.max = Math.max(...values);
-      if (rangeField.min === rangeField.max) {
-        rangeField.max = rangeField.min + (rangeField.step || 1);
-      }
-    }
-    return rangeFields;
-  };
+  const soldCompsForRanges = useMemo(
+    () =>
+      selectedProperty?.comps?.filter(
+        (comp) => comp.status === 'sold' || comp.status === 'off_market'
+      ),
+    [selectedProperty?.comps]
+  );
 
+  const propertyRangeLimits = useMemo(
+    () => computeRangeLimits(defaultRangeFields, soldCompsForRanges),
+    [soldCompsForRanges]
+  );
+
+  // Sync the bag of computed limits into local state when the property
+  // changes, and seed any unset form fields with their full range.
   useEffect(() => {
-    const soldComps = selectedProperty?.comps.filter(
-      (comp) => comp.status === 'sold' || comp.status === 'off_market'
-    );
-    if (!soldComps) return;
-    const limitedRangeFields = findRangeLimits(rangeFields, soldComps);
-    setRangeFields(limitedRangeFields);
-    for (const rangeField of limitedRangeFields) {
+    if (!soldCompsForRanges) return;
+    setRangeFields(propertyRangeLimits);
+    for (const rangeField of propertyRangeLimits) {
       if (
         Number.isFinite(rangeField.min) &&
         Number.isFinite(rangeField.max) &&
@@ -296,16 +307,18 @@ const CompsFilter = ({
         setValue(field.fieldName, field.max);
       }
     }
-  }, [selectedProperty]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [propertyRangeLimits]);
+
+  // When the selected comps change, recompute their bounds and push
+  // them into the form so the sliders snap to the actual data range.
+  const selectedCompsRangeLimits = useMemo(
+    () => computeRangeLimits(rangeFields, selectedComps),
+    [rangeFields, selectedComps]
+  );
 
   useEffect(() => {
-    // findRangeLimits only mutates top-level min/max on each entry, so
-    // a shallow per-entry copy is enough; a full JSON clone is wasteful.
-    const limitedRangeFields = findRangeLimits(
-      rangeFields.map((f) => ({ ...f })),
-      selectedComps
-    );
-    for (const rangeField of limitedRangeFields) {
+    for (const rangeField of selectedCompsRangeLimits) {
       const lo = Number.isFinite(rangeField.min)
         ? Math.floor(rangeField.min * 1000) / 1000
         : null;
@@ -315,7 +328,8 @@ const CompsFilter = ({
       if (lo === null || hi === null) continue;
       setValue(rangeField.fieldName, [lo, hi]);
     }
-  }, [selectedComps]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedCompsRangeLimits]);
 
   const totalComps = useMemo(
     () =>
