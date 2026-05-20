@@ -4,6 +4,9 @@ export const boundsLayer: LayerProps = {
   id: "bounds-area",
   type: "fill",
   source: "bounds",
+  // Insert below the property markers so they stay visible/interactive
+  // even if the source mounts after the property source.
+  beforeId: "unclustered-point",
   layout: {
     "fill-sort-key": -2,
   },
@@ -17,6 +20,7 @@ export const boundsLineLayer: LayerProps = {
   id: "bounds-line",
   type: "line",
   source: "bounds",
+  beforeId: "unclustered-point",
   paint: {
     "line-color": "#000",
     "line-width": 1,

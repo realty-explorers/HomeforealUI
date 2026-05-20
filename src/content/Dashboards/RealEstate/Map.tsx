@@ -423,7 +423,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   ]);
 
   const boundsData = useMemo<Geometry | undefined>(() => {
-    if (!locationState.data?.bounds || !locationState.data?.type) return undefined;
+    if (!locationState.data?.bounds || !locationState.data?.type)
+      return undefined;
     return {
       type: locationState.data.type,
       coordinates: locationState.data.bounds
@@ -467,27 +468,48 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     };
   }, [filteredProperties, selectedBuyBoxStrategyType, strategyMode]);
 
-  // Surface "No results" once a successful fetch returns empty / fully filtered out.
+  // Surface "No results" when both pipelines have settled for the
+  // current data: API fetch is done AND the downstream filter dispatch
+  // (MainControls -> setFilteredProperties) has run for this data ref.
+  // Tracking the data ref lets us skip the stale first run where
+  // propertiesState.data just changed but filteredProperties hasn't
+  // caught up yet.
+  const lastFilteredDataRef = useRef<typeof propertiesState.data>();
   useEffect(() => {
-    if (!buybox || !suggestion) return;
+    if (!buybox || !suggestion) {
+      lastFilteredDataRef.current = undefined;
+      return;
+    }
     if (!propertiesState.isSuccess || propertiesState.isFetching) return;
+
     const apiCount = propertiesState.data?.length ?? 0;
     const filteredCount = filteredProperties?.length ?? 0;
-    const apiReturnedNothing = apiCount === 0;
-    const allFilteredOut = apiCount > 0 && filteredCount === 0;
-    if (apiReturnedNothing || allFilteredOut) {
+
+    // Data just changed and API has items — wait for filter to run.
+    // The next effect run (triggered by filteredProperties ref change)
+    // is the authoritative one.
+    if (
+      lastFilteredDataRef.current !== propertiesState.data &&
+      apiCount > 0
+    ) {
+      lastFilteredDataRef.current = propertiesState.data;
+      return;
+    }
+    lastFilteredDataRef.current = propertiesState.data;
+
+    if (filteredCount === 0) {
       enqueueSnackbar('No results found', {
         variant: 'default',
         preventDuplicate: true
       });
     }
   }, [
-    buybox,
+    buybox?.id,
     suggestion,
     propertiesState.isSuccess,
     propertiesState.isFetching,
     propertiesState.data,
-    filteredProperties?.length,
+    filteredProperties,
     enqueueSnackbar
   ]);
 
