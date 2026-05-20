@@ -38,7 +38,7 @@ import TermsConditions from './wizard-steps/TermsConditions';
 import Settlement from './wizard-steps/Settlement';
 import { useSession } from 'next-auth/react';
 import { useAppSelector } from '@/store/hooks';
-import { selectProperties } from '@/store/slices/propertiesSlice';
+import { selectSelectedProperty } from '@/store/slices/propertiesSlice';
 import { useSelector } from 'react-redux';
 import { useCreateOfferMutation } from '@/store/services/offersApi';
 import WizardNavigationFooter from './WizardNavigationFooter';
@@ -82,7 +82,7 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
   const { data: session, status } = useSession();
 
   const [createOffer, offerState] = useCreateOfferMutation();
-  const { selectedProperty } = useSelector(selectProperties);
+  const selectedProperty = useSelector(selectSelectedProperty);
   const userFormData: Partial<OfferFormData> = {
     buyerDetails: {
       email: session?.user?.email || ''

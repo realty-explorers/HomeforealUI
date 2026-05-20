@@ -18,7 +18,7 @@ import analyticsStyles from './Analytics.module.scss';
 import styles from './SaleComparable.module.scss';
 import AnalyzedProperty from '@/models/analyzedProperty';
 import { useSelector } from 'react-redux';
-import { selectProperties } from '@/store/slices/propertiesSlice';
+import { selectSelectedRentalComps } from '@/store/slices/propertiesSlice';
 import { numberStringUtil, priceFormatter } from '@/utils/converters';
 import clsx from 'clsx';
 
@@ -37,7 +37,7 @@ type RentComparableProps = {
   property: AnalyzedProperty;
 };
 const RentComparable = (props: RentComparableProps) => {
-  const { selectedRentalComps } = useSelector(selectProperties);
+  const selectedRentalComps = useSelector(selectSelectedRentalComps);
   const rentComps = props.property.comps.map(
     (comp) => comp.status === 'for_rent'
   );

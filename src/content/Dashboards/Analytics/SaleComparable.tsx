@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import AnalyzedProperty from '@/models/analyzedProperty';
 import { numberStringUtil, priceFormatter } from '@/utils/converters';
-import { selectProperties } from '@/store/slices/propertiesSlice';
+import { selectSelectedComps } from '@/store/slices/propertiesSlice';
 import { readableDateDiff } from '@/utils/dateUtils';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -82,7 +82,7 @@ type SaleComparableProps = {
 };
 
 const SaleComparable = ({ property }: SaleComparableProps) => {
-  const { selectedComps } = useSelector(selectProperties);
+  const selectedComps = useSelector(selectSelectedComps);
   const soldComps = property.comps?.filter(
     (c) => c.status === 'sold' || c.status === 'off_market'
   );

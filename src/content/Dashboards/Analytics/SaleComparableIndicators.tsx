@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux';
 import { ArrowDown, LineChart, Crown } from 'lucide-react';
 import AnalyzedProperty from '@/models/analyzedProperty';
 import { priceFormatter } from '@/utils/converters';
-import { selectProperties } from '@/store/slices/propertiesSlice';
+import { selectSaleCalculatedProperty } from '@/store/slices/propertiesSlice';
 import { selectExpenses } from '@/store/slices/expensesSlice';
 import {
   calculateArvPercentage,
@@ -67,7 +67,7 @@ const IndicatorRow = ({
 };
 
 const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
-  const { saleCalculatedProperty } = useSelector(selectProperties);
+  const saleCalculatedProperty = useSelector(selectSaleCalculatedProperty);
   const { initialInvestment, financingCosts } = useSelector(selectExpenses);
   const totalExpenses = initialInvestment + financingCosts;
 

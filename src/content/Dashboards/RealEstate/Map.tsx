@@ -31,12 +31,20 @@ import { selectLocation, setSuggestion } from '@/store/slices/locationSlice';
 import PropertyPreview from '@/models/propertyPreview';
 import CardsPanel from './MapComponents/CardsPanel/CardsPanel';
 import {
-  selectFilter,
+  selectBuybox,
+  selectFilteredProperties,
+  selectStrategyMode,
   setBuybox,
   setPropertyTypes
 } from '@/store/slices/filterSlice';
 import {
-  selectProperties,
+  selectMapFlyTarget,
+  selectSelectedComps,
+  selectSelectedProperty,
+  selectSelectedPropertyLocation,
+  selectSelectedPropertyPreview,
+  selectSelectedRentalComps,
+  selectSelecting,
   setRentalCalculatedProperty,
   setSaleCalculatedProperty,
   setSelectedComps,
@@ -121,20 +129,19 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
-  const { filteredProperties, strategyMode, buybox } =
-    useSelector(selectFilter);
+  const filteredProperties = useSelector(selectFilteredProperties);
+  const strategyMode = useSelector(selectStrategyMode);
+  const buybox = useSelector(selectBuybox);
   const selectedBuyBoxStrategyType =
     buybox?.parameters?.strategy?.strategyType || 'FIX_AND_FLIP';
   const isMultifamilyBuybox = selectedBuyBoxStrategyType === 'MULTIFAMILY';
-  const {
-    selectedPropertyPreview,
-    selectedComps,
-    selectedRentalComps,
-    selectedProperty,
-    selectedPropertyLocation,
-    selecting,
-    mapFlyTarget
-  } = useSelector(selectProperties);
+  const selectedPropertyPreview = useSelector(selectSelectedPropertyPreview);
+  const selectedComps = useSelector(selectSelectedComps);
+  const selectedRentalComps = useSelector(selectSelectedRentalComps);
+  const selectedProperty = useSelector(selectSelectedProperty);
+  const selectedPropertyLocation = useSelector(selectSelectedPropertyLocation);
+  const selecting = useSelector(selectSelecting);
+  const mapFlyTarget = useSelector(selectMapFlyTarget);
 
   const { selectProperty, deselectProperty, selectPropertyId, propertyState } =
     useProperty();

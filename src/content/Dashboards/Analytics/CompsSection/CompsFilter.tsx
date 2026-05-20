@@ -6,7 +6,7 @@ import { SlidersHorizontal } from 'lucide-react';
 
 import { defaults } from '@/schemas/defaults';
 import { CompData, FilteredComp } from '@/models/analyzedProperty';
-import { selectProperties } from '@/store/slices/propertiesSlice';
+import { selectSelectedProperty } from '@/store/slices/propertiesSlice';
 import FormRangeField from '@/models/formRangeField';
 import { numberFormatter } from '@/utils/converters';
 
@@ -174,7 +174,7 @@ const CompsFilter = ({
   setSelectedComps,
   selectedComps
 }: CompsFilterProps) => {
-  const { selectedProperty } = useSelector(selectProperties);
+  const selectedProperty = useSelector(selectSelectedProperty);
 
   const [rangeFields, setRangeFields] =
     useState<FormRangeField[]>(defaultRangeFields);

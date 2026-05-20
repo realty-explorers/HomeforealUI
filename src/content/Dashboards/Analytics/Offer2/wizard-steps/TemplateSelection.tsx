@@ -18,7 +18,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Building2, Home, MapPin, Plus, Trash2 } from 'lucide-react';
 import { OfferFormData } from '@/schemas/OfferDataSchemas';
 import { useSession } from 'next-auth/react';
-import { selectProperties } from '@/store/slices/propertiesSlice';
+import { selectSelectedPropertyPreview } from '@/store/slices/propertiesSlice';
 import { useAppSelector } from '@/store/hooks';
 import {
   AlertDialog,
@@ -122,7 +122,7 @@ const TemplateCard = ({
 
 const TemplateSelection: React.FC = () => {
   const { data: session } = useSession();
-  const { selectedPropertyPreview } = useAppSelector(selectProperties);
+  const selectedPropertyPreview = useAppSelector(selectSelectedPropertyPreview);
   const userFormData: Partial<OfferFormData> = {
     buyerDetails: {
       email: session?.user?.email || ''

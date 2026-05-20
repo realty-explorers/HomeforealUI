@@ -9,11 +9,11 @@ import TuneIcon from '@mui/icons-material/Tune';
 import clsx from 'clsx';
 import { memo, useEffect, useState } from 'react';
 import {
-  selectFilter,
+  selectFilteredProperties,
   setFilteredProperties
 } from '@/store/slices/filterSlice';
 import {
-  selectProperties,
+  selectSelectedPropertyPreview,
   setSelectedProperty,
   setSelectedPropertyPreview
 } from '@/store/slices/propertiesSlice';
@@ -26,10 +26,10 @@ type MapControlPanelProps = {};
 const MapControlPanel = (props: MapControlPanelProps) => {
   const dispatch = useDispatch();
   const { suggestion } = useSelector(selectLocation);
-  const { selectedPropertyPreview } = useSelector(selectProperties);
+  const selectedPropertyPreview = useSelector(selectSelectedPropertyPreview);
   // const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const { filteredProperties } = useSelector(selectFilter);
+  const filteredProperties = useSelector(selectFilteredProperties);
   const [notSelected, setNotSelected] = useState(true);
 
   useEffect(() => {

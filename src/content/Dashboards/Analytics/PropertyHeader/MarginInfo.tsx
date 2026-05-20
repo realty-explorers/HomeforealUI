@@ -1,7 +1,7 @@
 import { useSelector } from 'react-redux';
 import CountUp from 'react-countup';
 import { LineChart, Crown, type LucideIcon } from 'lucide-react';
-import { selectProperties } from '@/store/slices/propertiesSlice';
+import { selectSaleCalculatedProperty } from '@/store/slices/propertiesSlice';
 import { selectExpenses } from '@/store/slices/expensesSlice';
 import {
   calculateArvPercentage,
@@ -110,7 +110,7 @@ const MarginCard = ({
 
 type MarginInfoProps = {};
 const MarginInfo = (_: MarginInfoProps) => {
-  const { saleCalculatedProperty } = useSelector(selectProperties);
+  const saleCalculatedProperty = useSelector(selectSaleCalculatedProperty);
   const { initialInvestment, financingCosts } = useSelector(selectExpenses);
   const totalExpenses = initialInvestment + financingCosts;
   const soldComps = saleCalculatedProperty?.comps?.filter(

@@ -10,7 +10,7 @@ import {
 } from '@/utils/converters';
 import { useSelector } from 'react-redux';
 import Image from '@/components/Photos/Image';
-import { selectFilter } from '@/store/slices/filterSlice';
+import { selectStrategyMode } from '@/store/slices/filterSlice';
 import { calculateArvPercentage } from '@/utils/calculationUtils';
 import {
   ArrowDown,
@@ -42,7 +42,7 @@ const PropertyCard: React.FC<PropertyCardProps> = (
   const [cardImage, setCardImage] = useState(
     validateValue(property?.image, 'string', defaultImage)
   );
-  const { strategyMode } = useSelector(selectFilter);
+  const strategyMode = useSelector(selectStrategyMode);
   const { hasOffer } = usePropertyOffers();
 
   useEffect(() => {

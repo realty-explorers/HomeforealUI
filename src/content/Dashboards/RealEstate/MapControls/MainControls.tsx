@@ -24,7 +24,19 @@ import {
 } from '@/utils/converters';
 import SliderField from './SliderField';
 import {
-  selectFilter,
+  selectArv25Margin,
+  selectArvMargin,
+  selectBuybox,
+  selectFilteredProperties,
+  selectMaxArea,
+  selectMaxBaths,
+  selectMaxBeds,
+  selectMaxPrice,
+  selectMinArea,
+  selectMinBaths,
+  selectMinBeds,
+  selectMinPrice,
+  selectPropertyTypes,
   setArvMargin,
   setBuybox,
   setFilteredProperties,
@@ -218,21 +230,19 @@ const MainControls: React.FC<MainControlsProps> = (
 ) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const {
-    arvMargin,
-    arv25Margin,
-    maxBaths,
-    minBaths,
-    maxBeds,
-    minBeds,
-    maxPrice,
-    minPrice,
-    minArea,
-    maxArea,
-    propertyTypes,
-    filteredProperties,
-    buybox
-  } = useSelector(selectFilter);
+  const arvMargin = useSelector(selectArvMargin);
+  const arv25Margin = useSelector(selectArv25Margin);
+  const maxBaths = useSelector(selectMaxBaths);
+  const minBaths = useSelector(selectMinBaths);
+  const maxBeds = useSelector(selectMaxBeds);
+  const minBeds = useSelector(selectMinBeds);
+  const maxPrice = useSelector(selectMaxPrice);
+  const minPrice = useSelector(selectMinPrice);
+  const minArea = useSelector(selectMinArea);
+  const maxArea = useSelector(selectMaxArea);
+  const propertyTypes = useSelector(selectPropertyTypes);
+  const filteredProperties = useSelector(selectFilteredProperties);
+  const buybox = useSelector(selectBuybox);
 
   const { data, status } = useSession();
   const dispatch = useDispatch();

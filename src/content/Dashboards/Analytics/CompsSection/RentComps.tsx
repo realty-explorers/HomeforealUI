@@ -9,7 +9,8 @@ import CompsFilter from './CompsFilter';
 import RentsCard from './RentsCard';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectProperties,
+  selectSelectedProperty,
+  selectSelectedRentalComps,
   setRentalCalculatedProperty,
   setSelectedRentalComps
 } from '@/store/slices/propertiesSlice';
@@ -20,8 +21,8 @@ import PropertyCardRental from './PropertyCardRental';
 type RentCompsProps = {};
 const RentComps = () => {
   const dispatch = useDispatch();
-  const { selectedProperty, selectedRentalComps } =
-    useSelector(selectProperties);
+  const selectedProperty = useSelector(selectSelectedProperty);
+  const selectedRentalComps = useSelector(selectSelectedRentalComps);
   const [calculateComps, compsResult] = useCalculateCompsMutation();
   const rentComps = selectedProperty.comps.filter(
     (comp) => comp.status === 'for_rent'

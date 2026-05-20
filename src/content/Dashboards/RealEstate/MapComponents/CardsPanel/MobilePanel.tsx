@@ -1,6 +1,9 @@
 import useProperty from "@/hooks/useProperty";
 import PropertyPreview from "@/models/propertyPreview";
-import { selectFilter } from "@/store/slices/filterSlice";
+import {
+  selectFilteredProperties,
+  selectStrategyMode,
+} from "@/store/slices/filterSlice";
 import { Global } from "@emotion/react";
 import {
   Box,
@@ -59,7 +62,8 @@ const MobilePanel = ({ sortedProperties }: MobilePanelProps) => {
   const mapContainer = document.getElementById("main");
   const windowWidth = typeof window !== "undefined" ? window.innerWidth : 0;
 
-  const { filteredProperties, strategyMode } = useSelector(selectFilter);
+  const filteredProperties = useSelector(selectFilteredProperties);
+  const strategyMode = useSelector(selectStrategyMode);
 
   const Row = ({ index, style }) => {
     return (

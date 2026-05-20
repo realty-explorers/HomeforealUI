@@ -8,8 +8,15 @@ import clsx from 'clsx';
 import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useSelector } from 'react-redux';
-import { selectFilter } from '@/store/slices/filterSlice';
-import { selectProperties } from '@/store/slices/propertiesSlice';
+import {
+  selectBuybox,
+  selectFilteredProperties,
+  selectStrategyMode
+} from '@/store/slices/filterSlice';
+import {
+  selectSelectedProperty,
+  selectSelectedPropertyPreview
+} from '@/store/slices/propertiesSlice';
 import useProperty from '@/hooks/useProperty';
 
 type CardsPanelProps = {
@@ -23,12 +30,14 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
   // const [listRef] = useHookWithRefCallback();
   const [ref, setRef] = useState<Element | undefined>();
 
-  const { filteredProperties, strategyMode, buybox } = useSelector(selectFilter);
+  const filteredProperties = useSelector(selectFilteredProperties);
+  const strategyMode = useSelector(selectStrategyMode);
+  const buybox = useSelector(selectBuybox);
   const isMultifamilyBuybox =
     buybox?.parameters?.strategy?.strategyType === 'MULTIFAMILY';
 
-  const { selectedProperty, selectedPropertyPreview } =
-    useSelector(selectProperties);
+  const selectedProperty = useSelector(selectSelectedProperty);
+  const selectedPropertyPreview = useSelector(selectSelectedPropertyPreview);
   const [selectedPropertyIndex, setSelectedIndex] = useState(-1);
   const { selectProperty, deselectProperty } = useProperty();
 

@@ -103,4 +103,24 @@ export const selectProperties: (state: AppState) => PropertiesState = (
   state: AppState,
 ) => state.properties;
 
+// Granular field selectors — prefer these over `selectProperties` so
+// components only re-render when the field they actually read changes.
+export const selectSelectedProperty = (state: AppState) =>
+  state.properties.selectedProperty;
+export const selectSelectedPropertyLocation = (state: AppState) =>
+  state.properties.selectedPropertyLocation;
+export const selectSaleCalculatedProperty = (state: AppState) =>
+  state.properties.saleCalculatedProperty;
+export const selectRentalCalculatedProperty = (state: AppState) =>
+  state.properties.rentalCalculatedProperty;
+export const selectSelectedPropertyPreview = (state: AppState) =>
+  state.properties.selectedPropertyPreview;
+export const selectSelectedComps = (state: AppState) =>
+  state.properties.selectedComps;
+export const selectSelectedRentalComps = (state: AppState) =>
+  state.properties.selectedRentalComps;
+export const selectSelecting = (state: AppState) => state.properties.selecting;
+export const selectMapFlyTarget = (state: AppState) =>
+  state.properties.mapFlyTarget;
+
 export default propertiesSlice;

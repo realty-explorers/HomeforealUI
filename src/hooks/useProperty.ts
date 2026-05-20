@@ -2,7 +2,7 @@ import AnalyzedProperty, { FilteredComp } from '@/models/analyzedProperty';
 import PropertyPreview from '@/models/propertyPreview';
 import { useLazyGetLocationDataQuery } from '@/store/services/locationApiService';
 import { useLazyGetPropertyQuery } from '@/store/services/propertiesApiService';
-import { selectFilter } from '@/store/slices/filterSlice';
+import { selectBuybox } from '@/store/slices/filterSlice';
 import {
   setRentalCalculatedProperty,
   setSaleCalculatedProperty,
@@ -18,7 +18,7 @@ import { useRouter } from 'next/router';
 import { useSnackbar } from 'notistack';
 
 export const useProperty = () => {
-  const { buybox } = useSelector(selectFilter);
+  const buybox = useSelector(selectBuybox);
   const [getLocationData, locationState] = useLazyGetLocationDataQuery();
   const [getProperty, propertyState] = useLazyGetPropertyQuery();
   const dispatch = useDispatch();
