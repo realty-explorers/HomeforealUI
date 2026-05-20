@@ -100,17 +100,12 @@ const AutocompleteInput: React.FC<AutocompleteInputProps> = (
           ).unwrap();
           console.log(response);
           const allowedTypes = ['city', 'state', 'neighborhood', 'postal_code'];
-          const allowedStates = [
-            'FL',
-            'AL',
-            'IL',
-            'TX',
-            'OH',
-            'NJ',
-            'IN',
-            'TN',
-            'MO'
-          ];
+          const allowedStates = (
+            process.env.NEXT_PUBLIC_ALLOWED_STATES ?? ''
+          )
+            .split(',')
+            .map((s) => s.trim())
+            .filter(Boolean);
           const relevantResultOptions = response.filter(
             (option) =>
               allowedTypes.includes(option.type) &&
