@@ -654,17 +654,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         {(suggestion ||
           (selectedPropertyPreview && !selectedPropertyPreview.masked)) && (
           <LayersControl
-            heatmapDisabled={
-              Boolean(selectedPropertyPreview) ||
-              !(propertiesState.data && propertiesState.data.length > 0)
-            }
-            heatmapDisabledReason={
-              selectedPropertyPreview
-                ? 'Unavailable in detail view'
-                : !propertiesState.data?.length
-                ? 'No properties in area'
-                : undefined
-            }
+            propertySelected={Boolean(selectedPropertyPreview)}
+            heatmapDataEmpty={!propertiesState.data?.length}
           />
         )}
 

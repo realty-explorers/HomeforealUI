@@ -20,10 +20,14 @@ import {
 } from '@/store/slices/mapSlice';
 
 type LayersControlProps = {
-  // When true, the heatmap section is disabled (e.g. property detail
-  // view or no properties in the area). Boundary toggle stays usable.
-  heatmapDisabled?: boolean;
-  heatmapDisabledReason?: string;
+  // Submarket boundary outlines the pricing-relevant zone (neighborhood
+  // or zip-code fallback) the subject property sits in — only relevant
+  // when a property is selected. Markers + Heatmap are search-view
+  // affordances and don't apply inside the property detail view.
+  propertySelected: boolean;
+  // True when the buybox returned no properties — the heatmap section
+  // is rendered but disabled with a caption so users understand why.
+  heatmapDataEmpty?: boolean;
 };
 
 const MODE_OPTIONS: Array<{
@@ -37,8 +41,8 @@ const MODE_OPTIONS: Array<{
 ];
 
 const LayersControl = ({
-  heatmapDisabled = false,
-  heatmapDisabledReason
+  propertySelected,
+  heatmapDataEmpty = false
 }: LayersControlProps) => {
   const dispatch = useDispatch();
   const showBounds = useSelector(selectShowBounds);
@@ -46,9 +50,11 @@ const LayersControl = ({
   const heatmapMode = useSelector(selectHeatmapMode);
   const [open, setOpen] = useState(false);
 
-  // Button highlights blue when at least one layer is visible; goes
-  // white only if the user has turned everything off.
-  const active = showBounds || showMarkers || heatmapMode !== 'off';
+  // Button highlights in detail view only — the submarket boundary is
+  // the only layer that meaningfully indicates state there. In search
+  // view the button stays neutral so it doesn't compete with the
+  // markers/heatmap on the map itself.
+  const active = propertySelected && showBounds;
 
   return (
     <div className="absolute top-2.5 right-[50px] z-10">
@@ -75,76 +81,86 @@ const LayersControl = ({
           sideOffset={8}
           className="w-60 p-3 space-y-4"
         >
-          <div className="flex items-center justify-between">
-            <Label
-              htmlFor="boundary-toggle"
-              className="text-sm font-medium cursor-pointer"
-            >
-              Boundary
-            </Label>
-            <Switch
-              id="boundary-toggle"
-              checked={showBounds}
-              onCheckedChange={(checked) => dispatch(setShowBounds(checked))}
-            />
-          </div>
-
-          <div className="flex items-center justify-between">
-            <Label
-              htmlFor="markers-toggle"
-              className="text-sm font-medium cursor-pointer"
-            >
-              Markers
-            </Label>
-            <Switch
-              id="markers-toggle"
-              checked={showMarkers}
-              onCheckedChange={(checked) => dispatch(setShowMarkers(checked))}
-            />
-          </div>
-
-          <div className="space-y-2">
-            <div className="flex items-baseline justify-between">
-              <Label className="text-sm font-medium">Heatmap</Label>
-              {heatmapDisabled && heatmapDisabledReason && (
-                <span className="text-[11px] text-slate-400">
-                  {heatmapDisabledReason}
-                </span>
-              )}
+          {propertySelected && (
+            <div className="flex items-center justify-between">
+              <Label
+                htmlFor="submarket-toggle"
+                className="text-sm font-medium cursor-pointer"
+              >
+                Submarket boundary
+              </Label>
+              <Switch
+                id="submarket-toggle"
+                checked={showBounds}
+                onCheckedChange={(checked) =>
+                  dispatch(setShowBounds(checked))
+                }
+              />
             </div>
-            <div
-              className={cn(
-                'grid grid-cols-3 gap-1 rounded-md bg-slate-100 p-1',
-                heatmapDisabled && 'opacity-50 pointer-events-none'
-              )}
-              role="radiogroup"
-              aria-label="Heatmap metric"
-            >
-              {MODE_OPTIONS.map((opt) => {
-                const Icon = opt.icon;
-                const selected = heatmapMode === opt.value;
-                return (
-                  <button
-                    key={opt.value}
-                    type="button"
-                    role="radio"
-                    aria-checked={selected}
-                    disabled={heatmapDisabled}
-                    onClick={() => dispatch(setHeatmapMode(opt.value))}
-                    className={cn(
-                      'inline-flex items-center justify-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors',
-                      selected
-                        ? 'bg-white text-slate-900 shadow-sm'
-                        : 'text-slate-600 hover:text-slate-900'
-                    )}
-                  >
-                    {Icon && <Icon className="size-3" />}
-                    {opt.label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
+          )}
+
+          {!propertySelected && (
+            <>
+              <div className="flex items-center justify-between">
+                <Label
+                  htmlFor="markers-toggle"
+                  className="text-sm font-medium cursor-pointer"
+                >
+                  Markers
+                </Label>
+                <Switch
+                  id="markers-toggle"
+                  checked={showMarkers}
+                  onCheckedChange={(checked) =>
+                    dispatch(setShowMarkers(checked))
+                  }
+                />
+              </div>
+
+              <div className="space-y-2">
+                <div className="flex items-baseline justify-between">
+                  <Label className="text-sm font-medium">Heatmap</Label>
+                  {heatmapDataEmpty && (
+                    <span className="text-[11px] text-slate-400">
+                      No properties in area
+                    </span>
+                  )}
+                </div>
+                <div
+                  className={cn(
+                    'grid grid-cols-3 gap-1 rounded-md bg-slate-100 p-1',
+                    heatmapDataEmpty && 'opacity-50 pointer-events-none'
+                  )}
+                  role="radiogroup"
+                  aria-label="Heatmap metric"
+                >
+                  {MODE_OPTIONS.map((opt) => {
+                    const Icon = opt.icon;
+                    const selected = heatmapMode === opt.value;
+                    return (
+                      <button
+                        key={opt.value}
+                        type="button"
+                        role="radio"
+                        aria-checked={selected}
+                        disabled={heatmapDataEmpty}
+                        onClick={() => dispatch(setHeatmapMode(opt.value))}
+                        className={cn(
+                          'inline-flex items-center justify-center gap-1 rounded px-2 py-1 text-xs font-medium transition-colors',
+                          selected
+                            ? 'bg-white text-slate-900 shadow-sm'
+                            : 'text-slate-600 hover:text-slate-900'
+                        )}
+                      >
+                        {Icon && <Icon className="size-3" />}
+                        {opt.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            </>
+          )}
         </PopoverContent>
       </Popover>
     </div>
