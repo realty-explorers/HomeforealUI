@@ -78,6 +78,8 @@ import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useLazyGetBuyBoxesQuery } from '@/store/services/buyboxApiService';
+import { Layers } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
@@ -94,6 +96,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(true);
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+  const [showBounds, setShowBounds] = useState(true);
   const [data, setData] = useState<
     FeatureCollection<
       Geometry,
@@ -679,7 +682,36 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           loading={propertiesState.isFetching || locationState.isFetching}
         />
         <MapControlPanel />
-        <LocationBoundsSource show={true} data={boundsData} />
+
+        {(suggestion ||
+          (selectedPropertyPreview && !selectedPropertyPreview.masked)) && (
+          <button
+            type="button"
+            onClick={() => setShowBounds((s) => !s)}
+            title={
+              showBounds
+                ? 'Hide boundary overlay'
+                : 'Show boundary overlay'
+            }
+            aria-label={
+              showBounds
+                ? 'Hide boundary overlay'
+                : 'Show boundary overlay'
+            }
+            aria-pressed={showBounds}
+            className={cn(
+              'mapboxgl-ctrl absolute top-2.5 right-[50px] z-10 inline-flex items-center justify-center size-[29px] rounded transition-colors outline-none',
+              'shadow-[0_0_0_2px_rgba(0,0,0,0.1)]',
+              showBounds
+                ? 'bg-primary text-white hover:bg-primary/90'
+                : 'bg-white text-slate-700 hover:bg-slate-50'
+            )}
+          >
+            <Layers className="size-[18px]" />
+          </button>
+        )}
+
+        <LocationBoundsSource show={showBounds} data={boundsData} />
         <SelectedPropertyMarker
           onClick={handleDeselectProperty}
           selectedProperty={selectedPropertyPreview}
@@ -698,6 +730,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         <CardsPanel open={Boolean(propertiesState.data)} />
         <PropertyLocationBoundsSource
           show={
+            showBounds &&
             !selecting &&
             Boolean(selectedPropertyPreview) &&
             !selectedPropertyPreview?.masked

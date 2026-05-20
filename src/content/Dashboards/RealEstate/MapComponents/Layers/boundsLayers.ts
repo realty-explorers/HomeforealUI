@@ -27,6 +27,8 @@ export const propertyBoundsLayer: LayerProps = {
   id: "property-bounds-area",
   type: "fill",
   source: "property-bounds",
+  // Insert below the comp markers so they remain interactive and visible.
+  beforeId: "comps-point",
   layout: {
     "fill-sort-key": -1,
   },
@@ -41,6 +43,7 @@ export const propertyBoundsLineLayer: LayerProps = {
   id: "property-bounds-line",
   type: "line",
   source: "property-bounds",
+  beforeId: "comps-point",
   layout: {
     "line-cap": "round",
   },
