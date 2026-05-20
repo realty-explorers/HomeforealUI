@@ -42,14 +42,27 @@ export const unclusteredPointLayer: LayerProps = {
   source: 'properties',
   filter: ['!', ['has', 'point_count']],
   layout: {
-    'text-field': ['get', 'price'],
+    // Two-segment label: leading arrow glyph (empty string for
+    // multifamily) at 0.7x scale, then the price/cap-rate text at
+    // normal scale. Mapbox `format` lets us mix sizes within one label.
+    'text-field': [
+      'format',
+      ['get', 'arrow'],
+      { 'font-scale': 0.7 },
+      ['get', 'price'],
+      {}
+    ] as any,
     'text-font': ['DIN Offc Pro Bold', 'Arial Unicode MS Bold'],
-    'text-size': 11,
+    'text-size': 12,
     'text-letter-spacing': -0.02,
-    'text-offset': [0, -0.5],
+    // Shift the whole symbol up so the arrow tail lands on the
+    // property's geographic coordinate instead of below it.
+    'text-offset': [0, -1.1],
     'text-anchor': 'top',
     'text-padding': 2,
-    'icon-text-fit-padding': [0, 0, 0, 0],
+    // [top, right, bottom, left] — vertical padding adds breathing
+    // room around the label inside the pill.
+    'icon-text-fit-padding': [2, 0, 2, 0],
     'icon-image': 'marker-pill',
     'icon-allow-overlap': true,
     'symbol-sort-key': ['get', 'sortKey'],

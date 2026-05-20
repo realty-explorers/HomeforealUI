@@ -86,6 +86,11 @@ const capRateTier = (capRate: number): number => {
 type PropertyFeatureProps = {
   id: string;
   price: string;
+  // Optional leading glyph (e.g. "↓ ") rendered at a smaller font-scale
+  // in the marker layer to cue "under market" without dominating the
+  // percentage. Empty string when the metric doesn't carry that meaning
+  // (multifamily cap-rate marker).
+  arrow: string;
   sortKey: number;
   tier: number;
   // Numeric fields for heatmap weighting. Strings above stay for the
@@ -110,6 +115,7 @@ const generatePropertyGeoJson = (
       properties: {
         id: property.id,
         price: buildMultifamilyMarkerLabel(property),
+        arrow: '',
         sortKey: -capRate,
         tier: capRateTier(capRate),
         priceValue: pricePerUnit,
@@ -123,11 +129,16 @@ const generatePropertyGeoJson = (
   }
 
   const percentage = marginPercentage(property, strategy);
+  // ↓ glyph cues "under market" at a glance — the percentage is how
+  // much below the ARV/strategy price the listing sits. Rendered at a
+  // smaller font-scale in the marker layer so it doesn't compete with
+  // the number itself.
   return {
     type: 'Feature',
     properties: {
       id: property.id,
       price: `${percentage.toFixed()}%`,
+      arrow: '↓ ',
       sortKey: -percentage,
       tier: marginTier(percentage),
       priceValue: rawPrice,
