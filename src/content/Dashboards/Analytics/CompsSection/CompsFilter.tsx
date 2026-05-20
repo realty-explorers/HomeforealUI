@@ -1,34 +1,28 @@
-import SliderField from '@/components/Form/SliderField';
-import {
-  Button,
-  Dialog,
-  DialogTitle,
-  TextField,
-  Typography
-} from '@mui/material';
 import { useForm } from 'react-hook-form';
-import RangeField from '@/components/Form/RangeField';
-import styles from './CompsSection.module.scss';
 import z from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { defaults } from '@/schemas/defaults';
-import SwitchField from '@/components/Form/SwitchField';
-import React, { useEffect, useState } from 'react';
-import { CompData, FilteredComp } from '@/models/analyzedProperty';
-import {
-  selectProperties,
-  setSelectedComps
-} from '@/store/slices/propertiesSlice';
+import { useSelector } from 'react-redux';
+import React, { useEffect, useMemo, useState } from 'react';
+import { SlidersHorizontal } from 'lucide-react';
 
-import { useDispatch, useSelector } from 'react-redux';
-import clsx from 'clsx';
-import BorderColorOutlinedIcon from '@mui/icons-material/BorderColorOutlined';
-import ModeEditOutlinedIcon from '@mui/icons-material/ModeEditOutlined';
-import { ModeEdit } from '@mui/icons-material';
-import TuneOutlinedIcon from '@mui/icons-material/TuneOutlined';
-import CompsFilterField from './CompsFilterField';
+import { defaults } from '@/schemas/defaults';
+import { CompData, FilteredComp } from '@/models/analyzedProperty';
+import { selectProperties } from '@/store/slices/propertiesSlice';
 import FormRangeField from '@/models/formRangeField';
 import { numberFormatter } from '@/utils/converters';
+
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
+
+import RangeFilterField from './RangeFilterField';
 
 const defaultRangeFields: FormRangeField[] = [
   {
@@ -67,7 +61,6 @@ const defaultRangeFields: FormRangeField[] = [
     max: defaults.bathrooms.max,
     step: defaults.bathrooms.step
   },
-
   {
     label: 'Lot Sqft',
     fieldName: 'lotArea',
@@ -95,17 +88,6 @@ const defaultRangeFields: FormRangeField[] = [
     step: defaults.yearBuilt.step,
     formatLabelAsNumber: false
   },
-
-  // {
-  //   label: "Price/Sqft",
-  //   fieldName: "pricePerSqft",
-  //   subjectFieldName: "pricePerSqft",
-  //   min: defaults.pricePerSqft.min,
-  //   max: defaults.pricePerSqft.max,
-  //   step: defaults.pricePerSqft.step,
-  //   formatLabelAsNumber: true,
-  //   prefix: "$",
-  // },
   {
     label: 'Max Distance',
     fieldName: 'distance',
@@ -125,17 +107,6 @@ const customRangeFields = [
     max: defaults.soldMonths.max,
     step: defaults.soldMonths.step,
     postfix: 'months'
-  }
-];
-
-const booleanFields = [
-  {
-    label: 'Pool',
-    fieldName: 'pool'
-  },
-  {
-    label: 'Same Neighborhood',
-    fieldName: 'sameNeighborhood'
   }
 ];
 
@@ -164,9 +135,6 @@ const compsFiltersSchema = z.object({
       z.number().min(defaults.listingPrice.min).max(defaults.listingPrice.max)
     )
     .default(defaults.listingPrice.default),
-  // pricePerSqft: z.array(
-  //   z.number().min(defaults.pricePerSqft.min).max(defaults.pricePerSqft.max),
-  // ).default(defaults.pricePerSqft.default),
   distance: z
     .array(z.number().min(defaults.distance.min).max(defaults.distance.max))
     .default(defaults.distance.default),
@@ -177,8 +145,6 @@ const compsFiltersSchema = z.object({
     .default(defaults.soldMonths.default)
 });
 
-const validateComps = () => {};
-
 type CompsFilterSchemaType = z.infer<typeof compsFiltersSchema>;
 
 type CompsFilterProps = {
@@ -187,6 +153,21 @@ type CompsFilterProps = {
   setSelectedComps: (comps: FilteredComp[]) => void;
   selectedComps: FilteredComp[];
 };
+
+const formatSubjectValue = (
+  value: number | string | undefined,
+  field: { formatLabelAsNumber?: boolean; prefix?: string; postfix?: string }
+) => {
+  if (value === undefined || value === null || value === '') return '—';
+  const numeric = typeof value === 'number' ? value : Number(value);
+  const isNumber = !Number.isNaN(numeric);
+  const formatted =
+    field.formatLabelAsNumber && isNumber
+      ? numberFormatter(numeric)
+      : `${value}`;
+  return `${field.prefix ?? ''}${formatted}${field.postfix ? ` ${field.postfix}` : ''}`;
+};
+
 const CompsFilter = ({
   open,
   setOpen,
@@ -210,64 +191,56 @@ const CompsFilter = ({
   }
 
   const {
-    register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    reset,
     getValues,
     setValue,
-    watch,
     control
-  } = useForm<CompsFilterSchemaType>({
-    resolver: zodResolver(compsFiltersSchema),
+  } = useForm<Record<string, any>>({
     defaultValues: getDefaults(compsFiltersSchema)
   });
 
   const handleClose = () => setOpen(false);
 
   const onSubmit = async (data: any) => {
-    console.log(data);
     const filteredComps: FilteredComp[] = [];
     const soldComps = selectedProperty?.comps.filter(
       (comp) => comp.status === 'sold' || comp.status === 'off_market'
     );
+    if (!soldComps) {
+      setSelectedComps([]);
+      handleClose();
+      return;
+    }
     for (let i = 0; i < soldComps.length; i++) {
       const comp = soldComps[i];
       let add = true;
       for (const field of rangeFields) {
         if (comp[field.fieldName] !== undefined) {
           const value = data[field.fieldName];
+          if (!Array.isArray(value) || value.length < 2) continue;
           if (
             value[0] > comp[field.fieldName] ||
             value[1] < comp[field.fieldName]
           ) {
             add = false;
-            console.log(
-              'no range ',
-              field.fieldName,
-              value,
-              comp[field.fieldName]
-            );
             break;
           }
-        } else {
-          console.log('no field ', field.fieldName);
         }
       }
       try {
         const field = customRangeFields[0];
         if (comp['sales_date'] !== undefined) {
           const value = data[field.fieldName];
-          const currentDate = new Date();
-          const date = new Date(comp['sales_date']);
-          const diff = currentDate - date;
-          const diffMonths = Math.ceil(diff / (1000 * 60 * 60 * 24 * 30));
-          console.log(diffMonths);
-          if (value < diffMonths) {
-            add = false;
+          if (value !== undefined && value !== null) {
+            const currentDate = new Date();
+            const date = new Date(comp['sales_date']);
+            const diff = currentDate.getTime() - date.getTime();
+            const diffMonths = Math.ceil(diff / (1000 * 60 * 60 * 24 * 30));
+            if (Number(value) < diffMonths) {
+              add = false;
+            }
           }
-        } else {
-          console.log('no field ', field.fieldName);
         }
       } catch (e) {
         console.log(e);
@@ -284,43 +257,20 @@ const CompsFilter = ({
     rangeFields: FormRangeField[],
     comps: CompData[]
   ) => {
-    if (comps.length === 0) return rangeFields;
+    if (!comps || comps.length === 0) return rangeFields;
     for (const rangeField of rangeFields) {
-      rangeField.min = comps[0][rangeField.fieldName];
-      rangeField.max = comps[0][rangeField.fieldName];
-    }
-    // try {
-    //   const currentDate = new Date();
-    //   const date = new Date(comp.sales_date);
-    //   const diff = currentDate - date;
-    //   const diffDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
-    //   customRangeFields[0].max = diffDays;
-    // } catch (e) {
-    //   console.log(e);
-    // }
-
-    for (let i = 1; i < comps.length; i++) {
-      const comp = comps[i];
-      for (const rangeField of rangeFields) {
-        if (comp[rangeField.fieldName] < rangeField.min) {
-          rangeField.min = comp[rangeField.fieldName];
-        }
-        if (comp[rangeField.fieldName] > rangeField.max) {
-          rangeField.max = comp[rangeField.fieldName];
-        }
+      const values: number[] = [];
+      for (const comp of comps) {
+        const raw = comp?.[rangeField.fieldName];
+        const num = typeof raw === 'number' ? raw : Number(raw);
+        if (Number.isFinite(num)) values.push(num);
       }
-      // try {
-      //   const currentDate = new Date();
-      //   const date = new Date(comp.sales_date);
-      //   const diff = currentDate - date;
-      //   const diffDays = Math.ceil(diff / (1000 * 60 * 60 * 24));
-      //   if (diff > customRangeFields[0].max) {
-      //     customRangeFields[0].max = diffDays;
-      //   }
-      //   console.log(Math.floor(diff / (1000 * 60 * 60 * 24)));
-      // } catch (e) {
-      //   console.log(e);
-      // }
+      if (values.length === 0) continue;
+      rangeField.min = Math.min(...values);
+      rangeField.max = Math.max(...values);
+      if (rangeField.min === rangeField.max) {
+        rangeField.max = rangeField.min + (rangeField.step || 1);
+      }
     }
     return rangeFields;
   };
@@ -329,8 +279,23 @@ const CompsFilter = ({
     const soldComps = selectedProperty?.comps.filter(
       (comp) => comp.status === 'sold' || comp.status === 'off_market'
     );
+    if (!soldComps) return;
     const limitedRangeFields = findRangeLimits(rangeFields, soldComps);
     setRangeFields(limitedRangeFields);
+    for (const rangeField of limitedRangeFields) {
+      if (
+        Number.isFinite(rangeField.min) &&
+        Number.isFinite(rangeField.max) &&
+        getValues(rangeField.fieldName) === undefined
+      ) {
+        setValue(rangeField.fieldName, [rangeField.min, rangeField.max]);
+      }
+    }
+    for (const field of customRangeFields) {
+      if (getValues(field.fieldName) === undefined) {
+        setValue(field.fieldName, field.max);
+      }
+    }
   }, [selectedProperty]);
 
   useEffect(() => {
@@ -339,149 +304,172 @@ const CompsFilter = ({
       selectedComps
     );
     for (const rangeField of limitedRangeFields) {
-      setValue(rangeField.fieldName, [
-        Math.floor(rangeField.min * 1000) / 1000,
-        Math.ceil(rangeField.max * 1000) / 1000
-      ]);
+      const lo = Number.isFinite(rangeField.min)
+        ? Math.floor(rangeField.min * 1000) / 1000
+        : null;
+      const hi = Number.isFinite(rangeField.max)
+        ? Math.ceil(rangeField.max * 1000) / 1000
+        : null;
+      if (lo === null || hi === null) continue;
+      setValue(rangeField.fieldName, [lo, hi]);
     }
   }, [selectedComps]);
 
+  const totalComps = useMemo(
+    () =>
+      selectedProperty?.comps?.filter(
+        (c) => c.status === 'sold' || c.status === 'off_market'
+      )?.length ?? 0,
+    [selectedProperty]
+  );
+
+  const handleReset = () => {
+    for (const rangeField of rangeFields) {
+      if (
+        Number.isFinite(rangeField.min) &&
+        Number.isFinite(rangeField.max)
+      ) {
+        setValue(rangeField.fieldName, [rangeField.min, rangeField.max], {
+          shouldDirty: true
+        });
+      }
+    }
+    for (const field of customRangeFields) {
+      setValue(field.fieldName, field.max, { shouldDirty: true });
+    }
+  };
+
   return (
-    <Dialog open={open} onClose={handleClose} fullWidth maxWidth="md">
-      <DialogTitle className="flex items-center">
-        <TuneOutlinedIcon className="text-[#590D82]" />
-        <Typography className="pl-2 font-poppins text-2xl font-bold">
-          Filter Comps
-        </Typography>
-      </DialogTitle>
-      <form onSubmit={handleSubmit(onSubmit)} className="w-full py-4">
-        <div className="grid grid-cols-[1fr_1fr_4fr] w-full pr-16 pb-4 gap-y-4 mb-4">
-          <Typography className={clsx([styles.compsFilterHeader])}>
-            Characteristics
-          </Typography>
-          <Typography className={clsx([styles.compsFilterHeader])}>
-            Subject Prop.
-          </Typography>
-          <Typography className={clsx([styles.compsFilterHeader])}>
-            Comps Range
-          </Typography>
-        </div>
-        <div className="grid grid-cols-[1fr_1fr_4fr] w-full gap-y-4 pr-16 ">
-          {rangeFields.map((field, index) => (
-            <React.Fragment key={index}>
-              <div className="flex items-center ">
-                <Typography
-                  className={clsx([styles.compsFilterLabel, 'ml-[30%]'])}
-                >
-                  {field.label}
-                </Typography>
-              </div>
-              <div className="flex items-center justify-center">
-                <Typography
-                  className={clsx([styles.compsFilterField, 'text-center'])}
-                >
-                  {field.formatLabelAsNumber
-                    ? numberFormatter(selectedProperty[field.subjectFieldName])
-                    : selectedProperty[field.subjectFieldName]}
-                </Typography>
-              </div>
-              <RangeField
-                key={index}
-                min={field.min}
-                max={field.max}
-                step={field.step}
-                prefix={field.prefix}
-                postfix={field.postfix}
-                formatLabelAsNumber={field.formatLabelAsNumber}
-                fieldName={`${field.fieldName}`}
-                setValue={setValue}
-                getValues={getValues}
-              />
-            </React.Fragment>
-          ))}
-          {customRangeFields.map((field, index) => {
-            return (
-              <React.Fragment key={index}>
-                <div className="flex items-center ">
-                  <Typography
-                    className={clsx([styles.compsFilterLabel, 'ml-[30%]'])}
-                  >
-                    {field.label}
-                  </Typography>
-                </div>
-                <div className="flex items-center justify-center">
-                  <Typography
-                    className={clsx([styles.compsFilterField, 'text-center'])}
-                  >
-                    {selectedProperty[field.fieldName]}
-                  </Typography>
-                </div>
-                <RangeField
-                  key={index}
-                  min={field.min}
-                  max={field.max}
-                  step={field.step}
-                  prefix={field.prefix}
-                  postfix={field.postfix}
-                  formatLabelAsNumber={field.formatLabelAsNumber}
-                  fieldName={`${field.fieldName}`}
-                  setValue={setValue}
-                  getValues={getValues}
-                />
-              </React.Fragment>
-            );
-          })}
-        </div>
-        {
-          //show errors
-          Object.keys(errors).length > 0 && (
-            <div className="flex flex-col items-center justify-center mt-4">
-              <Typography className="text-red-500">
-                Please fix the errors above
-              </Typography>
+    <Dialog open={open} onOpenChange={(o) => (o ? setOpen(true) : handleClose())}>
+      <DialogContent className="max-w-3xl gap-0 border-zinc-200 bg-white p-0 sm:rounded-2xl">
+        <DialogHeader className="space-y-2 border-b border-zinc-100 px-6 py-5">
+          <div className="flex items-center gap-3">
+            <div className="grid size-10 place-items-center rounded-xl bg-gradient-to-br from-primary to-secondary text-white shadow-sm">
+              <SlidersHorizontal className="size-5" />
             </div>
-          )
-        }
+            <div className="flex flex-col">
+              <DialogTitle className="font-poppins text-xl font-semibold tracking-tight text-zinc-900">
+                Filter Comps
+              </DialogTitle>
+              <DialogDescription className="text-xs text-zinc-500">
+                {selectedComps?.length ?? 0} of {totalComps} comps match your
+                current range
+              </DialogDescription>
+            </div>
+          </div>
+        </DialogHeader>
 
-        <Button
-          className="bg-[#590D82] hover:bg-[#b958ee] text-white px-4 mx-4 mt-6"
-          type="submit"
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex max-h-[78vh] flex-col"
         >
-          Apply Filter
-        </Button>
-      </form>
+          <div className="grid grid-cols-[1.1fr_0.9fr_2.4fr] gap-x-6 border-b border-zinc-100 bg-zinc-50/60 px-6 py-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-zinc-500">
+            <span>Characteristic</span>
+            <span className="text-center">Subject</span>
+            <span>Comps Range</span>
+          </div>
 
-      {/* <form */}
-      {/*   onSubmit={handleSubmit(onSubmit)} */}
-      {/*   className="grid grid-cols-[auto_1fr] m-4 mx-32 gap-x-12 gap-y-4" */}
-      {/* > */}
-      {/*   {fields.map((field, index) => { */}
-      {/*     return ( */}
-      {/*       <React.Fragment key={index}> */}
-      {/*         <Typography className={styles.filterLabel}> */}
-      {/*           {field.label} */}
-      {/*         </Typography> */}
-      {/*         {field.type === "range" */}
-      {/*           ? ( */}
-      {/*             <SliderField */}
-      {/*               control={control} */}
-      {/*               fieldName={field.fieldName} */}
-      {/*               min={defaults[field.fieldName]?.min} */}
-      {/*               max={defaults[field.fieldName]?.max} */}
-      {/*               step={defaults[field.fieldName]?.step} */}
-      {/*             /> */}
-      {/*           ) */}
-      {/*           : ( */}
-      {/*             <SwitchField */}
-      {/*               control={control} */}
-      {/*               fieldName={field.fieldName} */}
-      {/*               className="ml-[-12px]" */}
-      {/*             /> */}
-      {/*           )} */}
-      {/*       </React.Fragment> */}
-      {/*     ); */}
-      {/*   })} */}
-      {/* </form> */}
+          <ScrollArea className="max-h-[58vh] flex-1">
+            <div className="divide-y divide-zinc-100 px-6">
+              {rangeFields.map((field, index) => (
+                <div
+                  key={`${field.fieldName}-${index}`}
+                  className="grid grid-cols-[1.1fr_0.9fr_2.4fr] items-center gap-x-6 py-4"
+                >
+                  <span className="font-poppins text-sm font-medium text-zinc-900">
+                    {field.label}
+                  </span>
+                  <div className="flex justify-center">
+                    <span
+                      className={cn(
+                        'inline-flex h-7 items-center rounded-full bg-zinc-100 px-3 text-xs font-semibold tabular-nums text-zinc-700'
+                      )}
+                    >
+                      {formatSubjectValue(
+                        selectedProperty?.[field.subjectFieldName],
+                        field
+                      )}
+                    </span>
+                  </div>
+                  <RangeFilterField
+                    min={field.min}
+                    max={field.max}
+                    step={field.step}
+                    prefix={field.prefix}
+                    postfix={field.postfix}
+                    formatLabelAsNumber={field.formatLabelAsNumber}
+                    fieldName={field.fieldName}
+                    control={control}
+                    setValue={setValue}
+                  />
+                </div>
+              ))}
+
+              {customRangeFields.map((field, index) => (
+                <div
+                  key={`custom-${field.fieldName}-${index}`}
+                  className="grid grid-cols-[1.1fr_0.9fr_2.4fr] items-center gap-x-6 py-4"
+                >
+                  <span className="font-poppins text-sm font-medium text-zinc-900">
+                    {field.label}
+                  </span>
+                  <div className="flex justify-center">
+                    <span className="text-xs text-zinc-400">—</span>
+                  </div>
+                  <RangeFilterField
+                    mode="single"
+                    min={field.min}
+                    max={field.max}
+                    step={field.step}
+                    postfix={field.postfix}
+                    fieldName={field.fieldName}
+                    control={control}
+                    setValue={setValue}
+                  />
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+
+          {Object.keys(errors).length > 0 && (
+            <div className="border-t border-red-100 bg-red-50 px-6 py-3">
+              <p className="text-xs font-medium text-red-600">
+                Please fix the errors above
+              </p>
+            </div>
+          )}
+
+          <Separator />
+
+          <div className="flex items-center justify-between gap-3 px-6 py-4">
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={handleReset}
+              className="text-xs font-medium text-zinc-500 hover:text-zinc-900"
+            >
+              Reset filters
+            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={handleClose}
+                className="rounded-full px-5"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="rounded-full bg-gradient-to-r from-primary to-secondary px-6 text-white shadow-sm hover:from-primary hover:to-primary-light"
+              >
+                Apply filter
+              </Button>
+            </div>
+          </div>
+        </form>
+      </DialogContent>
     </Dialog>
   );
 };
