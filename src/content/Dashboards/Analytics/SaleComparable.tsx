@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import {
   DollarSign,
@@ -83,37 +84,53 @@ type SaleComparableProps = {
 
 const SaleComparable = ({ property }: SaleComparableProps) => {
   const selectedComps = useSelector(selectSelectedComps);
-  const soldComps = property.comps?.filter(
-    (c) => c.status === 'sold' || c.status === 'off_market'
+
+  const soldComps = useMemo(
+    () =>
+      property.comps?.filter(
+        (c) => c.status === 'sold' || c.status === 'off_market'
+      ),
+    [property.comps]
   );
-  if (!soldComps || soldComps.length === 0) return null;
 
   const area = property.area;
-  const priceToSqft = area && area > 0 ? property.price / area : 0;
+  const priceToSqft = useMemo(
+    () => (area && area > 0 ? property.price / area : 0),
+    [area, property.price]
+  );
 
-  const compsPriceToSqft =
-    selectedComps && selectedComps.length > 0
-      ? selectedComps.reduce((acc, comp) => {
-          const a = comp.area;
-          const pps = a && a > 0 ? numberStringUtil(comp.price) / a : 0;
-          return acc + pps;
-        }, 0) / selectedComps.length
-      : 0;
+  const compsPriceToSqft = useMemo(() => {
+    if (!selectedComps || selectedComps.length === 0) return 0;
+    return (
+      selectedComps.reduce((acc, comp) => {
+        const a = comp.area;
+        const pps = a && a > 0 ? numberStringUtil(comp.price) / a : 0;
+        return acc + pps;
+      }, 0) / selectedComps.length
+    );
+  }, [selectedComps]);
 
-  const subjectDOM = calcDays(property.listDate);
-  const avgCompsDOM =
-    selectedComps && selectedComps.length > 0
-      ? selectedComps.reduce((acc, c) => acc + calcDays(c.listDate), 0) /
-        selectedComps.length
-      : 0;
+  const subjectDOM = useMemo(
+    () => calcDays(property.listDate),
+    [property.listDate]
+  );
 
-  // % diff helpers
+  const avgCompsDOM = useMemo(() => {
+    if (!selectedComps || selectedComps.length === 0) return 0;
+    return (
+      selectedComps.reduce((acc, c) => acc + calcDays(c.listDate), 0) /
+      selectedComps.length
+    );
+  }, [selectedComps]);
+
   const pricePct =
     compsPriceToSqft > 0
       ? ((priceToSqft - compsPriceToSqft) / compsPriceToSqft) * 100
       : 0;
   const domPct =
     avgCompsDOM > 0 ? ((subjectDOM - avgCompsDOM) / avgCompsDOM) * 100 : 0;
+
+  if (!soldComps || soldComps.length === 0) return null;
 
   return (
     <div className="hidden md:block p-4 w-full">

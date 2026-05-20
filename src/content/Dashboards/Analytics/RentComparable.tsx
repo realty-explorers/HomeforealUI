@@ -17,6 +17,7 @@ import styled from '@emotion/styled';
 import analyticsStyles from './Analytics.module.scss';
 import styles from './SaleComparable.module.scss';
 import AnalyzedProperty from '@/models/analyzedProperty';
+import { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { selectSelectedRentalComps } from '@/store/slices/propertiesSlice';
 import { numberStringUtil, priceFormatter } from '@/utils/converters';
@@ -38,20 +39,26 @@ type RentComparableProps = {
 };
 const RentComparable = (props: RentComparableProps) => {
   const selectedRentalComps = useSelector(selectSelectedRentalComps);
-  const rentComps = props.property.comps.map(
-    (comp) => comp.status === 'for_rent'
+
+  const rentComps = useMemo(
+    () => props.property.comps.map((comp) => comp.status === 'for_rent'),
+    [props.property.comps]
   );
-  if (rentComps.length === 0) {
-    return null;
-  }
+
   const area = props.property.area;
   const rentListingPrice =
     typeof props.property.rentalCompsPrice === 'number'
       ? props.property.rentalCompsPrice
       : 0;
-  const rentToSqft = area && area > 0 ? rentListingPrice / area : 0;
-  const compsRentToSqft = selectedRentalComps
-    ? selectedRentalComps.reduce((acc, comp) => {
+  const rentToSqft = useMemo(
+    () => (area && area > 0 ? rentListingPrice / area : 0),
+    [area, rentListingPrice]
+  );
+
+  const compsRentToSqft = useMemo(() => {
+    if (!selectedRentalComps || selectedRentalComps.length === 0) return null;
+    return (
+      selectedRentalComps.reduce((acc, comp) => {
         const compArea = comp.area;
         const compRentalPrice = typeof comp.price === 'number' ? comp.price : 0;
         const compPriceToSqft =
@@ -60,7 +67,12 @@ const RentComparable = (props: RentComparableProps) => {
             : 0;
         return acc + compPriceToSqft;
       }, 0) / selectedRentalComps.length
-    : null;
+    );
+  }, [selectedRentalComps]);
+
+  if (rentComps.length === 0) {
+    return null;
+  }
 
   return (
     <div className="p-4">

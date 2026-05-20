@@ -1,11 +1,18 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, {
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState
+} from 'react';
 import { IconButton } from '@mui/material';
 import PropertyPreview from '@/models/propertyPreview';
 import PropertyCard from './PropertyCard';
 import MultifamilyDealCard from './MultifamilyDealCard';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import clsx from 'clsx';
-import { FixedSizeList } from 'react-window';
+import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import { useSelector } from 'react-redux';
 import {
@@ -18,6 +25,80 @@ import {
   selectSelectedPropertyPreview
 } from '@/store/slices/propertiesSlice';
 import useProperty from '@/hooks/useProperty';
+
+const getPropertyPrice = (property: PropertyPreview) => {
+  if (property.price !== undefined) {
+    return property.price;
+  }
+  return property.priceGroup?.min ?? 0;
+};
+
+const getStrategyPercentage = (
+  property: PropertyPreview,
+  strategyMode: string
+) => {
+  const fieldName = strategyMode === 'ARV' ? 'arv25Price' : 'arvPrice';
+  const strategyValue = Number(property[fieldName]);
+  const propertyPrice = getPropertyPrice(property);
+
+  if (
+    !Number.isFinite(strategyValue) ||
+    strategyValue <= 0 ||
+    propertyPrice <= 0
+  ) {
+    return Number.NEGATIVE_INFINITY;
+  }
+
+  return ((strategyValue - propertyPrice) / strategyValue) * 100;
+};
+
+const getCapRate = (property: PropertyPreview) => {
+  const capRate = Number(property.cap_rate);
+  if (Number.isFinite(capRate) && capRate >= 0) {
+    return capRate;
+  }
+  return Number.NEGATIVE_INFINITY;
+};
+
+type RowData = {
+  sortedProperties: PropertyPreview[];
+  selectedId?: string;
+  isMultifamilyBuybox: boolean;
+  strategy: any;
+  onSelect: (property?: PropertyPreview) => void;
+  onDeselect: () => void;
+};
+
+const NOOP = () => {};
+
+const Column = memo(({ index, style, data }: ListChildComponentProps<RowData>) => {
+  const {
+    sortedProperties,
+    selectedId,
+    isMultifamilyBuybox,
+    strategy,
+    onSelect,
+    onDeselect
+  } = data;
+  const property = sortedProperties[index];
+  if (!property) return null;
+  const CardComponent = isMultifamilyBuybox ? MultifamilyDealCard : PropertyCard;
+  return (
+    <div style={style} className="px-2 py-2">
+      <div className="w-full h-full rounded-xl bg-white">
+        <CardComponent
+          property={property}
+          selected={selectedId === property.id}
+          selectProperty={onSelect}
+          deselectProperty={onDeselect}
+          setOpenMoreDetails={NOOP}
+          strategy={isMultifamilyBuybox ? strategy : undefined}
+        />
+      </div>
+    </div>
+  );
+});
+Column.displayName = 'CardsPanelColumn';
 
 type CardsPanelProps = {
   open: boolean;
@@ -61,53 +142,29 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
     });
   };
 
-  const getPropertyPrice = (property: PropertyPreview) => {
-    if (property.price !== undefined) {
-      return property.price;
-    }
-    return property.priceGroup?.min ?? 0;
-  };
-
-  const getStrategyPercentage = (property: PropertyPreview) => {
-    const fieldName = strategyMode === 'ARV' ? 'arv25Price' : 'arvPrice';
-    const strategyValue = Number(property[fieldName]);
-    const propertyPrice = getPropertyPrice(property);
-
-    if (!Number.isFinite(strategyValue) || strategyValue <= 0 || propertyPrice <= 0) {
-      return Number.NEGATIVE_INFINITY;
-    }
-
-    return ((strategyValue - propertyPrice) / strategyValue) * 100;
-  };
-
-  const getCapRate = (property: PropertyPreview) => {
-    const capRate = Number(property.cap_rate);
-    if (Number.isFinite(capRate) && capRate >= 0) {
-      return capRate;
-    }
-    return Number.NEGATIVE_INFINITY;
-  };
-
-  const sortedProperties =
-    filteredProperties &&
-    [...filteredProperties].sort((a, b) => {
+  const sortedProperties = useMemo(() => {
+    if (!filteredProperties) return [];
+    return [...filteredProperties].sort((a, b) => {
       if (isMultifamilyBuybox) {
         return getCapRate(b) - getCapRate(a);
       }
-
-      const strategyPercentageA = getStrategyPercentage(a);
-      const strategyPercentageB = getStrategyPercentage(b);
-
-      return strategyPercentageB - strategyPercentageA;
+      return (
+        getStrategyPercentage(b, strategyMode) -
+        getStrategyPercentage(a, strategyMode)
+      );
     });
+  }, [filteredProperties, isMultifamilyBuybox, strategyMode]);
 
-  const handleSelectProperty = (property?: PropertyPreview) => {
-    selectProperty(property);
-  };
+  const handleSelectProperty = useCallback(
+    (property?: PropertyPreview) => {
+      selectProperty(property);
+    },
+    [selectProperty]
+  );
 
-  const handleDeselectProperty = () => {
+  const handleDeselectProperty = useCallback(() => {
     deselectProperty();
-  };
+  }, [deselectProperty]);
 
   const [notSelected, setNotSelected] = useState(true);
 
@@ -146,31 +203,24 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
     }
   }, [filteredProperties]);
 
-  let cardsCache = {};
-
-  const Column = ({ index, style }) => {
-    const CardComponent = isMultifamilyBuybox
-      ? MultifamilyDealCard
-      : PropertyCard;
-
-    return (
-      <div style={{ ...style }} className="px-2 py-2">
-        <div className="w-full h-full rounded-xl bg-white">
-          <CardComponent
-            key={index}
-            property={sortedProperties[index]}
-            selected={
-              selectedPropertyPreview?.id === sortedProperties[index].id
-            }
-            selectProperty={(property) => handleSelectProperty(property)}
-            deselectProperty={() => handleDeselectProperty()}
-            setOpenMoreDetails={() => {}}
-            strategy={isMultifamilyBuybox ? buybox?.parameters?.strategy : undefined}
-          />
-        </div>
-      </div>
-    );
-  };
+  const itemData = useMemo<RowData>(
+    () => ({
+      sortedProperties,
+      selectedId: selectedPropertyPreview?.id,
+      isMultifamilyBuybox,
+      strategy: buybox?.parameters?.strategy,
+      onSelect: handleSelectProperty,
+      onDeselect: handleDeselectProperty
+    }),
+    [
+      sortedProperties,
+      selectedPropertyPreview?.id,
+      isMultifamilyBuybox,
+      buybox?.parameters?.strategy,
+      handleSelectProperty,
+      handleDeselectProperty
+    ]
+  );
 
   return (
     <div className="">
@@ -212,10 +262,11 @@ const CardsPanel: React.FC<CardsPanelProps> = ({ open }: CardsPanelProps) => {
                   // ref={listRef}
                   className="List"
                   height={height}
-                  itemCount={filteredProperties?.length ?? 0}
+                  itemCount={sortedProperties.length}
                   itemSize={230}
                   layout="horizontal"
                   width={width}
+                  itemData={itemData}
                 >
                   {Column}
                 </FixedSizeList>

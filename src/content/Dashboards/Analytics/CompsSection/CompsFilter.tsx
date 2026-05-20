@@ -299,8 +299,10 @@ const CompsFilter = ({
   }, [selectedProperty]);
 
   useEffect(() => {
+    // findRangeLimits only mutates top-level min/max on each entry, so
+    // a shallow per-entry copy is enough; a full JSON clone is wasteful.
     const limitedRangeFields = findRangeLimits(
-      JSON.parse(JSON.stringify(rangeFields)),
+      rangeFields.map((f) => ({ ...f })),
       selectedComps
     );
     for (const rangeField of limitedRangeFields) {
