@@ -1,55 +1,42 @@
-import {
-  Card,
-  Checkbox,
-  Divider,
-  Grid,
-  Tooltip,
-  Typography
-} from '@mui/material';
-import GridTableField from '@/components/Grid/GridTableField';
-import Image from 'next/image';
-import analyticsStyles from '../Analytics.module.scss';
-import styles from './CompsSection.module.scss';
-import styled from '@emotion/styled';
-import { priceFormatter, validateValue } from '@/utils/converters';
-import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { Card } from '@/components/ui/card';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Badge } from '@/components/ui/badge';
+import { MapPin } from 'lucide-react';
 import { CompData } from '@/models/analyzedProperty';
-import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import { priceFormatter } from '@/utils/converters';
+import { cn } from '@/lib/utils';
 
-const CheckBoxWhite = styled(Checkbox)(({ theme }) => ({
-  color: 'white'
-}));
+const DEFAULT_IMAGE =
+  '/static/images/placeholders/covers/house_placeholder.jpg';
 
-const gridRows = (property: CompData) => [
-  {
-    label: 'AskedPrice',
-    value: priceFormatter(property.price)
+const SIMILARITY: Record<string, { label: string; classes: string }> = {
+  red: {
+    label: 'Very Low',
+    classes: 'bg-rose-100 text-rose-700 border-rose-200'
   },
-  {
-    label: 'Bedrooms',
-    value: property.beds
+  orange: {
+    label: 'Low',
+    classes: 'bg-orange-100 text-orange-700 border-orange-200'
   },
-  {
-    label: 'Bathrooms',
-    value: property.baths
+  yellow: {
+    label: 'Medium',
+    classes: 'bg-yellow-100 text-yellow-700 border-yellow-200'
   },
-  {
-    label: 'Lot Sqft',
-    value: property.lotArea
-  },
-  {
-    label: 'Building Sqft',
-    value: property.area
-  },
-  {
-    label: 'Floors',
-    value: property.floors
-  },
-  {
-    label: 'Garages',
-    value: property.garages
-  },
+  green: {
+    label: 'High',
+    classes: 'bg-emerald-100 text-emerald-700 border-emerald-200'
+  }
+};
+
+const buildRows = (property: CompData) => [
+  { label: 'Asking', value: priceFormatter(property.price) },
+  { label: 'Beds', value: property.beds },
+  { label: 'Baths', value: property.baths },
+  { label: 'Lot Sqft', value: property.lotArea?.toLocaleString() },
+  { label: 'Building Sqft', value: property.area?.toLocaleString() },
+  { label: 'Floors', value: property.floors },
+  { label: 'Garages', value: property.garages },
   {
     label: 'Year Built',
     value:
@@ -57,52 +44,15 @@ const gridRows = (property: CompData) => [
         ? property.yearBuilt.slice(0, 4)
         : property.yearBuilt
   },
+  { label: 'Location', value: property.location?.neighborhood },
   {
-    label: 'Hood',
-    value: property.location.neighborhood
-  },
-  {
-    label: 'Price/Sqft',
-    value: priceFormatter(
+    label: 'Price / Sqft',
+    value:
       property.area && property.area > 0
-        ? (property.price / property.area).toFixed()
-        : 0
-    )
+        ? priceFormatter((property.price / property.area).toFixed())
+        : '—'
   }
 ];
-
-const getSimilarityValues = (color?: string) => {
-  switch (color) {
-    case 'red':
-      return {
-        label: 'Very Low',
-        class: 'text-red-500'
-      };
-    case 'orange':
-      return {
-        label: 'Low',
-        class: 'text-orange-500'
-      };
-    case 'yellow':
-      return {
-        label: 'Medium',
-        class: 'text-yellow-500'
-      };
-    case 'green':
-      return {
-        label: 'High',
-        class: 'text-green-500'
-      };
-    default:
-      return {
-        label: 'N/A',
-        class: 'text-gray-500'
-      };
-  }
-};
-
-const defaultImage =
-  'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=';
 
 type CompsCardProps = {
   index: number;
@@ -111,157 +61,107 @@ type CompsCardProps = {
   toggle: () => void;
   className?: string;
 };
-const CompsCard = (props: CompsCardProps) => {
+
+const CompsCard = ({
+  index,
+  compsProperty,
+  selected,
+  toggle
+}: CompsCardProps) => {
   const [cardImage, setCardImage] = useState(
-    props.compsProperty.photos.primary || defaultImage
+    compsProperty.photos?.primary || DEFAULT_IMAGE
   );
+
   useEffect(() => {
-    setCardImage(props.compsProperty.photos.primary || defaultImage);
-  }, [props.compsProperty.photos.primary]);
+    setCardImage(compsProperty.photos?.primary || DEFAULT_IMAGE);
+  }, [compsProperty.photos?.primary]);
+
+  const sim = SIMILARITY[compsProperty.similarityColor];
+  const rows = buildRows(compsProperty);
+
   return (
-    <Card className={props.className}>
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        sx={{ height: '4rem' }}
-        className="relative"
-      >
-        <CheckBoxWhite
-          title="Select this property"
-          checked={props.selected}
-          onClick={props.toggle}
+    <Card className="w-[22.5rem] shrink-0 overflow-hidden border-slate-200 bg-white shadow-sm">
+      {/* Header — same height as PropertyCard header */}
+      <div className="flex items-center gap-2 px-3 h-12 border-b border-slate-100">
+        <Checkbox
+          checked={selected}
+          onCheckedChange={toggle}
+          onClick={(e) => e.stopPropagation()}
+          className="shrink-0"
         />
-        <Typography className={styles.propertyHeader}>
-          Comp {props.index + 1}
-        </Typography>
-        {props.compsProperty.isArv25 && (
-          <Tooltip title="Included in 25th ARV Calculation">
-            <div className="font-poppins font-semibold text-white bg-arv px-2 rounded-lg absolute top-0 right-0">
+        <span className="font-poppins font-bold text-sm text-slate-900">
+          Comp {index + 1}
+        </span>
+        <div className="ml-auto flex items-center gap-1.5">
+          {sim && (
+            <Badge
+              variant="outline"
+              className={cn(
+                'text-[0.6rem] px-1.5 py-0 font-poppins font-semibold',
+                sim.classes
+              )}
+            >
+              {sim.label}
+            </Badge>
+          )}
+          {compsProperty.isArv25 && (
+            <Badge
+              className="text-[0.6rem] px-1.5 py-0 bg-arv text-white border-transparent hover:bg-arv font-poppins font-semibold"
+              title="Included in 25th ARV calculation"
+            >
               25th ARV
-            </div>
-          </Tooltip>
+            </Badge>
+          )}
+        </div>
+      </div>
+
+      {/* Photo */}
+      <img
+        src={cardImage}
+        alt={compsProperty.location?.address || 'Property'}
+        onError={() => setCardImage(DEFAULT_IMAGE)}
+        className="h-40 w-full object-cover object-center"
+      />
+
+      {/* Highlight row — parallels PropertyCard's "List Price" row */}
+      <div className="px-3 h-14 flex items-center justify-between border-b border-slate-100">
+        <div className="flex flex-col leading-tight">
+          <span className="text-[0.55rem] uppercase tracking-wider font-bold text-slate-500">
+            Closed Price
+          </span>
+          <span className="font-poppins font-bold text-base text-slate-900 tabular-nums">
+            {priceFormatter(compsProperty.price)}
+          </span>
+        </div>
+        {compsProperty.distance !== undefined && (
+          <span className="inline-flex items-center gap-1 text-xs text-slate-500 font-poppins">
+            <MapPin className="size-3" />
+            {compsProperty.distance.toFixed(2)} mi
+          </span>
         )}
-      </Grid>
-      <Grid
-        container
-        justifyContent="center"
-        padding={'0.5rem 1rem'}
-        marginBottom={'2rem'}
-      >
-        <div className="h-44 w-full relative">
-          {/* <Image */}
-          {/*   src={cardImage} */}
-          {/*   alt={props.compsProperty.address} */}
-          {/*   placeholder="blur" */}
-          {/*   blurDataURL={defaultImage} */}
-          {/*   onError={() => setCardImage(defaultImage)} */}
-          {/*   fill */}
-          {/*   className="h-44 ascpect-ratio object-cover object-center  rounded-xl" */}
-          {/* /> */}
+      </div>
 
-          <img
-            src={
-              cardImage ||
-              'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q='
-            }
-            className="h-44 rounded-lg aspect-video object-cover"
-          />
-          {/* <img */}
-          {/*   src={cardImage} */}
-          {/*   className="h-44 ascpect-ratio object-cover object-center  rounded-xl" */}
-          {/*   onError={() => setCardImage(defaultImage)} */}
-          {/* /> */}
-        </div>
-        {/* <img */}
-        {/*   // src={props.compsProperty.images?.[0] || ""} */}
-        {/*   src={props.compsProperty.primary_image || */}
-        {/*     "https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q="} */}
-        {/*   className="h-44 rounded-lg aspect-video object-cover" */}
-        {/* /> */}
-      </Grid>
-      <div className="grid grid-cols-2 gap-y-4">
-        <div>
-          <Typography className={styles.propertyTableHeader}>
-            Feature
-          </Typography>
-        </div>
-        <div>
-          <Typography className={styles.propertyTableHeader}>
-            Comp {props.index + 1}
-          </Typography>
-        </div>
-        {gridRows(props.compsProperty).map((property, index) => {
-          return (
-            <React.Fragment key={index}>
-              <div className="text-white">
-                <Typography className={styles.propertyRowHeader}>
-                  {property.label}
-                </Typography>
-              </div>
+      {/* Column header — same height as data rows so card heights match */}
+      <div className="px-3 grid grid-cols-[1fr_5rem] gap-x-2 h-7 items-center text-[0.55rem] uppercase tracking-wider font-bold border-b border-slate-100">
+        <span />
+        <span className="text-slate-500 text-right">Comp {index + 1}</span>
+      </div>
 
-              <div className="text-white">
-                <Typography className={clsx([styles.propertyText, 'truncate'])}>
-                  {property.value}
-                </Typography>
-              </div>
-            </React.Fragment>
-          );
-        })}
-
-        <div className="col-span-2">
-          <Divider variant="middle" className="bg-white w-full m-0" />
-        </div>
-        <>
-          <div className="text-white">
-            <Typography
-              className={clsx([styles.propertyRowHeader, 'truncate'])}
-            >
-              Distance
-            </Typography>
+      {/* Data rows */}
+      <div className="px-3 py-2">
+        {rows.map((row, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-[1fr_5rem] gap-x-2 h-7 items-center text-xs"
+          >
+            <span className="font-poppins text-slate-500 text-[0.7rem] uppercase tracking-wider truncate">
+              {row.label}
+            </span>
+            <span className="font-poppins font-semibold text-slate-900 tabular-nums text-right truncate">
+              {row.value ?? '—'}
+            </span>
           </div>
-          <div className="text-white">
-            <Typography className={clsx([styles.propertyText, 'truncate'])}>
-              {props.compsProperty.distance?.toFixed(2)} Miles
-            </Typography>
-          </div>
-        </>
-
-        <>
-          <div className="text-white">
-            <Typography
-              className={clsx([styles.propertyRowHeader, 'truncate'])}
-            >
-              Similarity
-            </Typography>
-          </div>
-          <div>
-            <Typography
-              className={clsx([
-                styles.propertyText,
-                'font-semibold',
-                getSimilarityValues(props.compsProperty.similarityColor).class
-              ])}
-            >
-              {getSimilarityValues(props.compsProperty.similarityColor).label}
-            </Typography>
-          </div>
-        </>
-
-        <>
-          <div className="text-white">
-            <Typography
-              className={clsx([styles.propertyRowHeader, 'truncate'])}
-            >
-              Closed Price
-            </Typography>
-          </div>
-          <div className="text-white">
-            <Typography className={clsx([styles.propertyText, 'truncate'])}>
-              {priceFormatter(props.compsProperty.price)}
-            </Typography>
-          </div>
-        </>
+        ))}
       </div>
     </Card>
   );

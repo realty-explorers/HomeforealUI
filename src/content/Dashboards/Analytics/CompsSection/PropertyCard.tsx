@@ -1,213 +1,158 @@
-import { Card, Divider, Grid, Typography } from '@mui/material';
-import GridTableField from '@/components/Grid/GridTableField';
-import Image from '@/components/Photos/Image';
-import analyticsStyles from '../Analytics.module.scss';
-import styles from './CompsSection.module.scss';
+import { useEffect, useState } from 'react';
+import { Card } from '@/components/ui/card';
+import { Home } from 'lucide-react';
 import AnalyzedProperty, { CompData } from '@/models/analyzedProperty';
 import { priceFormatter } from '@/utils/converters';
-import clsx from 'clsx';
-import React, { useEffect, useState } from 'react';
 
-const gridRows = (property: AnalyzedProperty) => [
+const DEFAULT_IMAGE =
+  '/static/images/placeholders/covers/house_placeholder.jpg';
+
+type Row = {
+  label: string;
+  value: React.ReactNode;
+  averageProperty?: string;
+  averageFormatter?: (v: string) => string;
+};
+
+const buildRows = (property: AnalyzedProperty): Row[] => [
   {
-    label: 'AskedPrice',
+    label: 'Asking',
     value: priceFormatter(property.price),
     averageProperty: 'price',
     averageFormatter: priceFormatter
   },
-  {
-    label: 'Bedrooms',
-    value: property['beds'],
-    averageProperty: 'beds'
-  },
-  {
-    label: 'Bathrooms',
-    value: property['baths'],
-    averageProperty: 'baths'
-  },
+  { label: 'Beds', value: property.beds, averageProperty: 'beds' },
+  { label: 'Baths', value: property.baths, averageProperty: 'baths' },
   {
     label: 'Lot Sqft',
-    value: property.lotArea,
+    value: property.lotArea?.toLocaleString(),
     averageProperty: 'lotArea'
   },
   {
     label: 'Building Sqft',
-    value: property['area'],
+    value: property.area?.toLocaleString(),
     averageProperty: 'area'
   },
-  {
-    label: 'Floors',
-    value: property['floors'],
-    averageProperty: 'floors'
-  },
-  {
-    label: 'Garages',
-    value: property.garages,
-    averageProperty: 'garages'
-  },
+  { label: 'Floors', value: property.floors, averageProperty: 'floors' },
+  { label: 'Garages', value: property.garages, averageProperty: 'garages' },
   {
     label: 'Year Built',
     value:
       typeof property.yearBuilt === 'string'
         ? property.yearBuilt.slice(0, 4)
         : property.yearBuilt,
-    averageProperty: 'year_built'
+    averageProperty: 'yearBuilt'
   },
-  // {
-  //   label: "Neighborhood",
-  //   value: "neighborhood",
-  // },
   {
     label: 'Location',
-    value: `${property.location.neighborhood}`,
-    className: 'truncate col-span-2'
+    value: property.location?.neighborhood
   },
   {
-    label: 'Price/Sqft',
-    value: `${(property.price / property.area).toFixed()}`
+    label: 'Price / Sqft',
+    value:
+      property.area && property.area > 0
+        ? priceFormatter((property.price / property.area).toFixed())
+        : '—'
   }
 ];
-
-const defaultImage =
-  'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q=';
 
 type PropertyCardProps = {
   property: AnalyzedProperty;
   compsProperties: CompData[];
 };
 
-const PropertyCard = (props: PropertyCardProps) => {
+const PropertyCard = ({ property, compsProperties }: PropertyCardProps) => {
   const [cardImage, setCardImage] = useState(
-    props.property.photos.primary || defaultImage
+    property.photos?.primary || DEFAULT_IMAGE
   );
 
   useEffect(() => {
-    setCardImage(props.property.photos.primary || defaultImage);
-  }, [props.property.photos.primary]);
+    setCardImage(property.photos?.primary || DEFAULT_IMAGE);
+  }, [property.photos?.primary]);
+
   const calcCompsAverage = (propertyName: string) => {
-    if (!props.compsProperties || props.compsProperties.length < 1) return '';
-    const values = props.compsProperties
-      .map((comp) => comp[propertyName])
-      .filter((comp) => typeof comp === 'number');
+    if (!compsProperties || compsProperties.length < 1) return '';
+    const values = compsProperties
+      .map((c) => (c as any)[propertyName])
+      .filter((v) => typeof v === 'number') as number[];
     if (values.length < 1) return '';
-    return (values.reduce((acc, curr) => acc + curr) / values.length).toFixed();
+    return (
+      values.reduce((acc, curr) => acc + curr, 0) / values.length
+    ).toFixed();
   };
 
+  const rows = buildRows(property);
+
   return (
-    <Card className={styles.propertyCard}>
-      <Grid
-        container
-        justifyContent="center"
-        alignItems="center"
-        sx={{ height: '4rem' }}
-      >
-        <Typography className={styles.propertyHeader}>
-          Target Property
-        </Typography>
-      </Grid>
-      <Grid
-        container
-        justifyContent="center"
-        padding={'0.5rem 1rem'}
-        marginBottom={'2rem'}
-      >
-        <img
-          src={
-            cardImage ||
-            'https://media.istockphoto.com/id/1145840259/vector/home-flat-icon-pixel-perfect-for-mobile-and-web.jpg?s=612x612&w=0&k=20&c=2DWK30S50TbctWwccYw5b-uR6EAksv1n4L_aoatjM9Q='
-          }
-          className="h-44 rounded-lg aspect-video object-cover"
-          onError={() => setCardImage(defaultImage)}
-        />
-      </Grid>
-      <div className="grid grid-cols-3 gap-y-4">
-        <div>
-          <Typography className={styles.propertyTableHeader}>
-            Feature
-          </Typography>
+    <Card className="w-[22.5rem] shrink-0 overflow-hidden border-transparent bg-gradient-to-br from-violet-700 via-fuchsia-600 to-pink-600 text-white shadow-lg shadow-violet-500/20">
+      {/* Header — same height as CompsCard header */}
+      <div className="flex items-center gap-2 px-3 h-12 bg-black/10 border-b border-white/15">
+        <div className="flex items-center justify-center size-7 rounded-md bg-white/15 backdrop-blur-sm shrink-0">
+          <Home className="size-3.5 text-white" />
         </div>
-        <div>
-          <Typography className={styles.propertyTableHeader}>
+        <div className="flex flex-col leading-tight">
+          <span className="text-[0.55rem] uppercase tracking-[0.18em] font-bold text-white/70">
             Subject
-          </Typography>
+          </span>
+          <span className="font-poppins font-bold text-sm text-white">
+            Target Property
+          </span>
         </div>
-        <div>
-          <Typography className={styles.propertyTableHeader}>
-            Comps AVG.
-          </Typography>
+      </div>
+
+      {/* Photo */}
+      <img
+        src={cardImage}
+        alt={property.location?.address || 'Property'}
+        onError={() => setCardImage(DEFAULT_IMAGE)}
+        className="h-40 w-full object-cover object-center"
+      />
+
+      {/* Highlight row — parallels CompsCard's "Closed Price" row */}
+      <div className="px-3 h-14 flex items-center justify-between border-b border-white/15">
+        <div className="flex flex-col leading-tight">
+          <span className="text-[0.55rem] uppercase tracking-wider font-bold text-white/70">
+            List Price
+          </span>
+          <span className="font-poppins font-bold text-base text-white tabular-nums">
+            {priceFormatter(property.price)}
+          </span>
         </div>
-        {gridRows(props.property).map((property, index) => {
-          const averageLabel = property.averageProperty
-            ? property.averageFormatter
-              ? property.averageFormatter(
-                  calcCompsAverage(property.averageProperty)
-                )
-              : calcCompsAverage(property.averageProperty)
+      </div>
+
+      {/* Column header — same height as the data rows */}
+      <div className="px-3 grid grid-cols-[1fr_5rem_5rem] gap-x-2 h-7 items-center text-[0.55rem] uppercase tracking-wider font-bold border-b border-white/10">
+        <span />
+        <span className="text-white/80 text-right">Subject</span>
+        <span className="text-white/60 text-right">Comps Avg</span>
+      </div>
+
+      {/* Data rows */}
+      <div className="px-3 py-2">
+        {rows.map((row, i) => {
+          const avg = row.averageProperty
+            ? row.averageFormatter
+              ? row.averageFormatter(calcCompsAverage(row.averageProperty))
+              : calcCompsAverage(row.averageProperty)
             : '';
           return (
-            <React.Fragment key={index}>
-              <div className="text-white">
-                <Typography className={styles.propertyRowHeader}>
-                  {property.label}
-                </Typography>
-              </div>
-
-              <div className="text-white">
-                <Typography
-                  className={clsx([styles.propertyText, property.className])}
-                >
-                  {property.value}
-                </Typography>
-              </div>
-
-              <div className="text-white">
-                <Typography className={styles.propertyText}>
-                  {averageLabel}
-                </Typography>
-              </div>
-            </React.Fragment>
+            <div
+              key={i}
+              className="grid grid-cols-[1fr_5rem_5rem] gap-x-2 h-7 items-center text-xs"
+            >
+              <span className="font-poppins text-white/80 text-[0.7rem] uppercase tracking-wider truncate">
+                {row.label}
+              </span>
+              <span className="font-poppins font-semibold text-white tabular-nums text-right truncate">
+                {row.value ?? '—'}
+              </span>
+              <span className="font-poppins text-white/60 tabular-nums text-right truncate">
+                {avg || '—'}
+              </span>
+            </div>
           );
         })}
       </div>
-      {/* <Grid container justifyContent="center" rowGap={2}> */}
-      {/*     size={12} */}
-      {/*     fields={[ */}
-      {/*       { className: styles.propertyTableHeader, label: "Feature" }, */}
-      {/*       { className: styles.propertyTableHeader, label: "Subject" }, */}
-      {/*       { */}
-      {/*         className: styles.propertyTableHeader, */}
-      {/*         label: "Comps AVG.", */}
-      {/*       }, */}
-      {/*     ]} */}
-      {/*   /> */}
-      {/*   {gridRows(props.property).map((property, index) => { */}
-      {/*     const averageLabel = property.averageProperty */}
-      {/*       ? property.averageFormatter */}
-      {/*         ? property.averageFormatter( */}
-      {/*           calcCompsAverage(property.averageProperty), */}
-      {/*         ) */}
-      {/*         : calcCompsAverage(property.averageProperty) */}
-      {/*       : ""; */}
-      {/*     return ( */}
-      {/*       <GridTableField */}
-      {/*         key={index} */}
-      {/*         size={12} */}
-      {/*         fields={[ */}
-      {/*           { className: styles.propertyRowHeader, label: property.label }, */}
-      {/*           { */}
-      {/*             className: styles.propertyText, */}
-      {/*             label: `${property.value}`, */}
-      {/*           }, */}
-      {/*           { */}
-      {/*             className: styles.propertyText, */}
-      {/*             label: `${averageLabel}`, */}
-      {/*             // label: "meow", */}
-      {/*           }, */}
-      {/*         ]} */}
-      {/*       /> */}
-      {/*     ); */}
-      {/*   })} */}
-      {/* </Grid> */}
     </Card>
   );
 };

@@ -15,8 +15,11 @@ import CompsListView from './CompsListView';
 import { cn } from '@/lib/utils';
 
 const Wrapper = styled(Box)(({ theme }) => ({
-  width: '10rem',
-  overflow: 'hidden'
+  display: 'flex',
+  width: '100%',
+  overflowX: 'auto',
+  gap: '1rem',
+  padding: '0.5rem 0.25rem'
 }));
 
 type CompsSectionProps = {
