@@ -7,7 +7,7 @@ import {
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
 import { signOut } from 'next-auth/react';
-import { logout } from '../slices/authSlice';
+import { logout, setSigningOut } from '../slices/authSlice';
 
 const baseUrl = `${process.env.NEXT_PUBLIC_ANALYSIS_API_URL}/v1/analysis`;
 const GENERAL_BUYBOX_ID = '3dbf8068-bfda-4422-af27-7597045dac6e';
@@ -45,11 +45,17 @@ const baseQueryWithReauth = async (
   if (result?.error?.status === 403) {
     //TODO: fetch new accessToken using refresh token and update auth state and recall the api
   } else if (result?.error?.status === 401) {
-    await signOut({
-      redirect: true,
-      callbackUrl: '/'
-    });
-    api.dispatch(logout());
+    // Guard against simultaneous 401s from parallel queries triggering
+    // multiple signOut() calls.
+    const alreadySigningOut = (api.getState() as any)?.auth?.signingOut;
+    if (!alreadySigningOut) {
+      api.dispatch(setSigningOut(true));
+      await signOut({
+        redirect: true,
+        callbackUrl: '/'
+      });
+      api.dispatch(logout());
+    }
   }
   return result;
 };

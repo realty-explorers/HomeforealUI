@@ -5,12 +5,14 @@ export interface Auth {
   token?: string;
   verificationStep: number;
   showVerificationDialog?: boolean;
+  signingOut: boolean;
 }
 
 const initialState: Auth = {
   token: null,
   verificationStep: 1,
-  showVerificationDialog: false
+  showVerificationDialog: false,
+  signingOut: false
 };
 
 export const authSlice = createSlice({
@@ -28,6 +30,9 @@ export const authSlice = createSlice({
     },
     setShowVerificationDialog(state, action: PayloadAction<boolean>) {
       state.showVerificationDialog = action.payload;
+    },
+    setSigningOut(state, action: PayloadAction<boolean>) {
+      state.signingOut = action.payload;
     }
   }
 });
@@ -37,9 +42,11 @@ export const {
   setToken,
   logout,
   setVerificationStep,
-  setShowVerificationDialog
+  setShowVerificationDialog,
+  setSigningOut
 } = authSlice.actions;
 export const selectAuth: (state: AppState) => Auth = (state: AppState) =>
   state.auth;
+export const selectSigningOut = (state: AppState) => state.auth.signingOut;
 
 export default authSlice;

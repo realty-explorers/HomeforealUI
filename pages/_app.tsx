@@ -36,6 +36,11 @@ const PostHogUserIdentifier = dynamic(
   { ssr: false }
 );
 
+const SigningOutOverlay = dynamic(
+  () => import('../src/components/Auth/SigningOutOverlay'),
+  { ssr: false }
+);
+
 const clientSideEmotionCache = createEmotionCache();
 
 type NextPageWithLayout = NextPage & {
@@ -98,6 +103,7 @@ function HomeforealApp(props: HomeforealAppProps) {
                       <CssBaseline />
                       {/* PostHog user identification */}
                       <PostHogUserIdentifier />
+                      <SigningOutOverlay />
                       <div
                         className={clsx([
                           poppins.variable,

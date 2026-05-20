@@ -18,7 +18,7 @@ function Footer() {
       >
         <Box>
           <Typography variant="subtitle1">
-            &copy; 2025 - realtyexplore.com
+            &copy; {new Date().getFullYear()} - realtyexplore.com
           </Typography>
         </Box>
         <Typography

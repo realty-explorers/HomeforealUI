@@ -56,8 +56,10 @@ import {
 } from '@/store/slices/propertiesSlice';
 
 import PropertiesSource from './MapComponents/Sources/PropertiesSource';
+import PropertyHeatmapSource from './MapComponents/Sources/PropertyHeatmapSource';
 import CompsSource from './MapComponents/Sources/CompsSource';
 import LocationBoundsSource from './MapComponents/Sources/LocationBoundsSource';
+import LayersControl from './MapComponents/Controls/LayersControl';
 import SelectedPropertyMarker from './MapComponents/Markers/SelectedPropertyMarker';
 import MarkerPopup from './MapComponents/Overlays/MarkerPopup';
 import {
@@ -70,6 +72,7 @@ import {
   MAPBOX_TOKEN,
   US_BOUNDS
 } from './MapUtils/constants';
+import { registerPillImages } from './MapUtils/markerPills';
 import { CircularProgress } from '@mui/material';
 import CompMarkersPopup from './MapComponents/Overlays/CompMarkerPopup';
 import LoadingSpinner from './MapComponents/Overlays/LoadingSpinner';
@@ -80,14 +83,17 @@ import MultifamilyAnalysisDrawer from './MapComponents/Overlays/MultifamilyAnaly
 import useProperty from '@/hooks/useProperty';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useSnackbar } from 'notistack';
-import { setMapLoading } from '@/store/slices/mapSlice';
+import {
+  selectHeatmapMode,
+  selectShowBounds,
+  selectShowMarkers,
+  setMapLoading
+} from '@/store/slices/mapSlice';
 import styles from './Map.module.scss';
 import { useRouter } from 'next/router';
 import { useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useLazyGetBuyBoxesQuery } from '@/store/services/buyboxApiService';
-import { Layers } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 type MapProps = {};
 const Map: React.FC<MapProps> = (props: MapProps) => {
@@ -105,7 +111,6 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const [loading, setLoading] = useState(true);
   const [mapLoaded, setMapLoaded] = useState(false);
   const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
-  const [showBounds, setShowBounds] = useState(true);
 
   const [hoveredProperty, setHoveredProperty] = useState<any>();
   const [hoveredComp, setHoveredComp] = useState<any>();
@@ -142,6 +147,9 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const selectedPropertyLocation = useSelector(selectSelectedPropertyLocation);
   const selecting = useSelector(selectSelecting);
   const mapFlyTarget = useSelector(selectMapFlyTarget);
+  const showBounds = useSelector(selectShowBounds);
+  const showMarkers = useSelector(selectShowMarkers);
+  const heatmapMode = useSelector(selectHeatmapMode);
 
   const { selectProperty, deselectProperty, selectPropertyId, propertyState } =
     useProperty();
@@ -468,6 +476,28 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     };
   }, [filteredProperties, selectedBuyBoxStrategyType, strategyMode]);
 
+  // Heatmap reads the *unfiltered* buybox set so it can surface deal
+  // density that the slider filters might be hiding. Memoized
+  // separately from the marker data so toggling filters doesn't rebuild
+  // the heatmap source.
+  const heatmapData = useMemo<FeatureCollection<
+    Geometry,
+    { [name: string]: any }
+  > | null>(() => {
+    const all = propertiesState.data;
+    if (!all?.length) return null;
+    return {
+      type: 'FeatureCollection',
+      features: all.map((property) =>
+        generatePropertyGeoJson(
+          property,
+          strategyMode,
+          selectedBuyBoxStrategyType
+        )
+      )
+    };
+  }, [propertiesState.data, selectedBuyBoxStrategyType, strategyMode]);
+
   // Surface "No results" when both pipelines have settled for the
   // current data: API fetch is done AND the downstream filter dispatch
   // (MainControls -> setFilteredProperties) has run for this data ref.
@@ -565,13 +595,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     setLoading(false);
     setMapLoaded(true);
     dispatch(setMapLoading(false));
-    mapRef.current?.loadImage(
-      '/static/images/pins/marker-label.png',
-      (error, image) => {
-        if (error) throw error;
-        if (image) mapRef.current?.addImage('custom-marker', image);
-      }
-    );
+    registerPillImages(mapRef.current?.getMap());
   }, [dispatch]);
 
   const mapBoxStyle = useMemo<React.CSSProperties>(
@@ -629,30 +653,19 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
 
         {(suggestion ||
           (selectedPropertyPreview && !selectedPropertyPreview.masked)) && (
-          <button
-            type="button"
-            onClick={() => setShowBounds((s) => !s)}
-            title={
-              showBounds
-                ? 'Hide boundary overlay'
-                : 'Show boundary overlay'
+          <LayersControl
+            heatmapDisabled={
+              Boolean(selectedPropertyPreview) ||
+              !(propertiesState.data && propertiesState.data.length > 0)
             }
-            aria-label={
-              showBounds
-                ? 'Hide boundary overlay'
-                : 'Show boundary overlay'
+            heatmapDisabledReason={
+              selectedPropertyPreview
+                ? 'Unavailable in detail view'
+                : !propertiesState.data?.length
+                ? 'No properties in area'
+                : undefined
             }
-            aria-pressed={showBounds}
-            className={cn(
-              'mapboxgl-ctrl absolute top-2.5 right-[50px] z-10 inline-flex items-center justify-center size-[29px] rounded transition-colors outline-none',
-              'shadow-[0_0_0_2px_rgba(0,0,0,0.1)]',
-              showBounds
-                ? 'bg-primary text-white hover:bg-primary/90'
-                : 'bg-white text-slate-700 hover:bg-slate-50'
-            )}
-          >
-            <Layers className="size-[18px]" />
-          </button>
+          />
         )}
 
         <LocationBoundsSource show={showBounds} data={boundsData} />
@@ -682,7 +695,15 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           data={propertyBoundsData}
           map={mapRef.current?.getMap()}
         />
-        <PropertiesSource show={!selectedPropertyPreview} data={data} />
+        <PropertyHeatmapSource
+          show={!selectedPropertyPreview && heatmapMode !== 'off'}
+          data={heatmapData}
+          mode={heatmapMode}
+        />
+        <PropertiesSource
+          show={!selectedPropertyPreview && showMarkers}
+          data={data}
+        />
         <CompsSource
           show={Boolean(selectedPropertyPreview && !selecting)}
           data={compsData}

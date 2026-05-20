@@ -5,7 +5,7 @@ import {
   FetchArgs,
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
-import { logout } from '../slices/authSlice';
+import { logout, setSigningOut } from '../slices/authSlice';
 import { getServerSession } from 'next-auth/next';
 
 const baseUrl = process.env.NEXT_PUBLIC_USER_SERVICE_URL;
@@ -42,11 +42,15 @@ const baseQueryWithReauth = async (
   if (result?.error?.status === 403) {
     //TODO: fetch new accessToken using refresh token and update auth state and recall the api
   } else if (result?.error?.status === 401) {
-    await signOut({
-      redirect: true,
-      callbackUrl: '/'
-    });
-    api.dispatch(logout());
+    const alreadySigningOut = (api.getState() as any)?.auth?.signingOut;
+    if (!alreadySigningOut) {
+      api.dispatch(setSigningOut(true));
+      await signOut({
+        redirect: true,
+        callbackUrl: '/'
+      });
+      api.dispatch(logout());
+    }
   }
   return result;
 };

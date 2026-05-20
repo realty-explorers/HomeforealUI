@@ -25,9 +25,15 @@ import ExpandMoreTwoToneIcon from '@mui/icons-material/ExpandMoreTwoTone';
 import AccountBoxTwoToneIcon from '@mui/icons-material/AccountBoxTwoTone';
 import LockOpenTwoToneIcon from '@mui/icons-material/LockOpenTwoTone';
 import AccountTreeTwoToneIcon from '@mui/icons-material/AccountTreeTwoTone';
+import { Loader2 } from 'lucide-react';
 // import { useUser } from "@auth0/nextjs-auth0/client";
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAuth, setToken } from '@/store/slices/authSlice';
+import {
+  selectAuth,
+  selectSigningOut,
+  setSigningOut,
+  setToken
+} from '@/store/slices/authSlice';
 import { signOut, useSession } from 'next-auth/react';
 import VerificationAlertBadge from './VerificationAlertBadge';
 
@@ -93,6 +99,7 @@ function HeaderUserbox() {
   const dispatch = useDispatch();
   // const { data, error } = useSWR('/api/protected', fetcher);
   const { token } = useSelector(selectAuth);
+  const signingOut = useSelector(selectSigningOut);
 
   const handleOpen = (): void => {
     setOpen(true);
@@ -118,13 +125,19 @@ function HeaderUserbox() {
   }, [data]);
 
   const handleSignOut = async () => {
-    await signOut({ redirect: false });
-    const awsDoman = 'https://auth.realty-explorers.com';
-    const logoutUrl = `${awsDoman}/logout?client_id=f9c39cp5p9pmstb1a45lun2n4&logout_uri=${process.env.NEXT_PUBLIC_URL}`;
-    // const logoutUrl = `${awsDoman}/logout?client_id=f9c39cp5p9pmstb1a45lun2n4&logout_uri=${encodeURIComponent(
-    //   process.env.NEXT_PUBLIC_URL
-    // )}`;
-    window.location.href = logoutUrl;
+    if (signingOut) return;
+    dispatch(setSigningOut(true));
+    try {
+      await signOut({ redirect: false });
+      const awsDoman = 'https://auth.realty-explorers.com';
+      const logoutUrl = `${awsDoman}/logout?client_id=f9c39cp5p9pmstb1a45lun2n4&logout_uri=${process.env.NEXT_PUBLIC_URL}`;
+      window.location.href = logoutUrl;
+    } catch (e) {
+      // NextAuth signOut very rarely throws; if it does, clear the
+      // overlay so the user can retry instead of being stuck.
+      console.error('Sign out failed', e);
+      dispatch(setSigningOut(false));
+    }
   };
 
   return (
@@ -205,11 +218,18 @@ function HeaderUserbox() {
             <Button
               color="primary"
               fullWidth
-              // href="/api/auth/logout"
+              disabled={signingOut}
               onClick={handleSignOut}
             >
-              <LockOpenTwoToneIcon sx={{ mr: 1 }} />
-              Sign out
+              {signingOut ? (
+                <Loader2
+                  className="animate-spin"
+                  style={{ marginRight: 8, width: 16, height: 16 }}
+                />
+              ) : (
+                <LockOpenTwoToneIcon sx={{ mr: 1 }} />
+              )}
+              {signingOut ? 'Signing out…' : 'Sign out'}
             </Button>
           </Box>
         </Popover>
