@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   MapPin,
   Tag,
@@ -154,6 +154,15 @@ const CompsMapCard: React.FC<CompsMapCardProps> = ({ property }) => {
   const [analyzing, setAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState<Analysis | null>(null);
   const [open, setOpen] = useState(false);
+
+  // Reset AI analysis when the hovered comp changes — otherwise the card
+  // keeps showing the previous comp's findings.
+  useEffect(() => {
+    setAnalysis(null);
+    setAnalyzing(false);
+    setOpen(false);
+    setCardImage(property?.photos?.primary || DEFAULT_IMAGE);
+  }, [property?.index, property?.location?.address]);
 
   const handleOpenChange = async (next: boolean) => {
     setOpen(next);

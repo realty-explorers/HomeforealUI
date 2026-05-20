@@ -32,8 +32,10 @@ const MakeOfferButton = (props: MakeOfferButtonProps) => {
         'inline-flex items-center self-start w-auto h-auto',
         'rounded-full p-[3px]',
         'bg-gradient-to-r from-indigo-500 to-pink-500',
-        'animate-fadeDelayed opacity-0',
-        'shadow-lg shadow-indigo-500/20 transition-shadow hover:shadow-indigo-500/40',
+        // Cool entrance: slide up + fade + zoom
+        'animate-in fade-in slide-in-from-bottom-6 zoom-in-90 duration-700 ease-out',
+        'shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50',
+        'transition-shadow',
         'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2',
         referral === 'projo' && 'w-[calc(100%-1rem)] xs:w-auto'
       )}

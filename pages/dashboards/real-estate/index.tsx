@@ -119,6 +119,7 @@ const DashboardRealEstate = (props: any) => {
   const [stepIndex, setStepIndex] = useState(0);
   const [step2ready, setStep2Ready] = useState(false);
   const [showOfferDialog, setShowOfferDialog] = useState(false);
+  const [analysisReady, setAnalysisReady] = useState(false);
 
   const { suggestion } = useSelector(selectLocation);
   const openMoreDetails = selectedPropertyPreview;
@@ -127,6 +128,18 @@ const DashboardRealEstate = (props: any) => {
     propertiesApiEndpoints.getProperty.useQueryState({
       property_id: selectedPropertyPreview?.id
     });
+
+  // Reset the analysis loader state when the user picks a different property
+  // so the SkeletonSection starts a fresh stage progression.
+  useEffect(() => {
+    setAnalysisReady(false);
+  }, [selectedPropertyPreview?.id]);
+
+  const apiLoading =
+    selectedPropertyState.isFetching ||
+    selecting ||
+    !selectedProperty ||
+    selectedProperty?.id !== selectedPropertyPreview?.id;
 
   const handleSelectRentalComps = (compsProperties: FilteredComp[]) => {
     dispatch(setSelectedRentalComps(compsProperties));
@@ -226,9 +239,10 @@ const DashboardRealEstate = (props: any) => {
             />
           </IconButton>
 
-          <MakeOfferButton onClick={() => setShowOfferDialog(true)} />
+          {analysisReady && (
+            <MakeOfferButton onClick={() => setShowOfferDialog(true)} />
+          )}
 
-          {/* <MakeOfferButton onClick={() => setShowOfferDialog(true)} /> */}
           <motion.div
             initial={{
               translateX: '-100%'
@@ -243,11 +257,11 @@ const DashboardRealEstate = (props: any) => {
               'w-full md:w-1/2 overflow-y-auto absolute h-full bg-off-white z-[1]'
             ])}
           >
-            {selectedPropertyState.isFetching ||
-            selecting ||
-            !selectedProperty ||
-            selectedProperty.id !== selectedPropertyPreview?.id ? (
-              <SkeletonSection />
+            {!analysisReady ? (
+              <SkeletonSection
+                loading={apiLoading}
+                onReady={() => setAnalysisReady(true)}
+              />
             ) : (
               <div
                 className={clsx([
