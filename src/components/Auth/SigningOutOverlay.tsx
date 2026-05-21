@@ -82,7 +82,7 @@ const SigningOutOverlay = () => {
             ) : (
               <LogIn className="h-4 w-4" />
             )}
-            {confirming ? 'Signing in…' : 'Sign in again'}
+            {confirming ? 'Redirecting to sign in…' : 'Sign in again'}
           </Button>
         </div>
       </div>
