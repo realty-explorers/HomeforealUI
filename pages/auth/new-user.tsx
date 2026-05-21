@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 export default function CustomSignIn() {
   return (
-    <div className="custom-auth-form">
+    <div className="custom-auth-form font-poppins">
       <h1>Welcome to My App new user!</h1>
 
       {/* Custom Email/Password Form */}
