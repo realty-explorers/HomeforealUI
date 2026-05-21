@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -30,6 +30,29 @@ const SignInForm = () => {
   const [authError, setAuthError] = useState<string | null>(null);
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+
+  // When the user lands here from a 401-triggered signout, the reauth
+  // handler redirects with ?reason=session_expired. Surface a snackbar
+  // and strip the query so a refresh doesn't re-fire the message.
+  const shownReasonRef = useRef(false);
+  useEffect(() => {
+    if (!router.isReady || shownReasonRef.current) return;
+    const reasonParam = router.query.reason;
+    const reason = Array.isArray(reasonParam) ? reasonParam[0] : reasonParam;
+    if (reason === 'session_expired') {
+      shownReasonRef.current = true;
+      enqueueSnackbar('Your session expired. Please sign in again.', {
+        variant: 'warning',
+        autoHideDuration: 6000
+      });
+      const { reason: _omit, ...rest } = router.query;
+      router.replace(
+        { pathname: router.pathname, query: rest },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [router.isReady, router.query, enqueueSnackbar]);
 
   const {
     register,

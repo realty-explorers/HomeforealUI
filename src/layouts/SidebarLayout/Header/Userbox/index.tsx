@@ -32,6 +32,7 @@ import {
   selectAuth,
   selectSigningOut,
   setSigningOut,
+  setSignOutReason,
   setToken
 } from '@/store/slices/authSlice';
 import { signOut, useSession } from 'next-auth/react';
@@ -126,6 +127,7 @@ function HeaderUserbox() {
 
   const handleSignOut = async () => {
     if (signingOut) return;
+    dispatch(setSignOutReason('manual'));
     dispatch(setSigningOut(true));
     try {
       await signOut({ redirect: false });

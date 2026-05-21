@@ -1,12 +1,11 @@
 import BuyBox from '@/models/buybox';
-import { signOut } from 'next-auth/react';
 import {
   BaseQueryApi,
   createApi,
   FetchArgs,
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
-import { logout, setSigningOut } from '../slices/authSlice';
+import { setSigningOut, setSignOutReason } from '../slices/authSlice';
 import { getServerSession } from 'next-auth/next';
 
 const baseUrl = process.env.NEXT_PUBLIC_BUYBOX_API_URL;
@@ -45,14 +44,11 @@ const baseQueryWithReauth = async (
   if (result?.error?.status === 403) {
     //TODO: fetch new accessToken using refresh token and update auth state and recall the api
   } else if (result?.error?.status === 401) {
+    // Flag-only; the overlay drives signOut on user confirm.
     const alreadySigningOut = (api.getState() as any)?.auth?.signingOut;
     if (!alreadySigningOut) {
+      api.dispatch(setSignOutReason('session_expired'));
       api.dispatch(setSigningOut(true));
-      await signOut({
-        redirect: true,
-        callbackUrl: '/'
-      });
-      api.dispatch(logout());
     }
   }
   return result;

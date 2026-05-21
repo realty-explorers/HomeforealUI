@@ -6,8 +6,7 @@ import {
   FetchArgs,
   fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
-import { signOut } from 'next-auth/react';
-import { logout, setSigningOut } from '../slices/authSlice';
+import { setSigningOut, setSignOutReason } from '../slices/authSlice';
 
 const baseUrl = `${process.env.NEXT_PUBLIC_ANALYSIS_API_URL}/v1/analysis`;
 const GENERAL_BUYBOX_ID = '3dbf8068-bfda-4422-af27-7597045dac6e';
@@ -41,20 +40,18 @@ const baseQueryWithReauth = async (
   api: BaseQueryApi,
   extraOptions: any
 ) => {
-  let result = await baseQuery(args, api, extraOptions);
+  const result = await baseQuery(args, api, extraOptions);
   if (result?.error?.status === 403) {
     //TODO: fetch new accessToken using refresh token and update auth state and recall the api
   } else if (result?.error?.status === 401) {
-    // Guard against simultaneous 401s from parallel queries triggering
-    // multiple signOut() calls.
+    // Set the flag; the user-facing SigningOutOverlay shows the
+    // "Sign in again" button and invokes signOut() on confirm. We no
+    // longer auto-redirect from here so the user keeps context for why
+    // they're being logged out.
     const alreadySigningOut = (api.getState() as any)?.auth?.signingOut;
     if (!alreadySigningOut) {
+      api.dispatch(setSignOutReason('session_expired'));
       api.dispatch(setSigningOut(true));
-      await signOut({
-        redirect: true,
-        callbackUrl: '/'
-      });
-      api.dispatch(logout());
     }
   }
   return result;
