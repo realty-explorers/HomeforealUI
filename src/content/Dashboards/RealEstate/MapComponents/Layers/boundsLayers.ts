@@ -1,12 +1,15 @@
 import { LayerProps } from "react-map-gl";
 
+// z-order is governed by JSX declaration order in Map.tsx, not by
+// `beforeId`. We avoid `beforeId` here because the layers it would
+// reference (`unclustered-point`, `comps-point`) only exist in
+// specific views, and Mapbox silently drops `addLayer` calls whose
+// `beforeId` points at a missing layer.
+
 export const boundsLayer: LayerProps = {
   id: "bounds-area",
   type: "fill",
   source: "bounds",
-  // Insert below the property markers so they stay visible/interactive
-  // even if the source mounts after the property source.
-  beforeId: "unclustered-point",
   layout: {
     "fill-sort-key": -2,
   },
@@ -20,7 +23,6 @@ export const boundsLineLayer: LayerProps = {
   id: "bounds-line",
   type: "line",
   source: "bounds",
-  beforeId: "unclustered-point",
   paint: {
     "line-color": "#000",
     "line-width": 1,
@@ -31,8 +33,6 @@ export const propertyBoundsLayer: LayerProps = {
   id: "property-bounds-area",
   type: "fill",
   source: "property-bounds",
-  // Insert below the comp markers so they remain interactive and visible.
-  beforeId: "comps-point",
   layout: {
     "fill-sort-key": -1,
   },
@@ -47,17 +47,13 @@ export const propertyBoundsLineLayer: LayerProps = {
   id: "property-bounds-line",
   type: "line",
   source: "property-bounds",
-  beforeId: "comps-point",
   layout: {
     "line-cap": "round",
   },
   paint: {
     "line-color": "#000",
-    // "line-color": "#fff",
-    // "line-width": 1,
     "line-dasharray": [3, 3],
     "line-width": 1,
-    // "line-dasharray": [0, 4, 3],
     "line-blur": 0,
     "line-blur-transition": { duration: 1000 },
   },

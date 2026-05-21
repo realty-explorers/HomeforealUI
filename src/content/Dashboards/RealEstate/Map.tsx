@@ -87,6 +87,8 @@ import {
   selectHeatmapMode,
   selectShowBounds,
   selectShowMarkers,
+  selectShowRentComps,
+  selectShowSalesComps,
   setMapLoading
 } from '@/store/slices/mapSlice';
 import styles from './Map.module.scss';
@@ -149,6 +151,8 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const mapFlyTarget = useSelector(selectMapFlyTarget);
   const showBounds = useSelector(selectShowBounds);
   const showMarkers = useSelector(selectShowMarkers);
+  const showSalesComps = useSelector(selectShowSalesComps);
+  const showRentComps = useSelector(selectShowRentComps);
   const heatmapMode = useSelector(selectHeatmapMode);
 
   const { selectProperty, deselectProperty, selectPropertyId, propertyState } =
@@ -696,11 +700,15 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
           data={data}
         />
         <CompsSource
-          show={Boolean(selectedPropertyPreview && !selecting)}
+          show={Boolean(
+            selectedPropertyPreview && !selecting && showSalesComps
+          )}
           data={compsData}
         />
         <RentalsSource
-          show={Boolean(selectedPropertyPreview && !selecting)}
+          show={Boolean(
+            selectedPropertyPreview && !selecting && showRentComps
+          )}
           data={rentalsData}
         />
         <MarkerPopup property={hoveredProperty} />

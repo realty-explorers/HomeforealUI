@@ -6,7 +6,7 @@ type LocationBoundsSourceProps = {
   data: any;
 };
 const LocationBoundsSource = (
-  { show, data }: LocationBoundsSourceProps,
+  { data }: LocationBoundsSourceProps,
 ) => {
   return data && (
     <Source

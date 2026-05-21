@@ -5,19 +5,26 @@ type RentalsSourceProps = {
   show: boolean;
   data: any;
 };
+
+// See CompsSource for the rationale — keep the `rentals-point` layer
+// mounted and toggle visibility so other layers can reliably reference
+// it via `beforeId`.
 const RentalsSource = ({ show, data }: RentalsSourceProps) => {
+  const visibility = show ? "visible" : "none";
   return data && (
     <Source
       id="rentals"
       type="geojson"
       data={data}
     >
-      {show && (
-        <>
-          <Layer {...rentalsLayer} />
-          <Layer {...rentalsIndexLayer} />
-        </>
-      )}
+      <Layer
+        {...rentalsLayer}
+        layout={{ ...(rentalsLayer.layout ?? {}), visibility }}
+      />
+      <Layer
+        {...rentalsIndexLayer}
+        layout={{ ...(rentalsIndexLayer.layout ?? {}), visibility }}
+      />
     </Source>
   );
 };

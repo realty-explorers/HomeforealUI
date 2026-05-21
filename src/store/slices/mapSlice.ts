@@ -10,6 +10,8 @@ export interface MapState {
   mapLoading: boolean;
   showBounds: boolean;
   showMarkers: boolean;
+  showSalesComps: boolean;
+  showRentComps: boolean;
   heatmapMode: HeatmapMode;
 }
 
@@ -19,6 +21,8 @@ const initialState: MapState = {
   mapLoading: true,
   showBounds: true,
   showMarkers: true,
+  showSalesComps: true,
+  showRentComps: true,
   heatmapMode: "off",
 };
 
@@ -41,6 +45,12 @@ export const mapSlice = createSlice({
     setShowMarkers(state, action: PayloadAction<boolean>) {
       state.showMarkers = action.payload;
     },
+    setShowSalesComps(state, action: PayloadAction<boolean>) {
+      state.showSalesComps = action.payload;
+    },
+    setShowRentComps(state, action: PayloadAction<boolean>) {
+      state.showRentComps = action.payload;
+    },
     setHeatmapMode(state, action: PayloadAction<HeatmapMode>) {
       state.heatmapMode = action.payload;
     },
@@ -54,6 +64,8 @@ export const {
   setMapLoading,
   setShowBounds,
   setShowMarkers,
+  setShowSalesComps,
+  setShowRentComps,
   setHeatmapMode,
 } = mapSlice.actions;
 
@@ -61,6 +73,9 @@ export const selectMap: (state: AppState) => MapState = (state: AppState) =>
   state.map;
 export const selectShowBounds = (state: AppState) => state.map.showBounds;
 export const selectShowMarkers = (state: AppState) => state.map.showMarkers;
+export const selectShowSalesComps = (state: AppState) =>
+  state.map.showSalesComps;
+export const selectShowRentComps = (state: AppState) => state.map.showRentComps;
 export const selectHeatmapMode = (state: AppState) => state.map.heatmapMode;
 
 export default mapSlice;
