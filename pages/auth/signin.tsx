@@ -6,7 +6,7 @@ import { useSnackbar } from 'notistack';
 
 const Index = () => {
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-4 overflow-hidden">
+    <div className="min-h-screen w-full flex items-center justify-center p-4 overflow-hidden font-poppins">
       {/* Animated background */}
       <BackgroundAnimation />
 
