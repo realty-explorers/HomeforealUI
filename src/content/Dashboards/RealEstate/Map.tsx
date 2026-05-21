@@ -17,17 +17,14 @@ import { clusterLayer } from './MapComponents/Layers/layers';
 import MapControlPanel from './MapControlPanel/MapControlPanel';
 import { FeatureCollection, Geometry } from '@turf/turf';
 import mapboxgl from 'mapbox-gl';
-import {
-  locationApi,
-  locationApiEndpoints
-} from '@/store/services/locationApiService';
+import { locationApiEndpoints } from '@/store/services/locationApiService';
 import {
   propertiesApiEndpoints,
   useGetPropertiesPreviewsQuery,
   useLazyGetPropertyQuery
 } from '@/store/services/propertiesApiService';
-import { useDispatch, useSelector } from 'react-redux';
-import { selectLocation, setSuggestion } from '@/store/slices/locationSlice';
+import { useDispatch, useSelector, useStore } from 'react-redux';
+import { selectLocation } from '@/store/slices/locationSlice';
 import PropertyPreview from '@/models/propertyPreview';
 import CardsPanel from './MapComponents/CardsPanel/CardsPanel';
 import {
@@ -50,7 +47,6 @@ import {
   setSelectedComps,
   setSelectedProperty,
   setSelectedPropertyLocation,
-  setSelectedPropertyPreview,
   setSelectedRentalComps,
   setSelecting
 } from '@/store/slices/propertiesSlice';
@@ -112,7 +108,34 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
   const { enqueueSnackbar } = useSnackbar();
   const [loading, setLoading] = useState(true);
   const [mapLoaded, setMapLoaded] = useState(false);
-  const [viewState, setViewState] = useState(INITIAL_VIEW_STATE);
+  // Lazy initializer reads Redux ONCE on mount (via getState, so we
+  // don't subscribe and re-render on unrelated slice changes). The
+  // map renders at the right view on the first frame; the existing
+  // flyTo effects are then short-circuited via the first-mount refs
+  // below so they don't re-animate from-target to-target.
+  const store = useStore();
+  const [viewState, setViewState] = useState(() => {
+    const state = store.getState() as any;
+    const property = selectSelectedPropertyPreview(state);
+    if (property?.coordinates) {
+      return {
+        longitude: property.coordinates[0],
+        latitude: property.coordinates[1],
+        zoom: property.masked ? 12 : 15,
+        pitch: property.masked ? 0 : 70
+      };
+    }
+    const sugg = selectLocation(state)?.suggestion;
+    if (sugg?.longitude != null && sugg?.latitude != null) {
+      return {
+        longitude: sugg.longitude,
+        latitude: sugg.latitude,
+        zoom: 11,
+        pitch: 0
+      };
+    }
+    return INITIAL_VIEW_STATE;
+  });
 
   const [hoveredProperty, setHoveredProperty] = useState<any>();
   const [hoveredComp, setHoveredComp] = useState<any>();
@@ -340,6 +363,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         const data = await getBuyBoxes('', true).unwrap();
         if (data && data.length > 0) {
           if (selectedBuyBoxId) {
+            // URL wins: respect deep links / shared URLs.
             const selectedBuyBox = data.find(
               (buybox) => buybox.id === selectedBuyBoxId
             );
@@ -350,7 +374,20 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
                 variant: 'warning'
               });
             }
+          } else if (buybox && data.some((b) => b.id === buybox.id)) {
+            // No URL param but Redux already holds a valid buybox
+            // (returning to the search page mid-session). Keep it
+            // and rehydrate the URL so refreshes still work.
+            router.push(
+              {
+                pathname: router.pathname,
+                query: { buybox_id: buybox.id }
+              },
+              undefined,
+              { shallow: true }
+            );
           } else {
+            // Truly fresh session — fall back to the first buybox.
             const defaultBuyBox = data[0];
             router.push(
               {
@@ -387,12 +424,11 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         selectedPropertyId,
         !isVerifiedUser
       );
-    } else {
-      dispatch(setSelectedPropertyPreview(null));
-      mapRef.current?.setPitch(0);
-      dispatch(locationApi.util.invalidateTags(['Suggestion', 'LocationData']));
-      dispatch(setSuggestion(null));
     }
+    // No `else` branch — when the URL omits params we deliberately
+    // KEEP whatever Redux already has (selectedPropertyPreview,
+    // suggestion, etc.) so returning to the search page mid-session
+    // restores the user's previous view instead of resetting it.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVerifiedUser, router.isReady, (user?.user as { id?: string })?.id]);
 
@@ -452,7 +488,14 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     } as Geometry;
   }, [selectedPropertyLocation]);
 
+  // Skip the initial centerMap fly — the lazy `viewState` initializer
+  // above already seeded the map with the suggestion (or property) view.
+  const skipFirstCenterMapRef = useRef(true);
   useEffect(() => {
+    if (skipFirstCenterMapRef.current) {
+      skipFirstCenterMapRef.current = false;
+      return;
+    }
     centerMap();
   }, [centerMap, locationState.data]);
 
@@ -568,8 +611,17 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
     };
   }, [selectedRentalComps]);
 
+  // Skip the initial selection fly on remount — the lazy `viewState`
+  // already seeded the map with the property view (when one was
+  // selected) or the suggestion view. Running flyTo here would just
+  // re-animate from-target to-target.
+  const skipFirstSelectionFlyRef = useRef(true);
   useEffect(() => {
     mapRef.current?.resize();
+    if (skipFirstSelectionFlyRef.current) {
+      skipFirstSelectionFlyRef.current = false;
+      return;
+    }
     dispatch(setSelecting(true));
 
     if (selectedPropertyPreview) {
@@ -642,7 +694,7 @@ const Map: React.FC<MapProps> = (props: MapProps) => {
         onMove={onMove}
         ref={mapRef}
         maxBounds={US_BOUNDS as [[number, number], [number, number]]}
-        initialViewState={INITIAL_VIEW_STATE}
+        initialViewState={viewState}
         {...viewState}
       >
         <FullscreenControl style={{ display: 'var(--controls-display)' }} />
