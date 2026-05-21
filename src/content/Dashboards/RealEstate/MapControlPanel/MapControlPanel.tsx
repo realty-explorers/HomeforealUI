@@ -1,58 +1,42 @@
+import { memo, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { SlidersHorizontal } from 'lucide-react';
 import AutocompleteInput from '@/layouts/SidebarLayout/Header/Buttons/Search/AutocompleteInput';
 import LocationSuggestion from '@/models/location_suggestions';
+import { Button } from '@/components/ui/button';
+import { cn } from '@/lib/utils';
+import { useIsMobile } from '@/hooks/useMobile';
 import { selectLocation, setSuggestion } from '@/store/slices/locationSlice';
-import { useDispatch, useSelector } from 'react-redux';
+import { selectSelectedPropertyPreview, setSelectedPropertyPreview } from '@/store/slices/propertiesSlice';
 import MainControls from '../MapControls/MainControls';
-import { useLazyGetLocationDataQuery } from '@/store/services/locationApiService';
-import { Autocomplete, Button, Collapse, TextField } from '@mui/material';
-import TuneIcon from '@mui/icons-material/Tune';
-import clsx from 'clsx';
-import { memo, useEffect, useState } from 'react';
-import {
-  selectFilteredProperties,
-  setFilteredProperties
-} from '@/store/slices/filterSlice';
-import {
-  selectSelectedPropertyPreview,
-  setSelectedProperty,
-  setSelectedPropertyPreview
-} from '@/store/slices/propertiesSlice';
-import { useLazyGetBuyBoxesQuery } from '@/store/services/buyboxApiService';
-import { useSnackbar } from 'notistack';
-import BuyBox from '@/models/buybox';
 import FiltersDialog from './FiltersDialog';
 
-type MapControlPanelProps = {};
-const MapControlPanel = (props: MapControlPanelProps) => {
+const MapControlPanel = () => {
   const dispatch = useDispatch();
+  const isMobile = useIsMobile();
   const { suggestion } = useSelector(selectLocation);
   const selectedPropertyPreview = useSelector(selectSelectedPropertyPreview);
-  // const [getPropertiesData, propertiesDataState] = useLazyGetPropertiesQuery();
   const [filtersOpen, setFiltersOpen] = useState(false);
-  const filteredProperties = useSelector(selectFilteredProperties);
   const [notSelected, setNotSelected] = useState(true);
 
+  // Auto-close the filters surface when a property is selected so the
+  // detail view isn't competing with the filter panel for attention.
   useEffect(() => {
     if (selectedPropertyPreview) {
-      if (notSelected) {
-        setFiltersOpen(false);
-      }
+      if (notSelected) setFiltersOpen(false);
       setNotSelected(false);
     } else {
       setNotSelected(true);
     }
   }, [selectedPropertyPreview]);
 
-  const handleSelectBuyBox = (event: any, value: any) => {
-    alert(value);
-  };
-
   const handleSetLocation = (location: LocationSuggestion) => {
     dispatch(setSelectedPropertyPreview(null));
     dispatch(setSuggestion(location));
   };
 
-  const windowWidth = typeof window !== 'undefined' ? window.innerWidth : 0;
+  // Desktop = inline collapsible card; mobile = bottom sheet.
+  const desktopPanelVisible = filtersOpen && Boolean(suggestion);
 
   return (
     <div className="absolute left-0 top-0 flex p-4 pointer-events-none w-full">
@@ -65,29 +49,50 @@ const MapControlPanel = (props: MapControlPanelProps) => {
             />
           </div>
           {suggestion && (
-            <div className="ml-6 flex justify-center items-center">
+            <div className="ml-6 flex items-center">
               <Button
-                onClick={() => setFiltersOpen(!filtersOpen)}
-                startIcon={<TuneIcon />}
-                className="text-black bg-white hover:bg-[#5569ff] hover:text-white rounded-2xl px-4"
+                type="button"
+                onClick={() => setFiltersOpen((open) => !open)}
+                aria-pressed={filtersOpen}
+                // No border — matches the LayersControl pill (mapbox
+                // controls use a soft shadow ring instead). Poppins for
+                // consistency with the rest of the overlay.
+                className={cn(
+                  'font-poppins font-medium rounded-full h-9 px-4 gap-2 border-0 shadow-[0_0_0_1px_rgba(15,23,42,0.08),0_2px_6px_-2px_rgba(15,23,42,0.15)] transition-colors',
+                  filtersOpen
+                    ? 'bg-primary text-white hover:bg-primary/90'
+                    : 'bg-white text-slate-900 hover:bg-primary hover:text-white'
+                )}
               >
+                <SlidersHorizontal className="h-4 w-4" />
                 Filters
               </Button>
             </div>
           )}
         </div>
 
-        {windowWidth > 768 ? (
-          <Collapse in={filtersOpen && suggestion}>
-            <div
-              className={clsx([
-                'hidden md:flex px-4 pt-10 bg-white/[.8] rounded-md mt-4 w-80 relative pointer-events-auto'
-              ])}
-            >
-              <MainControls />
-            </div>
-          </Collapse>
-        ) : (
+        {/* Desktop inline panel. Two-layer overflow strategy:
+            - outer wrapper: overflow-hidden, used only for the open/close
+              max-height transition.
+            - inner panel: overflow-y-auto with a max-height that leaves
+              room for the search input + CardsPanel (h-52 ≈ 208px) so
+              the filters never overlap the cards or run off-screen. */}
+        <div
+          className={cn(
+            'hidden md:block overflow-hidden transition-[max-height,opacity,margin] duration-300 ease-out font-poppins',
+            desktopPanelVisible
+              ? 'max-h-[calc(100vh-280px)] opacity-100 mt-4'
+              : 'max-h-0 opacity-0 mt-0'
+          )}
+        >
+          <div className="pointer-events-auto w-80 rounded-md bg-white/80 backdrop-blur-sm shadow-md px-4 pt-10 pb-4 relative max-h-[calc(100vh-280px)] overflow-y-auto">
+            <MainControls />
+          </div>
+        </div>
+
+        {/* Mobile sheet. Gated by isMobile so its overlay doesn't
+            steal the desktop UI when filtersOpen is true. */}
+        {isMobile && (
           <FiltersDialog open={filtersOpen} setOpen={setFiltersOpen} />
         )}
       </div>

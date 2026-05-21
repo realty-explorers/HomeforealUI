@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSession } from 'next-auth/react';
 import styles from './Logo.module.scss';
 
 const LogoSignWrapper = styled(Box)(
@@ -94,9 +95,15 @@ const LogoText = styled(Box)(
 );
 
 function Logo() {
-  // return <></>;
+  // Signed-in users land on the dashboard; visitors go to the marketing
+  // / sign-in entry. Treat the "loading" state as not-signed-in so the
+  // href doesn't flicker mid-click.
+  const { status } = useSession();
+  const href =
+    status === 'authenticated' ? '/dashboards/real-estate' : '/';
+
   return (
-    <Link href="/">
+    <Link href={href}>
       <div className="flex items-center h-full">
         <div className="flex items-center justify-center w-8 ml-2 mr-1">
           <Image

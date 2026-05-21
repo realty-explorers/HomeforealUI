@@ -1,33 +1,11 @@
-import { InputProps } from "@/components/Form/formTypes";
-import styled from "@emotion/styled";
-import { Grid, Tooltip, Typography } from "@mui/material";
+import React from 'react';
+import { Info } from 'lucide-react';
 import {
-  ageFormatter,
-  ageReverseScale,
-  ageScale,
-  priceFormatter,
-  priceReverseScale,
-  priceScale,
-} from "@/utils/converters";
-import React, { Children } from "react";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
-import { Info } from "@mui/icons-material";
-
-const GridDiv = styled(Grid)(({}) => ({
-  display: "flex",
-  flexDirection: "row",
-  width: "100%",
-  // height: '2rem',
-  "> svg": {
-    marginBottom: "0.5em",
-  },
-  margin: "0 0.2em",
-}));
-
-const LabelContainer = styled(Grid)(({ theme }) => ({
-  display: "flex",
-  alignItems: "center",
-}));
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip';
 
 type SliderFieldProps = {
   fieldName: string;
@@ -35,29 +13,39 @@ type SliderFieldProps = {
   children: React.ReactNode;
 };
 
-const SliderField: React.FC<SliderFieldProps> = (props: SliderFieldProps) => {
+// Labeled wrapper for a single filter row. Pairs a field name (and
+// optional info tooltip) with whatever slider control sits below.
+const SliderField: React.FC<SliderFieldProps> = ({
+  fieldName,
+  tooltip,
+  children
+}) => {
   return (
-    <div className="flex flex-col px-2 gap-y-2">
-      <div className="flex items-center">
-        <Typography align="right" noWrap variant="h5">
-          {props.fieldName}
-        </Typography>
-        {props.tooltip && (
-          <Tooltip
-            title={
-              <Typography className="font-poppins text-[1rem]">
-                {props.tooltip}
-              </Typography>
-            }
-            arrow
-          >
-            <InfoOutlinedIcon className="w-4 flex items-center ml-1 mb-[0.1rem]" />
-          </Tooltip>
+    <div className="flex flex-col gap-y-2 px-2">
+      <div className="flex items-center gap-1">
+        <span className="text-sm font-semibold tracking-tight text-zinc-900">
+          {fieldName}
+        </span>
+        {tooltip && (
+          <TooltipProvider delayDuration={300}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  type="button"
+                  aria-label={`About ${fieldName}`}
+                  className="inline-flex items-center text-zinc-400 hover:text-zinc-600 transition-colors"
+                >
+                  <Info className="h-3.5 w-3.5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right" className="max-w-xs">
+                {tooltip}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         )}
       </div>
-      <div className="flex w-full">
-        {props.children}
-      </div>
+      <div className="flex w-full">{children}</div>
     </div>
   );
 };
