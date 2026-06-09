@@ -150,7 +150,8 @@ const BuyboxItem = (props: BuyboxItemProps) => {
 
   const handleDelete = async () => {
     try {
-      await deleteBuyBox(props.buybox.id).unwrap();
+      const isMultifamily = props.buybox.parameters?.strategy?.strategyType === 'MULTIFAMILY';
+      await deleteBuyBox({ id: props.buybox.id, isMultifamily }).unwrap();
 
       const patchCollection = dispatch(
         buyBoxApi.util.updateQueryData(

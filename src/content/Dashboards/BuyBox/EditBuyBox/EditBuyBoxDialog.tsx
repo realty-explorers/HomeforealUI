@@ -43,7 +43,9 @@ import {
   buyBoxApi,
   useCreateBuyBoxMutation,
   useDeleteBuyBoxMutation,
-  useUpdateBuyBoxMutation
+  useUpdateBuyBoxMutation,
+  useValidateBuyBoxMutation,
+  useFinalizeBuyBoxMutation
 } from '@/store/services/buyboxApiService';
 import { useSnackbar } from 'notistack';
 import clsx from 'clsx';
@@ -246,6 +248,8 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
   const [createBuyBox, createResult] = useCreateBuyBoxMutation();
   const [updateBuyBox, updateResult] = useUpdateBuyBoxMutation();
   const [deleteBuyBox, deleteResult] = useDeleteBuyBoxMutation();
+  const [validateBuyBox] = useValidateBuyBoxMutation();
+  const [finalizeBuyBox] = useFinalizeBuyBoxMutation();
   const dispatch = useDispatch<any>();
 
   const getRangeFieldProperties = (
@@ -517,14 +521,20 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
 
   const onSubmit = async (data: any) => {
     try {
+      const isMf = data.strategy?.strategyType === 'MULTIFAMILY';
+      let targetBuyboxId = props.buybox?.id;
+
       if (props.buybox) {
-        await updateBuyBox({ id: props.buybox.id, parameters: data }).unwrap();
+        const res = await updateBuyBox({ id: props.buybox.id, parameters: data }).unwrap();
+        if (res?.buybox_id) targetBuyboxId = res.buybox_id;
+        
         clearStoredDraft();
         enqueueSnackbar(`BuyBox Saved`, {
           variant: 'success'
         });
       } else {
-        await createBuyBox(data).unwrap();
+        const res = await createBuyBox(data).unwrap();
+        if (res?.buybox_id) targetBuyboxId = res.buybox_id;
 
         dispatch(
           buyBoxApi.util.updateQueryData(
@@ -545,6 +555,22 @@ const EditBuyBoxDialog = (props: editBuyBoxDialogProps) => {
           variant: 'success'
         });
       }
+
+      // Execute Validation & Finalization for Multifamily
+      if (isMf && targetBuyboxId) {
+        const validationRes = await validateBuyBox(targetBuyboxId).unwrap();
+        
+        // Halt upon validation errors
+        if (validationRes.is_valid === false || (validationRes.errors && validationRes.errors.length > 0)) {
+           enqueueSnackbar(`Validation Failed: ${validationRes.errors.map((e: any) => e.message || e).join(', ')}`, {
+             variant: 'error'
+           });
+           return; // Halt form submission close
+        }
+
+        await finalizeBuyBox(targetBuyboxId).unwrap();
+      }
+
     } catch (error) {
       if (error.status === 'FETCHERROR') {
         enqueueSnackbar(`Connection error - please try again later`, {

@@ -6,6 +6,7 @@ import CognitoProvider from 'next-auth/providers/cognito';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import PostHogClient from 'src/lib/posthog';
 
+
 export const authOptions = {
   // Configure one or more authentication providers
 
@@ -136,7 +137,8 @@ export const authOptions = {
           accessToken: token.accessToken,
           idToken: token.idToken,
           verified: token.verified,
-          newUser: token.newUser
+          newUser: token.newUser,
+          organizationId: token.organizationId || 'default-org'
         },
         error: token.error
       };

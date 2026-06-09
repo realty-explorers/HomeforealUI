@@ -16,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import {
   selectSigningOut,
+  setSession,
   setSigningOut,
   setSignOutReason,
   setToken
@@ -45,7 +46,10 @@ const HeaderUserbox = () => {
   const signingOut = useSelector(selectSigningOut);
 
   useEffect(() => {
-    if (data) dispatch(setToken(data.user.accessToken));
+    if (data) {
+      dispatch(setToken(data.user.accessToken));
+      dispatch(setSession(data));
+    }
   }, [data, dispatch]);
 
   const handleSignOut = async () => {

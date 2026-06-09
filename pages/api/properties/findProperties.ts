@@ -2,6 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next/'
 import { findProperties } from "@/api/deals_api";
 import { AxiosError } from 'axios';
 
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     try {
         if (req.method !== 'POST') throw Error('Invalid request method');
