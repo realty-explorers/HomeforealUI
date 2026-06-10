@@ -133,6 +133,7 @@ const baseQueryWithReauth = async (
     }
   }
   return result;
+};
 
 const mapToMultifamilyDto = (body: any) => {
 	const mf = body.multifamilyCriteria || {};
