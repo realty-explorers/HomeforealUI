@@ -115,4 +115,23 @@ export const {
 export const selectFilter: (state: AppState) => Filter = (state: AppState) =>
   state.filter;
 
+// Granular field selectors — prefer these over `selectFilter` so
+// components only re-render when the field they actually read changes.
+export const selectMinPrice = (state: AppState) => state.filter.minPrice;
+export const selectMaxPrice = (state: AppState) => state.filter.maxPrice;
+export const selectArvMargin = (state: AppState) => state.filter.arvMargin;
+export const selectArv25Margin = (state: AppState) => state.filter.arv25Margin;
+export const selectMinBaths = (state: AppState) => state.filter.minBaths;
+export const selectMaxBaths = (state: AppState) => state.filter.maxBaths;
+export const selectMinBeds = (state: AppState) => state.filter.minBeds;
+export const selectMaxBeds = (state: AppState) => state.filter.maxBeds;
+export const selectMinArea = (state: AppState) => state.filter.minArea;
+export const selectMaxArea = (state: AppState) => state.filter.maxArea;
+export const selectPropertyTypes = (state: AppState) =>
+  state.filter.propertyTypes;
+export const selectFilteredProperties = (state: AppState) =>
+  state.filter.filteredProperties;
+export const selectStrategyMode = (state: AppState) => state.filter.strategyMode;
+export const selectBuybox = (state: AppState) => state.filter.buybox;
+
 export default filterSlice;

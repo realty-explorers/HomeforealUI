@@ -67,7 +67,7 @@ export default function ReferralHandler() {
   }, [searchParams, returnTo]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen font-poppins">
       {(status === 'AUTHENTICATING' || status === 'INITIALIZING') && (
         <LoadingScreen
           message={authStatus[status]}

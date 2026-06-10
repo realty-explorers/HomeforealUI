@@ -21,3 +21,5 @@ const FullOfferSchema = z.object({
 export type OfferStatus = z.infer<typeof OfferStatusSchema>;
 
 export type Offer = z.infer<typeof FullOfferSchema>;
+
+export type OfferData = z.infer<typeof OfferSchema>;

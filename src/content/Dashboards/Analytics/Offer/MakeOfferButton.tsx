@@ -1,42 +1,53 @@
 import { useAppDispatch } from '@/store/hooks';
 import { setShowVerificationDialog } from '@/store/slices/authSlice';
-import RequestQuoteIcon from '@mui/icons-material/RequestQuote';
-import { Button, Typography } from '@mui/material';
-import clsx from 'clsx';
 import { useSession } from 'next-auth/react';
 import { useSearchParams } from 'next/navigation';
+import { Receipt } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 type MakeOfferButtonProps = {
   onClick: () => void;
 };
+
 const MakeOfferButton = (props: MakeOfferButtonProps) => {
   const searchParams = useSearchParams();
   const referral = searchParams.get('referral');
   const { data: session } = useSession();
   const dispatch = useAppDispatch();
 
-  const hanldeOfferClick = () => {
+  const handleOfferClick = () => {
     if (!session?.user?.verified) {
       dispatch(setShowVerificationDialog(true));
     } else {
       props.onClick();
     }
   };
+
   return (
-    <Button
-      onClick={hanldeOfferClick}
-      className={clsx([
-        'p-[3px] rounded-full bg-gradient-to-r from-indigo-500 to-pink-500 group absolute bottom-2 left-3 z-10 animate-fadeDelayed opacity-0 ',
+    <button
+      type="button"
+      onClick={handleOfferClick}
+      className={cn(
+        'group absolute bottom-2 left-3 z-10',
+        'inline-flex items-center self-start w-auto h-auto',
+        'rounded-full p-[3px]',
+        'bg-gradient-to-r from-indigo-500 to-pink-500',
+        // Cool entrance: slide up + fade + zoom
+        'animate-in fade-in slide-in-from-bottom-6 zoom-in-90 duration-700 ease-out',
+        'shadow-lg shadow-indigo-500/30 hover:shadow-indigo-500/50',
+        'transition-shadow',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 focus-visible:ring-offset-2',
         referral === 'projo' && 'w-[calc(100%-1rem)] xs:w-auto'
-      ])}
+      )}
     >
-      <div className="px-2 py-1 rounded-full bg-white flex flex-row-reverse justify-center items-center gap-x-1 group-hover:bg-opacity-5 transition w-full">
-        <Typography className="text-black font-semibold ">
+      <span className="inline-flex items-center justify-center gap-1.5 rounded-full bg-white px-3 py-1.5 transition-colors group-hover:bg-white/5">
+        <Receipt className="size-4 text-slate-900" />
+        <span className="font-poppins text-sm font-semibold text-slate-900">
           Make Offer
-        </Typography>
-        <RequestQuoteIcon className="text-black" />
-      </div>
-    </Button>
+        </span>
+      </span>
+    </button>
   );
 };
+
 export default MakeOfferButton;

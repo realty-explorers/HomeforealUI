@@ -1,18 +1,24 @@
 import { Action, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { AppState } from '../store';
 
+export type SignOutReason = 'manual' | 'session_expired';
+
 export interface Auth {
   token?: string;
   session?: any;
   verificationStep: number;
   showVerificationDialog?: boolean;
+  signingOut: boolean;
+  signOutReason: SignOutReason | null;
 }
 
 const initialState: Auth = {
   token: null,
   session: null,
   verificationStep: 1,
-  showVerificationDialog: false
+  showVerificationDialog: false,
+  signingOut: false,
+  signOutReason: null
 };
 
 export const authSlice = createSlice({
@@ -34,6 +40,15 @@ export const authSlice = createSlice({
     },
     setShowVerificationDialog(state, action: PayloadAction<boolean>) {
       state.showVerificationDialog = action.payload;
+    },
+    setSigningOut(state, action: PayloadAction<boolean>) {
+      state.signingOut = action.payload;
+      // Reset reason when explicitly clearing the signing-out flag so a
+      // stale "session_expired" doesn't leak into the next signout.
+      if (!action.payload) state.signOutReason = null;
+    },
+    setSignOutReason(state, action: PayloadAction<SignOutReason | null>) {
+      state.signOutReason = action.payload;
     }
   }
 });
@@ -44,9 +59,14 @@ export const {
   setSession,
   logout,
   setVerificationStep,
-  setShowVerificationDialog
+  setShowVerificationDialog,
+  setSigningOut,
+  setSignOutReason
 } = authSlice.actions;
 export const selectAuth: (state: AppState) => Auth = (state: AppState) =>
   state.auth;
+export const selectSigningOut = (state: AppState) => state.auth.signingOut;
+export const selectSignOutReason = (state: AppState) =>
+  state.auth.signOutReason;
 
 export default authSlice;

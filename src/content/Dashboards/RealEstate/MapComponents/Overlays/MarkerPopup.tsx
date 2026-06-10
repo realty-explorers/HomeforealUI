@@ -15,6 +15,8 @@ const MarkerPopup = ({ property }: MarkerPopupProps) => {
         anchor="bottom"
         offset={[0, -10]}
         closeButton={false}
+        closeOnClick={false}
+        focusAfterOpen={false}
         className="mapbox-popup"
       >
         <PropertyMapCard property={property} />

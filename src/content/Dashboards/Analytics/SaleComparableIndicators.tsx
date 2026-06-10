@@ -1,132 +1,114 @@
-import {
-  Button,
-  Grid,
-  LinearProgress,
-  Paper,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography
-} from '@mui/material';
-import GridField from '@/components/Grid/GridField';
-import ValueCard from '@/components/Cards/ValueCard';
-import styled from '@emotion/styled';
-import analyticsStyles from './Analytics.module.scss';
-import styles from './SaleComparable.module.scss';
-import ThemedButton from '@/components/Buttons/ThemedButton';
-import AnalyzedProperty from '@/models/analyzedProperty';
-import { numberStringUtil, priceFormatter } from '@/utils/converters';
-import clsx from 'clsx';
 import { useSelector } from 'react-redux';
-import { selectProperties } from '@/store/slices/propertiesSlice';
+import { ArrowDown, LineChart, Crown } from 'lucide-react';
+import AnalyzedProperty from '@/models/analyzedProperty';
+import { priceFormatter } from '@/utils/converters';
+import { selectSaleCalculatedProperty } from '@/store/slices/propertiesSlice';
 import { selectExpenses } from '@/store/slices/expensesSlice';
 import {
   calculateArvPercentage,
   calculateMarginPercentage
 } from '@/utils/calculationUtils';
-import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
-
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  borderBottom: 'none'
-}));
+import { Progress } from '@/components/ui/progress';
+import { cn } from '@/lib/utils';
 
 type SaleComparableIndicatorsProps = {
   property: AnalyzedProperty;
 };
+
+type IndicatorRowProps = {
+  icon: typeof LineChart;
+  label: string;
+  amount: number;
+  underPercent: number;
+  marginPercent: number;
+  trackClass: string; // tailwind class for track + indicator color
+  accentText: string;
+};
+
+const IndicatorRow = ({
+  icon: Icon,
+  label,
+  amount,
+  underPercent,
+  marginPercent,
+  trackClass,
+  accentText
+}: IndicatorRowProps) => {
+  const safeUnder = Math.max(0, Math.min(100, underPercent || 0));
+  return (
+    <div className="flex flex-col w-full gap-1">
+      <div className="flex items-center gap-2 flex-wrap font-poppins text-xs">
+        <Icon className={cn('size-3.5', accentText)} />
+        <span className="font-semibold text-slate-700 uppercase tracking-wider text-[0.65rem]">
+          {label}
+        </span>
+        <span className="font-bold text-slate-900">
+          {priceFormatter(amount?.toFixed())}
+        </span>
+        <span className="text-slate-300">●</span>
+        <span className={cn('font-semibold', accentText)}>
+          Margin {marginPercent.toFixed()}%
+        </span>
+      </div>
+      <div className="flex items-center gap-2">
+        <Progress value={safeUnder} className={trackClass} />
+        <span
+          className={cn(
+            'inline-flex items-center gap-0.5 font-poppins font-semibold text-xs whitespace-nowrap',
+            accentText
+          )}
+        >
+          <ArrowDown className="size-3.5" />
+          {underPercent.toFixed()}%
+        </span>
+      </div>
+    </div>
+  );
+};
+
 const SaleComparableIndicators = (props: SaleComparableIndicatorsProps) => {
-  const { saleCalculatedProperty } = useSelector(selectProperties);
+  const saleCalculatedProperty = useSelector(selectSaleCalculatedProperty);
   const { initialInvestment, financingCosts } = useSelector(selectExpenses);
   const totalExpenses = initialInvestment + financingCosts;
 
-  const underCompsPercentage = calculateArvPercentage(
-    saleCalculatedProperty?.arvPrice,
-    saleCalculatedProperty?.price,
-    totalExpenses
-  );
-  const underARVPercentage = calculateArvPercentage(
-    saleCalculatedProperty?.arv25Price,
-    saleCalculatedProperty?.price,
-    totalExpenses
-  );
-  const compsMarginPercentage = calculateMarginPercentage(
-    saleCalculatedProperty?.arvPrice,
-    saleCalculatedProperty?.price,
-    totalExpenses
-  );
-  const arvMarginPercentage = calculateMarginPercentage(
-    saleCalculatedProperty?.arv25Price,
-    saleCalculatedProperty?.price,
-    totalExpenses
-  );
+  const hasSoldComps =
+    (saleCalculatedProperty?.comps?.filter((comp) => comp.type === 'sold')
+      ?.length ?? 0) > 0;
+  if (!hasSoldComps) return null;
+
+  const arvSale = saleCalculatedProperty?.arvPrice ?? 0;
+  const arv25 = saleCalculatedProperty?.arv25Price ?? 0;
+  const salePrice = saleCalculatedProperty?.price ?? 0;
 
   return (
-    saleCalculatedProperty?.comps.filter((comp) => comp.type === 'sold')
-      ?.length > 0 && (
-      <div className="flex w-full gap-x-4 px-4 py-2 justify-center items-center sticky top-0 shadow z-[2] bg-off-white ">
-        <div className="flex flex-col w-full">
-          <div className="flex ">
-            <Typography className="font-poppins font-bold">
-              Sales Comps
-            </Typography>
-
-            <Typography className="font-poppins font-bold ml-4">
-              {priceFormatter(saleCalculatedProperty?.arvPrice.toFixed())}
-            </Typography>
-
-            <div className="px-2">●</div>
-
-            <Typography className="font-poppins font-bold">
-              Margin: {compsMarginPercentage.toFixed()} %
-            </Typography>
-          </div>
-
-          <div className="flex items-center">
-            <LinearProgress
-              variant="determinate"
-              value={underCompsPercentage > 100 ? 100 : underCompsPercentage}
-              className="grow"
-            />
-
-            <Typography className="font-poppins font-bold ml-2">
-              <ArrowCircleDownIcon fontSize="small" />
-              {underCompsPercentage.toFixed()} %
-            </Typography>
-          </div>
-        </div>
-        <div className="flex flex-col w-full">
-          <div className="flex ">
-            <Typography className="font-poppins font-bold">25th ARV</Typography>
-
-            <Typography className="font-poppins font-bold ml-4">
-              {priceFormatter(saleCalculatedProperty?.arv25Price.toFixed())}
-            </Typography>
-
-            <div className="px-2">●</div>
-
-            <Typography className="font-poppins font-bold ">
-              Margin: {arvMarginPercentage.toFixed()} %
-            </Typography>
-          </div>
-
-          <div className="flex items-center">
-            <LinearProgress
-              variant="determinate"
-              value={underARVPercentage > 100 ? 100 : underARVPercentage}
-              className="grow"
-              color="success"
-            />
-
-            <Typography className="font-poppins font-bold ml-2">
-              <ArrowCircleDownIcon fontSize="small" />
-              {underARVPercentage.toFixed()} %
-            </Typography>
-          </div>
-        </div>
-      </div>
-    )
+    <div className="flex flex-col md:flex-row w-full gap-4 px-4 py-3 sticky top-0 z-[2] bg-off-white shadow-sm">
+      <IndicatorRow
+        icon={LineChart}
+        label="Sales Comps"
+        amount={arvSale}
+        underPercent={calculateArvPercentage(arvSale, salePrice, totalExpenses)}
+        marginPercent={calculateMarginPercentage(
+          arvSale,
+          salePrice,
+          totalExpenses
+        )}
+        trackClass="bg-purple-100 [&>div]:bg-secondary"
+        accentText="text-secondary"
+      />
+      <IndicatorRow
+        icon={Crown}
+        label="25th ARV"
+        amount={arv25}
+        underPercent={calculateArvPercentage(arv25, salePrice, totalExpenses)}
+        marginPercent={calculateMarginPercentage(
+          arv25,
+          salePrice,
+          totalExpenses
+        )}
+        trackClass="bg-emerald-100 [&>div]:bg-arv"
+        accentText="text-emerald-700"
+      />
+    </div>
   );
 };
 

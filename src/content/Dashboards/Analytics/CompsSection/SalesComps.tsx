@@ -17,7 +17,8 @@ import { useEffect, useState } from 'react';
 import CompsFilter from './CompsFilter';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  selectProperties,
+  selectSelectedComps,
+  selectSelectedProperty,
   setSaleCalculatedProperty,
   setSelectedComps,
   setSelectedProperty
@@ -28,10 +29,11 @@ import CompsSection from './CompsSection';
 type SalesCompsProps = {};
 const SalesComps = (props: SalesCompsProps) => {
   const dispatch = useDispatch();
-  const { selectedProperty, selectedComps } = useSelector(selectProperties);
+  const selectedProperty = useSelector(selectSelectedProperty);
+  const selectedComps = useSelector(selectSelectedComps);
   const [calculateComps, compsResult] = useCalculateCompsMutation();
   const soldComps = selectedProperty.comps.filter(
-    (comp) => comp.status === 'sold'
+    (comp) => comp.status === 'sold' || comp.status === 'off_market'
   );
 
   //TODO: handle this
@@ -59,6 +61,7 @@ const SalesComps = (props: SalesCompsProps) => {
       comps={soldComps}
       selectedComps={selectedComps}
       setSelectedComps={setNewSelectedComps}
+      subject={selectedProperty}
       propertyCard={
         <PropertyCard
           property={selectedProperty}

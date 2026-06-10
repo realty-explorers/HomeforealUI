@@ -366,7 +366,7 @@ export const emptyTemplate: Omit<
     },
     financialDetails: {
       purchasePrice: 1,
-      financingType: ''
+      financingType: 'Cash'
     },
     deposit: {
       depositAmount: 0,
@@ -419,14 +419,20 @@ export const emptyTemplate: Omit<
       conductInspection: false
     },
     settlementExpenses: {
-      sellerPaysFixedAmount: true
+      sellerPaysFixedAmount: true,
+      sellerCostsFixed: 0
     },
     closingDetails: {
       closeByDate: true,
+      closingDate: new Date(new Date().setMonth(new Date().getMonth() + 1))
+        .toISOString()
+        .split('T')[0],
+      closingDeadline: 30,
       optionToTerminate: false
     },
     terminationOption: {
-      allowTermination: false
+      allowTermination: false,
+      terminationPeriodDays: 30
     }
   }
 };

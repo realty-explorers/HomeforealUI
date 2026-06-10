@@ -20,4 +20,7 @@ yarn-error.log*
 # Next.js
 /.next
 
+# TypeScript incremental build cache
+tsconfig.tsbuildinfo
+
 *storybook.log

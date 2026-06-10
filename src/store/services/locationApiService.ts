@@ -25,7 +25,10 @@ export const locationApi = createApi({
       // query: ({ searchTerm }) => ({ url: "suggest", params: { searchTerm } }),
       query: (searchTerm) => `suggest?searchTerm=${searchTerm}`,
       transformResponse: (response: any) => response,
-      providesTags: ['Suggestion']
+      providesTags: ['Suggestion'],
+      // Autocomplete strings are stable per searchTerm; keep the response
+      // around so repeated searches don't refetch.
+      keepUnusedDataFor: 600
     }),
     getLocationData: builder.query({
       // query: ({ display, type, city, state }) => ({ url: "data", params: { display, type, city, state } }),
@@ -56,7 +59,10 @@ export const locationApi = createApi({
       transformResponse: async (response: any) => {
         return response;
       },
-      providesTags: ['LocationData']
+      providesTags: ['LocationData'],
+      // Boundary polygons rarely change; keep them cached so revisiting
+      // a location doesn't refetch and rebuild the map source.
+      keepUnusedDataFor: 1800
     })
   })
 });

@@ -38,7 +38,7 @@ import TermsConditions from './wizard-steps/TermsConditions';
 import Settlement from './wizard-steps/Settlement';
 import { useSession } from 'next-auth/react';
 import { useAppSelector } from '@/store/hooks';
-import { selectProperties } from '@/store/slices/propertiesSlice';
+import { selectSelectedProperty } from '@/store/slices/propertiesSlice';
 import { useSelector } from 'react-redux';
 import { useCreateOfferMutation } from '@/store/services/offersApi';
 import WizardNavigationFooter from './WizardNavigationFooter';
@@ -77,25 +77,33 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
   const { currentStep, setCurrentStep, nextStep, prevStep, goToStep } =
     useWizardNavigation();
   // const { selectedTemplateId, selectTemplate } = useTemplateSelection(methods);
-  const { selectTemplate } = useTemplateSelectionContext();
+  const { selectTemplate, templates } = useTemplateSelectionContext();
 
   const { data: session, status } = useSession();
 
   const [createOffer, offerState] = useCreateOfferMutation();
-  const { selectedProperty } = useSelector(selectProperties);
+  const selectedProperty = useSelector(selectSelectedProperty);
   const userFormData: Partial<OfferFormData> = {
     buyerDetails: {
       email: session?.user?.email || ''
     },
     financialDetails: {
       purchasePrice: selectedProperty?.price || 0
+    },
+    closingDetails: {
+      closingDate: new Date(new Date().setMonth(new Date().getMonth() + 1))
+        .toISOString()
+        .split('T')[0],
+      closingDeadline: 30
     }
   };
 
   const componentRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    selectTemplate('custom', { ...userFormData });
+    selectTemplate(templates.length > 0 ? templates[0]._id : null, {
+      ...userFormData
+    });
     setCurrentStep(0);
   }, [session?.user, selectedProperty]);
 
@@ -172,7 +180,6 @@ const WizardContent = ({ open, onClose }: WizardProps) => {
 
   const onSubmit = async (data: OfferFormData) => {
     try {
-      console.log('Form submitted:', data);
       const userId = session.user.id;
       const propertyId = selectedProperty.propertyId;
       const response = await createOffer({

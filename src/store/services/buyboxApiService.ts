@@ -1,13 +1,11 @@
 import BuyBox from '@/models/buybox';
-import LocationSuggestion from '@/models/location_suggestions';
-import { signOut } from 'next-auth/react';
 import {
 	BaseQueryApi,
 	createApi,
 	FetchArgs,
 	fetchBaseQuery
 } from '@reduxjs/toolkit/query/react';
-import { logout } from '../slices/authSlice';
+import { setSigningOut, setSignOutReason } from '../slices/authSlice';
 import { getServerSession } from 'next-auth/next';
 
 // Type definitions for backend multifamily buybox response
@@ -123,17 +121,18 @@ const baseQueryWithReauth = async (
 	api: BaseQueryApi,
 	extraOptions: any
 ) => {
-	let result = await baseQuery(args, api, extraOptions);
-	if (result?.error?.status === 403) {
-		//TODO: fetch new accessToken using refresh token and update auth state and recall the api
-	} else if (result?.error?.status === 401) {
-		await signOut({
-			redirect: true,
-			callbackUrl: '/'
-		});
-		api.dispatch(logout());
-	}
-	return result;
+  let result = await baseQuery(args, api, extraOptions);
+  if (result?.error?.status === 403) {
+    //TODO: fetch new accessToken using refresh token and update auth state and recall the api
+  } else if (result?.error?.status === 401) {
+    // Flag-only; the overlay drives signOut on user confirm.
+    const alreadySigningOut = (api.getState() as any)?.auth?.signingOut;
+    if (!alreadySigningOut) {
+      api.dispatch(setSignOutReason('session_expired'));
+      api.dispatch(setSigningOut(true));
+    }
+  }
+  return result;
 };
 
 const mapToMultifamilyDto = (body: any) => {

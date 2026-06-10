@@ -67,19 +67,59 @@ const buildMultifamilyMarkerLabel = (property: PropertyPreview) => {
   return `${capRateLabel}\n${secondLine}`;
 };
 
+// 0..3 — drives tier-aware text color, halo and size in the marker
+// layer (see layers.ts). Higher tier = stronger deal.
+const marginTier = (percentage: number): number => {
+  if (percentage >= 70) return 3;
+  if (percentage >= 50) return 2;
+  if (percentage >= 30) return 1;
+  return 0;
+};
+
+const capRateTier = (capRate: number): number => {
+  if (capRate >= 10) return 3;
+  if (capRate >= 7) return 2;
+  if (capRate >= 5) return 1;
+  return 0;
+};
+
+type PropertyFeatureProps = {
+  id: string;
+  price: string;
+  // Optional leading glyph (e.g. "↓ ") rendered at a smaller font-scale
+  // in the marker layer to cue "under market" without dominating the
+  // percentage. Empty string when the metric doesn't carry that meaning
+  // (multifamily cap-rate marker).
+  arrow: string;
+  sortKey: number;
+  tier: number;
+  // Numeric fields for heatmap weighting. Strings above stay for the
+  // marker pill label; these are independent so layers can use either.
+  priceValue: number;
+  dealValue: number;
+};
+
 const generatePropertyGeoJson = (
   property: PropertyPreview,
   strategy: string,
   strategyType = 'FIX_AND_FLIP'
-): Feature<Point, { id: string; price: string; sortKey: number }> => {
+): Feature<Point, PropertyFeatureProps> => {
+  const rawPrice = getPropertyPrice(property);
+
   if (strategyType === 'MULTIFAMILY') {
     const capRate = getCapRate(property) ?? 0;
+    const units = getUnitsCount(property);
+    const pricePerUnit = units && rawPrice > 0 ? rawPrice / units : rawPrice;
     return {
       type: 'Feature',
       properties: {
         id: property.id,
         price: buildMultifamilyMarkerLabel(property),
-        sortKey: -capRate
+        arrow: '',
+        sortKey: -capRate,
+        tier: capRateTier(capRate),
+        priceValue: pricePerUnit,
+        dealValue: capRate
       },
       geometry: {
         type: 'Point',
@@ -89,13 +129,20 @@ const generatePropertyGeoJson = (
   }
 
   const percentage = marginPercentage(property, strategy);
+  // ↓ glyph cues "under market" at a glance — the percentage is how
+  // much below the ARV/strategy price the listing sits. Rendered at a
+  // smaller font-scale in the marker layer so it doesn't compete with
+  // the number itself.
   return {
     type: 'Feature',
     properties: {
-      id: property.id, // Generate a random ID
-      // price: `${currencyFormatter(property.sales_listing_price)}`,
-      price: `↓ ${percentage.toFixed()}%`,
-      sortKey: -percentage
+      id: property.id,
+      price: `${percentage.toFixed()}%`,
+      arrow: '↓ ',
+      sortKey: -percentage,
+      tier: marginTier(percentage),
+      priceValue: rawPrice,
+      dealValue: percentage
     },
     geometry: {
       type: 'Point',

@@ -1,66 +1,46 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import {
-  Autocomplete,
-  FormControl,
-  Grid,
-  InputLabel,
-  MenuItem,
-  OutlinedInput,
-  styled,
-  Switch,
-  ToggleButton,
-  ToggleButtonGroup,
-  Tooltip,
-  Typography
-} from '@mui/material';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import SliderRangeInput from '../FormFields/SliderRangeInput';
-import SliderRangeInputV2 from '../FormFields/SliderRangeInputv2';
-import SliderInput from '../FormFields/SliderInput';
-import {
+  numberFormatter,
   priceFormatter,
   priceReverseScale,
   priceScale
 } from '@/utils/converters';
-import SliderField from './SliderField';
 import {
-  selectFilter,
+  selectBuybox,
+  selectFilteredProperties,
   setArvMargin,
   setBuybox,
   setFilteredProperties,
+  setMaxArea,
   setMaxBaths,
   setMaxBeds,
   setMaxPrice,
   setMinArea,
-  setMaxArea,
   setMinBaths,
   setMinBeds,
   setMinPrice,
-  setPropertyTypes,
   setStrategyMode,
   setArv25Margin
 } from '@/store/slices/filterSlice';
 import debounce from 'lodash.debounce';
 import { useDispatch, useSelector } from 'react-redux';
-import PropertyTypes from './PropertyTypes';
-import PropertyTypeFilter from './PropertyTypeFilter';
-import AnalyzedProperty from '@/models/analyzedProperty';
 import { locationApiEndpoints } from '@/store/services/locationApiService';
 import { selectLocation } from '@/store/slices/locationSlice';
-import {
-  propertiesApiEndpoints,
-  useGetPropertiesPreviewsQuery
-} from '@/store/services/propertiesApiService';
+import { useGetPropertiesPreviewsQuery } from '@/store/services/propertiesApiService';
 import PropertyPreview from '@/models/propertyPreview';
-import {
-  buyBoxApiEndpoints,
-  useGetBuyBoxesQuery,
-  useLazyGetBuyBoxesQuery
-} from '@/store/services/buyboxApiService';
+import { buyBoxApiEndpoints } from '@/store/services/buyboxApiService';
 import { useSnackbar } from 'notistack';
 import { skipToken } from '@reduxjs/toolkit/query';
 import { useRouter } from 'next/router';
-import { signOut, useSession } from 'next-auth/react';
+import { useSession } from 'next-auth/react';
+import {
+  getBuyboxPriceRange,
+  isMultifamilyBuyBoxValue
+} from './utils/buybox';
+import BuyBoxSelect from './sections/BuyBoxSelect';
+import StrategyToggle, { StrategyMode } from './sections/StrategyToggle';
+import MarginFilter from './sections/MarginFilter';
+import RangeFilterRow from './sections/RangeFilterRow';
 
 const filterFieldNames = [
   'arvPrice',
@@ -71,168 +51,14 @@ const filterFieldNames = [
   'baths'
 ];
 
-const normalizeStrategyType = (value: unknown) =>
-  `${value ?? ''}`
-    .trim()
-    .toUpperCase()
-    .replace(/[\s-]+/g, '_');
-
-const isMultifamilyStrategyValue = (value: unknown) => {
-  const normalizedValue = normalizeStrategyType(value);
-  if (!normalizedValue) {
-    return false;
-  }
-
-  return (
-    normalizedValue === 'MULTIFAMILY' ||
-    normalizedValue === 'MULTI_FAMILY' ||
-    normalizedValue === 'MULTY_FAMILY' ||
-    (normalizedValue.includes('MULTI') && normalizedValue.includes('FAMILY')) ||
-    (normalizedValue.includes('MULTY') && normalizedValue.includes('FAMILY'))
-  );
-};
-
-const getBuyboxParameters = (buyBoxItem?: { parameters?: Record<string, unknown> }) =>
-  ((buyBoxItem?.parameters || {}) as Record<string, unknown>);
-
-const getCanonicalBuybox = (parameters: Record<string, unknown>) => {
-  return (
-    (parameters.buybox_form as Record<string, unknown>) ||
-    (parameters.buybox as Record<string, unknown>) ||
-    {}
-  );
-};
-
-const toFiniteNumber = (value: unknown) => {
-  if (typeof value === 'number' && Number.isFinite(value)) {
-    return value;
-  }
-
-  if (typeof value === 'string' && value.trim()) {
-    const parsed = Number(value);
-    if (Number.isFinite(parsed)) {
-      return parsed;
-    }
-  }
-
-  return undefined;
-};
-
-const getBuyboxPriceRange = (
-  buyBoxItem?: { parameters?: Record<string, unknown> }
-): [number, number] | null => {
-  if (!buyBoxItem) {
-    return null;
-  }
-
-  const parameters = getBuyboxParameters(buyBoxItem);
-  const canonical = getCanonicalBuybox(parameters);
-  const discovery = (canonical.discovery || {}) as Record<string, unknown>;
-  const discoveryPriceRange =
-    (discovery.price_range as Record<string, unknown>) || {};
-  const propertyCriteria =
-    (parameters.propertyCriteria as Record<string, unknown>) || {};
-
-  const minCandidates = [
-    discoveryPriceRange.min_price,
-    discoveryPriceRange.min,
-    propertyCriteria.minPrice,
-    0
-  ];
-  const maxCandidates = [
-    discoveryPriceRange.max_price,
-    discoveryPriceRange.max,
-    propertyCriteria.maxPrice,
-    1000000
-  ];
-
-  const min = minCandidates
-    .map((candidate) => toFiniteNumber(candidate))
-    .find((candidate) => typeof candidate === 'number');
-  const max = maxCandidates
-    .map((candidate) => toFiniteNumber(candidate))
-    .find((candidate) => typeof candidate === 'number');
-
-  if (typeof min !== 'number' || typeof max !== 'number' || max < min) {
-    return null;
-  }
-
-  return [min, max];
-};
-
-const getBuyBoxStrategyType = (
-  buyBoxItem?: { parameters?: Record<string, unknown> }
-) => {
-  const parameters = getBuyboxParameters(buyBoxItem);
-  const canonical = getCanonicalBuybox(parameters);
-  const canonicalStrategy = (canonical.strategy || {}) as Record<string, unknown>;
-  const strategy = (parameters.strategy || {}) as Record<string, unknown>;
-
-  const strategySources = [
-    canonicalStrategy.strategyType,
-    canonicalStrategy.strategy_type,
-    canonicalStrategy.mode,
-    canonicalStrategy.preset,
-    canonicalStrategy.strategy,
-    strategy.strategyType,
-    strategy.strategy_type,
-    parameters.strategyType,
-    strategy.mode,
-    strategy.preset,
-    parameters.strategy
-  ];
-
-  return (
-    strategySources.find((source) => `${source ?? ''}`.trim().length > 0) ||
-    'FIX_AND_FLIP'
-  );
-};
-
-const isMultifamilyBuyBoxValue = (
-  buyBoxItem?: { parameters?: Record<string, unknown> }
-) => {
-  const parameters = getBuyboxParameters(buyBoxItem);
-  const strategySources = [
-    getBuyBoxStrategyType(buyBoxItem),
-    (parameters.strategy as Record<string, unknown> | undefined)?.strategy,
-    parameters.strategy
-  ];
-
-  return (
-    strategySources.some(isMultifamilyStrategyValue) ||
-    isMultifamilyStrategyValue(parameters.name)
-  );
-};
-
-const getBuyboxDisplayName = (buyBoxItem?: {
-  id?: string;
-  parameters?: Record<string, unknown>;
-}) => {
-  const parameters = getBuyboxParameters(buyBoxItem);
-  return `${parameters.name || buyBoxItem?.id || 'Untitled BuyBox'}`;
-};
-
 type MainControlsProps = {};
 const MainControls: React.FC<MainControlsProps> = (
   props: MainControlsProps
 ) => {
   const { enqueueSnackbar } = useSnackbar();
 
-  const {
-    arvMargin,
-    arv25Margin,
-    maxBaths,
-    minBaths,
-    maxBeds,
-    minBeds,
-    maxPrice,
-    minPrice,
-    minArea,
-    maxArea,
-    propertyTypes,
-    filteredProperties,
-    buybox
-  } = useSelector(selectFilter);
+  const filteredProperties = useSelector(selectFilteredProperties);
+  const buybox = useSelector(selectBuybox);
 
   const { data, status } = useSession();
   const dispatch = useDispatch();
@@ -272,7 +98,7 @@ const MainControls: React.FC<MainControlsProps> = (
   const [area, setArea] = useState([0, 10000]);
   const [beds, setBeds] = useState([0, 9]);
   const [baths, setBaths] = useState([0, 9]);
-  const [strategy, setStrategy] = useState('ARV');
+  const [strategy, setStrategy] = useState<StrategyMode>('ARV');
 
   const router = useRouter();
   const selectedBuyBoxId = Array.isArray(router.query.buybox_id)
@@ -460,281 +286,159 @@ const MainControls: React.FC<MainControlsProps> = (
     []
   );
 
-  const handleChange = (
-    event: React.MouseEvent<HTMLElement>,
-    newStrategy: string
-  ) => {
-    if (newStrategy !== null) {
-      setStrategy(newStrategy);
-      filterPropertiesByValue(0, '', newStrategy);
-      dispatch(setStrategyMode(newStrategy));
-    }
+  const handleStrategyChange = (next: StrategyMode) => {
+    setStrategy(next);
+    filterPropertiesByValue(0, '', next);
+    dispatch(setStrategyMode(next));
   };
-  const handleBuyBoxChange = (e: SelectChangeEvent<string>) => {
-    const nextBuyBoxId = e.target.value;
+
+  const handleBuyBoxChange = (nextBuyBoxId: string) => {
     const selectedBuyBox = buyBoxesState.data?.find(
       (buyBoxItem) => buyBoxItem.id === nextBuyBoxId
     );
-
-    if (!selectedBuyBox) {
-      return;
-    }
+    if (!selectedBuyBox) return;
 
     dispatch(setBuybox(selectedBuyBox));
-    const selectedStrategyFilterMode =
-      isMultifamilyBuyBoxValue(selectedBuyBox) ? undefined : strategy;
+    const selectedStrategyFilterMode = isMultifamilyBuyBoxValue(selectedBuyBox)
+      ? undefined
+      : strategy;
     filterPropertiesByValue(0, '', selectedStrategyFilterMode);
     router.push({
       pathname: router.pathname,
-      query: {
-        buybox_id: selectedBuyBox.id
-      }
+      query: { buybox_id: selectedBuyBox.id }
     });
   };
 
   return (
-    <div className="w-full">
-      <div className="absolute top-2 right-4 font-poppins font-bold">
+    <div className="w-full font-poppins">
+      <div className="absolute top-2 right-4 font-bold">
         {filteredProperties?.length} found
       </div>
-      {buyBoxesState.isFetching ? (
-        <div>loading...</div>
-      ) : (
-        buyBoxesState.data && (
-          <FormControl
-            fullWidth
-            size="small"
-            className="mb-2"
-            id="buyboxCombobox"
-          >
-            <InputLabel>BuyBox</InputLabel>
-            <Select
-              value={buybox?.id || ''}
-              label="BuyBox"
-              onChange={handleBuyBoxChange}
-            >
-              {buyBoxesState.data?.map((buyBoxItem) => (
-                <MenuItem key={buyBoxItem.id} value={buyBoxItem.id}>
-                  {getBuyboxDisplayName(buyBoxItem)}
-                  {isMultifamilyBuyBoxValue(buyBoxItem) ? ' • Multifamily' : ''}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        )
-      )}
+
+      <BuyBoxSelect
+        buyboxes={buyBoxesState.data}
+        loading={buyBoxesState.isFetching}
+        selectedId={buybox?.id || ''}
+        onChange={handleBuyBoxChange}
+      />
 
       {!isMultifamilyBuyBox && (
-        <div className="flex w-full justify-center items-center mb-4">
-          <ToggleButtonGroup
-            color="primary"
-            id="strategyToggle"
-            value={strategy}
-            exclusive
-            onChange={handleChange}
-            className="text-center"
-          >
-            <ToggleButton
-              value="ARV"
-              className="flex items-center justify-center h-8"
-              sx={{
-                '&.Mui-selected': {
-                  backgroundColor: '#22c55e'
-                }
-              }}
-            >
-              <Tooltip title="Choose ARV as margin filtering" enterDelay={700}>
-                <Typography className="font-poppins font-semibold">
-                  ARV
-                </Typography>
-              </Tooltip>
-            </ToggleButton>
-
-            <ToggleButton
-              value="Comps"
-              className="flex items-center justify-center h-8"
-            >
-              <Tooltip
-                title="Choose Sales Comps as margin filtering"
-                enterDelay={700}
-              >
-                <Typography className="font-poppins font-semibold">
-                  Comps
-                </Typography>
-              </Tooltip>
-            </ToggleButton>
-          </ToggleButtonGroup>
-        </div>
+        <StrategyToggle value={strategy} onChange={handleStrategyChange} />
       )}
-      <div
-        id="filters"
-        className=" pr-4 pl-2 mb-4 w-full overflow-y-auto overflow-x-hidden"
-      >
+
+      {/* No overflow on this inner container — the outer panel handles
+          scroll so slider value tooltips (portaled by Radix anyway) and
+          info popovers never run into clipping. */}
+      <div id="filters" className="pr-4 pl-2 mb-4 w-full space-y-4">
         {isMultifamilyBuyBox ? (
-          <Typography className="font-poppins text-sm text-gray-700 mb-3">
+          <p className="text-sm text-gray-700 mb-3">
             Multifamily BuyBox selected. ARV/Comps margin filtering is disabled
             for this strategy.
-          </Typography>
-        ) : strategy === 'ARV' ? (
-          <SliderField
-            fieldName="Min ARV Margin %"
-            tooltip="Percentage under estimated market ARV"
-          >
-            <SliderInput
-              inputProps={{
-                title: 'ARV Margin',
-                name: 'arvMargin',
-                min: 0,
-                max: 100,
-                step: 1
-              }}
-              value={arv}
-              // update={(value) => updateArv(value)}
-              update={(value) =>
-                setValue(
-                  () => setArv(value),
-                  () => dispatch(setArv25Margin(value)),
-                  value,
-                  'arv25Price'
-                )
-              }
-            />
-          </SliderField>
+          </p>
         ) : (
-          <SliderField
-            fieldName="Min Sales Comps Margin %"
-            tooltip="Percentage under market sales comps"
-          >
-            <SliderInput
-              inputProps={{
-                title: 'Comps Margin',
-                name: 'underComps',
-                min: 0,
-                max: 100,
-                step: 1
-              }}
-              value={comps}
-              update={(value) =>
-                setValue(
-                  () => setComps(value),
-                  () => dispatch(setArvMargin(value)),
-                  value,
-                  'arvPrice'
-                )
-              }
-            />
-          </SliderField>
+          <MarginFilter
+            mode={strategy}
+            value={strategy === 'ARV' ? arv : comps}
+            onChange={(value) =>
+              strategy === 'ARV'
+                ? setValue(
+                    () => setArv(value),
+                    () => dispatch(setArv25Margin(value)),
+                    value,
+                    'arv25Price'
+                  )
+                : setValue(
+                    () => setComps(value),
+                    () => dispatch(setArvMargin(value)),
+                    value,
+                    'arvPrice'
+                  )
+            }
+          />
         )}
 
-        <SliderField fieldName="Listing Price">
-          <SliderRangeInputV2
-            inputProps={{
-              title: 'Listing Price',
-              name: 'listingPrice',
-              min: 0,
-              max: 60,
-              step: 1
-            }}
-            value={price}
-            format={priceFormatter}
-            updateValue={(value) =>
-              setValue(
-                () => setPrice(value),
-                () => {
-                  dispatch(setMinPrice(value[0]));
-                  dispatch(setMaxPrice(value[1]));
-                },
-                value,
-                'price'
-              )
-            }
-            scale={{ scale: priceScale, reverseScale: priceReverseScale }}
-          />
-        </SliderField>
+        <RangeFilterRow
+          label="Listing Price"
+          name="listingPrice"
+          min={0}
+          max={60}
+          step={1}
+          value={price}
+          format={priceFormatter}
+          scale={{ scale: priceScale, reverseScale: priceReverseScale }}
+          onChange={(value) =>
+            setValue(
+              () => setPrice(value),
+              () => {
+                dispatch(setMinPrice(value[0]));
+                dispatch(setMaxPrice(value[1]));
+              },
+              value,
+              'price'
+            )
+          }
+        />
 
-        <SliderField fieldName="Baths">
-          <SliderRangeInputV2
-            inputProps={{
-              title: 'Bathrooms',
-              name: 'baths',
-              min: 1,
-              max: 9,
-              step: 1
-            }}
-            value={baths}
-            format={(value) => `${value}`}
-            updateValue={(value) =>
-              setValue(
-                () => setBaths(value),
-                () => {
-                  dispatch(setMinBaths(value[0]));
-                  dispatch(setMaxBaths(value[1]));
-                },
-                value,
-                'baths'
-              )
-            }
-          />
-        </SliderField>
-        <SliderField fieldName="Beds">
-          <SliderRangeInputV2
-            inputProps={{
-              title: 'Bedrooms',
-              name: 'beds',
-              min: 1,
-              max: 9,
-              step: 1
-            }}
-            value={beds}
-            format={(value) => `${value}`}
-            updateValue={(value) =>
-              setValue(
-                () => setBeds(value),
-                () => {
-                  dispatch(setMinBeds(value[0]));
-                  dispatch(setMaxBeds(value[1]));
-                },
-                value,
-                'beds'
-              )
-            }
-            // updateMinValue={(value) => dispatch(setMinBeds(value))}
-            // updateMaxValue={(value) => dispatch(setMaxBeds(value))}
-          />
-        </SliderField>
-        <SliderField fieldName="Building Sqft">
-          <SliderRangeInputV2
-            inputProps={{
-              title: 'Building Sqft',
-              name: 'sqft',
-              min: 0,
-              max: 10000,
-              step: 50
-            }}
-            // minValue={minArea}
-            // maxValue={maxArea}
-            value={area}
-            format={(value) => `${value}`}
-            updateValue={(value) =>
-              setValue(
-                () => setArea(value),
-                () => {
-                  dispatch(setMinArea(value[0]));
-                  dispatch(setMaxArea(value[1]));
-                },
-                value,
-                'area'
-              )
-            }
-            // updateMinValue={(value) => dispatch(setMinSqft(value))}
-            // updateMaxValue={(value) => dispatch(setMaxSqft(value))}
-            // scale={{ scale: priceScale, reverseScale: sqftScale }}
-          />
-        </SliderField>
-        {/* <PropertyTypeFilter */}
-        {/*   propertyTypes={propertyTypes} */}
-        {/*   updateTypes={(value) => dispatch(setPropertyTypes(value))} */}
-        {/* /> */}
+        <RangeFilterRow
+          label="Baths"
+          name="baths"
+          min={1}
+          max={9}
+          step={1}
+          value={baths}
+          onChange={(value) =>
+            setValue(
+              () => setBaths(value),
+              () => {
+                dispatch(setMinBaths(value[0]));
+                dispatch(setMaxBaths(value[1]));
+              },
+              value,
+              'baths'
+            )
+          }
+        />
+
+        <RangeFilterRow
+          label="Beds"
+          name="beds"
+          min={1}
+          max={9}
+          step={1}
+          value={beds}
+          onChange={(value) =>
+            setValue(
+              () => setBeds(value),
+              () => {
+                dispatch(setMinBeds(value[0]));
+                dispatch(setMaxBeds(value[1]));
+              },
+              value,
+              'beds'
+            )
+          }
+        />
+
+        <RangeFilterRow
+          label="Building Sqft"
+          name="sqft"
+          min={0}
+          max={10000}
+          step={50}
+          value={area}
+          format={(v) => `${numberFormatter(v)} sqft`}
+          onChange={(value) =>
+            setValue(
+              () => setArea(value),
+              () => {
+                dispatch(setMinArea(value[0]));
+                dispatch(setMaxArea(value[1]));
+              },
+              value,
+              'area'
+            )
+          }
+        />
       </div>
     </div>
   );

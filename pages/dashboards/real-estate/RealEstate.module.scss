@@ -79,19 +79,30 @@
 }
 
 .moreDetailsPanel {
+  // Firefox
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
 }
 
+.moreDetailsPanel:hover {
+  scrollbar-color: rgba(100, 116, 139, 0.5) transparent; // slate-500 @ 50%
+}
+
+// Webkit — keep the gutter so layout doesn't shift on hover.
+.moreDetailsPanel::-webkit-scrollbar {
+  width: 8px;
+}
 .moreDetailsPanel::-webkit-scrollbar-track {
+  background: transparent;
   box-shadow: none;
 }
 .moreDetailsPanel::-webkit-scrollbar-thumb {
-  transition: visibility 0.2s linear;
-  // background-color: transparent;
-  visibility: hidden;
-  // opacity: 0.5/;
+  background-color: transparent;
+  border-radius: 9999px;
 }
-
 .moreDetailsPanel:hover::-webkit-scrollbar-thumb {
-  // background-color: black;
-  visibility: visible;
+  background-color: rgba(100, 116, 139, 0.5); // slate-500 @ 50%
+}
+.moreDetailsPanel:hover::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(71, 85, 105, 0.75); // slate-600 @ 75%
 }
