@@ -51,6 +51,10 @@ module.exports = async (phase, { defaultConfig }) => {
         {
           source: '/ingest/decide',
           destination: 'https://us.i.posthog.com/decide'
+        },
+        {
+          source: '/api-proxy/buybox/:path*',
+          destination: 'https://yexmrmcnkd.execute-api.us-east-2.amazonaws.com/dev/buybox/:path*'
         }
       ];
     },

@@ -82,8 +82,8 @@ interface BackendMultifamilyBuybox {
 	};
 }
 
-const baseUrl = process.env.NEXT_PUBLIC_BUYBOX_API_URL;
-// const baseUrl = "http://localhost:8000/buybox";
+// Relative path — Next.js rewrites /api-proxy/buybox/* → API Gateway (avoids CORS on x-organization-id)
+const baseUrl = '/api-proxy/buybox';
 const GENERAL_BUYBOX_ID = '3dbf8068-bfda-4422-af27-7597045dac6e';
 
 const baseQuery = fetchBaseQuery({
